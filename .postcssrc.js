@@ -10,6 +10,7 @@ module.exports = {
       ],
     },
     "postcss-nested": {},
+    "postcss-sassy-mixins": {},
     "postcss-cssnext": {}
   }
 }
