@@ -49,7 +49,7 @@ export default {
   width: var(--content-width);
   height: 120px;
   padding: 15px 15px 15px calc(var(--avatar-width) + var(--avatar-left) + 18px);
-  margin: 40px auto 0;
+  margin: 40px auto 15px;
   background-color: #fff;
 
   &__avatar {
