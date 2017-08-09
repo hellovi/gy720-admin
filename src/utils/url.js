@@ -7,6 +7,9 @@ export default class Url {
       static(pathname) {
         return `http://statics.l.gy720.com/${pathname}`
       },
+      host(pathname) {
+        return `https://l.gy720.com/${pathname}`
+      },
     }
   }
 }
