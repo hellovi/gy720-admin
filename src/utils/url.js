@@ -4,12 +4,16 @@ export default class Url {
   static install(Vue) {
     // eslint-disable-next-line
     Vue.prototype.$url = {
-      static(pathname) {
-        return `http://statics.l.gy720.com/${pathname}`
-      },
-      host(pathname) {
-        return `https://l.gy720.com/${pathname}`
-      },
+      static: this.static,
+      host: this.host,
     }
+  }
+
+  static static(pathname) {
+    return `http://statics.l.gy720.com/${pathname}`
+  }
+
+  static host(pathname) {
+    return `https://l.gy720.com/${pathname}`
   }
 }
