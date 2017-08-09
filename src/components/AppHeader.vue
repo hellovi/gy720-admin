@@ -29,11 +29,11 @@
           <span class="app-header__name">{{ userInfo.nickname }}</span>
         </router-link>
         <ul class="app-header__menu list">
-          <li><router-link to="/">个人中心</router-link></li>
-          <li><router-link to="/">我的作品</router-link></li>
-          <li><router-link to="/">购买服务</router-link></li>
-          <li><router-link to="/">账号管理</router-link></li>
-          <li><router-link to="/">我的消息</router-link></li>
+          <li><router-link to="/user-client/center">个人中心</router-link></li>
+          <li><router-link to="/user-client/works">我的作品</router-link></li>
+          <li><router-link to="/user-client/purchase">购买服务</router-link></li>
+          <li><router-link to="/user-client/account">账号管理</router-link></li>
+          <li><router-link to="/user-client/message">我的消息</router-link></li>
           <li><a href="/">退出登陆</a></li>
         </ul>
       </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="app-user">
-    <router-link class="app-user__avatar" to="/">
+    <router-link class="app-user__avatar" to="/user-client/center">
       <img :src="$url.static(userInfo.avatar)" :alt="userInfo.nickname">
     </router-link>
 
@@ -11,7 +11,9 @@
     </div>
     <div class="app-user__point">
       <span class="app-user__badge app-user__badge--level">LV{{ userInfo.level_id }}</span>
-      <router-link class="hover-primary" to="/point">积分：{{ userInfo.total_integral }}（可用：{{ userInfo.left_integral }}）</router-link>
+      <router-link class="hover-primary" to="/user-client/point">
+        积分：{{ userInfo.total_integral }}（可用：{{ userInfo.left_integral }}）
+      </router-link>
     </div>
     <div>
       <el-button size="small">修改资料</el-button>
