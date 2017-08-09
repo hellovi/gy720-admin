@@ -1,0 +1,40 @@
+/** 公共表格样式 **/
+/** @author lmh **/
+
+.app-table {
+  border-collapse: collapse;
+  width: 100%;
+  border: var(--border);
+  border-radius: 3px;
+
+  & + .app-table {
+    margin-top: 30px;
+  }
+
+  & > tbody {
+    & > tr {
+      background-color: #fff;
+    }
+  }
+
+  & th,
+  & td {
+    border-bottom: var(--border);
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  & th {
+    height: 48px;
+    background-color: var(--gray-extra-light);
+    color: #666;
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  & td {
+    height: 54px;
+    font-size: 13px;
+  }
+}

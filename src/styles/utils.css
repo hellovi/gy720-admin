@@ -1,0 +1,164 @@
+@import "vars.css";
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 文本对齐 */
+.text-left {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/* 文本颜色 */
+.text-gray {
+  color: var(--gray);
+}
+
+.text-primary,
+.hover-primary {
+  color: var(--color-primary);
+}
+
+.hover-primary:hover {
+  color: var(--color-primary-light);
+}
+
+.text-success,
+.hover-success {
+  color: var(--color-success);
+}
+
+.hover-success:hover {
+  color: var(--color-success-light);
+}
+
+.text-warning
+.hover-warning {
+  color: var(--color-warning);
+}
+
+.hover-warning:hover {
+  color: var(--color-warning-light);
+}
+
+.text-danger
+.hover-danger {
+  color: var(--color-danger);
+}
+
+.hover-danger:hover {
+  color: var(--color-danger-light);
+}
+
+.text-info,
+.hover-info {
+  color: var(--color-info);
+}
+
+.hover-info:hover {
+  color: var(--color-info-light);
+}
+
+/* 线框按钮 */
+.btn-primary {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+  color: var(--color-primary-light);
+  border-color: var(--color-primary-light);
+}
+
+.btn-success {
+  background: transparent;
+  color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.btn-success:hover {
+  color: var(--color-success-light);
+  border-color: var(--color-success-light);
+}
+
+.btn-warning {
+  background: transparent;
+  color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.btn-primary:hover {
+  color: var(--color-warning-light);
+  border-color: var(--color-warning-light);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.btn-danger:hover {
+  color: var(--color-danger-light);
+  border-color: var(--color-danger-light);
+}
+
+.btn-info {
+  background: transparent;
+  color: var(--color-info);
+  border-color: var(--color-info);
+}
+
+.btn-danger:hover {
+  color: var(--color-info-light);
+  border-color: var(--color-info-light);
+}
+
+/*缺省页外部容器*/
+.empty-wrap {
+  background-color: #fff;
+  min-height:400px;
+  padding-top: 1px;
+}
+
+/*缺省页*/
+.empty {
+  position: relative;
+  width: 540px;
+  height: 200px;
+  border: 2px dashed var(--gray-light);
+  border-radius: 5px;
+  margin: 50px auto ;
+  color: var(--gray);
+
+  & > div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

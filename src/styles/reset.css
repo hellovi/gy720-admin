@@ -1,0 +1,30 @@
+@import "vars.css";
+
+.el-pagination {
+  margin-top: 45px;
+  text-align: center;
+
+  .el-pager {
+    & > li {
+      margin-left: 0.8em;
+      border-radius: 2px;
+
+      &:last-child {
+        margin-right: 0.8em;
+      }
+    }
+  }
+
+  .btn-prev,
+  .btn-next {
+    border-radius: 2px;
+  }
+
+  .btn-prev,
+  .btn-next,
+  .more,
+  .number:not(.active) {
+    border-left: 1px solid var(--border-color-base);
+    border-right: 1px solid var(--border-color-base);
+  }
+}
