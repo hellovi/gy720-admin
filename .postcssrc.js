@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   "plugins": {
     "postcss-import": {
-      addModulesDirectories: [
+      path: [
         path.join(__dirname, 'src/styles')
       ],
     },
