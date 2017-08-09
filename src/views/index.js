@@ -2,10 +2,8 @@ export { default as User } from './User'
 
 // 个人中心
 export { default as Center } from './User/Center'
-export { default as CenterRecent } from './User/Center/Recent'
-export { default as CenterCollection } from './User/Center/Collection'
-export { default as CenterFans } from './User/Center/Fans'
-export { default as CenterFollows } from './User/Center/Follows'
+export { default as CenterAuthors } from './User/Center/Authors'
+export { default as CenterPanos } from './User/Center/Panos'
 export { default as CenterStatistics } from './User/Center/Statistics'
 
 // 我的作品

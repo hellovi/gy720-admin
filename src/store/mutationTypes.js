@@ -5,6 +5,14 @@ export const GLOBAL = {
   },
 }
 
+// 个人中心
+export const CENTER = {
+  INITIALIZE: 'center/initialize',
+  LIST_UPDATE: 'center/updatelist',
+  LINK_UPDATE: 'center/updatelink',
+  LOAD_LOCK: 'center/lockload',
+}
+
 export const MESSAGE = {
   SYSTEM: {
     INIT: 'MESSAGE.SYSTEM.INIT',

@@ -13,19 +13,19 @@ export default {
     },
     {
       path: 'recent',
-      component: views.CenterRecent,
+      component: views.CenterPanos,
     },
     {
       path: 'collection',
-      component: views.CenterCollection,
+      component: views.CenterPanos,
     },
     {
       path: 'fans',
-      component: views.CenterFans,
+      component: views.CenterAuthors,
     },
     {
       path: 'follows',
-      component: views.CenterFollows,
+      component: views.CenterAuthors,
     },
     {
       path: 'statistics',
