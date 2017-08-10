@@ -5,6 +5,19 @@ export const GLOBAL = {
   },
 }
 
+export const MESSAGE = {
+  SYSTEM: {
+    INIT: 'MESSAGE.SYSTEM.INIT',
+  },
+  PRIVATE: {
+    INIT: 'MESSAGE.PRIVATE.INIT',
+  },
+  SAY: {
+    INIT: 'MESSAGE.SAY.INIT',
+  },
+  CHECK: 'MESSAGE.CHECK',
+  CHECK_ALL: 'MESSAGE.CHECK_ALL',
+}
 
 export const POINT = {
   TASK: {

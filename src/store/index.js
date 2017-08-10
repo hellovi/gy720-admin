@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { Http } from '@/utils'
 import { GLOBAL } from './mutationTypes'
+import message from './message'
 import point from './point'
 
 Vue.use(Vuex)
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   },
 
   modules: {
+    message,
     point,
   },
 

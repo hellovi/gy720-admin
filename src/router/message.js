@@ -1,7 +1,7 @@
 import * as views from '@/views'
 
 export default {
-  path: 'user-client/message',
+  path: '/user-client/message',
   component: views.Message,
   meta: {
     title: '我的消息',
