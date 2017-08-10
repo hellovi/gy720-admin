@@ -111,7 +111,7 @@
   border-color: var(--color-warning);
 }
 
-.btn-primary:hover {
+.btn-warning:hover {
   color: var(--color-warning-light);
   border-color: var(--color-warning-light);
 }
@@ -133,7 +133,7 @@
   border-color: var(--color-info);
 }
 
-.btn-danger:hover {
+.btn-info:hover {
   color: var(--color-info-light);
   border-color: var(--color-info-light);
 }
