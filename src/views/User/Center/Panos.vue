@@ -1,33 +1,48 @@
 <template>
-  <main v-if="dataList && dataList !== null">
-
+  <div
+    class="center-panos"
+    v-if="dataList"
+  >
     <!-- 缺省信息 -->
-    <div class="empty-wrap" v-if="dataList.data.length === 0">
+    <div
+      class="empty-wrap"
+      v-if="dataList.data.length === 0"
+    >
       <div class="empty">
         <div>
           您暂时还没有作品哦！快去
-          <router-link to="/user-client/publish" class="link">发布</router-link> 吧...
+          <el-button
+            type="text" size="large"
+            @click="toPanoPublish"
+          >
+            发布
+          </el-button>
+          吧...
         </div>
       </div>
     </div>
 
     <!-- 作品列表 -->
-    <div class="list-inline panoList" v-if="dataList.data.length > 0">
-      <PanoItem
-        class="center-panoList__item"
-        v-for="(item, index) in dataList.data"
-        :pano="item" :key="index" />
-    </div>
-
-    <router-link
-      class="link right"
-      to="/user-client/compositions"
+    <div
+      class="center-panos__list clearfix"
       v-if="dataList.data.length > 0"
     >
-      查看全部作品
-    </router-link>
+      <PanoItem
+        class="center-panos__item"
+        v-for="item in dataList.data"
+        :key="item.id" :pano="item"
+      ></PanoItem>
+    </div>
 
-  </main>
+    <el-button
+      class="center-panos__wholepano-link"
+      v-if="dataList.data.length > 0"
+      type="text" size="large"
+      @click.stop="checkCompositions"
+    >
+      查看全部作品
+    </el-button>
+  </div>
 </template>
 
 <script>
@@ -52,6 +67,15 @@ export default {
     dataList: 'centerDataList',
   }),
 
+  methods: {
+    publishPano() {
+      this.$router.push('/user-client/publish')
+    },
+    checkCompositions() {
+      this.$router.push('/user-client/compositions')
+    },
+  },
+
   beforeRouteEnter(to, from, next) {
     store.commit(CENTER.LINK_UPDATE, to)
     next()
@@ -60,13 +84,21 @@ export default {
 </script>
 
 <style>
-.center-panoList__item {
-  float: left;
-  width: 23.0769%;
-  margin-right: 30px;
-  margin-bottom: 30px;
-  &:nth-child(4n) {
-    margin-right: 0;
+.center-panos {
+
+  &__item {
+    float: left;
+    width: 23.0769%;
+    margin-right: 30px;
+    margin-bottom: 30px;
+
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+  }
+
+  &__wholepano-link {
+    float: right;
   }
 }
 </style>
