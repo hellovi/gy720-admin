@@ -9,7 +9,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="log in log.data" :key="log.id">
+        <tr v-for="log in list.data" :key="log.id">
           <td>{{ log.created_at }}</td>
           <td>{{ formatScore(log.score) }}</td>
           <td>{{ log.describe }}</td>
@@ -17,15 +17,16 @@
       </tbody>
     </table>
 
-    <div v-if="showEmpty" class="empty">
+    <div v-if="isEmpty" class="empty">
       <div>您暂时还没有任何积分变动哦……</div>
     </div>
 
     <el-pagination
-      v-if="log.data.length"
+      v-if="list.data.length"
       layout="prev, pager, next"
-      :total="log.total"
-      @current-change="changePage"
+      :total="list.total"
+      :current-page="list.current_page"
+      @current-change="pageChange"
     ></el-pagination>
   </div>
 </template>
@@ -34,30 +35,23 @@
 /**
  * 积分日志
  *
- * @author yangjun | luminghuai
+ * @author luminghuai
  * @version 2017-08-09
  */
 
 import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { POINT } from '@/store/mutationTypes'
 
 export default {
   name: 'point-log',
 
-  data() {
-    return {
-      fetching: false,
-    }
-  },
+  mixins: [list],
 
   computed: {
     ...mapState({
-      log: state => state.point.log,
+      list: state => state.point.log,
     }),
-
-    showEmpty() {
-      return !this.fetching && !this.log.data.length
-    },
   },
 
   methods: {
@@ -67,20 +61,9 @@ export default {
       return `积分+${score} 经验+${score}`
     },
 
-    // 翻页
-    changePage(currentPage) {
-      if (currentPage !== this.log.current_page) {
-        this.$store.dispatch(POINT.LOG.INIT, currentPage)
-      }
+    getData(route) {
+      return this.$store.dispatch(POINT.LOG.INIT, route.query.page)
     },
-  },
-
-  created() {
-    this.fetching = true
-    this.$store.dispatch(POINT.LOG.INIT)
-      .then(() => {
-        this.fetching = false
-      })
   },
 }
 </script>

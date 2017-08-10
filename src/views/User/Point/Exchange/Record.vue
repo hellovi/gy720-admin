@@ -11,7 +11,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="record in record.data" :key="record.id">
+        <tr v-for="record in list.data" :key="record.id">
           <td>{{ record.coupon_sn }}</td>
           <td>{{ record.describe }}</td>
           <td>{{ record.created_at }}</td>
@@ -21,15 +21,16 @@
       </tbody>
     </table>
 
-    <div v-if="showEmpty" class="empty">
+    <div v-if="isEmpty" class="empty">
       <div>您暂时还没有任何兑换记录哦……</div>
     </div>
 
     <el-pagination
-      v-if="record.data.length"
+      v-if="list.data.length"
       layout="prev, pager, next"
-      :total="record.total"
-      @current-change="changePage"
+      :total="list.total"
+      :current-page="list.current_page"
+      @current-change="pageChange"
     ></el-pagination>
   </div>
 </template>
@@ -43,41 +44,24 @@
  */
 
 import { mapState } from 'vuex'
+import { list } from '@/mixins'
 import { POINT } from '@/store/mutationTypes'
 
 export default {
   name: 'point-exchange-record',
 
-  data() {
-    return {
-      fetching: false,
-    }
-  },
+  mixins: [list],
 
   computed: {
     ...mapState({
-      record: state => state.point.record,
+      list: state => state.point.record,
     }),
-
-    showEmpty() {
-      return !this.fetching && !this.record.data.length
-    },
   },
 
   methods: {
-    changePage(currentPage) {
-      if (currentPage !== this.record.current_page) {
-        this.$store.dispatch(POINT.RECORD.INIT, currentPage)
-      }
+    getData(route) {
+      return this.$store.dispatch(POINT.RECORD.INIT, route.query.page)
     },
-  },
-
-  created() {
-    this.fetching = true
-    this.$store.dispatch(POINT.RECORD.INIT)
-      .then(() => {
-        this.fetching = false
-      })
   },
 }
 </script>
