@@ -1,5 +1,5 @@
 <template>
-  <main v-if="dataList">
+  <div class="center-authors" v-if="dataList">
     <!-- 缺省信息（关注） -->
     <div class="empty-wrap"
       v-if="rel === 'follows' && dataList.data.length === 0"
@@ -33,16 +33,17 @@
     </div>
 
     <!-- 摄影师列表 -->
-    <div class="list-inline authorList"
+    <div class="center-authors__list clearfix"
       v-if="dataList.data.length > 0"
     >
       <Author-item
+        class="center-authors__item"
         v-for="(item, index) in dataList.data"
         :key="item.user_id"  :author="item" :index="index">
       </Author-item>
     </div>
 
-  </main>
+  </div>
 </template>
 
 <script>
@@ -123,4 +124,17 @@ export default {
 </script>
 
 <style>
+.center-authors {
+
+  &__item {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    width: 23.7179%;
+
+    &:nth-child(4n) {
+      margin-right: 0;
+    }
+  }
+}
 </style>
