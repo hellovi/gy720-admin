@@ -8,6 +8,10 @@ export default {
   },
   children: [
     {
+      path: '',
+      redirect: 'system',
+    },
+    {
       path: 'system',
       component: views.MessageSystem,
     },
