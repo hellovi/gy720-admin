@@ -117,7 +117,7 @@ export default {
 
     [CENTER.LINK_UPDATE](state, to) {
       switch (to.path) {
-        case '/user-client/center/recentrelease':
+        case '/user-client/center/recent':
           state.linktype = 'release'
           break
         case '/user-client/center/collection':
@@ -126,11 +126,11 @@ export default {
         case '/user-client/center/fans':
           state.linktype = 'fans'
           break
-        case '/user-client/center/concern':
+        case '/user-client/center/follows':
           state.linktype = 'follows'
           break
         default:
-          window.console.log('前端路由发生跳转错误')
+          window.console.log('个人中心前端路由发生跳转错误')
       }
     },
 
