@@ -162,3 +162,11 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/*文本超出部分省略号*/
+.ellipsis {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
