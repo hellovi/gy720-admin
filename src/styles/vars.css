@@ -4,6 +4,10 @@
   --footer-height: 90px;
   --content-width: 1170px;
 
+  --app-user-height: 120px;
+  --app-user-margin-top: 40px;
+  --app-user-margin-bottom: 15px;
+
   --gray: #999;
   --gray-light: #ccc;
   --gray-extra-light: #eee;

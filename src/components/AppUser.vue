@@ -47,9 +47,9 @@ export default {
 .app-user {
   position: relative;
   width: var(--content-width);
-  height: 120px;
+  height: var(--app-user-height);
   padding: 15px 15px 15px calc(var(--avatar-width) + var(--avatar-left) + 18px);
-  margin: 40px auto 15px;
+  margin: var(--app-user-margin-top) auto var(--app-user-margin-bottom);
   background-color: #fff;
 
   &__avatar {
