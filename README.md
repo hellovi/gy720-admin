@@ -40,7 +40,36 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 - 在存在文本截断的地方，允许的情况下，请尽可能为元素添加`title`属性，使用完整的文本作为其值
 
+
+## 代码逻辑约定
+
+### 列表mixin
+需要翻页的地方，可以使用`list`这个公共mixin，此mixin要求引用它的组件遵守以下几个约定：
+
+- 必须具有一个叫做`getData`的方法用来获取列表数据，此方法将拿到一个`route`对象作为参数，此方法必须返回`promise`对象，mixin只帮你调用此方法，不帮你处理具体的接口请求
+- 无论接口请求到的数据存不存放于`store`中，最终在此组件里必须能使用`this.list`获取到这些数据
+- 遵守约定的情况下，对于翻页组件可以直接复制以下代码
+
+```html
+  <el-pagination
+    v-if="list.data.length"
+    layout="prev, pager, next"
+    :total="list.total"
+    :current-page="list.current_page"
+    @current-change="pageChange"
+  ></el-pagination>
+```
+
+- 若需要显示无数据时的提示，mixin提供了`this.isEmtpy`来判断是否显示这个提示，如
+
+```html
+  <div v-if="isEmpty" class="empty">
+    <div>您暂时还没有任何积分变动哦……</div>
+  </div>
+```
+
 ## 备注
+
 若需要同时打开新旧项目，可使用以下命令行启动服务器
 
 ```bash
