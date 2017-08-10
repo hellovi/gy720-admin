@@ -13,7 +13,7 @@
           您暂时还没有作品哦！快去
           <el-button
             type="text" size="large"
-            @click="toPanoPublish"
+            @click="publishPano"
           >
             发布
           </el-button>
