@@ -18,9 +18,9 @@
       </router-link>
     </div>
     <div>
-      <el-button size="small">修改资料</el-button>
+      <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
       <el-button size="small">我的主页</el-button>
-      <el-button size="small">续费</el-button>
+      <el-button size="small" @click="goTo('/user-client/purchase')">续费</el-button>
     </div>
   </div>
 </template>
@@ -42,6 +42,12 @@ export default {
       const vipExpireAt = Date.parse(this.userInfo.vip_expire_at)
       const now = Date.now()
       return vipExpireAt !== null && now <= vipExpireAt
+    },
+  },
+
+  methods: {
+    goTo(url) {
+      this.$router.push(url)
     },
   },
 }

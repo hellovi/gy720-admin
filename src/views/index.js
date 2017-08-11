@@ -13,7 +13,9 @@ export { default as Works } from './User/Works'
 
 // 购买服务
 export { default as Purchase } from './User/Purchase'
+export { default as PurchaseBuy } from './User/Purchase/Buy'
 export { default as PurchaseOrders } from './User/Purchase/Orders'
+export { default as PurchaseDetail } from './User/Purchase/Detail'
 
 // 账号管理
 export { default as Account } from './User/Account'
