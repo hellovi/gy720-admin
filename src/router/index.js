@@ -9,6 +9,7 @@ import message from './message'
 import point from './point'
 // import certificate from './certificate'
 import publish from './publish'
+import edit from './edit'
 
 Vue.use(Router)
 
@@ -33,6 +34,7 @@ const router = new Router({
         publish,
       ],
     },
+    edit,
   ],
 })
 

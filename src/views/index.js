@@ -38,3 +38,6 @@ export { default as PointRule } from './User/Point/Rule'
 
 // 发布作品
 export { default as Publish } from './User/Publish'
+
+// 高级编辑
+export { default as Edit } from './Make/Edit'
