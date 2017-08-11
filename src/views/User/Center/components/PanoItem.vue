@@ -68,6 +68,7 @@ export default {
     userPath() {
       return this.$url.host(`author/${this.pano.hashUserId}`)
     },
+
     panoPath() {
       return this.$url.host(`/pano/view/${this.pano.hashPanoId}`)
     },

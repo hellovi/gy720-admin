@@ -113,6 +113,7 @@ export default {
       type: Object,
       required: true,
     },
+
     index: {
       type: Number,
       required: true,
@@ -123,6 +124,7 @@ export default {
     authorLink() {
       return this.$url.host('author')
     },
+
     // 当前数据没有hash_pano_id，等后端添加
     userPath() {
       return this.$url.host(`author/${this.author.user_id}`)

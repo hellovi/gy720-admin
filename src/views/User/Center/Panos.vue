@@ -71,6 +71,7 @@ export default {
     publishPano() {
       this.$router.push('/user-client/publish')
     },
+
     checkCompositions() {
       this.$router.push('/user-client/compositions')
     },
