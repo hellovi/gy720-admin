@@ -38,6 +38,7 @@ module.exports = {
       '/api/': proxySetting,
       '/make/': proxySetting,
       '/data/': proxySetting,
+      '/assets/': proxySetting,
       // '/lib/': proxySetting,
       '/login': Object.assign({
         pathRewrite: {
