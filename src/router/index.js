@@ -7,7 +7,7 @@ import purchase from './purchase'
 import account from './account'
 import message from './message'
 import point from './point'
-// import certificate from './certificate'
+import certificate from './certificate'
 import publish from './publish'
 import edit from './edit'
 
@@ -30,7 +30,7 @@ const router = new Router({
         account,
         message,
         point,
-        // certificate,
+        certificate,
         publish,
       ],
     },

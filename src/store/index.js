@@ -14,6 +14,20 @@ export default new Vuex.Store({
     userInfo: {},
   },
 
+  getters: {
+    isCertified(state) {
+      return +state.userInfo.is_certified === 20
+    },
+
+    isVip(state) {
+      const { vip_expire_at } = state.userInfo
+      if (vip_expire_at) {
+        return Date.now() < Date.parse(vip_expire_at)
+      }
+      return false
+    },
+  },
+
   modules: {
     center,
     message,

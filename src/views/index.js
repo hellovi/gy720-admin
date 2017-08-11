@@ -15,6 +15,13 @@ export { default as PurchaseBuy } from './User/Purchase/Buy'
 export { default as PurchaseOrders } from './User/Purchase/Orders'
 export { default as PurchaseDetail } from './User/Purchase/Detail'
 
+// 摄影师认证
+export { default as Certificate } from './User/Certificate'
+export { default as CertificateResult } from './User/Certificate/Result'
+export { default as CertificateApply } from './User/Certificate/Apply'
+export { default as CertificateApplyPerson } from './User/Certificate/Apply/Person'
+export { default as CertificateApplyCompany } from './User/Certificate/Apply/Company'
+
 // 账号管理
 export { default as Account } from './User/Account'
 export { default as AccountInfo } from './User/Account/Info'
