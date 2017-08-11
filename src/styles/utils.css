@@ -55,7 +55,7 @@
   color: var(--color-success-light);
 }
 
-.text-warning
+.text-warning,
 .hover-warning {
   color: var(--color-warning);
 }
@@ -64,7 +64,7 @@
   color: var(--color-warning-light);
 }
 
-.text-danger
+.text-danger,
 .hover-danger {
   color: var(--color-danger);
 }
