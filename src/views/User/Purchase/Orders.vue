@@ -54,6 +54,7 @@ import { list } from '@/mixins'
 import { PURCHASE } from '@/store/mutationTypes'
 
 export default {
+  name: 'purchase-orders',
 
   mixins: [list],
 

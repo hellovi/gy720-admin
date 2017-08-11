@@ -7,14 +7,14 @@
 
 <script>
 /**
- * 积分管理
+ * 购买服务
  *
- * @author luminghuai
- * @version 2017-08-09
+ * @author zhoumenglin
+ * @version 2017-08-10
  */
 
 export default {
-  name: 'point',
+  name: 'purchase',
 
   data() {
     return {

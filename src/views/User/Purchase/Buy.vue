@@ -60,7 +60,15 @@
 </template>
 
 <script>
+/**
+ * 购买服务
+ *
+ * @author zhoumenglin
+ * @version 2017-08-10
+ */
+
 export default {
+  name: 'purchase-buy',
 
   data() {
     return {

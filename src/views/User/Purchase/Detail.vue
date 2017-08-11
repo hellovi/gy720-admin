@@ -45,6 +45,7 @@
  */
 
 export default {
+  name: 'purchase-detail',
 
   data() {
     return {
