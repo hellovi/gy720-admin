@@ -6,8 +6,10 @@
 
     <div class="app-user__info">
       <span>Hi，<em>{{ userInfo.nickname }}</em></span>
-      <span class="app-user__badge">已认证</span>
-      <span class="app-user__vip"><i class="iconfont">&#xe6b7;</i>商业版会员</span>
+      <span v-if="isCertified" class="app-user__badge">已认证</span>
+      <span v-if="!isCertified" class="app-user__badge app-user__badge--gray">未认证</span>
+      <span v-if="isVip" class="app-user__vip"><i class="iconfont">&#xe6b7;</i>商业版会员</span>
+      <span v-if="!isVip">注册会员</span>
     </div>
     <div class="app-user__point">
       <span class="app-user__badge app-user__badge--level">LV{{ userInfo.level_id }}</span>
@@ -31,6 +33,16 @@ export default {
 
   computed: {
     ...mapState(['userInfo']),
+
+    isCertified() {
+      return +this.userInfo.is_certified === 20
+    },
+
+    isVip() {
+      const vipExpireAt = Date.parse(this.userInfo.vip_expire_at)
+      const now = Date.now()
+      return vipExpireAt !== null && now <= vipExpireAt
+    },
   },
 }
 </script>
@@ -98,6 +110,10 @@ export default {
   background-color: #ff8a00;
   color: #fff;
   font-size: 14px;
+
+  &--gray {
+    background-color:  var(--gray);
+  }
 
   &--level {
     background-color: #ffc000;
