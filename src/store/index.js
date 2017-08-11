@@ -4,6 +4,7 @@ import { Http } from '@/utils'
 import { GLOBAL } from './mutationTypes'
 import message from './message'
 import point from './point'
+import purchase from './purchase'
 
 Vue.use(Vuex)
 
@@ -15,6 +16,7 @@ export default new Vuex.Store({
   modules: {
     message,
     point,
+    purchase,
   },
 
   mutations: {

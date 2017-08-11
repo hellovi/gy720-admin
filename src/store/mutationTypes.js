@@ -33,3 +33,9 @@ export const POINT = {
     INIT: 'POINT.RECORD.INIT',
   },
 }
+
+export const PURCHASE = {
+  ORDERS: {
+    INIT: 'PURCHASE.ORDERS.INIT',
+  },
+}
