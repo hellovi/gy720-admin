@@ -13,6 +13,7 @@
   "dependencies": {
     "echarts": "^3.6.2",
     "element-ui": "^1.4.1",
+    "intersection-observer": "^0.4.0",
     "normalize.css": "^7.0.0",
     "qiniu-js": "^1.0.21",
     "qrcode": "^0.9.0",

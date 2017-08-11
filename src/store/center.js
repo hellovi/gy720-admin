@@ -42,8 +42,8 @@ const sortlist = (list) => {
  * @param {function} list  处理数据的函数
  * @return {Promise} res为返回数据
  */
-const listAjax = (url, cur = 1, callback) =>
-  Http.get(`${url}?current_page=${cur}&paginate=8`)
+const listAjax = (url, paginate = 8, cur = 1, callback) =>
+  Http.get(`${url}?current_page=${cur}&paginate=${paginate}`)
     .then((res) => {
       // 接口不统一，/user/pano 是放在result里，collection 是在result.list内
       const result = res.result.lists || res.result
@@ -54,6 +54,11 @@ const listAjax = (url, cur = 1, callback) =>
       return Promise.resolve(result || {})
     })
 
+// 设置api常量
+const API_RECENT = '/user/pano'
+const API_COLLECTIONS = '/user/favorite/lists'
+const API_FANS = '/user/follow/fanslists'
+const API_FOLLOWS = '/user/follow/followlists'
 
 export default {
   state: {
@@ -63,15 +68,16 @@ export default {
     followsList: null,
     loadlock: false,
     linktype: '',
+    paginate: 8,
   },
 
   actions: {
-    [CENTER.INITIALIZE]({ commit }) {
+    [CENTER.INITIALIZE]({ commit, state }) {
       Promise.all([
-        listAjax('/user/pano'),
-        listAjax('/user/favorite/lists'),
-        listAjax('/user/follow/fanslists', 1, sortlist),
-        listAjax('/user/follow/followlists', 1, sortlist),
+        listAjax(API_RECENT, state.paginate),
+        listAjax(API_COLLECTIONS, state.paginate),
+        listAjax(API_FANS, state.paginate, 1, sortlist),
+        listAjax(API_FOLLOWS, state.pagenate, 1, sortlist),
       ]).then(resultArr => commit(CENTER.INITIALIZE, resultArr))
     },
 
@@ -82,22 +88,22 @@ export default {
       switch (state.linktype) {
         case 'release':
           cur = state.releaseList.current_page
-          listAjax('/user/pano', cur + 1)
+          listAjax(API_RECENT, state.paginate, cur + 1)
             .then(res => commit(CENTER.LIST_UPDATE, res))
           break
         case 'collection':
           cur = state.collectionList.current_page
-          listAjax('/user/favorite/lists', cur + 1)
+          listAjax(API_COLLECTIONS, state.paginate, cur + 1)
             .then(res => commit(CENTER.LIST_UPDATE, res))
           break
         case 'fans':
           cur = state.fansList.current_page
-          pledge = listAjax('/user/follow/fanslists', cur + 1, sortlist)
+          pledge = listAjax(API_FANS, state.paginate, cur + 1, sortlist)
             .then(res => commit(CENTER.LIST_UPDATE, res))
           break
         case 'follows':
           cur = state.followsList.current_page
-          pledge = listAjax('/user/follow/followlists', cur + 1, sortlist)
+          pledge = listAjax(API_FOLLOWS, state.paginate, cur + 1, sortlist)
             .then(res => commit(CENTER.LIST_UPDATE, res))
           break
         default:
@@ -113,6 +119,10 @@ export default {
         state.collectionList,
         state.fansList,
         state.followsList] = resultArr
+    },
+
+    [CENTER.SETPAGINATE](state, paginate) {
+      state.paginate = paginate
     },
 
     [CENTER.LINK_UPDATE](state, to) {

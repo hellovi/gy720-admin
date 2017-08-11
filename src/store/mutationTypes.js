@@ -8,6 +8,7 @@ export const GLOBAL = {
 // 个人中心
 export const CENTER = {
   INITIALIZE: 'center/initialize',
+  SETPAGINATE: 'center/setpaginate',
   LIST_UPDATE: 'center/updatelist',
   LINK_UPDATE: 'center/updatelink',
   LOAD_LOCK: 'center/lockload',

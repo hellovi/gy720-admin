@@ -1,6 +1,8 @@
 <template>
-  <div class="center-authors" v-if="dataList">
-    <!-- 缺省信息（关注） -->
+  <div class="center-authors">
+
+    <template v-if="dataList">
+     <!-- 缺省信息（关注）  -->
     <div class="empty-wrap"
       v-if="rel === 'follows' && dataList.data.length === 0"
     >
@@ -42,7 +44,10 @@
         :key="item.user_id"  :author="item" :index="index">
       </Author-item>
     </div>
+    </template>
 
+    <!-- 列表底部loading加载 -->
+    <div class="center-authors__loading" ref='loading'></div>
   </div>
 </template>
 
@@ -53,6 +58,7 @@
  * @author huojinzhao
  */
 import { mapState, mapGetters } from 'vuex'
+import { Loading } from 'element-ui'
 import store from '@/store'
 import { CENTER } from '@/store/mutationTypes'
 import AuthorItem from './components/AuthorItem'
@@ -65,8 +71,8 @@ export default {
   },
 
   data: () => ({
-    // APP组件root的dom
-    app: null,
+    loadingInstance: null,
+    observerInstance: null,
   }),
 
   computed: {
@@ -81,43 +87,69 @@ export default {
   },
 
   methods: {
+    onIntersectionObserve() {
+      this.observerInstance = new IntersectionObserver(
+        this.beforeLazyload,
+        {
+          threshold: 1,
+        },
+      )
+      this.observerInstance.observe(this.$refs.loading)
+    },
+
     lazyload() {
-      const contentH = this.app.scrollHeight
-      const fixedOuterH = document.body.scrollHeight
-      const scrollSpan = this.app.scrollTop
+      // 判断是否有懒加载进行中
+      if (this.loadlock) return
+
+      this.onLoading()
+      // 锁住懒加载
+      this.$store.commit(CENTER.LOAD_LOCK, true)
+      this.$store.dispatch(CENTER.LIST_UPDATE)
+      // 加载成功后，打开懒加载
+        .then(() => {
+          this.offLoading()
+          this.$store.commit(CENTER.LOAD_LOCK, false)
+        })
+    },
+
+    onLazyload() {
       const currentPage = this.dataList.current_page
       const lastPage = this.dataList.last_page
-      // 是否滚动到触发懒加载位置
-      const sbool = contentH - fixedOuterH - scrollSpan <= 170
       // 是否满足分页请求条件
-      const rbool = currentPage < lastPage
-      if (sbool && rbool) {
-        // 判断是否有懒加载进行中
-        if (this.loadlock) return
-        // 锁住懒加载
-        this.$store.commit(CENTER.LOAD_LOCK, true)
-        this.$store.dispatch(CENTER.LIST_UPDATE)
-        // 加载成功后，打开懒加载
-          .then(() => this.$store.commit(CENTER.LOAD_LOCK, false))
+      const reqBool = currentPage < lastPage
+
+      if (reqBool) this.lazyload()
+    },
+
+    beforeLazyload(entries) {
+      if (this.dataList && entries[0].isIntersecting) {
+        this.onLazyload()
       }
+    },
+
+    onLoading() {
+      const options = {
+        target: this.$refs.loading,
+        text: '努力加载中...',
+        customClass: 'center-authors__loading-tag',
+      }
+      this.loadingInstance = Loading.service(options)
+    },
+
+    offLoading() {
+      this.loadingInstance.close()
     },
   },
 
   beforeRouteEnter(to, from, next) {
     store.commit(CENTER.LINK_UPDATE, to)
+    next(vm => vm.onIntersectionObserve())
+  },
+
+  beforeRouteLeave(to, from, next) {
+    this.observerInstance.unobserve(this.$refs.loading)
+    if (this.loadingInstance) this.offLoading()
     next()
-  },
-
-  activated() {
-    this.app.addEventListener('scroll', this.lazyload)
-  },
-
-  mounted() {
-    this.app = document.getElementById('app')
-  },
-
-  deactivated() {
-    this.app.removeEventListener('scroll', this.lazyload)
   },
 }
 
@@ -134,6 +166,14 @@ export default {
 
     &:nth-child(4n) {
       margin-right: 0;
+    }
+  }
+
+  &__loading {
+    height: 80px;
+
+    &-tag {
+      background-color: transparent;
     }
   }
 }
