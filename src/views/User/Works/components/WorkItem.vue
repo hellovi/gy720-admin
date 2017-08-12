@@ -106,7 +106,7 @@
 import { WORKS } from '@/store/mutationTypes'
 import vWorkOffline from './WorkOffline'
 
-const { SELECTEDLIST, WORKLIST } = WORKS
+const { SELECTEDLIST } = WORKS
 
 export default {
   name: 'works-work-item',
@@ -124,7 +124,9 @@ export default {
 
   data: () => ({
     workSelected: false,
+
     deletewarn: false,
+
     userInfo: {},
   }),
 
@@ -150,15 +152,24 @@ export default {
   },
 
   methods: {
-    toPurchaseVip() {
-      this.$router.push('/user-client/serpurchase/purchase')
+    onUpgrade() {
+
     },
-    isdelete() {
-      this.deletewarn = true
+
+    onChart() {
+
     },
-    panoDelete() {
-      this.$store.dispatch(WORKLIST.DELETE, this.item.id)
-        .then(() => { this.deletewarn = false })
+
+    onShare() {
+
+    },
+
+    onDelete() {
+
+    },
+
+    onEdit() {
+
     },
   },
 
@@ -180,6 +191,7 @@ export default {
 
 <style>
 @import "vars.css";
+@import "../../Center/style/mixins";
 @import "../style/vars.css";
 
 .works-workitem {
@@ -195,15 +207,12 @@ export default {
     }
 
     &__avatar {
+      @include contain-img-cover;
+
       float: left;
       margin: 0 var(--gap-unit-horizontal);
-      height: var(--workitem-lineheight);
-      font-size: 0;
-
-      &-img {
-        height: 100%;
-        width: var(--workitem-lineheight);
-      }
+      width: var(--workitem-lineheight);
+      background-color: var(--color-white);
     }
 
     &__info {
@@ -225,11 +234,11 @@ export default {
         }
 
         &--isvip {
-          background-color: var(--warning-color);
+          background-color: var(--color-warning);
         }
 
         &--novip {
-          background-color: var(--disable-color);
+          background-color: var(--disabled-color-base);
         }
       }
 
@@ -260,10 +269,10 @@ export default {
       }
 
       &-editor {
-        color: var(--warning-color);
+        color: var(--color-warning);
 
         &:hover {
-          color: color(var(--warning-color) tint(30%));
+          color: color(var(--color-warning) tint(30%));
         }
       }
     }

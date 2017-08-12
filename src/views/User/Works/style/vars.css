@@ -1,12 +1,13 @@
 @import "vars.css";
 
 :root {
-  --area-height: 778px;
-  --gap-unit-horizontal: 10px;
-  --gap-unit-vertical: 7px;
-  --border-base: 1px solid var(--border-color-base);
-  --border-split: 1px solid var(--border-color-split);
-  --border-radius: 4px;
-  --workitem-padding: 8px;
-  --workitem-lineheight: 60px;
+  --text-color:           #657180;
+  --area-height:          788px;
+  --gap-unit-horizontal:  10px;
+  --gap-unit-vertical:    7px;
+  --border-base:          1px solid var(--border-color-base);
+  --border-split:         1px solid var(--border-color-split);
+  --border-radius:        4px;
+  --workitem-padding:     8px;
+  --workitem-lineheight:  60px;
 }
