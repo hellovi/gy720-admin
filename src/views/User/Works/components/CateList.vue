@@ -3,7 +3,7 @@
     <h4 class="works-catelist__title">作品分类</h4>
 
     <div class="works-catelist__list">
-      <a class="works-catelist__item link"
+      <a class="works-catelist__item hover-primary"
         @click="onCreateCate"
       >
         +创建新分类
@@ -22,7 +22,7 @@
 
     <!-- 创建分类弹窗  -->
     <el-dialog
-      class="works-catelist__cate-model"
+      class="works-catelist__create"
       :visible.sync="cateCreateModal.tag"
       @close="closeCateCreateModal"
       size="tiny"
@@ -54,7 +54,7 @@
 
     <!-- 删除分类的提醒弹窗 -->
     <el-dialog
-      class="works-catelist__create"
+      class="works-catelist__delete"
       :visible.sync="cateDeleteModal.tag"
       size="tiny"
       title="确认删除"
@@ -98,7 +98,7 @@ export default {
 
   data: () => ({
     // 首选 “默认选项”
-    choosedCateId: 1,
+    choosedCateId: 8,
     cateCreateModal: {
       tag: false,
       confirmLoading: false,
@@ -129,6 +129,8 @@ export default {
   }),
 
   methods: {
+    // 目前没有规范 "默认列表分类id" = 1
+    // 规范后该组件需要在created钩子中请求默认列表
     onChooseCate(cateid) {
       this.choosedCateId = cateid
       this.$store.dispatch(WORKLIST.INITIALIZE, cateid)

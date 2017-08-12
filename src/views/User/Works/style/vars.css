@@ -1,6 +1,7 @@
 @import "vars.css";
 
 :root {
+  --area-height: 778px;
   --gap-unit-horizontal: 10px;
   --gap-unit-vertical: 7px;
   --border-base: 1px solid var(--border-color-base);

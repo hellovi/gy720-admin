@@ -1,7 +1,7 @@
 <template>
   <div
     :class="itemClass"
-    @click.stop="onChooseCate(item.id)"
+    @click.stop="onChooseCate"
   >
     <i class="iconfont works-cateitem__tag--choose">
       &#xe60c;
@@ -9,7 +9,7 @@
     <!-- id为1是默认分类，不提供（不允许）删除 -->
     <i class="iconfont works-cateitem__tag--delete"
       v-if="item.id !== 1"
-      @click.stop="onDeleteCate(item.id)"
+      @click.stop="onDeleteCate"
     >
       &#xe615;
     </i>
@@ -31,6 +31,7 @@ export default {
       type: Object,
       required: true,
     },
+
     active: {
       type: Boolean,
       required: true,
@@ -49,11 +50,12 @@ export default {
   },
 
   methods: {
-    onChooseCate(cateid) {
-      this.$emit('onChooseCate', cateid)
+    onChooseCate() {
+      this.$emit('onChooseCate', this.item.id)
     },
-    onDeleteCate(cateid) {
-      this.$emit('onDeleteCate', cateid)
+
+    onDeleteCate() {
+      this.$emit('onDeleteCate', this.item.id)
     },
   },
 }
@@ -68,9 +70,15 @@ export default {
   white-space: nowrap;
   text-overflow: ellipsis;
 
-  &:not(&--active):hover {
+  &:hover {
     & .works-cateitem__tag--delete {
       display: block;
+    }
+  }
+
+  &--active:hover {
+    & .works-cateitem__tag--delete {
+      display: none;
     }
   }
 
@@ -84,7 +92,7 @@ export default {
     position: absolute;
     left: 0;
     display: none;
-    color: var(--primary-color);
+    color: var(--color-primary);
   }
 
   &__tag--delete {
@@ -92,7 +100,7 @@ export default {
     left: 0;
     display: none;
     z-index: 1;
-    color: var(--warning-color);
+    color: var(--color-warning);
   }
 }
 </style>

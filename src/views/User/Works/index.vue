@@ -81,12 +81,13 @@ export default {
 @import "vars.css";
 
 :root {
-  --myWork-height: 788px;
+   --area-height: 788px;
 }
 
 .works {
-  height: var(--myWork-height);
+  height: var(--area-height);
   padding: 20px 15px;
+  background-color: var(--color-white);
 
   &__catelist {
     float: left;
