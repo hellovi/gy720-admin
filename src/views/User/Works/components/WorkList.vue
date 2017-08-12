@@ -58,7 +58,7 @@ export default {
 
   computed: mapState({
     catelist: state => state.works.catelist,
-    worklist: state => state.works.complist,
+    worklist: state => state.works.worklist,
     selectedlist: state => state.works.selectedlist,
   }),
 
