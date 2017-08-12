@@ -1,59 +1,62 @@
 <template>
-  <div class="purchase-buy">
+  <div>
     <el-row :gutter="30">
       <el-col :span="8">
-        <div class="panel panel--free">
-          <h3 class="panel__header">免费用户功能</h3>
-          <ul class="panel__body list">
-            <li v-for="(item,index) in freeList" :key="index">
-              <i class="iconfont">&#xe60c;</i>{{item}}
-            </li>
-          </ul>
-        </div>
+        <section class="buy-panel">
+          <dl class="panel-list clearfix">
+            <dt class="panel-list__title">免费用户功能</dt>
+            <dd class="panel-list__item" v-for="item in freeList" :key="item">
+              <span>{{item}}</span>
+            </dd>
+          </dl>
+        </section>
       </el-col>
+
       <el-col :span="8">
-        <div class="panel panel--add">
-          <img class="panel__img" src="./images/icon-vip.png">
-          <h3 class="panel__header">99套餐添加功能</h3>
-          <ul class="panel__body list panel__body--add">
-            <li v-for="(item,index) in addList" :key="index">
-              <i class="iconfont">&#xe60c;</i>{{item}}
-            </li>
-          </ul>
-          <h3 class="panel__header">2299套餐添加功能
-            <small>（于99套餐基础添加）</small>
-          </h3>
-          <ul class="panel__body list panel__body--add">
-            <li v-for="(item,index) in moreList" :key="index">
-              <i class="iconfont">&#xe60c;</i>{{item}}
-            </li>
-          </ul>
-        </div>
-        <div class="panel panel--price">
-          <img src="./images/icon-2999.png">
-          <div class="panel--price__right">
-            <h3>无限次作品数量</h3>
+        <section class="buy-panel buy-panel--vip">
+          <dl class="panel-list clearfix">
+            <dt class="panel-list__title">99套餐添加功能</dt>
+            <dd class="panel-list__item" v-for="item in addList" :key="item">
+              <span>{{item}}</span>
+            </dd>
+
+            <dt class="panel-list__title">2299套餐添加功能<span>（于99套餐基础添加）</span></dt>
+            <dd class="panel-list__item" v-for="item in moreList" :key="item">
+              <span>{{item}}</span>
+            </dd>
+          </dl>
+        </section>
+
+        <section class="buy-panel">
+          <img class="buy-price" src="./images/icon-2999.png" alt="2299元/年">
+          <div class="buy-action">
+            <div>无限次作品数量</div>
             <el-button type="primary">立即购买</el-button>
           </div>
-        </div>
+        </section>
       </el-col>
+
       <el-col :span="8">
-        <div class="panel panel--buy">
-          <img class="panel__img" src="./images/icon-vip.png">
-          <h3 class="panel__header">购买方式</h3>
-          <ul class="panel__body list panel__body--buy">
-            <li v-for="(item,index) in payList" :key="index">
-              <i class="iconfont">&#xe60c;</i>{{item}}
-            </li>
-          </ul>
-        </div>
-        <div class="panel panel--price">
-          <img src="./images/icon-2999.png">
-          <div class="panel--price__right">
-            <h3>作品按次收费</h3>
+        <section class="buy-panel buy-panel--vip">
+          <h3 class="panel-list__title">购买方式</h3>
+          <dl class="panel-list clearfix">
+            <dt class="panel-list__sub-title">2299元 / 年</dt>
+            <dd class="panel-list__item">直接点击<em>立即购买</em>开通会员</dd>
+
+            <dt class="panel-list__sub-title">99元 / 年</dt>
+            <dd class="panel-list__item">点击<em>我的作品</em>进入作品列表页面</dd>
+            <dd class="panel-list__item">点击作品右侧的<em>高级编辑</em></dd>
+            <dd class="panel-list__item">点击作页面的<em>左上角LOGO</em>进行购买</dd>
+          </dl>
+        </section>
+
+        <section class="buy-panel">
+          <img class="buy-price" src="./images/icon-99.png" alt="99元/年">
+          <div class="buy-action">
+            <div>作品按次收费</div>
             <el-button type="primary">我的作品</el-button>
           </div>
-        </div>
+        </section>
       </el-col>
     </el-row>
   </div>
@@ -63,8 +66,8 @@
 /**
  * 购买服务
  *
- * @author zhoumenglin
- * @version 2017-08-10
+ * @author zhoumenglin | luminghuai
+ * @version 2017-08-12
  */
 
 export default {
@@ -78,8 +81,6 @@ export default {
       addList: ['自定义开场提示', '隐藏作者信息', '隐私加密', '自定义LOGO', '加载文字提示', '隐藏LOGO', '是否显示人气和赞', '滚动文字广告', '是否开启说一说', '数据统计功能', '右侧自定义菜单'],
       // 2999套餐添加功能
       moreList: ['重要信息开启提示', '网站首页案例推送'],
-      // 购买方式
-      payList: ['2299元 / 年', '直接点击 立即购买 开通会员', '99元 / 次', '点击我的作品进入作品列表页面', '点击作品右侧的 高级编辑', '点击作页面的 左上角LOGO 进行购买'],
     }
   },
 
@@ -87,101 +88,126 @@ export default {
 </script>
 
 <style lang="postcss">
-.purchase-buy {
+@import "vars.css";
 
-  .panel {
-    position: relative;
-    line-height: 1;
-    border-radius: 8px;
-    border: 1px solid rgb(157, 157, 157);
+:root {
+  --total-height: 485px;
+  --top-height: 315px;
+  --panel-gutter: 20px;
+  --bottom-height: calc(var(--total-height) - var(--top-height) - var(--panel-gutter));
+}
+
+.buy-panel {
+  position: relative;
+  padding: 0 16px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+
+  & + .buy-panel {
+    margin-top: var(--panel-gutter);
+  }
+
+  &--vip::before {
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: -10px;
+    width: 64px;
+    height: 64px;
+    background-image: url("./images/icon-vip.png");
+  }
+
+  &:first-child:last-child {
+    height: var(--total-height);
+
+    .panel-list__item {
+      font-size: 13px;
+      line-height: 2.8;
+    }
+  }
+
+  &:first-child:not(:last-child) {
+    height: var(--top-height);
+  }
+
+  &:last-child:not(:first-child) {
+    height: var(--bottom-height);
+    padding: 0 22px;
+  }
+}
+
+.panel-list {
+  margin: 0;
+
+  &__title,
+  &__sub-title {
+    float: left;
+    width: 100%;
+    font-weight: 700;
+    margin: 1em 0 0.5em;
+  }
+
+  &__title {
+    font-size: 16px;
+
+    & > span {
+      font-size: 12px;
+    }
+  }
+
+  &__sub-title {
+    font-size: 14px;
+    color: rgb(255, 175, 50);
+
+    & ~ .panel-list__item {
+      width: 100%;
+      margin-left: 1em;
+    }
+  }
+
+  &__item {
+    float: left;
+    width: 50%;
+    margin: 0;
+    font-size: 12px;
+    line-height: 2.5;
+
+    &::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 8px;
+      background-color: #fed698;
+      vertical-align: middle;
+    }
+
+    & > span {
+      vertical-align: middle;
+    }
+
+    & > em {
+      font-style: normal;
+      color: var(--color-primary);
+      margin: 0 0.4em;
+    }
+  }
+}
+
+.buy-price {
+  float: left;
+  margin-top: calc((var(--bottom-height) - 126px) / 2)
+}
+
+.buy-action {
+  float: right;
+  margin-top: 40px;
+  text-align: center;
+
+  & > div {
     margin-bottom: 20px;
-
-    &--free {
-      height: 487px;
-    }
-
-    &--add,
-    &--buy {
-      height: 315px;
-    }
-
-    &--price {
-      padding: 12px 15px;
-
-      &__right {
-        width: 150px;
-        text-align: center;
-        float: right;
-
-        & h3 {
-          font-weight: normal;
-          font-size: 16px;
-          margin:35px 0 20px 0;
-        }
-      }
-    }
-
-    &__img {
-      position: absolute;
-      right: 2px;
-      top: -10px;
-    }
-
-    &__header {
-      font-weight: bold;
-      font-size: 16px;
-      margin: 20px 15px;
-
-      & small {
-        font-size: 12px;
-      }
-    }
-
-    &__body {
-      overflow: hidden;
-      font-size: 14px;
-
-      & li {
-        padding-left: 15px;
-        float: left;
-        width: 50%;
-        margin-bottom: 20px;
-
-        & i {
-          margin-right: 8px;
-          color: rgb(254, 214, 152);
-          font-size: 12px
-        }
-      }
-
-      &--add {
-        font-size: 12px;
-
-        & li {
-          margin-bottom: 17px;
-
-          &:last-child {
-            margin-bottom: 7px;
-          }
-        }
-      }
-
-      &--buy {
-        font-size: 12px;
-
-        & li {
-          width: 100%;
-          margin-bottom: 17px;
-
-          &:nth-child(1),
-          &:nth-child(3) {
-            font-weight: bold;
-            font-size: 15px;
-            color: rgb(255, 175, 50);
-          }
-        }
-      }
-    }
+    font-size: 16px;
   }
 }
 </style>
