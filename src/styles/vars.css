@@ -65,6 +65,7 @@
   -------------------------- */
   --border-width-base: 1px;
   --border-style-base: solid;
+  --border-color-split: color(var(--border-color-base) tint(60%));
   --border-color-base: var(--color-extra-light-silver);
   --border-color-hover: var(--color-base-silver);
   --border-base: var(--border-width-base) var(--border-style-base) var(--border-color-base);

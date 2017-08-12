@@ -41,7 +41,7 @@
       <!-- 第二行  -->
       <div class="workitem__info-detail">
         <span class="workitem__info-detail__item">
-          {{item.updated_at | dateSlice}}
+          {{item.updated_at | dateStringFormat}}
         </span>
         <span class="workitem__info-detail__item">
           <i class="iconfont">&#xe63d;</i>{{item.hits}}
@@ -146,7 +146,7 @@ export default {
   },
 
   filters: {
-    dateSlice(str) {
+    dateStringFormat(str) {
       return str.slice(0, 10)
     },
   },
@@ -199,7 +199,7 @@ export default {
   padding: var(--workitem-padding) 0;
   border-top: var(--border-split);
 
-  & .workitem{
+  & .workitem {
 
     &__select {
       float: left;
@@ -264,7 +264,7 @@ export default {
       line-height: var(--workitem-lineheight);
       font-size: 14px;
 
-      &>.el-button {
+      & > .el-button {
         margin-right: var(--gap-unit-horizontal);
       }
 
