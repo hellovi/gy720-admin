@@ -6,7 +6,7 @@
     </div>
     <div class="works-workoffline__content">
       <!-- 未创建离线下载  -->
-      <template v-if="true">
+      <template v-if="false">
         <el-button
           type="text"
           class="before-create"
@@ -14,6 +14,7 @@
           创建离线数据包
         </el-button>
       </template>
+
       <!-- 创建离线下载  -->
       <template v-else>
         <el-progress
@@ -79,13 +80,11 @@ export default {
     float: left;
     height: 100%;
     width: 48px;
-    color: var(--subsidiary-color);
+    color: var(--disabled-color-base);
     text-align: center;
 
     & > .iconfont {
       display: block;
-      margin-top: -7px;
-      margin-bottom: -3px;
       font-size: 30px;
     }
 
@@ -115,7 +114,7 @@ export default {
     & .creating {
       margin: 8px 0;
       text-align: center;
-      font-size: 12px;
+      font-size: 14px;
     }
 
     /* elementUI 按钮样式调整 */
@@ -125,16 +124,16 @@ export default {
       margin: 0;
       width: 100%;
       text-align: center;
-      font-size: 12px;
-    }
-
-    &>.after-create {
-      padding: 3px 0;
     }
 
     &>.before-create {
       padding: 18px 0;
       font-size: 14px;
+    }
+
+    &>.after-create {
+      padding: 3px 0;
+      font-size: 12px;
     }
   }
 }
