@@ -138,7 +138,9 @@ export default {
     },
     closeCateCreateModal() {
       this.cateCreateModal.tag = false
-      this.$refs.cateCreateInfo.resetFields()
+      if (!this.cateCreateModal.confirmLoading) {
+        this.$refs.cateCreateInfo.resetFields()
+      }
     },
     confirmCateCreate() {
       this.$refs.cateCreateInfo.validate((valid) => {
@@ -153,8 +155,9 @@ export default {
         .then((id) => {
           const cate_name = this.cateCreateInfo.name
           this.$emit('createCate', { id, cate_name })
-          this.closeCateCreateModal()
+          // 对应closeCateCreateModal逻辑，必须先取消按钮loading
           this.cateCreateModal.confirmLoading = false
+          this.closeCateCreateModal()
         })
     },
     onDeleteCate(cateId) {
