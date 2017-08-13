@@ -53,7 +53,7 @@ export default {
       // current_page int  第几页,默认为1
       // 请求结果，result:{..., data: [ {...}... ]}
       // compSelected需要用到 id 字段（作品id）
-      http.post('/make/pano/lists', { cate_id: cateid })
+      return http.post('/make/pano/lists', { cate_id: cateid })
         .then(({ result: { data } }) => {
           commit(WORKS.WORKLIST.INITIALIZE, data)
           // 每次切换分类时选中作品都应该清空

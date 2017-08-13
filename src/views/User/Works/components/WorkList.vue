@@ -5,18 +5,23 @@
       <el-checkbox
         :value="allWorksChecked"
         @click.native.prevent="onAllWorksCheck"
-      >全选</el-checkbox>
-      <a
-        class="works-worklist__transfer link"
-        v-if="selectedlist.length > 0"
-        @click="modalOpen('cateTransfer')">~
+      >
+        全选
+      </el-checkbox>
+      <el-button
+        class="works-worklist__transfer"
+        type="text"
+        v-if="checkedWordsId.length > 0"
+        @click="onWorkTransfer"
+      >
         移动到其他分类
-      </a>
+      </el-button>
     </div>
 
     <!-- 作品列表 -->
     <div class="works-worklist__content">
       <v-work-item
+        class="works-worklist__item"
         v-for="work in worklist" :key="work.id"
         :item="work"  ref="worklist"
         @change="onWorkCheck"
@@ -24,6 +29,47 @@
     </div>
 
     <!-- 移动分类的弹窗 -->
+    <el-dialog
+      class="works-worklist__transfer"
+      :visible.sync="worksTransferModal.tag"
+      @close="closeWorksTransferModal"
+      size="tiny" title="移动作品到其他分类"
+    >
+      <!-- 表单输入 -->
+      <el-form
+        label-width="95px"
+        :model="worksTransferInfo"
+        ref="worksTransferInfo"
+        :rules="worksTransferRules"
+      >
+        <el-form-item
+          prop="cateId"
+          label="选择到分类"
+        >
+          <el-select
+            v-model="worksTransferInfo.cateId"
+            placeholder="请选择作品分类"
+          >
+            <el-option
+              v-for="cate in catelist" :key="cate.id"
+              :value="cate.id" :label="cate.cate_name"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <!-- 控制按钮 -->
+      <div slot="footer">
+        <el-button type="primary"
+          :loading="worksTransferModal.confirmLoading"
+          @click="confirmWorksTransfer()"
+        >提交</el-button>
+        <el-button
+          @click="closeWorksTransferModal()"
+        >取消</el-button>
+      </div>
+    </el-dialog>
+
     <!-- <v-modal v-if="modal.cateTransfer" @close="modal.cateTransfer = false" title="移动作品到其他分类" width="350">
       <div class="modal__transferCate">
         <div class="modal__transferCate__containerUp">
@@ -46,28 +92,42 @@
  *
  * @author hjz
  */
-import { mapState } from 'vuex'
 import { WORKS } from '@/store/mutationTypes'
 import vWorkItem from './WorkItem'
 
-const { WORKLIST } = WORKS
+const WORKS_TRANSER_API = '/make/pano/changepanocate'
 
 export default {
   name: 'works-work-list',
 
   components: { vWorkItem },
 
+  props: {
+    catelist: {
+      type: Array,
+      required: true,
+    },
+    worklist: {
+      type: Array,
+      required: true,
+    },
+  },
+
   data: () => ({
     allWorksChecked: false,
     checkedWordsId: [],
-    modal: { cateTransfer: false },
-    toCateId: -1,
-  }),
-
-  computed: mapState({
-    catelist: state => state.works.catelist,
-    worklist: state => state.works.worklist,
-    selectedlist: state => state.works.selectedlist,
+    worksTransferModal: {
+      tag: false,
+      confirmLoading: false,
+    },
+    worksTransferInfo: {
+      cateId: null,
+    },
+    worksTransferRules: {
+      cateId: [
+        { required: true, message: '请选择要移动到的分类' },
+      ],
+    },
   }),
 
   watch: {
@@ -82,14 +142,14 @@ export default {
 
   methods: {
     onAllWorksCheck() {
-      this.allWorksChecked = !this.allWorksChecked
+      const nextStatus = !this.allWorksChecked
       // 作品单选联动
       this.$refs.worklist.forEach((work) => {
         // eslint-disable-next-line
-        work.checked = this.allWorksChecked
+        work.checked = nextStatus
       })
       // 选中作品处理
-      if (this.allWorksChecked) {
+      if (nextStatus) {
         this.checkedWordsId = this.worklist.map(work => work.id)
       } else {
         this.checkedWordsId = []
@@ -104,26 +164,41 @@ export default {
         this.checkedWordsId = idArr.filter(id => id !== workId)
       }
     },
-    modalOpen(prop) {
-      if (typeof prop === 'string') this.modal[prop] = true
+    onWorkTransfer() {
+      this.worksTransferModal.tag = true
     },
-    cateTransfer() {
-      this.$store.dispatch(WORKLIST.UPDATE, this.toCateId)
-        .then(() => { this.modal.cateTransfer = false })
+    closeWorksTransferModal() {
+      this.worksTransferModal.tag = false
+      this.$refs.worksTransferInfo.resetFields()
     },
-  },
-
-  updated() {
-    const clen = this.worklist.length
-    const slen = this.selectedlist.length
-    if (clen > 0 && clen === slen) this.chooseAll = true
-    else this.chooseAll = false
+    confirmWorksTransfer() {
+      this.$refs.worksTransferInfo.validate((valid) => {
+        if (valid) {
+          this.worksTransferModal.confirmLoading = true
+          this.submitWorksTransfer()
+        }
+      })
+    },
+    submitWorksTransfer() {
+      this.$http.post(WORKS_TRANSER_API, {
+        cate_id: this.worksTransferInfo.cateId,
+        pano_ids: this.checkedWordsId,
+      })
+        .then(() => this.$store.dispatch(WORKS.WORKLIST.INITIALIZE))
+        .then(() => {
+          this.closeWorksTransferModal()
+          // 不放closeWoksTransferModal
+          // 防止第一次提交在第二次操作时返回造成操作困惑
+          this.worksTransferModal.comfirmLoading = false
+        })
+    },
   },
 }
 </script>
 
 <style>
 @import 'vars.css';
+@import '../style/vars.css';
 
 :root {
   --border-split: 1px solid var(--border-color-split);
@@ -131,80 +206,37 @@ export default {
 
 .works-worklist {
   height: 100%;
+  padding-top: 7px;
   padding-left: 40px;
   border-left: var(--border-split);
 
-  &__choose {
-    margin-top: 10px;
+  &__header {
     border-bottom: var(--border-split);
-    line-height: 36px;
-    font-size: 0;
 
-    &All {
-      margin: 0;
-      margin-left: 15px;
-      vertical-align: middle;
-      font-size: 14px;
-      font-weight: normal;
+    & .el-checkbox {
+      margin: 7px 0 6px;
     }
   }
 
   &__transfer {
-    margin: 0;
     margin-left: 15px;
-    vertical-align: middle;
-    font-size: 14px;
-    font-weight: normal;
-    cursor: pointer;
-  }
-}
 
-#chooseAll {
-  margin: 0;
-  vertical-align: middle;
-}
+  /* elementUI样式重置 */
+    & .el-dialog__body {
+      padding-bottom: 0;
+    }
 
-.modal {
-  &__transferCate {
-    width: 100%;
-    height: 100px;
-    padding: 20px 40px;
+    & .el-dialog--tiny {
+      width: 20%;
+    }
 
-    &__containerUp {
+    & .el-select {
       display: block;
     }
-    &__tag {
-      width: 70px;
-      margin-right: 10px;
-    }
+  }
 
-    &__select {
-      /*display: inline-block;*/
-      padding-left: 5px;
-      width: 97px;
-      height: 27px;
-    }
-    &__submit {
-      display: inline-block;
-      margin: 10px 0 0 70px;
-      width: 60px;
-      line-height: 26px;
-      text-align: center;
-      background-color: #3b9ff3;
-      color: #fff;
-      border-radius: 5px;
-      border-width: 0;
-      outline: none;
-      cursor: pointer;
-
-      &:hover {
-        background-color: #1f78c3;
-        color: #fff;
-      }
-    }
-    &__containerBelow {
-      padding: 8px 0;
-    }
+  &__item {
+    border-bottom: var(--border-split);
   }
 }
 </style>
