@@ -51,11 +51,11 @@ export default {
 
   methods: {
     onChooseCate() {
-      this.$emit('onChooseCate', this.item.id)
+      this.$emit('chooseCate', this.item.id)
     },
 
     onDeleteCate() {
-      this.$emit('onDeleteCate', this.item.id)
+      this.$emit('deleteCate', this.item.id)
     },
   },
 }

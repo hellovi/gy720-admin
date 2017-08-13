@@ -5,6 +5,8 @@
       v-if="catelist.length"
       class="works__catelist"
       :catelist="catelist"
+      @createCate="onCreateCate"
+      @deleteCate="onDeleteCate"
     >
     </v-cate-list>
 
@@ -43,6 +45,15 @@ export default {
     worklist: null,
   }),
 
+  methods: {
+    onCreateCate(cate) {
+      this.catelist.push(cate)
+    },
+    onDeleteCate(id) {
+      this.catelist = this.catelist.filter(cate => cate.id !== id)
+    },
+  },
+
   created() {
     Request.getCatelist()
       .then((data) => { this.catelist = data })
@@ -52,7 +63,10 @@ export default {
 
   beforeRouteUpdate(to, from, next) {
     Request.getWorklist(to.query)
-      .then((data) => { this.worklist = data; next() })
+      .then((data) => {
+        this.worklist = data
+        next()
+      })
   },
 }
 </script>

@@ -14,8 +14,8 @@
         v-for="cate in catelist" :key="cate.id"
         :item="cate"
         :active="cate.id === choosedCateId"
-        @onDeleteCate="onDeleteCate"
-        @onChooseCate="onChooseCate"
+        @deleteCate="onDeleteCate"
+        @chooseCate="onChooseCate"
       >
       </v-cate-item>
     </div>
@@ -34,10 +34,10 @@
         label-width="95px"
       >
         <el-form-item
-          prop="cate_name"
+          prop="name"
           label="新分类名称"
         >
-          <el-input v-model="cateCreateInfo.cate_name"></el-input>
+          <el-input v-model="cateCreateInfo.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -78,10 +78,8 @@
  *
  * @author hjz
  */
-import { WORKS } from '@/store/mutationTypes'
+import Request from '../module/request'
 import vCateItem from './CateItem'
-
-const { CATE, WORKLIST } = WORKS
 
 export default {
   name: 'works-cate-list',
@@ -96,18 +94,17 @@ export default {
   },
 
   data: () => ({
-    // 首选 “默认选项”
-    choosedCateId: 8,
+    choosedCateId: null,
     cateCreateModal: {
       tag: false,
       confirmLoading: false,
     },
     cateCreateInfo: {
-      cate_name: '',
+      name: '',
     },
     // 表单验证
     cateCreateRules: {
-      cate_name: [
+      name: [
         {
           required: true,
           trigger: 'blur',
@@ -120,7 +117,7 @@ export default {
         },
       ],
     },
-    deletedCateId: 0,
+    deletedCateId: null,
     cateDeleteModal: {
       tag: false,
       confirmLoading: false,
@@ -130,9 +127,11 @@ export default {
   methods: {
     // 目前没有规范 "默认列表分类id" = 1
     // 规范后该组件需要在created钩子中请求默认列表
-    onChooseCate(cateid) {
-      this.choosedCateId = cateid
-      this.$store.dispatch(WORKLIST.INITIALIZE, cateid)
+    onChooseCate(cateId) {
+      this.choosedCateId = cateId
+      this.$router.push({
+        query: { cate_id: cateId },
+      })
     },
     onCreateCate() {
       this.cateCreateModal.tag = true
@@ -150,17 +149,16 @@ export default {
       })
     },
     submitCateCreate() {
-      this.$store.dispatch(
-        CATE.CREATE,
-        this.cateCreateInfo.cate_name,
-      )
-        .then(() => {
+      Request.createCate(this.cateCreateInfo)
+        .then((id) => {
+          const cate_name = this.cateCreateInfo.name
+          this.$emit('createCate', { id, cate_name })
           this.closeCateCreateModal()
           this.cateCreateModal.confirmLoading = false
         })
     },
-    onDeleteCate(cateid) {
-      this.deleteCateId = cateid
+    onDeleteCate(cateId) {
+      this.deletedCateId = cateId
       this.cateDeleteModal.tag = true
     },
     closeCateDeleteModal() {
@@ -168,12 +166,18 @@ export default {
     },
     confirmCateDelete() {
       this.cateDeleteModal.confirmLoading = true
-      this.$store.dispatch(CATE.DELETE, this.deleteCateId)
+      Request.deleteCate(this.deletedCateId)
         .then(() => {
+          this.$emit('deleteCate', this.deletedCateId)
           this.cateDeleteModal.confirmLoading = false
           this.closeCateDeleteModal()
         })
     },
+  },
+
+  created() {
+    const cate_id = this.$route.query.cate_id
+    this.choosedCateId = cate_id || Request.defaultCateId
   },
 }
 </script>
@@ -213,6 +217,13 @@ export default {
       padding-bottom: 0;
     }
 
+    & .el-dialog--tiny {
+      width: 20%;
+    }
+  }
+
+  &__delete {
+  /* elementUI样式重置  */
     & .el-dialog--tiny {
       width: 20%;
     }
