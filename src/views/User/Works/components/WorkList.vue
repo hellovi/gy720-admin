@@ -2,10 +2,16 @@
   <div class="works-worklist">
     <!-- 顶部选择栏 -->
     <div class="works-worklist__header">
-      <label class="form-checkbox" >
-        <input type="checkbox" v-model="chooseAll" @click="allToggle()"> 全选
-      </label>
-      <a class="works-worklist__transfer link" v-if="selectedlist.length > 0" @click="modalOpen('cateTransfer')">移动到其他分类</a>
+      <el-checkbox
+        :value="allWorksChecked"
+        @click.native.prevent="onAllWorksCheck"
+      >全选</el-checkbox>
+      <a
+        class="works-worklist__transfer link"
+        v-if="selectedlist.length > 0"
+        @click="modalOpen('cateTransfer')">~
+        移动到其他分类
+      </a>
     </div>
 
     <!-- 作品列表 -->
@@ -13,6 +19,7 @@
       <v-work-item
         v-for="work in worklist" :key="work.id"
         :item="work"  ref="worklist"
+        @change="onWorkCheck"
       ></v-work-item>
     </div>
 
@@ -51,7 +58,8 @@ export default {
   components: { vWorkItem },
 
   data: () => ({
-    chooseAll: false,
+    allWorksChecked: false,
+    checkedWordsId: [],
     modal: { cateTransfer: false },
     toCateId: -1,
   }),
@@ -62,22 +70,46 @@ export default {
     selectedlist: state => state.works.selectedlist,
   }),
 
+  watch: {
+    checkedWordsId(nv) {
+      if (nv.length === this.worklist.length) {
+        this.allWorksChecked = true
+      } else {
+        this.allWorksChecked = false
+      }
+    },
+  },
+
   methods: {
+    onAllWorksCheck() {
+      this.allWorksChecked = !this.allWorksChecked
+      // 作品单选联动
+      this.$refs.worklist.forEach((work) => {
+        // eslint-disable-next-line
+        work.checked = this.allWorksChecked
+      })
+      // 选中作品处理
+      if (this.allWorksChecked) {
+        this.checkedWordsId = this.worklist.map(work => work.id)
+      } else {
+        this.checkedWordsId = []
+      }
+    },
+    onWorkCheck(workId) {
+      const idArr = this.checkedWordsId
+      const workChecked = idArr.includes(workId)
+      if (!workChecked) {
+        this.checkedWordsId.push(workId)
+      } else {
+        this.checkedWordsId = idArr.filter(id => id !== workId)
+      }
+    },
     modalOpen(prop) {
       if (typeof prop === 'string') this.modal[prop] = true
     },
     cateTransfer() {
       this.$store.dispatch(WORKLIST.UPDATE, this.toCateId)
         .then(() => { this.modal.cateTransfer = false })
-    },
-    allToggle() {
-      if (this.worklist.length === 0) {
-        this.chooseAll = false
-      } else {
-        this.$refs.worklist
-        // eslint-disable-next-line
-          .forEach((comp) => { comp.compSelected = this.chooseAll })
-      }
     },
   },
 
@@ -91,20 +123,20 @@ export default {
 </script>
 
 <style>
+@import 'vars.css';
+
 :root {
-  --border: 1px solid #eee;
+  --border-split: 1px solid var(--border-color-split);
 }
 
 .works-worklist {
-  /* float: right; */
-  /* width: 1020px; */
   height: 100%;
   padding-left: 40px;
-  border-left: var(--border);
+  border-left: var(--border-split);
 
   &__choose {
     margin-top: 10px;
-    border-bottom: var(--border);
+    border-bottom: var(--border-split);
     line-height: 36px;
     font-size: 0;
 

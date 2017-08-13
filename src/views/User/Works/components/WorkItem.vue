@@ -3,7 +3,8 @@
     <!-- 选择作品 -->
     <div class="workitem__select">
       <el-checkbox
-        v-model="workSelected"
+        :value="checked"
+        @click.native.prevent="onCheckboxClick"
       ></el-checkbox>
     </div>
 
@@ -123,11 +124,8 @@ export default {
   },
 
   data: () => ({
+    checked: false,
     workSelected: false,
-
-    deletewarn: false,
-
-    userInfo: {},
   }),
 
   computed: {
@@ -152,6 +150,10 @@ export default {
   },
 
   methods: {
+    onCheckboxClick() {
+      this.checked = !this.checked
+      this.$emit('change', this.item.id)
+    },
     onUpgrade() {
 
     },
@@ -177,14 +179,6 @@ export default {
     workSelected(nv) {
       this.$store.commit(SELECTEDLIST.UPDATE, [this.item.id, nv])
     },
-  },
-
-
-  created() {
-    this.$http.get('/user/account/info').then((res) => {
-      // this.userInfo = res.result.user
-      this.userInfo = res.result.userInfo
-    })
   },
 }
 </script>
