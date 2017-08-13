@@ -22,7 +22,7 @@
     <div class="works-worklist__content">
       <v-work-item
         class="works-worklist__item"
-        v-for="work in worklist" :key="work.id"
+        v-for="work in worklist.data" :key="work.id"
         :item="work"  ref="worklist"
         @change="onWorkCheck"
       ></v-work-item>
@@ -108,7 +108,7 @@ export default {
       required: true,
     },
     worklist: {
-      type: Array,
+      type: Object,
       required: true,
     },
   },

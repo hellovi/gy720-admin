@@ -2,6 +2,7 @@
   <div class="works">
     <!-- 侧栏分类列表  -->
     <v-cate-list
+      v-if="catelist.length"
       class="works__catelist"
       :catelist="catelist"
     >
@@ -9,6 +10,7 @@
 
     <!-- 主栏作品列表  -->
     <v-work-list
+      v-if="worklist"
       class="works__worklist"
       :catelist="catelist"
       :worklist="worklist"
@@ -23,13 +25,9 @@
  *
  * @author hjz
  */
-
-import { mapState } from 'vuex'
-import { WORKS } from '@/store/mutationTypes'
+import Request from './module/request'
 import vWorkList from './components/WorkList'
 import vCateList from './components/CateList'
-
-const { CATE, WORKLIST } = WORKS
 
 export default {
   name: 'works',
@@ -39,46 +37,22 @@ export default {
     vCateList,
   },
 
-  computed: {
-    ...mapState({
-      catelist: state => state.works.catelist,
-      worklist: state => state.works.worklist,
-    }),
-  },
-
-  methods: {
-    chooseCate(cateid) {
-      this.cateChoosed = cateid
-      this.deleteTarget = -1
-      this.$store.dispatch(WORKLIST.INITIALIZE, cateid)
-    },
-    modalOpen(prop) {
-      if (typeof prop === 'string') this.modalActive[prop] = true
-    },
-    cateDelete() {
-      this.$store.dispatch(CATE.DELETE, this.deleteid)
-        .then(() => { this.deletewarn = false })
-        .catch((err) => { this.warn = err })
-    },
-    isDelete(cateid) {
-      this.deleteid = cateid
-      this.deletewarn = true
-    },
-    cateCreate() {
-      this.$validator.validateAll()
-        .then(() => {
-          this.$store.dispatch(CATE.CREATE, this.newcate)
-          this.modalActive.cateCreator = false
-        })
-    },
-  },
+  data: () => ({
+    catelist: [],
+    // 这里不是空数组，它的值是一个对象，包括分页信息
+    worklist: null,
+  }),
 
   created() {
-    this.$store.dispatch(CATE.INITIALIZE)
+    Request.getCatelist()
+      .then((data) => { this.catelist = data })
+    Request.getWorklist(this.$route.query)
+      .then((data) => { this.worklist = data })
   },
 
-  updated() {
-    if (this.cateChoosed === -1) this.chooseCate(this.catelist[0].id)
+  beforeRouteUpdate(to, from, next) {
+    Request.getWorklist(to.query)
+      .then((data) => { this.worklist = data; next() })
   },
 }
 </script>
