@@ -11,7 +11,7 @@
       <!-- 分类列表 -->
       <v-cate-item
         class="works-catelist__item"
-        v-for="cate in list" :key="cate.id"
+        v-for="cate in catelist" :key="cate.id"
         :item="cate"
         :active="cate.id === choosedCateId"
         @onDeleteCate="onDeleteCate"
@@ -25,8 +25,7 @@
       class="works-catelist__create"
       :visible.sync="cateCreateModal.tag"
       @close="closeCateCreateModal"
-      size="tiny"
-      title="创建作品分类"
+      size="tiny" title="创建作品分类"
     >
       <el-form
         :model="cateCreateInfo"
@@ -90,7 +89,7 @@ export default {
   components: { vCateItem },
 
   props: {
-    list: {
+    catelist: {
       type: Array,
       required: true,
     },
@@ -139,8 +138,8 @@ export default {
       this.cateCreateModal.tag = true
     },
     closeCateCreateModal() {
-      this.$refs.cateCreateInfo.resetFields()
       this.cateCreateModal.tag = false
+      this.$refs.cateCreateInfo.resetFields()
     },
     confirmCateCreate() {
       this.$refs.cateCreateInfo.validate((valid) => {
@@ -156,8 +155,8 @@ export default {
         this.cateCreateInfo.cate_name,
       )
         .then(() => {
-          this.cateCreateModal.confirmLoading = false
           this.closeCateCreateModal()
+          this.cateCreateModal.confirmLoading = false
         })
     },
     onDeleteCate(cateid) {
@@ -189,7 +188,7 @@ export default {
 
   &__title {
     margin: 10px 0;
-    padding: 6px 12px;
+    padding: 4px 12px 8px;
     border-bottom: 1px solid var(--border-color-split);
     text-align: right;
     font-size: 18px;
@@ -208,15 +207,14 @@ export default {
     cursor: pointer;
   }
 
-  /* elementUI样式重置  */
   &__create {
-
+  /* elementUI样式重置  */
     & .el-dialog__body {
       padding-bottom: 0;
     }
 
     & .el-dialog--tiny {
-      width: 25%;
+      width: 20%;
     }
   }
 }

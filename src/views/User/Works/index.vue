@@ -3,11 +3,16 @@
     <!-- 侧栏分类列表  -->
     <v-cate-list
       class="works__catelist"
-      :list="catelist" />
+      :catelist="catelist"
+    >
+    </v-cate-list>
 
     <!-- 主栏作品列表  -->
     <v-work-list
-      class="works__worklist">
+      class="works__worklist"
+      :catelist="catelist"
+      :worklist="worklist"
+    >
     </v-work-list>
   </div>
 </template>
@@ -37,6 +42,7 @@ export default {
   computed: {
     ...mapState({
       catelist: state => state.works.catelist,
+      worklist: state => state.works.worklist,
     }),
   },
 
