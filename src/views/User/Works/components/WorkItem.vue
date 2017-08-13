@@ -191,7 +191,6 @@ export default {
 .works-workitem {
   height: var(--item-height);
   padding: var(--workitem-padding) 0;
-  border-top: var(--border-split);
 
   & .workitem {
 
