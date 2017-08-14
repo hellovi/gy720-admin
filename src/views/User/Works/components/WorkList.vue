@@ -129,6 +129,8 @@ export default {
         this.allWorksChecked = false
       }
     },
+
+    '$route.query': 'initializeCheckedWorks',
   },
 
   methods: {
@@ -143,7 +145,7 @@ export default {
       if (nextStatus) {
         this.checkedWordsId = this.worklist.data.map(work => work.id)
       } else {
-        this.checkedWordsId = []
+        this.initializeCheckedWorks()
       }
     },
 
@@ -155,6 +157,10 @@ export default {
       } else {
         this.checkedWordsId = idArr.filter(id => id !== workId)
       }
+    },
+
+    initializeCheckedWorks() {
+      this.checkedWordsId = []
     },
 
     onTransferWorks() {
@@ -187,6 +193,7 @@ export default {
           this.$emit('deleteWorks', this.checkedWordsId)
           this.transferWorksModal.comfirmLoading = false
           this.onCloseTransferWorksModal()
+          this.initializeCheckedWorks()
         })
     },
   },
