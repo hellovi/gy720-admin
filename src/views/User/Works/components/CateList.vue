@@ -23,30 +23,30 @@
     <!-- 创建分类弹窗  -->
     <el-dialog
       class="works-catelist__create"
-      :visible.sync="cateCreateModal.tag"
-      @close="closeCateCreateModal"
+      :visible.sync="createCateModal.tag"
       size="tiny" title="创建作品分类"
+      @close="onCloseCreateCateModal"
     >
       <el-form
-        :model="cateCreateInfo"
-        ref="cateCreateInfo"
-        :rules="cateCreateRules"
+        :model="createCateInfo"
+        ref="createCateInfo"
+        :rules="createCateRules"
         label-width="95px"
       >
         <el-form-item
           prop="name"
           label="新分类名称"
         >
-          <el-input v-model="cateCreateInfo.name"></el-input>
+          <el-input v-model="createCateInfo.name"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer">
         <el-button type="primary"
-          :loading="cateCreateModal.confirmLoading"
-          @click="confirmCateCreate()"
+          :loading="createCateModal.confirmLoading"
+          @click="onCreateCateConfirm"
         >提交</el-button>
         <el-button
-          @click="closeCateCreateModal()"
+          @click="onCloseCreateCateModal"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -54,18 +54,18 @@
     <!-- 删除分类的提醒弹窗 -->
     <el-dialog
       class="works-catelist__delete"
-      :visible.sync="cateDeleteModal.tag"
+      :visible.sync="deleteCateModal.tag"
       size="tiny"
       title="确认删除"
     >
       <p>是否确定要删除？删除后，不可以恢复!</p>
       <div slot="footer">
         <el-button type="primary"
-          :loading="cateDeleteModal.confirmLoading"
-          @click="confirmCateDelete()"
+          :loading="deleteCateModal.confirmLoading"
+          @click="onDeleteCateComfirm"
         >确认</el-button>
         <el-button
-          @click="closeCateDeleteModal()"
+          @click="onCloseDeleteCateModal"
         >取消</el-button>
       </div>
     </el-dialog>
@@ -95,15 +95,18 @@ export default {
 
   data: () => ({
     choosedCateId: null,
-    cateCreateModal: {
+
+    createCateModal: {
       tag: false,
       confirmLoading: false,
     },
-    cateCreateInfo: {
+
+    createCateInfo: {
       name: '',
     },
-    // 表单验证
-    cateCreateRules: {
+
+    // 新增分类表单验证
+    createCateRules: {
       name: [
         {
           required: true,
@@ -117,63 +120,70 @@ export default {
         },
       ],
     },
-    deletedCateId: null,
-    cateDeleteModal: {
+
+    deleteCateId: null,
+
+    deleteCateModal: {
       tag: false,
       confirmLoading: false,
     },
   }),
 
   methods: {
-    // 目前没有规范 "默认列表分类id" = 1
-    // 规范后该组件需要在created钩子中请求默认列表
     onChooseCate(cateId) {
       this.choosedCateId = cateId
       this.$router.push({
         query: { cate_id: cateId },
       })
     },
+
     onCreateCate() {
-      this.cateCreateModal.tag = true
+      this.createCateModal.tag = true
     },
-    closeCateCreateModal() {
-      this.cateCreateModal.tag = false
-      if (!this.cateCreateModal.confirmLoading) {
-        this.$refs.cateCreateInfo.resetFields()
+
+    onCloseCreateCateModal() {
+      this.createCateModal.tag = false
+      if (!this.createCateModal.confirmLoading) {
+        this.$refs.createCateInfo.resetFields()
       }
     },
-    confirmCateCreate() {
-      this.$refs.cateCreateInfo.validate((valid) => {
+
+    onCreateCateConfirm() {
+      this.$refs.createCateInfo.validate((valid) => {
         if (valid) {
-          this.cateCreateModal.confirmLoading = true
+          this.createCateModal.confirmLoading = true
           this.submitCateCreate()
         }
       })
     },
+
     submitCateCreate() {
-      Request.createCate(this.cateCreateInfo)
+      Request.createCate(this.createCateInfo)
         .then((id) => {
-          const cate_name = this.cateCreateInfo.name
+          const cate_name = this.createCateInfo.name
           this.$emit('createCate', { id, cate_name })
-          // 对应closeCateCreateModal逻辑，必须先取消按钮loading
-          this.cateCreateModal.confirmLoading = false
-          this.closeCateCreateModal()
+          // 对应onCloseCreateCateModal逻辑，必须先取消按钮loading
+          this.createCateModal.confirmLoading = false
+          this.onCloseCreateCateModal()
         })
     },
+
     onDeleteCate(cateId) {
-      this.deletedCateId = cateId
-      this.cateDeleteModal.tag = true
+      this.deleteCateId = cateId
+      this.deleteCateModal.tag = true
     },
-    closeCateDeleteModal() {
-      this.cateDeleteModal.tag = false
+
+    onCloseDeleteCateModal() {
+      this.deleteCateModal.tag = false
     },
-    confirmCateDelete() {
-      this.cateDeleteModal.confirmLoading = true
-      Request.deleteCate(this.deletedCateId)
+
+    onDeleteCateComfirm() {
+      this.deleteCateModal.confirmLoading = true
+      Request.deleteCate(this.deleteCateId)
         .then(() => {
-          this.$emit('deleteCate', this.deletedCateId)
-          this.cateDeleteModal.confirmLoading = false
-          this.closeCateDeleteModal()
+          this.$emit('deleteCate', this.deleteCateId)
+          this.deleteCateModal.confirmLoading = false
+          this.onCloseDeleteCateModal()
         })
     },
   },

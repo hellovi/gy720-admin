@@ -49,6 +49,7 @@ export default {
     onCreateCate(cate) {
       this.catelist.push(cate)
     },
+
     onDeleteCate(id) {
       this.catelist = this.catelist.filter(cate => cate.id !== id)
     },
