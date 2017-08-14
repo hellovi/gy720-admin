@@ -6,6 +6,7 @@ import center from './center'
 import message from './message'
 import point from './point'
 import purchase from './purchase'
+import edit from './edit'
 
 Vue.use(Vuex)
 
@@ -33,6 +34,7 @@ export default new Vuex.Store({
     message,
     point,
     purchase,
+    edit,
   },
 
   mutations: {
