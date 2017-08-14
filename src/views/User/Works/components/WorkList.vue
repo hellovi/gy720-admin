@@ -16,6 +16,12 @@
       >
         移动到其他分类
       </el-button>
+      <span
+        class="works-worklist__offline-doc"
+        @click.stop="openOfflineDoc"
+      >
+        离线下载说明
+      </span>
     </div>
 
     <!-- 作品列表 -->
@@ -70,6 +76,14 @@
         >取消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 离线下载说明 -->
+    <el-dialog
+      :visible.sync="offlineDocTag"
+      title="离线下载说明" size="small"
+    >
+      <v-offline-doc></v-offline-doc>
+    </el-dialog>
   </div>
 </template>
 
@@ -82,6 +96,7 @@
 import Request from '../module/request'
 import deleteItemMixin from '../module/deleteItemMixin'
 import vWorkItem from './WorkItem'
+import vOfflineDoc from './OfflineDoc'
 
 
 export default {
@@ -89,7 +104,10 @@ export default {
 
   mixins: [deleteItemMixin],
 
-  components: { vWorkItem },
+  components: {
+    vWorkItem,
+    vOfflineDoc,
+  },
 
   props: {
     catelist: {
@@ -122,6 +140,8 @@ export default {
         { required: true, message: '请选择要移动到的分类' },
       ],
     },
+
+    offlineDocTag: false,
   }),
 
   watch: {
@@ -217,6 +237,10 @@ export default {
         },
       })
     },
+
+    openOfflineDoc() {
+      this.offlineDocTag = true
+    },
   },
 }
 </script>
@@ -262,6 +286,24 @@ export default {
 
   &__item {
     border-bottom: var(--border-split);
+  }
+
+  &__offline-doc {
+    float: right;
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--icon-color);
+    cursor: pointer;
+
+    &::before {
+      content: "\e621";
+      display: inline-block;
+      font-family: "iconfont";
+    }
+
+    &:hover {
+      color: color(var(--icon-color) tint(30%));
+    }
   }
 }
 </style>
