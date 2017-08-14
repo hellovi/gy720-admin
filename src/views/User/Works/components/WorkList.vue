@@ -25,6 +25,7 @@
         v-for="work in worklist.data" :key="work.id"
         :item="work"  ref="list"
         @change="onCheckWork"
+        @delete="onDeleteWork"
       ></v-work-item>
     </div>
 
@@ -79,13 +80,14 @@
  * @author hjz
  */
 import Request from '../module/request'
+import deleteItemMixin from '../module/deleteItemMixin'
 import vWorkItem from './WorkItem'
 
 
 export default {
   name: 'works-work-list',
 
-  inject: ['Request'],
+  mixins: [deleteItemMixin],
 
   components: { vWorkItem },
 
@@ -124,7 +126,8 @@ export default {
 
   watch: {
     checkedWordsId(nv) {
-      if (nv.length === this.worklist.data.length) {
+      const length = this.worklist.data.length
+      if (length && nv.length === length) {
         this.allWorksChecked = true
       } else {
         this.allWorksChecked = false
@@ -135,6 +138,12 @@ export default {
   },
 
   methods: {
+    initializeCheckedWorks() {
+      this.checkedWordsId = []
+    },
+
+    /* 选择作品的逻辑 */
+
     onCheckAllWorks() {
       const nextStatus = !this.allWorksChecked
       // 作品单选联动
@@ -160,9 +169,7 @@ export default {
       }
     },
 
-    initializeCheckedWorks() {
-      this.checkedWordsId = []
-    },
+    /* 移动作品们分类的逻辑 */
 
     onTransferWorks() {
       this.transferWorksModal.tag = true
@@ -195,6 +202,20 @@ export default {
           this.onCloseTransferWorksModal()
           this.initializeCheckedWorks()
         })
+    },
+
+    /* 删除作品的逻辑 */
+
+    onDeleteWork(workId) {
+      this.onDeleteItem({
+        title: '删除作品',
+        message: '此操作将永久删除该作品，是否继续？',
+        itemId: workId,
+        request: Request.deleteWork,
+        success: () => {
+          this.$emit('deleteWorks', [workId])
+        },
+      })
     },
   },
 }

@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import { Http } from '@/utils'
 import { GLOBAL } from './mutationTypes'
 import center from './center'
-import works from './works'
 import message from './message'
 import point from './point'
 import purchase from './purchase'
@@ -32,7 +31,6 @@ export default new Vuex.Store({
 
   modules: {
     center,
-    works,
     message,
     point,
     purchase,

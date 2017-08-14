@@ -163,7 +163,8 @@ export default {
     },
 
     onDelete() {
-
+      console.log('sf')
+      this.$emit('delete', this.item.id)
     },
 
     onEdit() {

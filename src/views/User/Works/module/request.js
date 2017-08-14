@@ -5,10 +5,11 @@ const DEFAULT_CATE_ID = 8
 
 // 接口
 const GET_CATELIST_API = '/make/panocate/lists'
-const GET_WORKLIST_API = '/make/pano/lists'
 const DELETE_CATE_API = '/make/panocate/remove'
 const CREATE_CATE_API = '/make/panocate/add'
+const GET_WORKLIST_API = '/make/pano/lists'
 const TRANSER_WORKS_API = '/make/pano/changepanocate'
+const DELETE_WORK_API = '/make/pano/remove'
 
 class Request {
   // 分类相关请求
@@ -25,7 +26,7 @@ class Request {
   /**
    * 新增作品分类
    * @param {String} cateName - 新增分类的名称
-   * @return {Promise}
+   * @return {Promise} data - 新增分类id
    */
   static createCate(newcate) {
     return Http.post(CREATE_CATE_API, {
@@ -74,12 +75,24 @@ class Request {
   /**
    * 移动作品到其他分类
    * @param {int} cateId - 目标分类id
-   * @param {Array} panoIds - 需要移动作品们的id
+   * @param {Array} workIds - 需要移动作品们的id
+   * @return {Promise}
    */
-  static updateWorksCate(cateId, panoIds) {
+  static updateWorksCate(cateId, workIds) {
     return Http.post(TRANSER_WORKS_API, {
       cate_id: cateId,
-      pano_ids: panoIds,
+      pano_ids: workIds,
+    })
+  }
+
+  /**
+   * 删除作品
+   * @param {int} workId - 需要删除的作品id
+   * @return {Promise}
+   */
+  static deleteWork(workId) {
+    return Http.post(DELETE_WORK_API, {
+      pano_id: workId,
     })
   }
 }

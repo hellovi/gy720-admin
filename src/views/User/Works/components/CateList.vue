@@ -50,25 +50,6 @@
         >取消</el-button>
       </div>
     </el-dialog>
-
-    <!-- 删除分类的提醒弹窗 -->
-    <el-dialog
-      class="works-catelist__delete"
-      :visible.sync="deleteCateModal.tag"
-      size="tiny"
-      title="确认删除"
-    >
-      <p>是否确定要删除？删除后，不可以恢复!</p>
-      <div slot="footer">
-        <el-button type="primary"
-          :loading="deleteCateModal.confirmLoading"
-          @click="onDeleteCateComfirm"
-        >确认</el-button>
-        <el-button
-          @click="onCloseDeleteCateModal"
-        >取消</el-button>
-      </div>
-    </el-dialog>
   </aside>
 </template>
 
@@ -79,10 +60,13 @@
  * @author hjz
  */
 import Request from '../module/request'
+import deleteItemMixin from '../module/deleteItemMixin'
 import vCateItem from './CateItem'
 
 export default {
   name: 'works-cate-list',
+
+  mixins: [deleteItemMixin],
 
   components: { vCateItem },
 
@@ -119,13 +103,6 @@ export default {
           message: '名称长度应在3到6个字符之间',
         },
       ],
-    },
-
-    deleteCateId: null,
-
-    deleteCateModal: {
-      tag: false,
-      confirmLoading: false,
     },
   }),
 
@@ -169,22 +146,25 @@ export default {
     },
 
     onDeleteCate(cateId) {
-      this.deleteCateId = cateId
-      this.deleteCateModal.tag = true
-    },
+      const h = this.$createElement
 
-    onCloseDeleteCateModal() {
-      this.deleteCateModal.tag = false
-    },
+      const message = h(
+        'div',
+        [
+          h('p', '若分类下有作品，不可以直接删除'),
+          h('p', '此操作将永久删除该分类，是否继续？'),
+        ],
+      )
 
-    onDeleteCateComfirm() {
-      this.deleteCateModal.confirmLoading = true
-      Request.deleteCate(this.deleteCateId)
-        .then(() => {
-          this.$emit('deleteCate', this.deleteCateId)
-          this.deleteCateModal.confirmLoading = false
-          this.onCloseDeleteCateModal()
-        })
+      this.onDeleteItem({
+        title: '删除分类',
+        message,
+        itemId: cateId,
+        request: Request.deleteCate,
+        success: () => {
+          this.$emit('deleteCate', cateId)
+        },
+      })
     },
   },
 
