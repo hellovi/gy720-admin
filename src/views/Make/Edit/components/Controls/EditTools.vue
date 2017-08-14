@@ -1,8 +1,8 @@
 <template>
   <div :class="`edit-tools ${dir}`">
     <div class="edit-tools__wrapper clearfix">
-      <i role="button" class="iconfont">&#xe608;</i>
-      <i role="button" class="iconfont">&#xe615;</i>
+      <i role="button" class="iconfont" @click="$emit('onEdit')">&#xe608;</i>
+      <i role="button" class="iconfont" @click="$emit('onDelete')">&#xe615;</i>
     </div>
   </div>
 </template>

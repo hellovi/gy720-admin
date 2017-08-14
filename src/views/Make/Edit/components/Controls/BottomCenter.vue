@@ -13,7 +13,7 @@
  */
 
 export default {
-  name: 'edit-bottom-left',
+  name: 'edit-bottom-center',
 }
 </script>
 

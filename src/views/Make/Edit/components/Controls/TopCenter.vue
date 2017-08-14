@@ -9,7 +9,7 @@
     <el-button class="tip tip--bottom" data-tip="初始画面" type="primary">
       <i class="iconfont">&#xe628;</i>
     </el-button>
-    <el-button class="tip tip--bottom" data-tip="场景分组" type="primary">
+    <el-button class="tip tip--bottom" data-tip="场景分组" type="primary" @click="openModal('group')">
       <i class="iconfont">&#xe647;</i>
     </el-button>
   </div>
@@ -22,8 +22,12 @@
  * @version 2017-08-11
  */
 
+import modal from '../../mixins/modal'
+
 export default {
   name: 'edit-right-middle',
+
+  mixins: [modal],
 }
 </script>
 

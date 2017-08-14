@@ -1,6 +1,6 @@
 <template>
   <div class="edit-control__hotspot">
-    <div role="button" class="add-hotspot tip tip--right" data-tip="添加热点">+</div>
+    <div role="button" class="add-hotspot tip tip--right" data-tip="添加热点" @click="openModal('hotspots')">+</div>
   </div>
 </template>
 
@@ -10,9 +10,13 @@
  * @author luminghuai
  * @version 2017-08-11
  */
+import modal from '../../mixins/modal'
 
 export default {
   name: 'edit-hotspot',
+
+  mixins: [modal],
+
 }
 </script>
 

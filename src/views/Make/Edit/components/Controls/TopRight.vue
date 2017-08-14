@@ -1,7 +1,7 @@
 <template>
   <div class="edit-control__top-right">
-    <el-button type="primary">设置</el-button>
-    <el-button type="primary">素材库</el-button>
+    <el-button type="primary" @click="openModal('setting')">设置</el-button>
+    <el-button type="primary" @click="openModal('material')">素材库</el-button>
     <el-button type="primary">视角</el-button>
     <el-button type="primary">皮肤</el-button>
   </div>
@@ -14,8 +14,12 @@
  * @version 2017-08-11
  */
 
+import modal from '../../mixins/modal'
+
 export default {
   name: 'edit-right-middle',
+
+  mixins: [modal],
 }
 </script>
 

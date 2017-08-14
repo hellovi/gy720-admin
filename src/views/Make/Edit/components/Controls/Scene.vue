@@ -8,13 +8,13 @@
             v-for="item in items"
             :key="item"
             class="edit-scene__item"
-            :class="{'edit-scene__item--active': item === active}"
+            :class="{'edit-scene__item--active': item === current}"
           >
             <div class="edit-scene__item__wrapper" @click="selectScene(item)">
               <img class="edit-scene__item__image" src="http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg" alt="场景名称">
               <span class="edit-scene__item__title">{{ item }}</span>
             </div>
-            <edit-tools dir="top"></edit-tools>
+            <edit-tools dir="top" @onEdit="openModal('scene')"></edit-tools>
           </li>
         </transition-group>
       </draggable>
@@ -34,10 +34,13 @@
  */
 
 import { Draggable } from '@/components'
+import modal from '../../mixins/modal'
 import EditTools from './EditTools'
 
 export default {
   name: 'edit-scene',
+
+  mixins: [modal],
 
   components: {
     Draggable,
@@ -46,14 +49,14 @@ export default {
 
   data() {
     return {
-      active: 1,
+      current: 1,
       items: [1, 2, 3, 4, 5],
     }
   },
 
   methods: {
     selectScene(index) {
-      this.active = index
+      this.current = index
     },
 
     // 125是每个场景图的宽度 + 5px margin

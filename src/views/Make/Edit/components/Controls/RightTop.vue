@@ -1,6 +1,11 @@
 <template>
   <div class="edit-control__right-top">
-    <div role="button" class="btn-add dash-box tip tip--left" data-tip="添加右侧菜单">+</div>
+    <div
+      role="button"
+      class="btn-add dash-box tip tip--left"
+      data-tip="添加右侧菜单"
+      @click="openModal('rightMenu')"
+    >+</div>
     <draggable :list="items">
       <transition-group tag="ul" class="edit-control__right-menu list">
         <li class="dash-box" v-for="item in items" :key="item">
@@ -21,9 +26,12 @@
 
 import { Draggable } from '@/components'
 import EditTools from './EditTools'
+import modal from '../../mixins/modal'
 
 export default {
   name: 'edit-right-top',
+
+  mixins: [modal],
 
   components: {
     Draggable,

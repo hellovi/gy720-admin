@@ -5,8 +5,8 @@
       <span>场景</span>
     </div>
 
-    <div role="button" class="btn-circle">
-      <i class="iconfont"  style="line-height: 32px;">&#xe635;</i>
+    <div role="button" class="btn-circle" @click="openModal('share')">
+      <i class="iconfont" style="line-height: 32px;">&#xe635;</i>
       <span>分享</span>
     </div>
 
@@ -19,7 +19,11 @@
           </li>
         </transition-group>
       </draggable>
-      <div role="button" class="btn-add dash-box dash-box--cubic tip tip--right" data-tip="添加底部菜单">+</div>
+      <div role="button"
+        class="btn-add dash-box dash-box--cubic tip tip--right"
+        data-tip="添加底部菜单"
+        @click="openModal('bottomMenu')"
+      >+</div>
     </div>
   </div>
 </template>
@@ -32,10 +36,13 @@
  */
 
 import { Draggable } from '@/components'
+import modal from '../../mixins/modal'
 import EditTools from './EditTools'
 
 export default {
   name: 'edit-bottom-left',
+
+  mixins: [modal],
 
   components: {
     Draggable,

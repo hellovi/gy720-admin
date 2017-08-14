@@ -1,6 +1,6 @@
 <template>
   <div class="edit-control__right-middle">
-    <div v-if="true" role="button" class="btn-add dash-box">+</div>
+    <div v-if="true" role="button" class="btn-add dash-box"  @click="openModal('tour')">+</div>
     <i v-else class="edit-control__tour-guide iconfont">&#xe61b;</i>
   </div>
 </template>
@@ -11,9 +11,13 @@
  * @author luminghuai
  * @version 2017-08-11
  */
+import modal from '../../mixins/modal'
 
 export default {
   name: 'edit-right-middle',
+
+  mixins: [modal],
+
 }
 </script>
 

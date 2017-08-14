@@ -1,6 +1,10 @@
 <template>
   <div class="edit-wrapper">
+
+    <!--全景层-->
     <div id="pano-editor"></div>
+
+    <!--UI层-->
     <div class="edit-control">
       <top-left></top-left>
       <top-center></top-center>
@@ -13,6 +17,10 @@
       <bottom-center></bottom-center>
       <bottom-right></bottom-right>
     </div>
+
+    <!--功能层-->
+    <edit-functions></edit-functions>
+
   </div>
 </template>
 
@@ -37,6 +45,8 @@ import {
   BottomRight,
 } from './components/Controls'
 
+import EditFunctions from './components/Functions'
+
 export default {
   name: 'edit',
 
@@ -51,6 +61,7 @@ export default {
     BottomLeft,
     BottomCenter,
     BottomRight,
+    EditFunctions,
   },
 
   methods: {
