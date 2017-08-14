@@ -16,6 +16,7 @@
       class="works__worklist"
       :catelist="catelist"
       :worklist="worklist"
+      @deleteWorks="onDeleteWorks"
     >
     </v-work-list>
   </div>
@@ -52,6 +53,11 @@ export default {
 
     onDeleteCate(id) {
       this.catelist = this.catelist.filter(cate => cate.id !== id)
+    },
+
+    onDeleteWorks(ids) {
+      const list = this.worklist.data
+      this.worklist.data = list.filter(work => !ids.includes(work.id))
     },
   },
 

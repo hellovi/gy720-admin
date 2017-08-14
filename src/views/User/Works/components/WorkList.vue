@@ -4,7 +4,7 @@
     <div class="works-worklist__header">
       <el-checkbox
         :value="allWorksChecked"
-        @click.native.prevent="onAllWorksCheck"
+        @click.native.prevent="onCheckAllWorks"
       >
         全选
       </el-checkbox>
@@ -12,7 +12,7 @@
         class="works-worklist__transfer"
         type="text"
         v-if="checkedWordsId.length > 0"
-        @click="onWorkTransfer"
+        @click="onTransferWorks"
       >
         移动到其他分类
       </el-button>
@@ -23,31 +23,31 @@
       <v-work-item
         class="works-worklist__item"
         v-for="work in worklist.data" :key="work.id"
-        :item="work"  ref="worklist"
-        @change="onWorkCheck"
+        :item="work"  ref="list"
+        @change="onCheckWork"
       ></v-work-item>
     </div>
 
     <!-- 移动分类的弹窗 -->
     <el-dialog
       class="works-worklist__transfer"
-      :visible.sync="worksTransferModal.tag"
-      @close="closeWorksTransferModal"
+      :visible.sync="transferWorksModal.tag"
+      @close="onCloseTransferWorksModal"
       size="tiny" title="移动作品到其他分类"
     >
       <!-- 表单输入 -->
       <el-form
         label-width="95px"
-        :model="worksTransferInfo"
-        ref="worksTransferInfo"
-        :rules="worksTransferRules"
+        :model="transferWorksInfo"
+        ref="transferWorksInfo"
+        :rules="transferWorksRules"
       >
         <el-form-item
           prop="cateId"
           label="选择到分类"
         >
           <el-select
-            v-model="worksTransferInfo.cateId"
+            v-model="transferWorksInfo.cateId"
             placeholder="请选择作品分类"
           >
             <el-option
@@ -61,28 +61,14 @@
       <!-- 控制按钮 -->
       <div slot="footer">
         <el-button type="primary"
-          :loading="worksTransferModal.confirmLoading"
-          @click="confirmWorksTransfer()"
+          :loading="transferWorksModal.confirmLoading"
+          @click="onTransferWorksConfirm()"
         >提交</el-button>
         <el-button
-          @click="closeWorksTransferModal()"
+          @click="onCloseTransferWorksModal()"
         >取消</el-button>
       </div>
     </el-dialog>
-
-    <!-- <v-modal v-if="modal.cateTransfer" @close="modal.cateTransfer = false" title="移动作品到其他分类" width="350">
-      <div class="modal__transferCate">
-        <div class="modal__transferCate__containerUp">
-          <span class="modal__transferCate__tag">选择分类</span>
-          <select v-model="toCateId" class="modal__transferCate__select">
-            <option v-for="item in catelist" :value="item.id" :key="item.id">{{item.cate_name}}</option>
-          </select>
-        </div>
-        <div class="modal__transferCate__containerBelow">
-          <a class="modal__transferCate__submit" @click="cateTransfer">提交</a>
-        </div>
-      </div>
-    </v-modal> -->
   </div>
 </template>
 
@@ -107,6 +93,7 @@ export default {
       type: Array,
       required: true,
     },
+
     worklist: {
       type: Object,
       required: true,
@@ -115,15 +102,19 @@ export default {
 
   data: () => ({
     allWorksChecked: false,
+
     checkedWordsId: [],
-    worksTransferModal: {
+
+    transferWorksModal: {
       tag: false,
       confirmLoading: false,
     },
-    worksTransferInfo: {
+
+    transferWorksInfo: {
       cateId: null,
     },
-    worksTransferRules: {
+
+    transferWorksRules: {
       cateId: [
         { required: true, message: '请选择要移动到的分类' },
       ],
@@ -132,7 +123,7 @@ export default {
 
   watch: {
     checkedWordsId(nv) {
-      if (nv.length === this.worklist.length) {
+      if (nv.length === this.worklist.data.length) {
         this.allWorksChecked = true
       } else {
         this.allWorksChecked = false
@@ -141,21 +132,22 @@ export default {
   },
 
   methods: {
-    onAllWorksCheck() {
+    onCheckAllWorks() {
       const nextStatus = !this.allWorksChecked
       // 作品单选联动
-      this.$refs.worklist.forEach((work) => {
+      this.$refs.list.forEach((work) => {
         // eslint-disable-next-line
         work.checked = nextStatus
       })
       // 选中作品处理
       if (nextStatus) {
-        this.checkedWordsId = this.worklist.map(work => work.id)
+        this.checkedWordsId = this.worklist.data.map(work => work.id)
       } else {
         this.checkedWordsId = []
       }
     },
-    onWorkCheck(workId) {
+
+    onCheckWork(workId) {
       const idArr = this.checkedWordsId
       const workChecked = idArr.includes(workId)
       if (!workChecked) {
@@ -164,32 +156,37 @@ export default {
         this.checkedWordsId = idArr.filter(id => id !== workId)
       }
     },
-    onWorkTransfer() {
-      this.worksTransferModal.tag = true
+
+    onTransferWorks() {
+      this.transferWorksModal.tag = true
     },
-    closeWorksTransferModal() {
-      this.worksTransferModal.tag = false
-      this.$refs.worksTransferInfo.resetFields()
+
+    onCloseTransferWorksModal() {
+      this.transferWorksModal.tag = false
+      if (!this.transferWorksModal.comfirmLoading) {
+        this.$refs.transferWorksInfo.resetFields()
+      }
     },
-    confirmWorksTransfer() {
-      this.$refs.worksTransferInfo.validate((valid) => {
+
+    onTransferWorksConfirm() {
+      this.$refs.transferWorksInfo.validate((valid) => {
         if (valid) {
-          this.worksTransferModal.confirmLoading = true
+          this.transferWorksModal.confirmLoading = true
           this.submitWorksTransfer()
         }
       })
     },
+
     submitWorksTransfer() {
       this.$http.post(WORKS_TRANSER_API, {
-        cate_id: this.worksTransferInfo.cateId,
+        cate_id: this.transferWorksInfo.cateId,
         pano_ids: this.checkedWordsId,
       })
         .then(() => this.$store.dispatch(WORKS.WORKLIST.INITIALIZE))
         .then(() => {
-          this.closeWorksTransferModal()
-          // 不放closeWoksTransferModal
-          // 防止第一次提交在第二次操作时返回造成操作困惑
-          this.worksTransferModal.comfirmLoading = false
+          this.$emit('deleteWorks', this.checkedWordsId)
+          this.transferWorksModal.comfirmLoading = false
+          this.onCloseTransferWorksModal()
         })
     },
   },
