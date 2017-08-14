@@ -78,13 +78,14 @@
  *
  * @author hjz
  */
-import { WORKS } from '@/store/mutationTypes'
+import Request from '../module/request'
 import vWorkItem from './WorkItem'
 
-const WORKS_TRANSER_API = '/make/pano/changepanocate'
 
 export default {
   name: 'works-work-list',
+
+  inject: ['Request'],
 
   components: { vWorkItem },
 
@@ -184,11 +185,10 @@ export default {
     },
 
     submitWorksTransfer() {
-      this.$http.post(WORKS_TRANSER_API, {
-        cate_id: this.transferWorksInfo.cateId,
-        pano_ids: this.checkedWordsId,
-      })
-        .then(() => this.$store.dispatch(WORKS.WORKLIST.INITIALIZE))
+      Request.updateWorksCate(
+        this.transferWorksInfo.cateId,
+        this.checkedWordsId,
+      )
         .then(() => {
           this.$emit('deleteWorks', this.checkedWordsId)
           this.transferWorksModal.comfirmLoading = false
