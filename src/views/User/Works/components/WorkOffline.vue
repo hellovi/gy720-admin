@@ -1,7 +1,6 @@
 <template>
   <div class="works-workoffline">
     <div class="works-workoffline__avatar">
-      <i class="iconfont">&#xe620;</i>
       <p>离线下载</p>
     </div>
     <div class="works-workoffline__content">
@@ -83,8 +82,11 @@ export default {
     color: var(--disabled-color-base);
     text-align: center;
 
-    & > .iconfont {
+    &::before {
+      content: "\e620";
       display: block;
+      margin-top: -1px;
+      font-family: "iconfont";
       font-size: 30px;
     }
 
@@ -115,6 +117,7 @@ export default {
       margin: 8px 0;
       text-align: center;
       font-size: 14px;
+      color: var(--disabled-color-base);
     }
 
     /* elementUI 按钮样式调整 */

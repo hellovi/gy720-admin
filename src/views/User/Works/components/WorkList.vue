@@ -238,6 +238,8 @@ export default {
       })
     },
 
+    /* 控制离线下载弹窗显示 */
+
     openOfflineDoc() {
       this.offlineDocTag = true
     },
@@ -251,6 +253,7 @@ export default {
 
 :root {
   --border-split: 1px solid var(--border-color-split);
+  --button-color-disabled: #aaa;
 }
 
 .works-worklist {
@@ -292,7 +295,7 @@ export default {
     float: right;
     margin-top: 8px;
     font-size: 14px;
-    color: var(--icon-color);
+    color: var(--button-color-disabled);
     cursor: pointer;
 
     &::before {
@@ -302,7 +305,11 @@ export default {
     }
 
     &:hover {
-      color: color(var(--icon-color) tint(30%));
+      color: color(var(--button-color-disabled) tint(20%));
+    }
+
+    &:active {
+      color: color(var(--button-color-disabled) shade(10%));
     }
   }
 }
