@@ -91,9 +91,9 @@
 
     <!-- 分页 -->
     <el-pagination
-      v-if="worklist.last_page !== 0"
-      :page-size="2"
-      :total="10"
+      v-if="worklist.last_page !== 1"
+      :page-size="worklist.per_page"
+      :total="worklist.total"
       :current-page="worklist.current_page"
       @current-change="onChangePagination"
       layout="prev, pager, next"
