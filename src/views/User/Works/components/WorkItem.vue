@@ -159,7 +159,7 @@ export default {
     },
 
     onShare() {
-
+      this.$emit('share', this.item)
     },
 
     onDelete() {

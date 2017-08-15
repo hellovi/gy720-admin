@@ -32,6 +32,7 @@
         :item="work"  ref="list"
         @change="onCheckWork"
         @delete="onDeleteWork"
+        @share="onShareWork"
       ></v-work-item>
     </div>
 
@@ -84,6 +85,9 @@
     >
       <v-offline-doc></v-offline-doc>
     </el-dialog>
+
+    <!-- 分享弹窗 -->
+    <functions-share :data="sharedWork"></functions-share>
   </div>
 </template>
 
@@ -93,6 +97,8 @@
  *
  * @author hjz
  */
+import functionsShare from '@/views/Make/Edit/components/Functions/Share'
+import modal from '@/views/Make/Edit/mixins/modal'
 import Request from '../module/request'
 import deleteItemMixin from '../module/deleteItemMixin'
 import vWorkItem from './WorkItem'
@@ -102,11 +108,12 @@ import vOfflineDoc from './OfflineDoc'
 export default {
   name: 'works-work-list',
 
-  mixins: [deleteItemMixin],
+  mixins: [deleteItemMixin, modal],
 
   components: {
     vWorkItem,
     vOfflineDoc,
+    functionsShare,
   },
 
   props: {
@@ -142,6 +149,8 @@ export default {
     },
 
     offlineDocTag: false,
+
+    sharedWork: {},
   }),
 
   watch: {
@@ -224,7 +233,7 @@ export default {
         })
     },
 
-    /* 删除作品的逻辑 */
+    /* WorkItem event's handler */
 
     onDeleteWork(workId) {
       this.onDeleteItem({
@@ -238,10 +247,13 @@ export default {
       })
     },
 
-    /* 控制离线下载弹窗显示 */
-
     openOfflineDoc() {
       this.offlineDocTag = true
+    },
+
+    onShareWork(work) {
+      this.sharedWork = work
+      this.openModal('share')
     },
   },
 }
