@@ -167,7 +167,7 @@ export default {
     },
 
     onEdit() {
-
+      this.$router.push(`/make-client/edit?pano_id=${this.item.hash_pano_id}`)
     },
   },
 }
