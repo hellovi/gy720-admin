@@ -52,11 +52,12 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 ```html
   <el-pagination
-    v-if="list.data.length"
-    layout="prev, pager, next"
+    v-if="list.last_page !== 1"
+    :page-size="list.per_page"
     :total="list.total"
     :current-page="list.current_page"
     @current-change="pageChange"
+    layout="prev, pager, next"
   ></el-pagination>
 ```
 

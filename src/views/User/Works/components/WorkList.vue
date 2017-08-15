@@ -88,6 +88,16 @@
 
     <!-- 分享弹窗 -->
     <functions-share :data="sharedWork"></functions-share>
+
+    <!-- 分页 -->
+    <el-pagination
+      v-if="worklist.last_page !== 0"
+      :page-size="2"
+      :total="10"
+      :current-page="worklist.current_page"
+      @current-change="onChangePagination"
+      layout="prev, pager, next"
+    ></el-pagination>
   </div>
 </template>
 
@@ -231,6 +241,13 @@ export default {
           this.onCloseTransferWorksModal()
           this.initializeCheckedWorks()
         })
+    },
+
+    /* change pagination event */
+    onChangePagination(page) {
+      this.$router.push({
+        query: { ...this.$route.query, ...{ current_page: page } },
+      })
     },
 
     /* WorkItem event's handler */
