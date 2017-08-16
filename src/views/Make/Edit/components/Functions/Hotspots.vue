@@ -1,14 +1,20 @@
 <template>
-  <el-dialog
-    title="hotspots"
-    :visible.sync="active.hotspots"
-    size="tiny"
+   <el-dialog
+    title="添加热点"
+    :visible="active.hotspots"
+    :before-close="() => closeModal('hotspots')"
+    @close="closeModalAfter "
+    class="edit-functions__hotspots-modal"
   >
-      <span>hotspots</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
+
+      <keep-alive>
+        <component :is="currentView"
+          @switchStep="switchStep"
+          :type = "type"
+        >
+        </component>
+      </keep-alive>
+
   </el-dialog>
 </template>
 
@@ -19,10 +25,52 @@
  */
 
 import modal from '../../mixins/modal'
+import AddSpotFir from './components/AddSpotFir'
+import AddSpotSec from './components/AddSpotSec'
 
 export default {
   name: 'edit-functions__hotspots',
 
   mixins: [modal],
+
+  components: {
+    AddSpotFir,
+    AddSpotSec,
+  },
+
+  data() {
+    return {
+      currentView: AddSpotFir,
+      type: 1,
+    }
+  },
+
+  methods: {
+    switchStep(step, type) {
+      if (step === 1) {
+        this.type = type
+        this.currentView = AddSpotSec
+      } else {
+        this.currentView = AddSpotFir
+      }
+    },
+
+    closeModalAfter() {
+      // 点击上一步，关闭都要重置
+      this.currentView = AddSpotFir
+    },
+  },
+
+  created() {
+
+  },
 }
 </script>
+
+<style lang="postcss">
+.edit-functions__hotspots-modal {
+  & .el-dialog{
+    width: 700px;
+  }
+}
+</style>
