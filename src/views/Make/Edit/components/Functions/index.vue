@@ -6,13 +6,12 @@
     <functions-setting></functions-setting>
     <functions-material></functions-material>
     <functions-group></functions-group>
-    <functions-right-menu></functions-right-menu>
-    <functions-bottom-menu></functions-bottom-menu>
+    <functions-menu></functions-menu>
     <functions-tour></functions-tour>
     <functions-hotspots></functions-hotspots>
     <functions-share></functions-share>
     <functions-scene></functions-scene>
-
+    <functions-snapshot></functions-snapshot>
   </div>
 </template>
 
@@ -26,12 +25,12 @@ import FunctionsAuthor from './Author'
 import FunctionsSetting from './Setting'
 import FunctionsMaterial from './Material'
 import FunctionsGroup from './Group'
-import FunctionsRightMenu from './RightMenu'
-import FunctionsBottomMenu from './BottomMenu'
+import FunctionsMenu from './Menu'
 import FunctionsTour from './Tour'
 import FunctionsHotspots from './Hotspots'
 import FunctionsShare from './Share'
 import FunctionsScene from './Scene'
+import FunctionsSnapshot from './Snapshot'
 
 
 export default {
@@ -43,13 +42,12 @@ export default {
     FunctionsSetting,
     FunctionsMaterial,
     FunctionsGroup,
-    FunctionsRightMenu,
-    FunctionsBottomMenu,
+    FunctionsMenu,
     FunctionsTour,
     FunctionsHotspots,
     FunctionsShare,
     FunctionsScene,
-
+    FunctionsSnapshot,
   },
 }
 </script>

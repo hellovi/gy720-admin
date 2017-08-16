@@ -17,6 +17,7 @@ export default {
       hotspots: false,
       share: false,
       scene: false,
+      snapshot: false,
     },
     panoinfo: {},
   },
