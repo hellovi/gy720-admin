@@ -12,6 +12,7 @@
     <functions-share :data="pano"></functions-share>
     <functions-scene></functions-scene>
     <functions-snapshot></functions-snapshot>
+    <functions-initialview></functions-initialview>
   </div>
 </template>
 
@@ -33,6 +34,7 @@ import FunctionsHotspots from './Hotspots'
 import FunctionsShare from './Share'
 import FunctionsScene from './Scene'
 import FunctionsSnapshot from './Snapshot'
+import FunctionsInitialview from './Initialview'
 
 
 export default {
@@ -50,6 +52,7 @@ export default {
     FunctionsShare,
     FunctionsScene,
     FunctionsSnapshot,
+    FunctionsInitialview,
   },
 
   computed: {

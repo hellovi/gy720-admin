@@ -19,6 +19,7 @@ export default {
       share: false,
       scene: false,
       snapshot: false,
+      initialview: false,
     },
     panoinfo: {},
   },
