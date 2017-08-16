@@ -9,7 +9,7 @@
     <functions-menu></functions-menu>
     <functions-tour></functions-tour>
     <functions-hotspots></functions-hotspots>
-    <functions-share></functions-share>
+    <functions-share :data="pano"></functions-share>
     <functions-scene></functions-scene>
     <functions-snapshot></functions-snapshot>
   </div>
@@ -20,6 +20,8 @@
  * 高级编辑 - 功能
  * @version 2017-08-14
  */
+import { mapState } from 'vuex'
+
 import FunctionsLogo from './Logo'
 import FunctionsAuthor from './Author'
 import FunctionsSetting from './Setting'
@@ -48,6 +50,12 @@ export default {
     FunctionsShare,
     FunctionsScene,
     FunctionsSnapshot,
+  },
+
+  computed: {
+    ...mapState({
+      pano: state => state.edit.panoinfo,
+    }),
   },
 }
 </script>

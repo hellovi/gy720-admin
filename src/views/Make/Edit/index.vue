@@ -31,6 +31,7 @@
  * @author luminghuai
  * @version 2017-08-11
  */
+import { EDIT } from '@/store/mutationTypes'
 
 import {
   TopCenter,
@@ -81,6 +82,11 @@ export default {
 
       // window._krpano.querySelector('canvas')
     },
+  },
+
+  created() {
+    const pano_id = this.$route.query.pano_id
+    this.$store.dispatch(EDIT.GET_PANOINFO, pano_id)
   },
 
   mounted() {

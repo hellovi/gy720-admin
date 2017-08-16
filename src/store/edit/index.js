@@ -1,3 +1,4 @@
+import Http from '@/utils/http'
 import { EDIT } from '../mutationTypes'
 import scene from './scene'
 import material from './material'
@@ -29,6 +30,13 @@ export default {
     scene,
   },
 
+  actions: {
+    [EDIT.GET_PANOINFO]({ commit }, pano_id) {
+      Http.post('/make/pano/info', { pano_id })
+        .then(res => commit(EDIT.GET_PANOINFO, res.result))
+    },
+  },
+
   mutations: {
     [EDIT.MODAL.OPEN](state, name) {
       state.active[name] = true
@@ -36,6 +44,10 @@ export default {
 
     [EDIT.MODAL.CLOSE](state, name) {
       state.active[name] = false
+    },
+
+    [EDIT.GET_PANOINFO](state, panoinfo) {
+      state.panoinfo = panoinfo
     },
   },
 }
