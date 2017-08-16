@@ -107,8 +107,8 @@
  *
  * @author hjz
  */
+import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
-import modal from '@/views/Make/Edit/mixins/modal'
 import Request from '../module/request'
 import deleteItemMixin from '../module/deleteItemMixin'
 import vWorkItem from './WorkItem'
@@ -118,7 +118,7 @@ import vOfflineDoc from './OfflineDoc'
 export default {
   name: 'works-work-list',
 
-  mixins: [deleteItemMixin, modal],
+  mixins: [deleteItemMixin],
 
   components: {
     vWorkItem,
@@ -270,7 +270,7 @@ export default {
 
     onShareWork(work) {
       this.sharedWork = work
-      this.openModal('share')
+      this.$store.commit(EDIT.MODAL.OPEN, 'share')
     },
   },
 }
