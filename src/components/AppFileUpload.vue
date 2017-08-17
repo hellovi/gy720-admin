@@ -7,6 +7,7 @@
       </slot>
     </div>
     <slot name="right"></slot>
+    <slot name="progress"></slot>
   </div>
 </template>
 
@@ -31,6 +32,7 @@
   export default {
     name: 'app-file-upload',
     props: {
+      value: [String, Array],
       options: {
         type: Object,
         default() {
@@ -39,7 +41,6 @@
           }
         },
       },
-      value: [String, Array],
       multiple: {
         type: Boolean,
         default: false,
@@ -47,6 +48,14 @@
       staticUrl: {
         type: String,
         default: 'data/avatar/20170101/',
+      },
+      accept: {
+        type: String,
+        default: 'jpg, jpeg, gif, png',
+      },
+      size: {
+        type: String,
+        default: '4mb',
       },
     },
     data() {
@@ -80,19 +89,19 @@
           // Ajax请求downToken的Url，私有空间时使用,JS-SDK 将向该地址POST文件的key和domain,服务端返回的JSON必须包含`url`字段，`url`值为该文件的下载地址
           // unique_names: true,                            // 默认 false，key 为文件名。若开启该选项，JS-SDK 会为每个文件自动生成key（文件名）
           // save_key: true,                                // 默认 false。若在服务端生成 uptoken 的上传策略中指定了 `save_key`，则开启，SDK在前端将不对key进行任何处理
-          domain: 'http://l-statics.gy720.com/',            // bucket 域名，下载资源时用到，如：'http://xxx.bkt.clouddn.com/' **必需**
+          domain: self.$url.static(),                       // bucket 域名，下载资源时用到，如：'http://xxx.bkt.clouddn.com/' **必需**
           container: self.config.container,                 // 上传区域 DOM ID，默认是 browser_button 的父元素，
           max_file_size: '10mb',                            // 最大文件体积限制
           filters: {
             mime_types: [
-              { extensions : "jpg,jpeg,gif,png" },          // 上传文件格式
+              { extensions : self.accept },                 // 上传文件格式
             ]
           },
           flash_swf_url: 'path/of/plupload/Moxie.swf',      // 引入 flash,相对路径
           max_retries: 3,                                   // 上传失败最大重试次数
           dragdrop: true,                                   // 开启可拖曳上传
           drop_element: self.config.container,              // 拖曳上传区域元素的 ID，拖曳文件或文件夹后可触发上传
-          chunk_size: '4mb',                                // 分块上传时，每块的体积
+          chunk_size: self.chunkSize(self.size),            // 分块上传时，每块的体积
           auto_start: self.config.auto_start,               // 选择文件后自动上传，若关闭需要自己绑定事件触发上传,
           //x_vars : {
           //    自定义变量，参考http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html
@@ -199,9 +208,15 @@
 
         self.uploader = uploader
       },
+      getNumber(maxSize) {
+        return parseFloat(maxSize.match(/\d+(\.\d+)?/g).join(''))
+      },
+      getUnit(maxSize) {
+        return maxSize.match(/[^\d\.]/g).join('').toLowerCase()
+      },
       getSize(maxSize) {
-        const size = parseFloat(maxSize.match(/\d+(\.\d+)?/g).join(''))
-        const unit = maxSize.match(/[^\d\.]/g).join('').toLowerCase()
+        const size = this.getNumber(maxSize)
+        const unit = this.getUnit(maxSize) || 'kb'
         switch (unit) {
           case 'kb':
             return size * 1024
@@ -215,6 +230,9 @@
           default:
             return size
         }
+      },
+      chunkSize(maxSize) {
+        return this.getUnit(maxSize) ? maxSize : `${maxSize}kb`
       },
       previewImage(file, callback) {
         // file为plupload事件监听函数参数中的file对象,callback为预览图片准备完成的回调函数
