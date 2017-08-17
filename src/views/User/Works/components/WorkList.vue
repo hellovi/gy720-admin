@@ -81,7 +81,7 @@
     <!-- 离线下载说明 -->
     <el-dialog
       :visible.sync="offlineDocTag"
-      title="离线下载说明" size="small"
+      title="离线下载说明" size="large"
     >
       <v-offline-doc></v-offline-doc>
     </el-dialog>
@@ -305,10 +305,6 @@ export default {
   /* elementUI样式重置 */
     & .el-dialog__body {
       padding-bottom: 0;
-    }
-
-    & .el-dialog--tiny {
-      width: 20%;
     }
 
     & .el-select {

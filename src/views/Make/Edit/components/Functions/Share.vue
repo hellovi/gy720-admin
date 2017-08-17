@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     class="edit-functions__share" title="分享"
-    :visible.sync="active.share" size="tiny"
+    :visible.sync="active.share" size="small"
     @close="closeModal"
   >
     <div class="qrcode">
@@ -55,14 +55,6 @@ export default {
 
 <style>
 .edit-functions__share {
-
-  & .el-dialog--tiny {
-    width: 40%;
-
-    & > .el-dialog__body {
-      padding: 70px 60px;
-    }
-  }
 
   & .qrcode {
     margin: 10px 0;

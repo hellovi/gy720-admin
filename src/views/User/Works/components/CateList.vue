@@ -209,17 +209,6 @@ export default {
     & .el-dialog__body {
       padding-bottom: 0;
     }
-
-    & .el-dialog--tiny {
-      width: 20%;
-    }
-  }
-
-  &__delete {
-  /* elementUI样式重置  */
-    & .el-dialog--tiny {
-      width: 20%;
-    }
   }
 }
 </style>
