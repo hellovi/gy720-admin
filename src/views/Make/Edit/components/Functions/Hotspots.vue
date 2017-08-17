@@ -21,6 +21,7 @@
 <script>
 /**
  * 高级编辑 - hotspots
+ * @author yj
  * @version 2017-08-14
  */
 
@@ -47,7 +48,7 @@ export default {
 
   methods: {
     switchStep(step, type) {
-      if (step === 1) {
+      if (step !== 1) {
         this.type = type
         this.currentView = AddSpotSec
       } else {
