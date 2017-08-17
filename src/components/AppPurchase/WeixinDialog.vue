@@ -3,6 +3,7 @@
     title="确认购买"
     :visible.sync="visible"
     class="weixin-dialog"
+    size="small"
     :before-close="()=>$emit('close')"
   >
     <el-row>
@@ -63,10 +64,6 @@ export default {
 @import "vars.css";
 
 .weixin-dialog {
-
-  .el-dialog {
-    width: 600px;
-  }
 
   .el-dialog__body {
     padding: 50px 30px;

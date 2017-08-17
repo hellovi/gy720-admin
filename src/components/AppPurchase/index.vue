@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       title="购买服务"
+      size="large"
       :visible.sync="visible"
       @close="$emit('close')"
       class="app-purchase"
@@ -106,9 +107,6 @@ export default {
 }
 
 .app-purchase {
-  .el-dialog {
-    width: 800px;
-  }
 
   &__types {
     margin-bottom: 30px;

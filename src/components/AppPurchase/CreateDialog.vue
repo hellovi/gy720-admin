@@ -2,6 +2,7 @@
   <div>
     <el-dialog
       title="生成订单"
+      size="small"
       :visible.sync="visible"
       :before-close="()=>$emit('close')"
       class="create-dialog"
@@ -260,11 +261,7 @@ export default {
   }
 
   .el-dialog__body{
-    padding: 30px 84px;
-  }
-
-  .el-dialog{
-    width: 600px;
+    padding: 30px 76px;
   }
 
   .el-select,.el-radio-group{
