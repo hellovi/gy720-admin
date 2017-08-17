@@ -25,7 +25,7 @@
  * @version 2017-08-14
  */
 
-import modal from '../../mixins/modal'
+import modal from '../../../mixins/modal'
 import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
 
