@@ -1,12 +1,15 @@
 <template>
-  <el-alert
-    :title="title"
-    :type="type"
-    v-if="flatContents.length"
-    @close="closeAlert"
-    show-icon>
-    <div v-for="msg in flatContents" v-html="msg"></div>
-  </el-alert>
+  <div class="app-alert" v-bind:style="{paddingLeft: labelWidth}">
+    <el-alert
+      :title="title"
+      :type="type"
+      v-if="flatContents.length"
+      @close="closeAlert"
+      show-icon>
+      <div v-for="msg in flatContents" v-html="msg"></div>
+    </el-alert>
+  </div>
+
 </template>
 
 <script>
@@ -32,6 +35,10 @@
           return {}
         },
       },
+      labelWidth: {
+        type: String,
+        default: '0',
+      },
     },
 
     computed: {
@@ -48,3 +55,9 @@
     },
   }
 </script>
+
+<style lang="postcss">
+  .app-alert {
+    padding-bottom: 10px;
+  }
+</style>
