@@ -28,10 +28,10 @@
         </section>
 
         <section class="buy-panel">
-          <img class="buy-price" src="./images/icon-2999.png" alt="2299元/年">
+          <img class="buy-price" :src="require('@/assets/icon-2999.png')" alt="2299元/年">
           <div class="buy-action">
             <div>无限次作品数量</div>
-            <el-button type="primary">立即购买</el-button>
+            <el-button type="primary" @click="visible = true">立即购买</el-button>
           </div>
         </section>
       </el-col>
@@ -43,7 +43,7 @@
             <dt class="panel-list__sub-title">2299元 / 年</dt>
             <dd class="panel-list__item">直接点击<em>立即购买</em>开通会员</dd>
 
-            <dt class="panel-list__sub-title">99元 / 年</dt>
+            <dt class="panel-list__sub-title">99元 / 次</dt>
             <dd class="panel-list__item">点击<em>我的作品</em>进入作品列表页面</dd>
             <dd class="panel-list__item">点击作品右侧的<em>高级编辑</em></dd>
             <dd class="panel-list__item">点击作页面的<em>左上角LOGO</em>进行购买</dd>
@@ -51,14 +51,23 @@
         </section>
 
         <section class="buy-panel">
-          <img class="buy-price" src="./images/icon-99.png" alt="99元/年">
+          <img class="buy-price" :src="require('@/assets/icon-99.png')" alt="99元/年">
           <div class="buy-action">
             <div>作品按次收费</div>
-            <el-button type="primary">我的作品</el-button>
+            <el-button type="primary" @click="visible2 = true">我的作品</el-button>
           </div>
         </section>
       </el-col>
     </el-row>
+
+    <create-dialog
+      :goodsId='9'
+      :visible="visible"
+      @close="visible = false"
+    ></create-dialog>
+
+    <app-purchase :panoId='142' :visible="visible2" @close="visible2 = false"></app-purchase>
+
   </div>
 </template>
 
@@ -70,8 +79,15 @@
  * @version 2017-08-12
  */
 
+import { AppPurchase, CreateDialog } from '@/components'
+
 export default {
   name: 'purchase-buy',
+
+  components: {
+    AppPurchase,
+    CreateDialog,
+  },
 
   data() {
     return {
@@ -81,7 +97,15 @@ export default {
       addList: ['自定义开场提示', '隐藏作者信息', '隐私加密', '自定义LOGO', '加载文字提示', '隐藏LOGO', '是否显示人气和赞', '滚动文字广告', '是否开启说一说', '数据统计功能', '右侧自定义菜单'],
       // 2999套餐添加功能
       moreList: ['重要信息开启提示', '网站首页案例推送'],
+
+      visible: false,
+
+      visible2: false,
     }
+  },
+
+  methods: {
+
   },
 
 }

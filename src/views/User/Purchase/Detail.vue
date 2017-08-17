@@ -20,8 +20,7 @@
           <td>订单状态：</td>
           <td>
             {{paystatus}}
-            <el-button type="primary" size="small">去付款（支付宝）</el-button>
-            <el-button type="primary" size="small">去付款（微信）</el-button>
+            <el-button type="primary" size="small" @click="dialog.confirm = true">去付款</el-button>
           </td>
         </tr>
         <tr>
@@ -33,6 +32,15 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- 确认订单组件 -->
+    <confirm-dialog
+      :visible="dialog.confirm"
+      @close="dialog.confirm = false"
+      :orderSn="order.order_sn"
+      :price="order.order_amount"
+    ></confirm-dialog>
+
   </div>
 </template>
 
@@ -43,9 +51,14 @@
  * @author zhoumenglin
  * @version 2017-08-10
  */
+import { ConfirmDialog } from '@/components'
 
 export default {
   name: 'purchase-detail',
+
+  components: {
+    ConfirmDialog,
+  },
 
   data() {
     return {
@@ -57,6 +70,10 @@ export default {
         order_sn: null,
         pay_type: '',
         status: '',
+      },
+
+      dialog: {
+        confirm: false,
       },
     }
   },
