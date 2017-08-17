@@ -21,11 +21,11 @@
           :src="snapshotResultURL"
           alt="虚拟拍照结果的照片">
       </div>
-      <el-button
+      <a class="el-button el-button--primary"
+        :href="snapshotDownloadURL"
         slot="footer"
-        type="primary"
-        @click="onSaveSnapshotResult"
-      >保存到本地</el-button>
+        :download="`虚拟拍照 - ${Date.now()}`"
+      >保存到本地</a>
     </el-dialog>
   </div>
 </template>
@@ -36,9 +36,12 @@
  *
  * @author huojinzhao
  */
-
+import { mapState } from 'vuex'
 import vCamera from './components/Camera'
 import modal from '../../mixins/modal'
+
+const CREATE_SNAPSHOT_API = '/make/pubset/photograph'
+// const GET_SNANPSHOT_API = '/make/pubset/downphotograph'
 
 export default {
   name: 'edit-functions__snapshot',
@@ -55,7 +58,14 @@ export default {
       confirmLoading: false,
     },
     snapshotResultURL: '',
+    snapshotDownloadURL: '',
   }),
+
+  computed: {
+    ...mapState({
+      pano: state => state.edit.panoinfo,
+    }),
+  },
 
   methods: {
     onCloseCamera() {
@@ -76,13 +86,17 @@ export default {
       // eslint-disable-next-line
       const canvas = window._krpano.querySelector('canvas')
       this.snapshotResultURL = canvas.toDataURL('image/jpeg')
-      this.onCloseCamera()
-      this.openSnapshotResultModal()
-    },
-
-    // 虚拟拍照后端交互未定
-    onSaveSnapshotResult() {
-
+      this.$http.post(CREATE_SNAPSHOT_API, {
+        pano_id: this.pano.id,
+        data: this.snapshotResultURL,
+      })
+        .then((res) => {
+          this.snapshotDownloadURL = res.result.src
+          this.$nextTick(() => {
+            this.onCloseCamera()
+            this.openSnapshotResultModal()
+          })
+        })
     },
   },
 }
@@ -95,6 +109,10 @@ export default {
 
     &__display-img {
       width: 100%;
+    }
+
+    & .el-dialog__body {
+      padding: 20px 20px 10px 20px;
     }
 
     & .el-dialog__footer {
