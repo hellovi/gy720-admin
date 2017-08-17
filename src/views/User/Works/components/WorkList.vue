@@ -91,7 +91,7 @@
 
     <!-- 分页 -->
     <el-pagination
-      v-if="worklist.last_page !== 1"
+      v-if="worklist.last_page > 1"
       :page-size="worklist.per_page"
       :total="worklist.total"
       :current-page="worklist.current_page"

@@ -52,7 +52,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 
 ```html
   <el-pagination
-    v-if="list.last_page !== 1"
+    v-if="list.last_page > 1"
     :page-size="list.per_page"
     :total="list.total"
     :current-page="list.current_page"
