@@ -8,7 +8,7 @@
         class="edit-functions__item"
       >
         <div class="edit-functions__item__inner"
-             @click="switchStep(1, item.key)">
+             @click="switchStep(2, item.key)">
           <i :class="[item.icon,'iconfont']"></i>
           <span>{{item.text}}</span>
         </div>
@@ -22,6 +22,7 @@
 <script>
 /**
  * 高级编辑 - hotspots
+ * @author yj
  * @version 2017-08-14
  */
 
@@ -31,6 +32,7 @@ export default {
 
   data() {
     return {
+      // activeKey: 再写个computed 去传当前的text,搬到父组件里去
       // 与后台key值对应，其他地方都依赖于key
       cateType: [
         { icon: 'icon-yanjing', key: 1, text: '场景漫游' },
