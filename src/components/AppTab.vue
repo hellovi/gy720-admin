@@ -1,9 +1,10 @@
 <template>
   <ul class="app-tab list">
-    <li v-for="tab in data" :key="tab.name" class="app-tab__item" :style="{width: `${100 / data.length}%`}">
+    <li v-for="(tab, index) in data" :key="tab.name" class="app-tab__item" :style="{width: `${100 / data.length}%`}">
       <router-link :to="tab.to">
         <i v-if="tab.icon" class="iconfont" v-html="tab.icon"></i>
-        {{tab.text}}
+        <span class="app-tab__name">{{tab.text}}</span>
+        <span class="app-tab__count" v-if="counts[index]">{{ counts[index] }}</span>
       </router-link>
     </li>
   </ul>
@@ -24,6 +25,10 @@ export default {
     data: {
       type: Array,
       required: true,
+    },
+    counts: {
+      type: Array,
+      default: () => [],
     },
   },
 }
@@ -59,8 +64,26 @@ export default {
       & > .iconfont {
         margin-right: 12px;
         color: var(--gray-light);
+        vertical-align: middle;
       }
     }
+  }
+
+  &__name {
+    vertical-align: middle;
+  }
+
+  &__count {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-left: 2em;
+    background-color: var(--color-danger);
+    color: #fff;
+    font-size: 12px;
+    vertical-align: middle;
+    line-height: 18px;
   }
 }
 </style>
