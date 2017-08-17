@@ -3,7 +3,7 @@
     <el-row :gutter="20">
 
       <el-col :span="8"
-        v-for="item in cateType"
+        v-for="item in typeFir"
         :key="item.key"
         class="edit-functions__item"
       >
@@ -30,18 +30,16 @@
 export default {
   name: 'edit-functions__addSpotFir',
 
+  props: {
+    typeFir: {
+      type: Object,
+      required: true,
+    },
+  },
+
   data() {
     return {
-      // activeKey: 再写个computed 去传当前的text,搬到父组件里去
-      // 与后台key值对应，其他地方都依赖于key
-      cateType: [
-        { icon: 'icon-yanjing', key: 1, text: '场景漫游' },
-        { icon: 'icon-wendang', key: 6, text: '图文信息' },
-        { icon: 'icon-liulanqidakailianjie', key: 3, text: '超链接' },
-        { icon: 'icon-3d1', key: 5, text: '物品3D' },
-        { icon: 'icon-shexiang', key: 8, text: '多媒体' },
-        { icon: 'icon-danxuankuang', key: 7, text: '无' },
-      ],
+
     }
   },
 

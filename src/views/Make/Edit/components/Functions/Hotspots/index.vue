@@ -11,6 +11,8 @@
         <component :is="currentView"
           @switchStep="switchStep"
           :type = "type"
+          :typeFir = "typeFir"
+          :typeSec = "typeSec"
         >
         </component>
       </keep-alive>
@@ -43,7 +45,29 @@ export default {
     return {
       currentView: AddSpotFir,
       type: 1,
+      cateType: [
+        { icon: 'icon-yanjing', key: 1, text: '场景漫游', label: '链接场景' },
+        { icon: 'icon-wendang', key: 6, text: '图文信息', label: '图文信息' },
+        { icon: 'icon-liulanqidakailianjie', key: 3, text: '超链接', label: '超链接' },
+        { icon: 'icon-3d1', key: 5, text: '物品3D', label: '物品3D' },
+        { icon: 'icon-shexiang', key: 8, text: '多媒体', label: '多媒体' },
+        { icon: 'icon-danxuankuang', key: 7, text: '无' },
+      ],
     }
+  },
+
+  computed: {
+    typeFir() {
+      return this.cateType.map((item) => {
+        // ?????
+        const { icon, key, text } = item
+        return { icon, key, text }
+      })
+    },
+
+    typeSec() {
+      return this.cateType.filter(item => (item.key === this.type))[0].label
+    },
   },
 
   methods: {

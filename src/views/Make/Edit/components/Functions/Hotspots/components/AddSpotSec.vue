@@ -13,16 +13,16 @@
         <el-button type="primary" size="small">选择</el-button>
       </el-form-item>
 
-      <el-form-item label="链接场景" v-if="type === 1" prop="scene">
+      <el-form-item :label="typeSec" v-if="type === 1" prop="scene">
         <el-button type="primary" size="small">选择</el-button>
         <!--下面区域-->
       </el-form-item>
 
-      <el-form-item label="链接地址" v-if="type === 3">
+      <el-form-item :label="typeSec" v-if="type === 3">
         <el-input v-model="form.url" placeholder="http://"></el-input>
       </el-form-item>
 
-      <el-form-item  :label="label[type]" v-if="[6, 5, 8].indexOf(type) >= 0">
+      <el-form-item :label="typeSec" v-if="[6, 5, 8].indexOf(type) >= 0">
         <el-button type="primary" size="small">选择</el-button>
       </el-form-item>
 
@@ -47,18 +47,18 @@ export default {
   name: 'edit-functions__addSpotSec',
 
   props: {
-    type: Number,
-    default: 1,
+    type: {
+      type: Number,
+      default: 1,
+    },
+    typeSec: {
+      type: String,
+      required: true,
+    },
   },
 
   data() {
     return {
-      label: {
-        6: '图文信息',
-        5: '物品3D',
-        8: '多媒体',
-      },
-
       form: {
         name: '',
         url: '',
