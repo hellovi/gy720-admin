@@ -2,17 +2,22 @@
 {
   "css.validate": false,
   "files.eol": "\n",
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "vue": "html"
+  },
   "emmet.syntaxProfiles": {
     "vue-html": "html",
     "vue": "html"
   },
+  "emmet.triggerExpansionOnTab": true,
   "eslint.validate": [
-      "javascript",
-      "javascriptreact",
-      {
-          "language": "vue",
-          "autoFix": true
-      }
+    "javascript",
+    "javascriptreact",
+    {
+      "language": "vue",
+      "autoFix": true
+    }
   ],
   "eslint.autoFixOnSave": true,
   "vetur.validation.style": false
