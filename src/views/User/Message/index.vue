@@ -1,12 +1,9 @@
 <template>
   <div class="message">
-    <h3 class="message__title">我的消息</h3>
-    <div class="clearfix">
-      <message-menu :counts="counts"></message-menu>
-      <keep-alive>
-        <router-view class="message__content"></router-view>
-      </keep-alive>
-    </div>
+    <app-tab :data="tabs" :counts="counts"></app-tab>
+    <keep-alive>
+      <router-view class="message__content"></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -28,14 +25,19 @@ export default {
 
   data() {
     return {
-      counts: {},
+      tabs: [
+        { to: '/user-client/message/system', icon: '&#xe699;', text: '系统消息' },
+        { to: '/user-client/message/private', icon: '&#xe639;', text: '私信' },
+        { to: '/user-client/message/say', icon: '&#xe611;', text: '说一说' },
+      ],
+      counts: [],
     }
   },
 
   created() {
     this.$http.get('/user/message/unreadcount')
       .then(({ result: { counts } }) => {
-        this.counts = counts
+        this.counts = [counts.sys, counts.person, counts.comment]
       })
   },
 }
@@ -44,20 +46,55 @@ export default {
 <style lang="postcss">
 @import 'vars.css';
 
-.message {
-  padding: 20px;
+.message__content {
+  padding: 20px 30px;
   background-color: #fff;
+}
 
-  &__title {
-    margin: 0;
-    font-size: 22px;
-    font-weight: normal;
-    line-height: 3.3636;
+.message__content {
+  td {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}
+
+.message-control {
+  margin-bottom: 15px;
+}
+
+.message-avatar {
+  float: left;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-right: 1em;
+
+  & > img {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
   }
 
-  &__content {
-    float: right;
-    width: 832px;
+  &::after {
+    content: attr(data-count);
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-top: -3px;
+    margin-right: -3px;
+    background-color: var(--color-danger);
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
   }
+}
+
+.message-summary {
+  margin-top: 10px;
 }
 </style>
