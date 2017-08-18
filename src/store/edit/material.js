@@ -3,6 +3,38 @@ import { EDIT } from '../mutationTypes'
 
 const { MATERIAL } = EDIT
 
+// 导出的数据
+const materialExport = () => (
+  {
+    // 导览图(右侧菜单)
+    tour: {
+      url: '',
+      id: 0,
+    },
+    // 图文素材data(右侧菜单)
+    menu: {
+      title: '',
+      id: 0,
+    },
+    // 图文素材data(热点设置)
+    hotspot: {
+      title: '',
+      id: 0,
+    },
+    // 物品3D素材(热点设置)
+    hotspot3d: {
+      title: '',
+      id: 0,
+    },
+    // 普通素材data(微信设置)
+    wechat: {
+      url: '',
+      id: 0,
+    },
+  }
+)
+
+
 export default {
   state: {
     materialState: {
@@ -15,35 +47,11 @@ export default {
       // 唤起来源
       selectFrom: '',
     },
+    // materialExport: () => ({
+    //   name: 'alice',
+    // }),
     // 导出的数据
-    materialExport: {
-      // 导览图(右侧菜单)
-      tour: {
-        url: '',
-        id: 0,
-      },
-
-      // 图文素材data(右侧菜单)
-      menu: {
-        title: '',
-        id: 0,
-      },
-      // 图文素材data(热点设置)
-      hotspot: {
-        title: '',
-        id: 0,
-      },
-      // 物品3D素材(热点设置)
-      hotspot3d: {
-        title: '',
-        id: 0,
-      },
-      // 普通素材data(微信设置)
-      wechat: {
-        url: '',
-        id: 0,
-      },
-    },
+    materialExport: materialExport(),
   },
 
   mutations: {
@@ -52,9 +60,15 @@ export default {
     },
 
     [MATERIAL.SELECT](state) {
-      window.console.log(88888)
       state.materialExport.tour.id = 777
       state.materialExport.tour.url = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
+    },
+
+    [MATERIAL.RESET](state, payload) {
+      const from = payload.from
+      state.materialExport[from] = {
+        ...materialExport()[from],
+      }
     },
   },
 

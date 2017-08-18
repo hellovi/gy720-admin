@@ -75,6 +75,7 @@ export const EDIT = {
   MATERIAL: {
     CREATE: 'EDIT/MATERIAL/CREATE',
     SELECT: 'EDIT/MATERIAL/SELECT',
+    RESET: 'EDIT/MATERIAL/RESET',
   },
 
   // 场景模块
