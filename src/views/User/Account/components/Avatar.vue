@@ -5,7 +5,7 @@
                      accept="jpg,jpeg,png"
                      size="1mb"
                      @preview="getPreview"
-                     v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : none}"
+                     v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
                      class="user-avatar__file">
       <img :src="getStatic(src)">
       <app-upload-progress slot="progress"
