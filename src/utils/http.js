@@ -9,6 +9,8 @@
 
 import 'whatwg-fetch'
 
+const token = localStorage.getItem('token')
+
 class Http {
   static install(Vue) {
     /* eslint-disable no-param-reassign */
@@ -50,7 +52,10 @@ class Http {
    */
   static get(uri, headers = {}) {
     return fetch(Http.getUri(uri), {
-      headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...headers,
+      },
       credentials: 'same-origin',
     })
       .then(Http.errorHandler)
@@ -66,6 +71,7 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'POST',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
         ...headers,
       },
@@ -85,6 +91,7 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'PATCH',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
         ...headers,
       },
@@ -103,6 +110,7 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'DELETE',
       headers: {
+        Authorization: `Bearer ${token}`,
         ...headers,
       },
       credentials: 'same-origin',
