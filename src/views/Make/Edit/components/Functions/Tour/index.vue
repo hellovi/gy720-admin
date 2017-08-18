@@ -47,7 +47,7 @@
 
     <!-- 编辑导览 -->
     <el-dialog
-      title="添加场景热点" size="large" top="5%"
+      title="添加场景视角展示" size="large" top="5%"
       :visible.sync="editTourModal.tag"
     >
       <v-tour-edition></v-tour-edition>

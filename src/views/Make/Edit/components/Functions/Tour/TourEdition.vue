@@ -15,7 +15,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">添加场景热点</el-button>
+        <el-button type="primary">选择场景</el-button>
         <el-button type="primary">保存</el-button>
       </el-form-item>
     </el-form>
@@ -34,15 +34,21 @@
 </template>
 
 <script>
+/**
+ * 高级编辑 - 编辑导览、场景视角
+ *
+ * @author huojinzhao
+ */
+
 export default {
   name: 'edit-functions__tour-edition',
 
   data: () => ({
     helpDoc: [
-      '点击 "添加场景热点" 按钮，选择场景；',
-      '拖动热点中间的圆心可以拖动设置热点位置；',
-      '拖动热点黑色区域可以设置雷达方向；',
-      '操作完成后记得保存哦。',
+      '点击 "选择场景" 按钮，选择需要添加视角展示的场景；',
+      '拖动雷达圆心，可以设置在地图中位置；',
+      '拖动雷达黑色外环区域，可以设置视角方向；',
+      '操作完成后, 记得点击 "保存" 哦。',
     ],
 
     tourEditionInfo: {
@@ -67,7 +73,7 @@ export default {
     & > img {
       display: block;
       margin: 0 auto;
-      width: 70%;
+      width: 80%;
     }
   }
 
