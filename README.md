@@ -49,7 +49,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   - 数据统计
   - 我的作品
     - 离线下载
-  - 账号管理
+  - 账号管理（陈，静态完成）
 - 高级编辑
   - 发布流程（卢，静态完成）
   - logo更换
