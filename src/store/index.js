@@ -16,16 +16,8 @@ export default new Vuex.Store({
   },
 
   getters: {
-    isCertified(state) {
-      return +state.userInfo.is_certified === 20
-    },
-
     isVip(state) {
-      const { vip_expire_at } = state.userInfo
-      if (vip_expire_at) {
-        return Date.now() < Date.parse(vip_expire_at)
-      }
-      return false
+      return state.userInfo.is_vip
     },
   },
 
@@ -45,17 +37,16 @@ export default new Vuex.Store({
     [GLOBAL.USER.UPDATE_POINT](state, update) {
       state.userInfo = {
         ...state.userInfo,
-        total_integral: state.userInfo.total_integral + update,
-        total_experience: state.userInfo.total_experience + update,
-        left_integral: state.userInfo.left_integral + update,
+        integral: state.userInfo.integral + update,
+        integral_remain: state.userInfo.integral_remain + update,
       }
     },
   },
 
   actions: {
     [GLOBAL.USER.INIT]({ commit }) {
-      return Http.get('/user/account/info')
-        .then(({ result }) => commit(GLOBAL.USER.INIT, result.userInfo))
+      return Http.get('/user/info')
+        .then(({ result }) => commit(GLOBAL.USER.INIT, result))
     },
   },
 })

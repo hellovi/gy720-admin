@@ -6,15 +6,17 @@
 
     <div class="app-user__info">
       <span>Hi，<em>{{ userInfo.nickname }}</em></span>
-      <span v-if="isCertified" class="app-user__badge">已认证</span>
+      <span v-if="userInfo.is_certificate" class="app-user__badge">已认证</span>
       <span v-else class="app-user__badge app-user__badge--gray">未认证</span>
-      <span v-if="isVip" class="app-user__vip"><i class="iconfont">&#xe6b7;</i>商业版会员</span>
-      <span v-else>普通会员</span>
+      <span :class="{'app-user__vip': isVip}">
+        <i v-if="isVip" class="iconfont">&#xe6b7;</i>
+        {{ userInfo.vip_name }}
+      </span>
     </div>
     <div class="app-user__point">
-      <span class="app-user__badge app-user__badge--level">LV{{ userInfo.level_id }}</span>
+      <span class="app-user__badge app-user__badge--level">LV{{ userInfo.lv }}</span>
       <router-link class="hover-primary" to="/user-client/point">
-        积分：{{ userInfo.total_integral }}（可用：{{ userInfo.left_integral }}）
+        积分：{{ userInfo.integral }}（可用：{{ userInfo.integral_remain }}）
       </router-link>
     </div>
     <div>
@@ -33,7 +35,7 @@ export default {
 
   computed: {
     ...mapState(['userInfo']),
-    ...mapGetters(['isCertified', 'isVip']),
+    ...mapGetters(['isVip']),
   },
 
   methods: {
