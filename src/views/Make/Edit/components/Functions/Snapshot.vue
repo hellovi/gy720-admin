@@ -11,7 +11,7 @@
     <el-dialog
       class="snapshot-result"
       title="虚拟拍照"
-      size="small"
+      size="large"
       :visible="snapshotResultModal.tag"
       :before-close="closeSnapshotResultModal"
     >
