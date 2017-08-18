@@ -17,6 +17,12 @@ export default {
     },
     // 导出的数据
     materialExport: {
+      // 导览图(右侧菜单)
+      tour: {
+        url: '',
+        id: 0,
+      },
+
       // 图文素材data(右侧菜单)
       menu: {
         title: '',
@@ -41,21 +47,25 @@ export default {
   },
 
   mutations: {
-    [MATERIAL.CREATE](state) {
-      state.active = true
+    [MATERIAL.CREATE]() {
+
     },
-    [MATERIAL.DESTROY](state) {
-      // 销毁时进行重置等处理
-      state.active = false
+
+    [MATERIAL.SELECT](state) {
+      window.console.log(88888)
+      state.materialExport.tour.id = 777
+      state.materialExport.tour.url = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
     },
   },
 
   actions: {
-    [MATERIAL.CREATE]({ commit }) {
-      commit(MATERIAL.CREATE)
+    [MATERIAL.CREATE]({ commit }, payload) {
+      commit(EDIT.MODAL.OPEN, 'material')
+      window.console.log(payload)
     },
-    [MATERIAL.DESTROY]({ commit }) {
-      commit(MATERIAL.DESTROY)
+
+    [MATERIAL.SELECT]({ commit }) {
+      commit(MATERIAL.SELECT)
     },
   },
 }

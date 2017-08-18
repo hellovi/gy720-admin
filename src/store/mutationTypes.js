@@ -73,6 +73,8 @@ export const EDIT = {
 
   // 素材模块
   MATERIAL: {
+    CREATE: 'EDIT/MATERIAL/CREATE',
+    SELECT: 'EDIT/MATERIAL/SELECT',
   },
 
   // 场景模块
