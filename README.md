@@ -20,6 +20,60 @@ npm run build --report
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
+## 功能分块
+
+- 首页
+- 720全景
+  - 作品列表
+  - 作品详情
+- 摄影师
+  - 摄影师列表
+  - 摄影师主页
+    - 联系摄影师
+- 话题
+  - 普通话题
+  - 需求话题
+  - 我的收藏
+  - 我的评论
+- 搜索
+- 服务
+- 个人中心
+  - 认证
+  - 积分体系（卢，静态完成）
+  - 购买流程
+  - 最新发布的作品
+  - 我的收藏
+  - 我的关注
+  - 我的粉丝
+  - 我的消息（卢，静态完成）
+  - 数据统计
+  - 我的作品
+    - 离线下载
+  - 账号管理
+- 高级编辑
+  - 发布流程（卢，静态完成）
+  - logo更换
+  - 隐藏作者
+  - 限制视角
+  - 初始画面
+  - 分享
+  - 场景分组
+  - 作品设置
+  - 素材库
+  - 视角
+  - 皮肤
+  - 分享二维码隐藏
+  - 右侧/底部菜单
+  - 导览图
+  - 热点添加
+  - 场景的添加
+  - 场景的编辑
+    - 基本信息
+    - 场景特效
+    - 补天补地
+    - 语音解说
+  - 虚拟拍照
+
 ## 风格指北
 
 大多数代码风格上的约定与彩虹狗项目保持一致，请参阅彩虹狗项目的README文档
@@ -61,7 +115,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   ></el-pagination>
 ```
 
-- 若需要显示无数据时的提示，mixin提供了`this.isEmtpy`来判断是否显示这个提示，如
+- 若需要显示无数据时的提示，mixin提供了`this.isEmpty`来判断是否显示这个提示，如
 
 ```html
   <div v-if="isEmpty" class="empty">
