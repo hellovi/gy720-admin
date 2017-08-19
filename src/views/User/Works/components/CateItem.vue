@@ -19,10 +19,11 @@
 
 <script>
 /**
- * 个人作品 - 作品分类项目
+ * 我的作品 - 作品单分类
  *
- * @author hjz
+ * @author huojinzhao
  */
+
 export default {
   name: 'works-cate-item',
 

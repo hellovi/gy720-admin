@@ -55,10 +55,11 @@
 
 <script>
 /**
- * 个人作品 - 作品分类列表
+ * 我的作品 - 作品分类列表
  *
- * @author hjz
+ * @author huojinzhao
  */
+
 import Request from '../module/request'
 import deleteItemMixin from '../module/deleteItemMixin'
 import vCateItem from './CateItem'

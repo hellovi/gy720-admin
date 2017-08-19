@@ -105,8 +105,9 @@
 /**
  * 个人作品 - 作品列表组件
  *
- * @author hjz
+ * @author huojinzhao
  */
+
 import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
 import Request from '../module/request'

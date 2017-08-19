@@ -100,10 +100,11 @@
 
 <script>
 /**
- * 个人作品 - 作品组件
+ * 我的作品 - 单作品组件
  *
- * @author hjz
+ * @author huojinzhao
  */
+
 import vWorkOffline from './WorkOffline'
 
 export default {

@@ -49,8 +49,9 @@
 /**
  * 个人作品 - 作品离线下载组件
  *
- * @author hjz
+ * @author huojinzhao
  */
+
 export default {
   name: 'works-work-offline',
 

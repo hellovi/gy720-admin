@@ -10,6 +10,12 @@
 </template>
 
 <script>
+/**
+ * 我的作品 - 作品离线下载说明组件
+ *
+ * @author huojinzhao
+ */
+
 export default {
   name: 'works-offline-doc',
 

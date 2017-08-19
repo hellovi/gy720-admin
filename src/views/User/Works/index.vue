@@ -24,10 +24,11 @@
 
 <script>
 /**
- * 个人作品 - 我的作品组件
+ * 我的作品 - 主组件
  *
  * @author hjz
  */
+
 import Request from './module/request'
 import vWorkList from './components/WorkList'
 import vCateList from './components/CateList'
