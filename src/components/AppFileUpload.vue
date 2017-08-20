@@ -79,11 +79,10 @@
           // 切如果提供了多个，其优先级为 uptoken > uptoken_url > uptoken_func
           // 其中 uptoken 是直接提供上传凭证，uptoken_url 是提供了获取上传凭证的地址，如果需要定制获取 uptoken 的过程则可以设置 uptoken_func
           // uptoken : '<Your upload token>',               // uptoken 是上传凭证，由其他程序生成
-          uptoken_url: '/api/qiniu/uptoken',                // Ajax 请求 uptoken 的 Url，**强烈建议设置**（服务端提供）
-          // uptoken_func: function(file){                  // 在需要获取 uptoken 时，该方法会被调用
-          //    // do something
-          //    return uptoken;
-          // },
+          //  : '/user/uptoken',                  // Ajax 请求 uptoken 的 Url，**强烈建议设置**（服务端提供）
+          uptoken_func: function() {                             // 在需要获取 uptoken 时，该方法会被调用
+            return self.getUpToken()
+          },
           get_new_uptoken: false,                           // 设置上传文件的时候是否每次都重新获取新的 uptoken
           // downtoken_url: '/downtoken',
           // Ajax请求downToken的Url，私有空间时使用,JS-SDK 将向该地址POST文件的key和domain,服务端返回的JSON必须包含`url`字段，`url`值为该文件的下载地址
@@ -259,6 +258,77 @@
           };
           preloader.load(file.getSource());
         }
+      },
+      // 获取UPTOKEN
+      getUpToken() {
+        const self = this
+        const uptokenInfo = JSON.parse(window.localStorage.getItem('qiniu-uptoken'))
+
+        const isExpired = (info) => {
+          if (info.uptoken) {
+            const segments = info.uptoken.split(":")
+            const putPolicy = Qiniu.parseJSON(Qiniu.URLSafeBase64Decode(segments[2]))
+            const serverTime = info.expired
+            const clientTime = self.getTimestamp(new Date())
+            const serverDelay = clientTime - serverTime
+            const leftTime = putPolicy - self.getTimestamp(new Date()) + serverDelay
+            // 有效时间小于10分钟设置uptoken过期失效
+            return leftTime < 600
+          } else {
+            return true
+          }
+        }
+
+        if (uptokenInfo && !isExpired(uptokenInfo)) {
+          return uptokenInfo.uptoken
+        }
+        // uptoken过期重新生成
+        return this.ajaxUptoken()
+      },
+      // 异步生成
+      ajaxUptoken() {
+        const self = this
+        const ie = Qiniu.detectIEVersion()
+        let uptoken = ''
+        let ajax
+
+        if (ie && ie <= 9) {
+          ajax = new moxie.xhr.XMLHttpRequest()
+        } else {
+          ajax = Qiniu.createAjax();
+        }
+
+        ajax.open('GET', `/user/uptoken?${+new Date()}`, false)
+        ajax.setRequestHeader('Content-Type', 'application/json');
+        ajax.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+        ajax.setRequestHeader('Authorization', `Bearer ${window.localStorage.getItem('token')}`);
+        const onreadystatechange = () => {
+          if (ajax.readyState === 4) {
+            if (ajax.status === 200) {
+              const res = Qiniu.parseJSON(ajax.responseText)
+              const serverTime = self.getTimestamp(new Date(ajax.getResponseHeader("date")))
+              uptoken = res.status.code === 1 ? res.result.uptoken : ''
+              const uptokenInfo = {
+                uptoken: uptoken,
+                expired: serverTime,
+              }
+              window.localStorage.setItem('qiniu-uptoken', Qiniu.stringifyJSON(uptokenInfo))
+            }
+          }
+        }
+
+        if (ie && ie <= 9) {
+          ajax.bind('readystatechange', onreadystatechange);
+        } else {
+          ajax.onreadystatechange = onreadystatechange;
+        }
+
+        ajax.send()
+
+        return uptoken
+      },
+      getTimestamp(time) {
+        return Math.ceil(time.getTime() / 1000)
       }
     },
     mounted() {
