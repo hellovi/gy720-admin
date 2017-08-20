@@ -115,9 +115,9 @@
         if ((idx + 1) < this.tree && (id || status)) {
           // 开启加载提示
           this.areaLoading[this.areaType[idx + 1]] = true
-          this.$http.post('/api/area', { area_id: id })
+          this.$http.post('/user/area', { parent_id: id })
             .then((res) => {
-              const areas = res.result.areas
+              const areas = res.result
               if (status) {
                 this.positionData[type] = areas
               } else if (nextType) {

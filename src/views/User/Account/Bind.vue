@@ -21,37 +21,58 @@
                 已绑定188****@qq.com，可用于登录和修改密码
               </template>
               <template v-else>
-                <el-button @click.native="bindEmailStatus" v-if="!emailVisible">立即绑定</el-button>
-                <el-form class="email-bind"
-                         :ref="formRef"
-                         :rules="rules"
-                         :model="userEmailBind" v-else>
-                  <form-alert :title="formAlertTitle"
-                              :type="formAlertType"
-                              :contents="this.formAlert"></form-alert>
+                <el-button
+                  @click.native="bindEmailStatus"
+                  v-if="!emailVisible"
+                >立即绑定</el-button>
+                <el-form
+                  class="email-bind"
+                  :ref="formRef"
+                  :rules="rules"
+                  :model="userEmailBind"
+                  v-else
+                >
+                  <form-alert
+                    :title="formAlertTitle"
+                    :type="formAlertType"
+                    :contents="this.formAlert"
+                  ></form-alert>
                   <el-form-item prop="email">
-                    <el-input placeholder="输入邮箱" v-model="userEmailBind.email"></el-input>
+                    <el-input
+                      placeholder="输入邮箱"
+                      v-model="userEmailBind.email"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item prop="auth_code">
                     <el-row>
                       <el-col :span="10">
-                        <el-input :style="{paddingRight: '10px'}"
-                                  placeholder="验证码"
-                                  v-model="userEmailBind.auth_code"></el-input>
+                        <el-input
+                          :style="{paddingRight: '10px'}"
+                          placeholder="验证码"
+                          v-model="userEmailBind.auth_code"
+                        ></el-input>
                       </el-col>
                       <el-col :span="8">
-                        <timer-btn @click.native="emailSend"
-                                   :disabled="disabled"
-                                   :second="60"
-                                   ref="timerBtn"></timer-btn>
+                        <timer-btn
+                          @click.native="emailSend"
+                          :disabled="disabled"
+                          :second="60"
+                          ref="timerBtn"
+                        ></timer-btn>
                       </el-col>
                     </el-row>
                   </el-form-item>
                   <el-form-item>
-                    <el-button type="primary" class="user-account__btn"
-                               :loading="formLoading"
-                               @click.native="beforeSubmit">立即绑定</el-button>
-                    <el-button class="user-account__btn" @click.native="bindEmailStatus(false)">取消绑定</el-button>
+                    <el-button
+                      type="primary"
+                      class="user-account__btn"
+                      :loading="formLoading"
+                      @click.native="beforeSubmit"
+                    >立即绑定</el-button>
+                    <el-button
+                      class="user-account__btn"
+                      @click.native="bindEmailStatus(false)"
+                    >取消绑定</el-button>
                   </el-form-item>
                 </el-form>
               </template>

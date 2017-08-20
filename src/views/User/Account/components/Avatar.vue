@@ -71,7 +71,7 @@
       },
       // 构建完整
       getStatic(path) {
-        return this.$url.static(path)
+        return path && this.$url.static(path)
       },
       // 获取预览图
       getPreview(src) {

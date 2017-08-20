@@ -1,28 +1,48 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <form-alert label-width="200px"
-                  :title="formAlertTitle"
-                  :type="formAlertType"
-                  :contents="this.formAlert"></form-alert>
-      <el-form :model="userPwd"
-               :rules="rules"
-               :ref="formRef"
-               label-width="200px">
-        <el-form-item prop="oldPassword" label="旧密码">
-          <el-input type="password" placeholder="请输入旧密码" v-model="userPwd.oldPassword"></el-input>
+      <form-alert
+        label-width="200px"
+        :title="formAlertTitle"
+        :type="formAlertType"
+        :contents="this.formAlert"
+      ></form-alert>
+      <el-form
+        :model="userPwd"
+        :rules="rules"
+        :ref="formRef"
+        label-width="200px"
+      >
+        <el-form-item prop="old_password" label="旧密码">
+          <el-input
+            type="password"
+            placeholder="请输入旧密码"
+            v-model="userPwd.old_password"
+            ref="oldPassword"
+          ></el-input>
         </el-form-item>
-        <el-form-item prop="newPassword" label="新密码">
-          <el-input type="password" placeholder="请输入新密码" v-model="userPwd.newPassword" ref="newPassword"></el-input>
+        <el-form-item prop="new_password" label="新密码">
+          <el-input
+            type="password"
+            placeholder="请输入新密码"
+            v-model="userPwd.new_password"
+            ref="newPassword"
+          ></el-input>
         </el-form-item>
         <el-form-item prop="new_password_confirmation" label="确认密码">
-          <el-input type="password" placeholder="请输入确认密码" v-model="userPwd.new_password_confirmation"></el-input>
+          <el-input
+            type="password"
+            placeholder="请输入确认密码"
+            v-model="userPwd.new_password_confirmation"
+          ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary"
-                     class="user-account__btn"
-                     :loading="formLoading"
-                     @click.native="beforeSubmit">提交</el-button>
+          <el-button
+            type="primary"
+            class="user-account__btn"
+            :loading="formLoading"
+            @click.native="beforeSubmit"
+          >提交</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -37,7 +57,7 @@
    */
 
   import form from './mixins/form'
-  import { pwdRule, equalRule } from './rules'
+  import { pwdRule, equalRule, noEqualRule } from './rules'
   import FormAlert from './components/Alert'
 
   export default {
@@ -52,13 +72,14 @@
           new_password_confirmation: null,
         },
         rules: {
-          oldPassword: [
+          old_password: [
             { required: true, message: '请输入旧密码', trigger: 'blur' },
           ],
-          newPassword: [
+          new_password: [
             { required: true, message: '请输入新密码', trigger: 'blur' },
+            { type: 'string', min: 6, max: 64, message: '密码长度为6~64个字符', trigger: 'blur' },
             { validator: pwdRule, message: '密码格式不能包含特殊字符，如：%`~!@……等', trigger: 'blur' },
-            { type: 'string', min: 6, max: 16, message: '密码长度为6~16个字符', trigger: 'blur' },
+            { validator: noEqualRule, refs: this.$refs, equal: 'oldPassword', message: '新密码不能与旧密码一样', trigger: 'blur' },
           ],
           new_password_confirmation: [
             { required: true, message: '请输入确认密码', trigger: 'blur' },
