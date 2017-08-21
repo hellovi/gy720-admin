@@ -32,7 +32,7 @@ export default {
 
   props: {
     typeFir: {
-      type: Object,
+      type: Array,
       required: true,
     },
   },

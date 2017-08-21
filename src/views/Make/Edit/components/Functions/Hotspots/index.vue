@@ -58,15 +58,11 @@ export default {
 
   computed: {
     typeFir() {
-      return this.cateType.map((item) => {
-        // ?????
-        const { icon, key, text } = item
-        return { icon, key, text }
-      })
+      return this.cateType.map(({ icon, key, text }) => ({ icon, key, text }))
     },
 
     typeSec() {
-      return this.cateType.filter(item => (item.key === this.type))[0].label
+      return this.cateType.find(item => (item.key === this.type)).label
     },
   },
 
