@@ -1,6 +1,6 @@
 <template>
   <vip-info
-    v-model="active.vipInfo"
+    :visible.sync="active.vipInfo"
     :pano-id="1"
   ></vip-info>
 </template>
