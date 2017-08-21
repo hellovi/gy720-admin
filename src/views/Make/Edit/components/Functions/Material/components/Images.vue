@@ -1,13 +1,18 @@
 <template>
    <div class="edit-functions__material--data">
      <el-row :gutter="10">
-        <el-col :span="4" v-for="(item, index) in activeItemData" :key="index">
+        <el-col :span="4" v-for="(item, index) in dataList" :key="index">
           <el-card :body-style="{ padding: '0px' }">
             <img :src="item.file_path" class="edit-functions__material__image"/>
             <div>
               <div class="bottom clearfix">
                 <span>{{ item.title }}</span>
-                <el-button type="text" class="button">选择</el-button>
+                <el-button
+                  type="text" class="button"
+                  v-show="selectStatus"
+                  @click="selectMater(index, item.id, item.file_path)">
+                  选择
+                </el-button>
               </div>
             </div>
           </el-card>
@@ -26,6 +31,13 @@ import { mapState } from 'vuex'
 export default {
   name: 'edit-functions__material--images',
 
+  props: {
+    type: {
+      type: Number,
+      default: 1,
+    },
+  },
+
   data() {
     return {
 
@@ -34,8 +46,20 @@ export default {
 
   computed: {
     ...mapState({
-      activeItemData: state => state.edit.material.activeItemData,
+      selectStatus: state => state.edit.material.materialState.selectStatus,
     }),
+
+    dataList() {
+      return this.$store.state.edit.material.materialData[this.type]
+    },
+  },
+
+  methods: {
+    selectMater(index, id, url) {
+      // 微信设置
+      this.$store.dispatch('edit/material/select', { id, url })
+      this.$store.dispatch('edit/material/destroy')
+    },
   },
 }
 </script>
@@ -47,6 +71,12 @@ export default {
     .el-card {
       text-align: center;
       padding-top: 10px;
+    }
+
+    .bottom {
+      & >span {
+        font-size:12px;
+      }
     }
   }
 

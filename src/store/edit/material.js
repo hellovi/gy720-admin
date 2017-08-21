@@ -46,22 +46,18 @@ export default {
       // 素材类型 1-6为普通素材，7图文，8物品3d，9音频，10，其他
       type: 1,
       // 选择按钮状态
-      selectStatus: 0,
+      selectStatus: 1,
       // 唤起来源
       selectFrom: '',
     },
-    // materialExport: () => ({
-    //   name: 'alice',
-    // }),
     // 导出的数据
     materialExport: materialExport(),
     materialData: [],
-    activeItemData: {},
   },
 
   mutations: {
     [MATERIAL.CREATE](state, payload) {
-      state.activeItemData = payload.data
+      state.materialData[payload.type] = payload.res.data
     },
 
     [MATERIAL.SELECT](state) {
@@ -101,7 +97,7 @@ export default {
           {id:5,file_path:testData,title:'测试素材'},
           ]
         }
-        commit(MATERIAL.CREATE, res)
+        commit(MATERIAL.CREATE, {res, type: payload.type})
         // 临时数据结束
 
       })

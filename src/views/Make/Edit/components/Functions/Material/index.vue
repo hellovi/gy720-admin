@@ -68,6 +68,7 @@ export default {
       },
       set() {
         // 设置素材类型前置操作
+        // 判断是否为其他地方唤起？store?
       },
     },
   },
@@ -81,6 +82,7 @@ export default {
     creatMaterial(type) {
       // 加载素材
       this.$store.dispatch(EDIT.MATERIAL.CREATE, { type })
+      // .then() 接口好了后这里做一步处理判断currentView的显示隐藏？
     },
   },
 
