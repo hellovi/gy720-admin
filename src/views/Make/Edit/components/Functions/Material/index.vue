@@ -2,12 +2,13 @@
   <div class="edit-functions__material">
     <el-dialog
       title="素材库"
-      :visible.sync="active.material"
+      :visible="active.material"
+      :before-close="() => closeModal('material')"
       size="large"
     >
-      <ul>
-        <li class="edit-functions__material__title" v-for="(item, index) in mapper" :key="item.key">
-          <el-button>{{item.label}}</el-button>
+      <ul class="clearfix edit-functions__material__ul">
+        <li class="edit-functions__material__title list" v-for="(item, index) in mapper" :key="item.key" @click="switchType(item.key)">
+          <el-button size="small">{{item.label}}</el-button>
         </li>
       </ul>
       <keep-alive>
@@ -26,6 +27,7 @@
  * @version 2017-08-21
  */
 import { EDIT } from '@/store/mutationTypes'
+import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
 import { materialImages, materialImageText, materialObject3D } from './components'
 
@@ -35,6 +37,7 @@ export default {
   mixins: [modal],
 
   components: {
+    PanoMaterial,
     materialImages,
     materialImageText,
     materialObject3D,
@@ -44,7 +47,7 @@ export default {
     return {
       type: 1,
       mapper: [
-        { key: 0, label: '全景图', com: '' },
+        { key: 0, label: '全景图', com: 'PanoMaterial' },
         { key: 1, label: 'LOGO', com: 'materialImages' },
         { key: 2, label: '热点图标', com: 'materialImages' },
         { key: 3, label: '小图标', com: 'materialImages' },
@@ -61,7 +64,7 @@ export default {
   computed: {
     currentView: {
       get() {
-        return this.mapper.filter(item => item.key === this.type)[0].com
+        return this.mapper.find(item => item.key === this.type).com
       },
       set() {
         // 设置素材类型前置操作
@@ -69,17 +72,40 @@ export default {
     },
   },
 
+  methods: {
+    switchType(type) {
+      this.type = type
+      this.creatMaterial(type)
+    },
+
+    creatMaterial(type) {
+      // 加载素材
+      this.$store.dispatch(EDIT.MATERIAL.CREATE, { type })
+    },
+  },
+
   created() {
-    // 加载素材
-    this.$store.dispatch(EDIT.MATERIAL.CREATE, { type: this.type })
+    this.creatMaterial(this.type)
   },
 }
 </script>
 
 <style lang="postcss">
 .edit-functions__material {
-  &__title {
 
+  &__ul {
+    padding-left: 0px;
+  }
+
+  &__title {
+    float: left;
+    margin-right: 10px;
+
+    & .el-button {
+      width: 60px;
+      text-align: center;
+      padding: 6px 5px;
+    }
   }
 }
 </style>

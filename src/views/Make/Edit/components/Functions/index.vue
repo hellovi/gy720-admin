@@ -4,7 +4,7 @@
     <functions-logo></functions-logo>
     <functions-author></functions-author>
     <functions-setting></functions-setting>
-    <functions-material></functions-material>
+    <functions-material v-if="active.material"></functions-material>
     <functions-group></functions-group>
     <functions-menu></functions-menu>
     <functions-tour></functions-tour>
@@ -61,6 +61,7 @@ export default {
   computed: {
     ...mapState({
       pano: state => state.edit.panoinfo,
+      active: state => state.edit.active,
     }),
   },
 }
