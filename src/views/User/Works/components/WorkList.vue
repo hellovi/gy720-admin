@@ -33,6 +33,7 @@
         @change="onCheckWork"
         @delete="onDeleteWork"
         @share="onShareWork"
+        @upgrade="onUpgradeWork"
       ></v-work-item>
     </div>
 
@@ -90,6 +91,12 @@
     <!-- 分享弹窗 -->
     <functions-share :data="sharedWork"></functions-share>
 
+    <!-- 升级商业版 / 购买服务弹窗 -->
+    <app-purchase
+      :visible.sync="upgradedWorkModal.tag"
+      :pano-id="upgradedWorkInfo.id"
+    ></app-purchase>
+
     <!-- 分页 -->
     <el-pagination
       v-if="worklist.last_page > 1"
@@ -111,6 +118,7 @@
 
 import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
+import appPurchase from '@/components/AppPurchase'
 
 import Ajax from '../module/ajax'
 import deleteItemMixin from '../module/deleteItemMixin'
@@ -127,6 +135,7 @@ export default {
     vWorkItem,
     vOfflineDoc,
     functionsShare,
+    appPurchase,
   },
 
   props: {
@@ -164,6 +173,14 @@ export default {
     offlineDocTag: false,
 
     sharedWork: {},
+
+    upgradedWorkModal: {
+      tag: false,
+    },
+
+    upgradedWorkInfo: {
+      id: 0,
+    },
   }),
 
   computed: {
@@ -284,6 +301,11 @@ export default {
     onShareWork(work) {
       this.sharedWork = work
       this.$store.commit(EDIT.MODAL.OPEN, 'share')
+    },
+
+    onUpgradeWork(workId) {
+      this.upgradedWorkInfo.id = workId
+      this.upgradedWorkModal.tag = true
     },
   },
 }

@@ -130,10 +130,12 @@ export default {
     workPanoPath() {
       return `/pano/view/${this.item.hash_pano_id}`
     },
+
     // 作品封面在七牛云地址
     workAvatarPath() {
       return this.$url.static(this.item.thumb)
     },
+
     // 判断是否购买作品
     isOwnWork() {
       return this.item.pay_name === '20'
@@ -151,8 +153,9 @@ export default {
       this.checked = !this.checked
       this.$emit('change', this.item.id)
     },
-    onUpgrade() {
 
+    onUpgrade() {
+      this.$emit('upgrade', this.item.id)
     },
 
     onChart() {
