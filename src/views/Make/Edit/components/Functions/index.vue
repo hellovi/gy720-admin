@@ -13,6 +13,7 @@
     <functions-scene></functions-scene>
     <functions-snapshot></functions-snapshot>
     <functions-initialview></functions-initialview>
+    <functions-vip-info :data="pano"></functions-vip-info>
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import FunctionsShare from './Share'
 import FunctionsScene from './Scene'
 import FunctionsSnapshot from './Snapshot'
 import FunctionsInitialview from './Initialview'
+import FunctionsVipInfo from './VipInfo'
 
 
 export default {
@@ -53,6 +55,7 @@ export default {
     FunctionsScene,
     FunctionsSnapshot,
     FunctionsInitialview,
+    FunctionsVipInfo,
   },
 
   computed: {
