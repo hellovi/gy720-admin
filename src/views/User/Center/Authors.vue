@@ -11,8 +11,8 @@
           您暂时还没关注摄影师喔！
           <br>
           快去
-          <a :href="authorLink" class="link">摄影师中心</a>
-          看看吧 ...
+          <a :href="authorsLink" class="link">关注摄影师</a>
+          吧 ...
         </div>
       </div>
     </div>
@@ -84,6 +84,10 @@ export default {
     ...mapGetters({
       dataList: 'centerDataList',
     }),
+
+    authorsLink() {
+      // 后端地址还没有确定
+    },
   },
 
   methods: {
@@ -156,6 +160,8 @@ export default {
 </script>
 
 <style>
+@import 'vars.css';
+
 .center-authors {
 
   &__item {
@@ -174,6 +180,15 @@ export default {
 
     &-tag {
       background-color: transparent;
+    }
+  }
+
+  & .link {
+    color: var(--color-primary);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-info);
     }
   }
 }
