@@ -26,32 +26,18 @@ const toQiniu = (arr) => {
 }
 
 /**
- * @function 关系数据按照点赞数排序
- * @param {Array} list  数据数组 pano:result.data 另外 result.lists.data
- * @return {Array} 排序好的数据列表
- */
-const sortlist = (list) => {
-  const sortArr = list
-  sortArr.sort((a, b) => b.pano_like_sum - a.pano_like_sum)
-  return sortArr
-}
-
-/**
  * @function 发送Http请求，并处理好请求回来的数据
  * @param {String} url  请求地址
- * @param {function} list  处理数据的函数
+ * @param {int} paginate 每页数量
+ * @param {int} cur 目标页
  * @return {Promise} res为返回数据
  */
-const listAjax = (url, paginate = 8, cur = 1, callback) =>
+const listAjax = (url, paginate = 8, cur = 1) =>
   Http.get(`${url}?current_page=${cur}&paginate=${paginate}`)
     .then((res) => {
-      // 接口不统一，/user/pano 是放在result里，collection 是在result.list内
-      const result = res.result.lists || res.result
-      if (result && result.data && callback) {
-        result.data = callback(result.data)
-      }
+      const result = res.result
       result.data = toQiniu(result.data)
-      return Promise.resolve(result || {})
+      return result
     })
 
 // 设置api常量
@@ -76,49 +62,45 @@ export default {
       Promise.all([
         listAjax(API_RECENT, state.paginate),
         listAjax(API_COLLECTIONS, state.paginate),
-        listAjax(API_FANS, state.paginate, 1, sortlist),
-        listAjax(API_FOLLOWS, state.pagenate, 1, sortlist),
+        listAjax(API_FANS, state.paginate),
+        listAjax(API_FOLLOWS, state.pagenate),
       ]).then(resultArr => commit(CENTER.INITIALIZE, resultArr))
     },
 
+    // 作者列表懒加载
     [CENTER.LIST_UPDATE]({ commit, state }) {
-      let pledge = null
-      let cur = 1
       if (state.lazylock) return null
+
       switch (state.linktype) {
-        case 'release':
-          cur = state.releaseList.current_page
-          listAjax(API_RECENT, state.paginate, cur + 1)
-            .then(res => commit(CENTER.LIST_UPDATE, res))
-          break
-        case 'collection':
-          cur = state.collectionList.current_page
-          listAjax(API_COLLECTIONS, state.paginate, cur + 1)
-            .then(res => commit(CENTER.LIST_UPDATE, res))
-          break
         case 'fans':
-          cur = state.fansList.current_page
-          pledge = listAjax(API_FANS, state.paginate, cur + 1, sortlist)
+          return listAjax(
+            API_FANS,
+            state.paginate,
+            state.fansList.current_page + 1,
+          )
             .then(res => commit(CENTER.LIST_UPDATE, res))
-          break
         case 'follows':
-          cur = state.followsList.current_page
-          pledge = listAjax(API_FOLLOWS, state.paginate, cur + 1, sortlist)
+          return listAjax(
+            API_FOLLOWS,
+            state.paginate,
+            state.followsList.current_page + 1,
+          )
             .then(res => commit(CENTER.LIST_UPDATE, res))
-          break
         default:
+          return null
       }
-      return pledge
     },
   },
 
   /* eslint-disable no-param-reassign */
   mutations: {
     [CENTER.INITIALIZE](state, resultArr) {
-      [state.releaseList,
+      [
+        state.releaseList,
         state.collectionList,
         state.fansList,
-        state.followsList] = resultArr
+        state.followsList,
+      ] = resultArr
     },
 
     [CENTER.SETPAGINATE](state, paginate) {
@@ -140,32 +122,25 @@ export default {
           state.linktype = 'follows'
           break
         default:
-          window.console.log('个人中心前端路由发生跳转错误')
+          // window.console.log('个人中心前端路由发生跳转错误')
       }
     },
 
     [CENTER.LIST_UPDATE](state, result) {
+      let listName = ''
       switch (state.linktype) {
-        // 发布和收藏暂时不用做懒加载
-        // case 'release':
-        //   state.releaseList.current_page = result.current_page
-        //   state.releaseList.data.concat(result.data)
-        //   break
-        // case 'collection':
-        //   state.collectionList.current_page = result.current_page
-        //   state.collectionList.data.concat(result.data)
-        //   break
+        // 最近发布和收藏不做懒加载
         case 'fans':
-          state.fansList.current_page = result.current_page
-          state.fansList.data = state.fansList.data.concat(result.data)
+          listName = 'fanList'
           break
         case 'follows':
-          state.followsList.current_page = result.current_page
-          state.fansList.data = state.followsList.data.concat(result.data)
+          listName = 'followList'
           break
         default:
         // window.console.log('前端路由发生跳转错误')
       }
+      state[listName].current_page = result.current_page
+      state[listName].data = [...state[listName].data, ...result.data]
     },
 
     // 控制加载锁，true锁住不让加载，false开放
