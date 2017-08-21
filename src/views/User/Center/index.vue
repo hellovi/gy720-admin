@@ -49,10 +49,11 @@ export default {
   },
 
   beforeCreate() {
-    // 服务懒加载，根据屏幕设置请求个数，保证出现滚动条
+    // 为懒加载服务，根据屏幕设置请求个数，保证出现滚动条
     const screenH = window.screen.height
-    // 兼容屏幕缩小时候
+    // 考虑滚轴缩小屏幕情况
     const windowH = window.innerHeight
+    // 每页作品数量
     let paginate = 8
     if (Math.max(screenH, windowH) > 2000) paginate = 16
     this.$store.commit(CENTER.SETPAGINATE, paginate)

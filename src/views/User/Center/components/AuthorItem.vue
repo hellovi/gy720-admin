@@ -125,7 +125,7 @@ export default {
       return this.$url.host('author')
     },
 
-    // 当前数据没有hash_pano_id，等后端添加
+    // 当前数据没有hash_user_id，等后端添加
     userPath() {
       return this.$url.host(`author/${this.author.user_id}`)
     },
