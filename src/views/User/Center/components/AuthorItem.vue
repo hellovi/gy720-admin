@@ -144,6 +144,8 @@ export default {
 @import "../style/mixins.css";
 
 .center-authoritem {
+  @include box-hover-shadow;
+
   position: relative;
   padding: 10px;
   background-color: var(--color-white);

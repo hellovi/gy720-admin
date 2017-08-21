@@ -99,6 +99,8 @@ export default {
 @import "../style/mixins.css";
 
 .center-panoitem {
+  @include box-hover-shadow;
+
   position: relative;
   display: block;
   overflow: hidden;
