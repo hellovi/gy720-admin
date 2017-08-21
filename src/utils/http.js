@@ -18,6 +18,7 @@ class Http {
       get: Http.get,
       post: Http.post,
       patch: Http.patch,
+      put: Http.put,
       delete: Http.delete,
     }
   }
@@ -90,6 +91,26 @@ class Http {
   static patch(uri, body, headers = {}) {
     return fetch(Http.getUri(uri), {
       method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify(body),
+      credentials: 'same-origin',
+    })
+      .then(Http.errorHandler)
+  }
+
+  /**
+   * PATCH请求
+   * @param {String} uri - 请求接口
+   * @param {Object} body - 请求所需携带参数
+   * @returns {Promise}
+   */
+  static put(uri, body, headers = {}) {
+    return fetch(Http.getUri(uri), {
+      method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

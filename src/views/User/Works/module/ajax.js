@@ -7,7 +7,7 @@
 import Http from '@/utils/http'
 
 // 常量
-const DEFAULT_CATE_ID = 8
+const DEFAULT_CATE_ID = 1
 
 // 接口
 const CATE_API = '/user/panocategory'
@@ -35,8 +35,8 @@ class Ajax {
    * @param {String} cateName - 新增分类的名称
    * @return {Promise/int} data - 新增分类id
    */
-  static createCate(cateName) {
-    return Http.post(`${CATE_API}/${cateName}`)
+  static createCate(cateInfo) {
+    return Http.post(CATE_API, cateInfo)
       .then(({ result }) => result.id)
   }
 
@@ -63,18 +63,18 @@ class Ajax {
   static getWorklist(
     {
       cate_id = DEFAULT_CATE_ID,
-      current_page = 1,
+      page = 1,
       per_page = 8,
     } = {
       cate_id: DEFAULT_CATE_ID,
-      current_page: 1,
+      page: 1,
       per_page: 8,
     },
   ) {
     /* eslint-disable */
     const url = WORKS_API
-      + `?cate_id=${cate_id}`
-      + `&current_page=${current_page}`
+      + `?pano_category_id=${cate_id}`
+      + `&page=${page}`
       + `&per_page=${per_page}`
     /* eslint-enable */
     return Http.get(url)
@@ -91,7 +91,7 @@ class Ajax {
    */
   static updateWorksCate(cateId, workIds) {
     return Http.put(PUT_WORKS_CATE_API, {
-      pano_cate_id: cateId,
+      pano_category_id: cateId,
       ids: workIds,
     })
   }
@@ -108,6 +108,6 @@ class Ajax {
   }
 }
 
-Request.defaultCateId = DEFAULT_CATE_ID
+Ajax.defaultCateId = DEFAULT_CATE_ID
 
 export default Ajax

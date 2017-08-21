@@ -42,7 +42,7 @@
       <!-- 第二行  -->
       <div class="workitem__info-detail">
         <span class="workitem__info-detail__item">
-          {{item.updated_at | formatDateString}}
+          {{item.created_at | formatDateString}}
         </span>
         <span class="workitem__info-detail__item">
           <i class="iconfont">&#xe63d;</i>{{item.hits}}

@@ -138,8 +138,7 @@ export default {
     submitCateCreate() {
       Ajax.createCate(this.createCateInfo)
         .then((id) => {
-          const cate_name = this.createCateInfo.name
-          this.$emit('createCate', { id, cate_name })
+          this.$emit('createCate', { id, ...this.createCateInfo })
           // 对应onCloseCreateCateModal逻辑，必须先取消按钮loading
           this.createCateModal.confirmLoading = false
           this.onCloseCreateCateModal()
@@ -171,7 +170,7 @@ export default {
 
   created() {
     const cate_id = this.$route.query.cate_id
-    this.choosedCateId = cate_id || Ajax.defaultCateId
+    this.choosedCateId = parseInt(cate_id, 10) || Ajax.defaultCateId
   },
 }
 </script>

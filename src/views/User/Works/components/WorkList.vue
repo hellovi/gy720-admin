@@ -60,7 +60,8 @@
           >
             <el-option
               v-for="cate in catelist" :key="cate.id"
-              :value="cate.id" :label="cate.cate_name"
+              v-if="cate.id !== currentCateId"
+              :value="cate.id" :label="cate.name"
             >
             </el-option>
           </el-select>
@@ -165,6 +166,16 @@ export default {
     sharedWork: {},
   }),
 
+  computed: {
+    currentCateId() {
+      const cate_id = this.$route.query.cate_id
+      if (cate_id) {
+        return parseInt(cate_id, 10)
+      }
+      return Ajax.defaultCateId
+    },
+  },
+
   watch: {
     checkedWordsId(nv) {
       const length = this.worklist.data.length
@@ -239,7 +250,7 @@ export default {
       )
         .then(() => {
           this.$emit('deleteWorks', this.checkedWordsId)
-          this.transferWorksModal.comfirmLoading = false
+          this.transferWorksModal.confirmLoading = false
           this.onCloseTransferWorksModal()
           this.initializeCheckedWorks()
         })
@@ -248,7 +259,7 @@ export default {
     /* change pagination event */
     onChangePagination(page) {
       this.$router.push({
-        query: { ...this.$route.query, ...{ current_page: page } },
+        query: { ...this.$route.query, ...{ page } },
       })
     },
 

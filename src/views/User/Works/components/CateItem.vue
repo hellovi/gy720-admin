@@ -13,7 +13,7 @@
     >
       &#xe615;
     </i>
-    {{item.cate_name}}
+    {{item.name}}
   </div>
 </template>
 
