@@ -71,11 +71,12 @@ class Ajax {
       per_page: 8,
     },
   ) {
-    const url = `${WORKS_API}
-      ?cate_id=${cate_id}
-      &current_page=${current_page}
-      &per_page=${per_page}
-    `
+    /* eslint-disable */
+    const url = WORKS_API
+      + `?cate_id=${cate_id}`
+      + `&current_page=${current_page}`
+      + `&per_page=${per_page}`
+    /* eslint-enable */
     return Http.get(url)
       .then(({ result }) => result)
   }
