@@ -56,9 +56,9 @@ const listAjax = (url, paginate = 8, cur = 1, callback) =>
 
 // 设置api常量
 const API_RECENT = '/user/pano'
-const API_COLLECTIONS = '/user/favorite/lists'
-const API_FANS = '/user/follow/fanslists'
-const API_FOLLOWS = '/user/follow/followlists'
+const API_COLLECTIONS = '/user/collection'
+const API_FANS = '/user/fans'
+const API_FOLLOWS = '/user/follow'
 
 export default {
   state: {
