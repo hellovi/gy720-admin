@@ -1,7 +1,10 @@
-// import { Http } from '@/utils'
+/*eslint-disable*/
+import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
 const { MATERIAL } = EDIT
+
+const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
 
 // 导出的数据
 const materialExport = () => (
@@ -52,16 +55,18 @@ export default {
     // }),
     // 导出的数据
     materialExport: materialExport(),
+    materialData: [],
+    activeItemData: {},
   },
 
   mutations: {
-    [MATERIAL.CREATE]() {
-
+    [MATERIAL.CREATE](state, payload) {
+      state.activeItemData = payload.data
     },
 
     [MATERIAL.SELECT](state) {
       state.materialExport.tour.id = 777
-      state.materialExport.tour.url = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
+      state.materialExport.tour.url = testData
     },
 
     [MATERIAL.RESET](state, payload) {
@@ -75,7 +80,31 @@ export default {
   actions: {
     [MATERIAL.CREATE]({ commit }, payload) {
       commit(EDIT.MODAL.OPEN, 'material')
-      window.console.log(payload)
+      // 调试接口
+      const postdata = { file_ext: 'jpg', tag_id: payload.type, per_page: 20, current_page: 1 }
+      return new Promise((resolve, reject) => {
+        // Http.post('/make/source/lists', postdata)
+        //   .then((res) => {
+        //     commit(MATERIAL.CREATE, res.result)
+        //     resolve()
+        //   })
+        //   .catch((res) => {
+        //     window.console.log('无素材')
+        //     window.console.log(res)
+        //     reject()
+        //   })
+
+        // 临时数据
+        const res = {
+          data:[{id:3,file_path:testData,title:'测试素材'},
+          {id:4,file_path:testData,title:'测试素材'},
+          {id:5,file_path:testData,title:'测试素材'},
+          ]
+        }
+        commit(MATERIAL.CREATE, res)
+        // 临时数据结束
+
+      })
     },
 
     [MATERIAL.SELECT]({ commit }) {
