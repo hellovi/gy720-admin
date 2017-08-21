@@ -73,7 +73,7 @@ export default {
     },
 
     checkCompositions() {
-      this.$router.push('/user-client/compositions')
+      this.$router.push('/user-client/works')
     },
   },
 
