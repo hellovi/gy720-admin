@@ -20,6 +20,7 @@ export default {
       scene: false,
       snapshot: false,
       initialview: false,
+      vipInfo: false,
     },
     panoinfo: {},
   },
