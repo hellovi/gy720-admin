@@ -110,11 +110,12 @@
 
 import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
-import Request from '../module/request'
+
+import Ajax from '../module/ajax'
 import deleteItemMixin from '../module/deleteItemMixin'
+
 import vWorkItem from './WorkItem'
 import vOfflineDoc from './OfflineDoc'
-
 
 export default {
   name: 'works-work-list',
@@ -232,7 +233,7 @@ export default {
     },
 
     submitWorksTransfer() {
-      Request.updateWorksCate(
+      Ajax.updateWorksCate(
         this.transferWorksInfo.cateId,
         this.checkedWordsId,
       )
@@ -258,7 +259,7 @@ export default {
         title: '删除作品',
         message: '此操作将永久删除该作品，是否继续？',
         itemId: workId,
-        request: Request.deleteWork,
+        ajax: Ajax.deleteWork,
         success: () => {
           this.$emit('deleteWorks', [workId])
         },

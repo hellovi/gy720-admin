@@ -1,10 +1,19 @@
+/**
+ * 我的作品 - 删除作品&作品分类
+ *
+ * @author huojinzhao
+ * @description 删除都是用到id，并做警告确认和结果回显
+ * @param ajax 封装好的请求方法
+ * @param success 删除成功的回调，写在各自组件中
+ */
+
 export default {
   methods: {
     onDeleteItem({
       title,
       message,
       itemId,
-      request,
+      ajax,
       success,
     }) {
       this.$msgbox({
@@ -14,7 +23,7 @@ export default {
         showCancelButton: true,
         cancelButtonText: '取消',
         type: 'warning',
-        beforeClose: this.submitItemDelete(itemId, request, success),
+        beforeClose: this.submitItemDelete(itemId, ajax, success),
       })
     },
 
@@ -30,14 +39,14 @@ export default {
 
     deleteHandler(
       id,
-      request,
+      ajax,
       success,
       instance,
       done,
     ) {
       /* eslint-disable */
       instance.confirmButtonLoading = true
-      request(id)
+      ajax(id)
         .then(() => {
           this.$message({ type: 'success', message: '删除成功' })
           success()

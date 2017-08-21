@@ -60,7 +60,7 @@
  * @author huojinzhao
  */
 
-import Request from '../module/request'
+import Ajax from '../module/ajax'
 import deleteItemMixin from '../module/deleteItemMixin'
 import vCateItem from './CateItem'
 
@@ -136,7 +136,7 @@ export default {
     },
 
     submitCateCreate() {
-      Request.createCate(this.createCateInfo)
+      Ajax.createCate(this.createCateInfo)
         .then((id) => {
           const cate_name = this.createCateInfo.name
           this.$emit('createCate', { id, cate_name })
@@ -161,7 +161,7 @@ export default {
         title: '删除分类',
         message,
         itemId: cateId,
-        request: Request.deleteCate,
+        ajax: Ajax.deleteCate,
         success: () => {
           this.$emit('deleteCate', cateId)
         },
@@ -171,7 +171,7 @@ export default {
 
   created() {
     const cate_id = this.$route.query.cate_id
-    this.choosedCateId = cate_id || Request.defaultCateId
+    this.choosedCateId = cate_id || Ajax.defaultCateId
   },
 }
 </script>

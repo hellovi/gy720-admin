@@ -29,7 +29,7 @@
  * @author hjz
  */
 
-import Request from './module/request'
+import Ajax from './module/ajax'
 import vWorkList from './components/WorkList'
 import vCateList from './components/CateList'
 
@@ -63,14 +63,14 @@ export default {
   },
 
   created() {
-    Request.getCatelist()
+    Ajax.getCatelist()
       .then((data) => { this.catelist = data })
-    Request.getWorklist(this.$route.query)
+    Ajax.getWorklist(this.$route.query)
       .then((data) => { this.worklist = data })
   },
 
   beforeRouteUpdate(to, from, next) {
-    Request.getWorklist(to.query)
+    Ajax.getWorklist(to.query)
       .then((data) => {
         this.worklist = data
         next()
