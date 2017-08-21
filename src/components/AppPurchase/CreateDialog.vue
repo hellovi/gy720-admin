@@ -3,8 +3,8 @@
     <el-dialog
       title="生成订单"
       size="small"
-      :visible.sync="visible"
-      :before-close="()=>$emit('close')"
+      :visible="visible"
+      @update:visible="val => $emit('update:visible',val)"
       class="create-dialog"
     >
       <div class="create-dialog__text" v-if="goodsId === 9">
@@ -69,8 +69,7 @@
 
     <!-- 确认订单组件 -->
     <confirm-dialog
-      :visible="dialog.confirm"
-      @close="dialog.confirm = false"
+      :visible.sync="dialog.confirm"
       :orderSn="orderSn"
       :price="price"
     ></confirm-dialog>
@@ -227,15 +226,20 @@ export default {
     createOrder() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          this.$http.post('/user/pay/createorder', this.form)
-            .then((res) => {
-              this.price = res.result.order.order_amount
-              this.orderSn = res.result.order.order_sn
-              this.dialog.confirm = true
-              this.$emit('close')
-            }).catch((error) => {
-              this.$message.error(`${error.message}`)
-            })
+          this.dialog.confirm = true
+          this.$emit('update:visible', false)
+
+          // 等待创建订单借口
+
+          // this.$http.post('/user/pay/createorder', this.form)
+          //   .then((res) => {
+          //     this.price = res.result.order.order_amount
+          //     this.orderSn = res.result.order.order_sn
+          //     this.dialog.confirm = true
+          //     this.$emit('update:visible', false)
+          //   }).catch((error) => {
+          //     this.$message.error(`${error.message}`)
+          //   })
         }
       })
     },

@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     title="确认购买"
-    :visible.sync="visible"
-    class="weixin-dialog"
     size="small"
-    :before-close="()=>$emit('close')"
+    class="weixin-dialog"
+    :visible="visible"
+    @update:visible="val => $emit('update:visible',val)"
   >
     <el-row>
       <el-col :span="10" class="text-center">
@@ -53,7 +53,8 @@ export default {
     weixinFinish() {
       const nw = window.open()
       nw.location.href = `/user-client/purchase/orders/${this.orderSn}`
-      this.$emit('close')
+      this.$emit('update:visible', false)
+      // 在此要更新该作品的VIP状态或者用户信息的年会员状态
     },
   },
 

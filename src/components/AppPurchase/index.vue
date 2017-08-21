@@ -3,8 +3,8 @@
     <el-dialog
       title="购买服务"
       size="large"
-      :visible.sync="visible"
-      @close="$emit('close')"
+      :visible="visible"
+      @update:visible="val => $emit('update:visible',val)"
       class="app-purchase"
     >
       <el-row class="app-purchase__types">
@@ -39,16 +39,14 @@
     <!-- 购买年会员 -->
     <create-dialog
       :goodsId="9"
-      :visible="dialog.vip"
-      @close="dialog.vip = false"
+      :visible.sync="dialog.vip"
     ></create-dialog>
 
     <!-- 购买单作品 -->
     <create-dialog
       :panoId="panoId"
       :goodsId="10"
-      :visible="dialog.pano"
-      @close="dialog.pano = false"
+      :visible.sync="dialog.pano"
     ></create-dialog>
 
   </div>
@@ -88,11 +86,11 @@ export default {
   methods: {
     openDialogVip() {
       this.dialog.vip = true
-      this.$emit('close')
+      this.$emit('update:visible', false)
     },
     openDialogPano() {
       this.dialog.pano = true
-      this.$emit('close')
+      this.$emit('update:visible', false)
     },
   },
 

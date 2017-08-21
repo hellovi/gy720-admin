@@ -2,9 +2,9 @@
   <div>
     <el-dialog
       title="确认支付"
-      :visible.sync="visible"
       class="confirm-dialog"
-      :before-close="()=>$emit('close')"
+      :visible.sync="visible"
+      @update:visible="val => $emit('update:visible',val)"
     >
       <p class="text-center">订单已经创建成功，订单号：
         <span class="text-primary">{{orderSn}}</span>
@@ -25,8 +25,7 @@
 
     <!-- 微信扫码弹窗 -->
     <weixin-dialog
-      :visible="dialog.weixin"
-      @close="dialog.weixin = false"
+      :visible.sync="dialog.weixin"
       :price="price"
       :orderSn="orderSn"
     ></weixin-dialog>
@@ -74,19 +73,31 @@ export default {
   methods: {
     // 创建支付链接
     createpay() {
-      this.$http.get(`/user/pay/createpay?orderSn=${this.orderSn}`)
-        .then((res) => {
-          if (this.payType === 'alipay') {
-            this.windowOpen(res.result.payLink)
-            this.alipayFinish(this.orderSn)
-            this.$emit('close')
-          } else {
-            this.dialog.weixin = true
-            this.$emit('close')
-          }
-        }).catch((error) => {
-          this.$message.error(`${error.message}`)
-        })
+      if (this.payType === 'alipay') {
+        this.windowOpen('https://www.baidu.com')
+        this.alipayFinish('968810')
+        this.$emit('update:visible', false)
+      } else {
+        this.dialog.weixin = true
+        this.$emit('update:visible', false)
+      }
+
+
+      // 等待获取支付链接接口
+
+      // this.$http.get(`/user/pay/createpay?orderSn=${this.orderSn}`)
+      //   .then((res) => {
+      //     if (this.payType === 'alipay') {
+      //       this.windowOpen(res.result.payLink)
+      //       this.alipayFinish(this.orderSn)
+      //       this.$emit('update:visible', false)
+      //     } else {
+      //       this.dialog.weixin = true
+      //       this.$emit('update:visible', false)
+      //     }
+      //   }).catch((error) => {
+      //     this.$message.error(`${error.message}`)
+      //   })
     },
 
     // 新窗口打开支付链接
@@ -101,6 +112,7 @@ export default {
         confirmButtonText: '支付完成',
         type: 'warning',
         callback: () => {
+          // 在此要更新该作品的VIP状态或者用户信息的年会员状态
           this.windowOpen(`/user-client/purchase/orders/${orderSn}`)
         },
       })

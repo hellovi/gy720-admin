@@ -62,11 +62,13 @@
 
     <create-dialog
       :goodsId='9'
-      :visible="visible"
-      @close="visible = false"
+      :visible.sync="visible"
     ></create-dialog>
 
-    <app-purchase :panoId='142' :visible="visible2" @close="visible2 = false"></app-purchase>
+    <app-purchase
+      :panoId='142'
+      :visible.sync="visible2"
+    ></app-purchase>
 
   </div>
 </template>
