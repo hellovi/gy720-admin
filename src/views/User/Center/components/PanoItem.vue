@@ -19,23 +19,31 @@
       >
         <img
           class="center-panoitem__info__avatar-img"
-          :alt="`作品：${pano.pano_name}`"
+          :alt="`作品：${pano.name}`"
           :src="pano.avatar"/>
       </a>
-
+      <span
+        :class="{
+          'center-panoitem__info__collects': true,
+          'center-panoitem__info__collects--active': true,
+        }"
+        @click="onToggleCollection"
+      >
+        {{pano.collects}}
+      </span>
       <div class="center-panoitem__info__panoname ellipsis">
-        {{pano.pano_name}}
+        {{pano.name}}
       </div>
     </div>
 
-    <!-- 浏览数 | 点赞数 -->
+    <!-- 人气 | 点赞数 -->
     <div class="center-panoitem__icons">
       <div class="center-panoitem__icons--eye">
-        <i class="iconfont">&#xe63d;</i>{{pano.hits}}
+        <i class="iconfont">&#xe63d;</i>{{pano.popular}}
       </div>
 
       <div class="center-panoitem__icons--thumb">
-        <i class="iconfont">&#xe641;</i>{{pano.like_nums}}
+        <i class="iconfont">&#xe641;</i>{{pano.stargazers}}
       </div>
 
       <el-button
@@ -77,6 +85,9 @@ export default {
   methods: {
     toPanoEdit() {
       this.$router.push(`/make-client/edit?pano_id=${this.pano.id}`)
+    },
+    onToggleCollection() {
+      // this.$emit('toggleCollection', !this.pano.isCollection)
     },
   },
 }
@@ -132,10 +143,36 @@ export default {
       }
     }
 
+    &__collects {
+      float: right;
+      padding-right: 8px;
+      line-height: 34px;
+      font-size: 13px;
+      color: var(--gray);
+      cursor: pointer;
+
+      &::before {
+        content: '\e6eb';
+        font-family: "iconfont";
+        font-size: 18px;
+      }
+
+      &--active {
+        &::before {
+          content: '\e663';
+          font-family: 'iconfont';
+          font-size: 18px;
+          color: red;
+        }
+      }
+    }
+
     &__panoname {
       padding-left: 62px;
       padding-right: 10px;
       line-height: 34px;
+      font-size: 14px;
+      font-weight: bold;
     }
   }
 
@@ -165,7 +202,7 @@ export default {
       float: left;
       border: 1px solid var(--color-light-gray);
       background-color: color(var(--color-extra-light-gray) alpha(60%));
-      color: color(--gray-light);
+      color: var(--gray);
     }
 
     &--thumb {
