@@ -36,7 +36,7 @@
 
     <el-button
       class="center-panos__wholepano-link"
-      v-if="dataList.data.length > 0"
+      v-if="dataList.data.length > 0 && rel === 'release'"
       type="text" size="large"
       @click.stop="checkCompositions"
     >
@@ -52,7 +52,7 @@
  * @author huojinzhao
  */
 import store from '@/store'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import { CENTER } from '@/store/mutationTypes'
 import PanoItem from './components/PanoItem'
 
@@ -63,9 +63,15 @@ export default {
     PanoItem,
   },
 
-  computed: mapGetters({
-    dataList: 'centerDataList',
-  }),
+  computed: {
+    ...mapGetters({
+      dataList: 'centerDataList',
+    }),
+
+    ...mapState({
+      rel: state => state.center.linktype,
+    }),
+  },
 
   methods: {
     publishPano() {
