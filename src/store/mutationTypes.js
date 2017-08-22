@@ -73,9 +73,15 @@ export const EDIT = {
 
   // 素材模块
   MATERIAL: {
-    CREATE: 'EDIT/MATERIAL/CREATE',
-    SELECT: 'EDIT/MATERIAL/SELECT',
-    RESET: 'EDIT/MATERIAL/RESET',
+    INIT: {
+      LOAD: 'EDIT.MATERIAL.LOAD',
+      PANOS: 'EDIT.MATERIAL.INIT.PANOS',
+    },
+    SELECT: 'EDIT.MATERIAL.SELECT',
+    RESET: 'EDIT.MATERIAL.RESET',
+    TAB: {
+      SELECT: 'EDIT.MATERIAL.TAG.SELECT',
+    },
   },
 
   // 场景模块

@@ -1,63 +1,60 @@
-/*eslint-disable*/
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
+
+/**
+ * @typedef {Object} State
+ * @property {string} type - 素材类型
+ * @property {boolean} selectStatus - 试图上是否显示选择按钮
+ * @property {string} selectFrom - 调用素材框的源头
+ * @property {Object} materialExport - 各个素材类型里所选中的素材数据
+ * @property {Object} materialData - 素材数据
+ */
 
 const { MATERIAL } = EDIT
 
 const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
 
-// 导出的数据
-const materialExport = () => (
-  {
-    // 导览图(右侧菜单)
-    tour: {
-      url: '',
-      id: 0,
-    },
-    // 图文素材data(右侧菜单)
-    menu: {
-      title: '',
-      id: 0,
-    },
-    // 图文素材data(热点设置)
-    hotspot: {
-      title: '',
-      id: 0,
-    },
-    // 物品3D素材(热点设置)
-    hotspot3d: {
-      title: '',
-      id: 0,
-    },
-    // 普通素材data(微信设置)
-    wechat: {
-      url: '',
-      id: 0,
-    },
-  }
-)
+// const MATERIAL_DICT = {
+//   panos: 0,
+// }
 
+// 导出的数据
+const getMaterialExport = () => ({
+  tour: { url: '', id: 0 }, // 导览图(右侧菜单)
+  menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
+  hotspot: { title: '', id: 0 }, // 图文素材data(热点设置)
+  hotspot3d: { title: '', id: 0 }, // 物品3D素材(热点设置)
+  wechat: { url: '', id: 0 }, // 普通素材data(微信设置)
+})
 
 export default {
+  /** @type {State} */
   state: {
-    materialState: {
-      // 控制弹窗显示
-      active: 0,
-      // 素材类型 1-6为普通素材，7图文，8物品3d，9音频，10，其他
-      type: 1,
-      // 选择按钮状态
-      selectStatus: 1,
-      // 唤起来源
-      selectFrom: '',
+    type: 'panos',
+    selectStatus: 1,
+    selectFrom: '',
+    materialExport: getMaterialExport(),
+    materialData: {
+      panos: { data: [] },
+      logos: { data: [] },
+      hotspots: { data: [] },
+      icons: { data: [] },
+      ads: { data: [] },
+      thumbs: { data: [] },
+      infos: { data: [] },
+      objects: { data: [] },
+      audios: { data: [] },
+      others: { data: [] },
     },
-    // 导出的数据
-    materialExport: materialExport(),
-    materialData: [],
   },
 
   mutations: {
-    [MATERIAL.CREATE](state, payload) {
-      state.materialData[payload.type] = payload.res.data
+    [MATERIAL.TAB.SELECT](state, type) {
+      state.type = type
+    },
+
+    [MATERIAL.INIT.LOAD](state, { type, data }) {
+      state.materialData[type] = data
     },
 
     [MATERIAL.SELECT](state) {
@@ -68,39 +65,34 @@ export default {
     [MATERIAL.RESET](state, payload) {
       const from = payload.from
       state.materialExport[from] = {
-        ...materialExport()[from],
+        ...getMaterialExport()[from],
       }
     },
   },
 
   actions: {
-    [MATERIAL.CREATE]({ commit }, payload) {
+    /**
+     * 根据传入的type改变选中的素材标签，并派发事件打开素材窗口
+     */
+    [MATERIAL.TAB.SELECT]({ commit }, type) {
+      commit(MATERIAL.TAB.SELECT, type)
       commit(EDIT.MODAL.OPEN, 'material')
-      // 调试接口
-      const postdata = { file_ext: 'jpg', tag_id: payload.type, per_page: 20, current_page: 1 }
-      return new Promise((resolve, reject) => {
-        // Http.post('/make/source/lists', postdata)
-        //   .then((res) => {
-        //     commit(MATERIAL.CREATE, res.result)
-        //     resolve()
-        //   })
-        //   .catch((res) => {
-        //     window.console.log('无素材')
-        //     window.console.log(res)
-        //     reject()
-        //   })
+    },
 
-        // 临时数据
-        const res = {
-          data:[{id:3,file_path:testData,title:'测试素材'},
-          {id:4,file_path:testData,title:'测试素材'},
-          {id:5,file_path:testData,title:'测试素材'},
-          ]
-        }
-        commit(MATERIAL.CREATE, {res, type: payload.type})
-        // 临时数据结束
-
-      })
+    [MATERIAL.INIT.PANOS]({ commit }, params = '') {
+      // const { /* id: tag_id, */ url, method = 'post' } = MATERIAL_DICT[type]
+      // { file_ext: 'jpg', tag_id, per_page: 20, current_page: 1 }
+      return Http.get(`/user/sourcescene${params}`)
+        .then((result) => {
+          commit(MATERIAL.INIT.LOAD, { type: 'panos', data: result })
+        })
+        // .catch(() => {
+        //   commit(MATERIAL.INIT, { type,
+        //     data: [{ id: 3, file_path: testData, title: '测试素材' },
+        //       { id: 4, file_path: testData, title: '测试素材' },
+        //       { id: 5, file_path: testData, title: '测试素材' },
+        //     ] })
+        // })
     },
 
     [MATERIAL.SELECT]({ commit }) {
