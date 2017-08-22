@@ -1,12 +1,12 @@
 <template>
-   <div class="edit-functions__material--data">
+   <div class="edit-functions__material__data">
      <el-row :gutter="10">
         <el-col :span="4" v-for="(item, index) in dataList" :key="index">
           <el-card :body-style="{ padding: '0px' }">
             <img :src="item.file_path" class="edit-functions__material__image"/>
             <div>
               <div class="bottom clearfix">
-                <span>{{ item.title }}</span>
+                <h6>{{ item.title }}</h6>
                 <el-button
                   type="text" class="button"
                   v-show="selectStatus"
@@ -67,15 +67,17 @@ export default {
 <style lang="postcss">
 .edit-functions__material {
 
-  &--data {
+  &__data {
     .el-card {
       text-align: center;
       padding-top: 10px;
     }
 
     .bottom {
-      & >span {
-        font-size:12px;
+      position: relative;
+      & >h6 {
+        font-size: 12px;
+        margin: 10px auto 0;
       }
     }
   }
