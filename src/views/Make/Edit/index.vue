@@ -5,7 +5,7 @@
     <div id="pano-editor"></div>
 
     <!--UI层-->
-    <div class="edit-control">
+    <div class="edit-control" v-show="active.uiView">
       <top-left></top-left>
       <top-center></top-center>
       <top-right></top-right>
@@ -28,9 +28,11 @@
 /* eslint-disable no-underscore-dangle, new-cap */
 /**
  * 高级编辑
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-08-11
  */
+
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 
 import {
@@ -65,6 +67,12 @@ export default {
     EditFunctions,
   },
 
+  computed: {
+    ...mapState({
+      active: state => state.edit.active,
+    }),
+  },
+
   methods: {
     initPano(pano_id) {
       window.embedpano({
@@ -90,7 +98,7 @@ export default {
   },
 
   mounted() {
-    this.initPano(850)
+    // this.initPano(850)
   },
 }
 

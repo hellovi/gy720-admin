@@ -8,6 +8,7 @@ import author from './author'
 export default {
   state: {
     active: {
+      uiView: true,
       logo: false,
       author: false,
       setting: false,
@@ -21,6 +22,7 @@ export default {
       snapshot: false,
       initialview: false,
       vipInfo: false,
+      restrictView: false,
     },
     panoinfo: {},
   },
