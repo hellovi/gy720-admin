@@ -47,6 +47,7 @@
 
     <!-- 编辑导览 -->
     <el-dialog
+      class="tour-edition"
       title="添加场景视角展示" size="large" top="5%"
       :visible.sync="editTourModal.tag"
     >
@@ -132,7 +133,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
 @import 'vars.css';
 
 :root {
@@ -224,6 +225,13 @@ export default {
       & > p {
         margin: 5px 0;
       }
+    }
+  }
+
+  & .tour-edition {
+
+    & .el-dialog--large {
+      width: 900px;
     }
   }
 }

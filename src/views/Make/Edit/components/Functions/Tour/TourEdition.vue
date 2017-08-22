@@ -1,6 +1,7 @@
 <template>
   <div class="edit-functions__tour-edition">
     <el-form
+      class="edition__editor"
       label="80px" :inline="true"
       :model="tourEditionInfo"
       :rules="tourEditionRules"
@@ -22,6 +23,7 @@
 
     <div class="edition__map">
       <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
+      <v-view-panel></v-view-panel>
     </div>
 
     <dl class="edition__doc">
@@ -40,14 +42,20 @@
  * @author huojinzhao
  */
 
+import vViewPanel from './ViewPanel'
+
 export default {
   name: 'edit-functions__tour-edition',
+
+  components: {
+    vViewPanel,
+  },
 
   data: () => ({
     helpDoc: [
       '点击 "选择场景" 按钮，选择需要添加视角展示的场景；',
-      '拖动雷达圆心，可以设置在地图中位置；',
-      '拖动雷达黑色外环区域，可以设置视角方向；',
+      '拖动雷达的圆心，可以设置在地图中位置；',
+      '拖动雷达的外环区域，可以设置视角方向；',
       '操作完成后, 记得点击 "保存" 哦。',
     ],
 
@@ -65,19 +73,24 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
 .edit-functions__tour-edition {
+  text-align: center;
+
+  & .edition__editor {
+    text-align: left;
+  }
 
   & .edition__map {
+    display: inline-block;
 
     & > img {
-      display: block;
-      margin: 0 auto;
-      width: 80%;
+      max-width: 800px;
     }
   }
 
   & .edition__doc {
+    text-align: left;
 
     & dd {
       margin-top: 10px;
