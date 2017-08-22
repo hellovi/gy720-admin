@@ -29,20 +29,16 @@
   }
 }
 
-.el-dialog__wrapper {
+.el-dialog {
+  &--tiny {
+    width: 415px;
+  }
 
-  & .el-dialog {
+  &--small {
+    width: 580px;
+  }
 
-    &--tiny {
-      width: 415px;
-    }
-
-    &--small {
-      width: 580px;
-    }
-
-    &--large {
-      width: 808px;
-    }
+  &--large {
+    width: 808px;
   }
 }
