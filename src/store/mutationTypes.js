@@ -5,6 +5,17 @@ export const GLOBAL = {
   },
 }
 
+// 作品
+export const WORK = {
+  CATE: {
+    INIT: 'WORK.CATE.INIT',
+    ADD: 'WORK.CATE.ADD',
+  },
+  TAG: {
+    INIT: 'WORK.TAG.INIT',
+  },
+}
+
 // 个人中心
 export const CENTER = {
   INITIALIZE: 'CENTER.INITIALIZE',
