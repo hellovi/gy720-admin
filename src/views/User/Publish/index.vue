@@ -2,13 +2,13 @@
   <div>
     <el-form class="publish-form" label-width="5em">
       <el-row>
-        <el-col span="7">
+        <el-col :span="7">
           <el-form-item label="作品名称">
             <el-input placeholder="请输入作品名称" v-model="form.pano_name"></el-input>
           </el-form-item>
         </el-col>
 
-        <el-col span="7" :offset="1">
+        <el-col :span="7" :offset="1">
           <el-form-item label="作品分类">
             <el-select v-model="form.cate_id" style="width: 100%;">
               <el-option value="">默认分类</el-option>
@@ -16,7 +16,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col span="8" :offset="1">
+        <el-col :span="8" :offset="1">
           <el-form-item label="作品标签">
             <el-input placeholder="最多可选择3个标签"></el-input>
           </el-form-item>
@@ -27,8 +27,8 @@
         <el-row class="publish-panos__header">
           <el-col class="publish-panos__upload" :span="8">
             <span class="text-primary">本地上传</span>
-            <el-button class="btn-primary">上传2:1全景图</el-button>
-            <el-button class="btn-primary">上传4张鱼眼图</el-button>
+            <div class="el-button btn-primary" id="normal">上传2:1全景图</div>
+            <div class="el-button btn-primary" id="fisheye">上传4张鱼眼图</div>
           </el-col>
           <el-col class="publish-panos__select" :span="4">
             <el-button class="btn-warning" @click="showDialog">从素材库选择全景图</el-button>
@@ -40,7 +40,18 @@
           </el-col>
         </el-row>
 
-        <div class="publish-panos__content"></div>
+        <el-row class="publish-panos__content" :gutter="10">
+          <el-col v-for="file in files" :key="file.id" :span="6">
+            <div class="publish-panos__item" :class="{uploading: file.percent < 100 }">
+              <img v-if="file.preview" :src="file.preview" :alt="file.name">
+              <el-progress :text-inside="true" :stroke-width="14" :percentage="file.percent" v-if="file.percent < 100"></el-progress>
+              <div class="publish-panos__item__footer">
+                {{ file.name }}
+                <i v-if="file.percent === 100" role="button" class="iconfont">&#xe615;</i>
+              </div>
+            </div>
+          </el-col>
+        </el-row>
       </div>
 
       <el-form-item class="publish-form__submit">
@@ -60,8 +71,11 @@
 
 <script>
 import PanoMaterial from './components/PanoMaterial'
+import upload from './upload'
 
 export default {
+  mixins: [upload],
+
   components: {
     PanoMaterial,
   },
@@ -73,6 +87,7 @@ export default {
         cate_id: '',
       },
       dialog: false,
+      timer: null,
     }
   },
 
@@ -147,6 +162,72 @@ export default {
 
   &__content {
     min-height: 580px;
+    padding: 10px 0;
+  }
+
+  &__item {
+    position: relative;
+    margin-top: 10px;
+    background-color: #bfbfbf;
+    background-origin: content-box;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      float: left;
+      margin-bottom: 50%;
+    }
+
+    &.uploading::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    & > img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    & > .el-progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      z-index: 2;
+      width: 100%;
+      transform: translateY(-50%);
+
+      .el-progress-bar__innerText {
+        margin-top: -8px;
+      }
+    }
+
+    &__footer {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 24px;
+      padding: 0 0.2em;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      font-size: 12px;
+      line-height: 24px;
+
+      & > .iconfont {
+        float: right;
+        cursor: pointer;
+      }
+    }
   }
 }
 
