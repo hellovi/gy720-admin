@@ -3,12 +3,7 @@
   "css.validate": false,
   "files.eol": "\n",
   "emmet.includeLanguages": {
-    "vue-html": "html",
-    "vue": "html"
-  },
-  "emmet.syntaxProfiles": {
-    "vue-html": "html",
-    "vue": "html"
+    "vue-html": "html"
   },
   "emmet.triggerExpansionOnTab": true,
   "eslint.validate": [
