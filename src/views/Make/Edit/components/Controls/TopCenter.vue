@@ -3,7 +3,7 @@
     <el-button class="tip tip--bottom" data-tip="个人中心" type="primary" @click="$router.push('/user-client/center/')">
       <i class="iconfont">&#xe629;</i>
     </el-button>
-    <el-button class="tip tip--bottom" data-tip="限制视角" type="primary">
+    <el-button class="tip tip--bottom" data-tip="限制视角" type="primary" @click="openRestrictView">
       <i class="iconfont">&#xe627;</i>
     </el-button>
     <el-button class="tip tip--bottom" data-tip="初始画面" type="primary" @click="openModal('initialview')">
@@ -28,6 +28,14 @@ export default {
   name: 'edit-right-middle',
 
   mixins: [modal],
+
+  methods: {
+    openRestrictView() {
+      this.openModal('restrictView')
+      // 隐藏UI层
+      this.closeModal('uiView')
+    },
+  },
 }
 </script>
 

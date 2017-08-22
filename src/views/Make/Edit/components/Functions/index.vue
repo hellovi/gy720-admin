@@ -13,7 +13,10 @@
     <functions-scene></functions-scene>
     <functions-snapshot></functions-snapshot>
     <functions-initialview></functions-initialview>
+    <!--vip信息-->
     <functions-vip-info :data="pano"></functions-vip-info>
+    <!--限制视角-->
+    <functions-restrict-view></functions-restrict-view>
   </div>
 </template>
 
@@ -37,6 +40,7 @@ import FunctionsScene from './Scene'
 import FunctionsSnapshot from './Snapshot'
 import FunctionsInitialview from './Initialview'
 import FunctionsVipInfo from './VipInfo'
+import FunctionsRestrictView from './RestrictView'
 
 
 export default {
@@ -56,6 +60,7 @@ export default {
     FunctionsSnapshot,
     FunctionsInitialview,
     FunctionsVipInfo,
+    FunctionsRestrictView,
   },
 
   computed: {
