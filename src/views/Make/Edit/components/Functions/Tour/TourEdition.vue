@@ -22,8 +22,12 @@
     </el-form>
 
     <div class="edition__map">
+      <v-view-panel
+        :top.sync="viewPanelInfo.top"
+        :left.sync="viewPanelInfo.left"
+        :degress.sync="viewPanelInfo.degress"
+      ></v-view-panel>
       <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
-      <v-view-panel></v-view-panel>
     </div>
 
     <dl class="edition__doc">
@@ -69,6 +73,12 @@ export default {
         { pattern: /^\S{1,4}$/, message: '请输入4个字符以内', trigger: 'blur' },
       ],
     },
+
+    viewPanelInfo: {
+      top: 100,
+      left: 200,
+      degress: 90,
+    },
   }),
 }
 </script>
@@ -82,6 +92,7 @@ export default {
   }
 
   & .edition__map {
+    position: relative;
     display: inline-block;
 
     & > img {

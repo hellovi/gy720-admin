@@ -49,6 +49,7 @@
     <el-dialog
       class="tour-edition"
       title="添加场景视角展示" size="large" top="5%"
+      :close-on-click-modal="false"
       :visible.sync="editTourModal.tag"
     >
       <v-tour-edition></v-tour-edition>
@@ -229,6 +230,8 @@ export default {
   }
 
   & .tour-edition {
+    // 在动画过程中，viewpanel会有显示问题
+    animation: unset;
 
     & .el-dialog--large {
       width: 900px;
