@@ -34,7 +34,7 @@
           <li><router-link to="/user-client/purchase">购买服务</router-link></li>
           <li><router-link to="/user-client/account">账号管理</router-link></li>
           <li><router-link to="/user-client/message">我的消息</router-link></li>
-          <li><a href="/user/auth/signout?client=web">退出登陆</a></li>
+          <li><a href="/user/logout">退出登陆</a></li>
         </ul>
       </div>
     </div>
@@ -57,7 +57,7 @@ export default {
 @import "vars.css";
 
 :root {
-  --logo-height: 40px;
+  --logo-height: 30px;
   --search-height: 30px;
   --avatar-height: 34px;
 }
@@ -68,7 +68,7 @@ export default {
   z-index: 5;
   min-width: var(--content-width);
   height: var(--header-height);
-  padding: 0 24px;
+  padding: 0 110px;
   background-color: #313131;
   color: #fff;
   font-size: 14px;
