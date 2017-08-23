@@ -31,6 +31,7 @@
         class="center-panos__item"
         v-for="item in panosInfo.data"
         :key="item.id" :pano="item"
+        @togglecollection="onToggleCollection"
       ></v-pano-item>
     </div>
 
@@ -51,6 +52,7 @@
  *
  * @author huojinzhao
  */
+import Ajax from './modules/ajax'
 import { getRouteType, getAuthorsInfo } from './modules/utils'
 import vPanoItem from './components/PanoItem'
 
@@ -73,6 +75,15 @@ export default {
 
     checkCompositions() {
       this.$router.push('/user-client/works')
+    },
+
+    onToggleCollection(id) {
+      Ajax.updatePanoCollection(id)
+        .then(() => {
+          const pano = this.panosInfo.data
+            .find(item => item.id === id)
+          if (pano) pano.is_follow = !pano.is_follow
+        })
     },
   },
 

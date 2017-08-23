@@ -13,6 +13,7 @@ const COLLECTIONS_URL = '/user/collection'
 const FANS_URL = '/user/fans'
 const FOLLOWS_URL = '/user/follow'
 const TOGGLE_FOLLOW_URL = '/user/follower'
+const TOGGLE_COLLECTION_URL = '/user/collect'
 
 class Ajax {
   // 公共方法
@@ -105,7 +106,7 @@ class Ajax {
    * @return {Promise} data - needless
    */
   static updatePanoCollection(id) {
-    return Http.get(`${COLLECTIONS_URL}/${id}`)
+    return Http.get(`${TOGGLE_COLLECTION_URL}/${id}`)
   }
 }
 

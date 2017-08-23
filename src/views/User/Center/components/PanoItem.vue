@@ -86,8 +86,9 @@ export default {
     toPanoEdit() {
       this.$router.push(`/make-client/edit?pano_id=${this.pano.id}`)
     },
+
     onToggleCollection() {
-      // this.$emit('toggleCollection', !this.pano.isCollection)
+      this.$emit('toggleCollection', this.pano.id)
     },
   },
 }
