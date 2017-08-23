@@ -52,7 +52,7 @@
 
         <el-row class="publish-panos__content" :gutter="10">
           <el-col v-for="file in files" :key="file.id" :span="6">
-            <publish-item :file="file"></publish-item>
+            <publish-item :file="file" @remove-pano="removePano"></publish-item>
           </el-col>
           <div v-if="!files.length" class="publish-panos__content__tip">请上传或从素材库中选择场景图...</div>
         </el-row>
@@ -202,6 +202,11 @@ export default {
           vtour: true,
         }))
       this.files = [...this.files, ...files]
+    },
+
+    // 删除已添加的场景素材
+    removePano(id) {
+      this.files = this.files.filter(file => file.id !== id)
     },
 
     publish() {

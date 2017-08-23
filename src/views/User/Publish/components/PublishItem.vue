@@ -15,7 +15,7 @@
 
     <div class="publish-item__footer">
       {{ file.name }}
-      <i v-if="file.vtour" role="button" class="iconfont">&#xe615;</i>
+      <i v-if="file.vtour" role="button" class="iconfont" @click="$emit('remove-pano', file.id)">&#xe615;</i>
     </div>
   </div>
 </template>
