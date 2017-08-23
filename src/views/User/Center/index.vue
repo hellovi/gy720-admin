@@ -11,7 +11,7 @@
  *
  * @author huojinzhao
  */
-import { CENTER } from '@/store/mutationTypes'
+import Ajax from './modules/ajax'
 
 export default {
   name: 'user-client-center',
@@ -56,9 +56,7 @@ export default {
     // 每页作品数量
     let paginate = 8
     if (Math.max(screenH, windowH) > 2000) paginate = 16
-    this.$store.commit(CENTER.SETPAGINATE, paginate)
-    // 请求数据
-    this.$store.dispatch(CENTER.INITIALIZE)
+    Ajax.defaultPerpage = paginate
   },
 }
 </script>
