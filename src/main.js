@@ -1,3 +1,6 @@
+// polyfill
+import '@/utils/base64'
+
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'normalize.css'
