@@ -126,6 +126,11 @@ export default {
       }
     },
 
+    resetCreateCateModal() {
+      this.createCateModal.confirmLoading = false
+      this.onCloseCreateCateModal()
+    },
+
     onCreateCateConfirm() {
       this.$refs.createCateInfo.validate((valid) => {
         if (valid) {
@@ -139,9 +144,12 @@ export default {
       Ajax.createCate(this.createCateInfo)
         .then((id) => {
           this.$emit('createCate', { id, ...this.createCateInfo })
-          // 对应onCloseCreateCateModal逻辑，必须先取消按钮loading
-          this.createCateModal.confirmLoading = false
-          this.onCloseCreateCateModal()
+          this.resetCreateCateModal()
+          this.$message({ type: 'success', message: '分类创建成功' })
+        })
+        .catch((err) => {
+          this.resetCreateCateModal()
+          this.$message({ type: 'error', message: err.message })
         })
     },
 
