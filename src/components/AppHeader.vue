@@ -21,7 +21,7 @@
       </div>
 
       <el-button class="app-header__button btn-primary" size="small">签到</el-button>
-      <el-button class="app-header__button" type="primary" size="small">发布</el-button>
+      <el-button class="app-header__button" type="primary" size="small" @click="$router.push('/user-client/publish')">发布</el-button>
 
       <div class="app-header__portal">
         <router-link class="app-header__user" to="/">
