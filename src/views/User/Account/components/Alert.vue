@@ -23,7 +23,7 @@
     props: {
       title: {
         type: String,
-        default: '提示的文案',
+        default: '提交出现错误',
       },
       type: {
         type: String,

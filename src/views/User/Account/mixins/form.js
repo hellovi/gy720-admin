@@ -4,7 +4,7 @@
  * @version 2017/08/11
  */
 
-const alertDefaultTitle = '提示的文案'
+const alertDefaultTitle = '提交出现错误'
 
 export default {
   data() {

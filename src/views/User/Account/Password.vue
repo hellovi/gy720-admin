@@ -92,9 +92,8 @@
       submitForm() {
         this.$http.patch('/user/update-password', this.userPwd)
           .then(() => {
-            this.successHandler({
-              message: '密码修改成功 !',
-            })
+            this.$message.success('密码修改成功 !')
+            this.formLoading = false
           })
           .catch((errors) => {
             this.errorHandler(errors)

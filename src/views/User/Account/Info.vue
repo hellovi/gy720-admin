@@ -115,16 +115,16 @@
       },
       // 保存修改
       submitForm() {
-        this.$http.patch('/user/update', {
+        const userInfo = {
           ...this.userInfo,
           ...this.areaData,
-        })
+        }
+        this.$http.patch('/user/update', userInfo)
           .then(() => {
             // 更新store
-            this.$store.commit(GLOBAL.USER.INIT, this.userInfo)
-            this.successHandler({
-              message: '您的个人资料已修改成功 !',
-            })
+            this.$store.commit(GLOBAL.USER.INIT, userInfo)
+            this.$message.success('您的个人资料已修改成功 !')
+            this.formLoading = false
           })
           .catch((errors) => {
             this.errorHandler(errors)
