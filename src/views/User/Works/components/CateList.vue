@@ -144,12 +144,13 @@ export default {
       Ajax.createCate(this.createCateInfo)
         .then((id) => {
           this.$emit('createCate', { id, ...this.createCateInfo })
-          this.resetCreateCateModal()
           this.$message({ type: 'success', message: '分类创建成功' })
         })
         .catch((err) => {
-          this.resetCreateCateModal()
           this.$message({ type: 'error', message: err.message })
+        })
+        .finally(() => {
+          this.resetCreateCateModal()
         })
     },
 
