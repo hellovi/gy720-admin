@@ -83,7 +83,7 @@ export default {
       // const { /* id: tag_id, */ url, method = 'post' } = MATERIAL_DICT[type]
       // { file_ext: 'jpg', tag_id, per_page: 20, current_page: 1 }
       return Http.get(`/user/sourcescene${params}`)
-        .then((result) => {
+        .then(({ result }) => {
           commit(MATERIAL.INIT.LOAD, { type: 'panos', data: result })
         })
         // .catch(() => {
