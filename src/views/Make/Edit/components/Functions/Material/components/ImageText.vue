@@ -2,9 +2,10 @@
     <div>
       <el-input placeholder="请输入标题"></el-input>
       <ueditor
-         :value="detail.content" :config="config"
-         @contentChange="contentChange" @ueReady="ueRready">
-      </ueditor>
+        :value="detail.content"
+        @contentChange="contentChange"
+        @ueReady="ueRready"
+      ></ueditor>
       <!-- <form-group class="imgtxt__footer" label="链接按钮" type="checkbox" name="btnswitch" v-model="btn_open"></form-group>
       <form-group class="imgtxt__footer btnname" label="按钮名称" name="btnname" placeholder="例如：点击购买" v-model="detail.btn_title"></form-group>
       <form-group class="imgtxt__footer linkaddr" label="链接地址" name="linkaddr" placeholder="例如：http://abc.com" v-model="detail.btn_url"></form-group> -->
@@ -27,17 +28,6 @@ export default {
       btn_url: '',
       btn_show: '20',
       content: '',
-    },
-    config: {
-      // focus时自动清空初始化时的内容
-      autoClearinitialContent: true,
-      // 关闭字数统计
-      wordCount: false,
-      // 关闭elementPath
-      elementPathEnabled: false,
-      // 默认的编辑区域高度
-      initialFrameHeight: 350,
-      // initialFrameWidth: null,
     },
     editor: null,
     btn_open: false,

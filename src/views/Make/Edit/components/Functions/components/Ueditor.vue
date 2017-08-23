@@ -1,5 +1,5 @@
 <template>
-  <div ref="editor" class="imgtxt__ueditor"></div>
+  <div id="editor" class="material-ueditor"></div>
 </template>
 
 <script>
@@ -7,18 +7,14 @@
  * 富文本公用模块
  * @author yangjun
  */
-import '@/utils/ueditor/1.4.3/ueditor.config'
-import '@/utils/ueditor/1.4.3/ueditor.all'
-import '@/utils/ueditor/1.4.3/lang/zh-cn/zh-cn'
+
+import Vue from 'vue'
+import './ueditor.config'
+
+// ueditor库的资源地址
+const FULL_PATH = Vue.prototype.$url.host('assets/3.0.1/lib/ueditor/1.4.3/ueditor.all.min.js')
 
 export default {
-  data() {
-    return {
-      // eslint-disable-next-line
-      id: Number.parseInt(Math.random() * 10000, 10) + 'ueditorId',
-    }
-  },
-
   props: {
     value: {
       type: String,
@@ -38,11 +34,34 @@ export default {
   //     }
   //   },
   // },
+  methods: {
+    /**
+     * 动态加载ueditor
+     */
+    dynamicLoadUeditor(cb) {
+      const ueditorScript = document.querySelector(`script[src="${FULL_PATH}"]`)
+      if (ueditorScript) {
+        // 已经加载过ueditor库，直接执行实例初始化
+        cb()
+      } else {
+        // 动态写入script标签加载ueditor库，确保在库加载完成后才初始化ueditor实例
+        const script = document.createElement('script')
+        script.src = FULL_PATH
+        script.addEventListener('load', cb)
+        document.body.appendChild(script)
+      }
+    },
+  },
+
   mounted() {
-    this.$nextTick(() => {
-      // 保证 this.$el 已经插入文档
-      this.$refs.editor.id = this.id
-      this.editor = window.UE.getEditor(this.id, this.config)
+    this.dynamicLoadUeditor(() => {
+      this.editor = window.UE.getEditor('editor', {
+        autoClearinitialContent: true, // focus时自动清空初始化时的内容
+        wordCount: false, // 关闭字数统计
+        elementPathEnabled: false, // 关闭elementPath
+        initialFrameHeight: 350, // 默认的编辑区域高度
+        // initialFrameWidth: null,
+      })
       this.editor.ready(() => {
         this.editor.setContent(this.value)
         this.editor.addListener('contentChange', () => {
@@ -56,16 +75,17 @@ export default {
     })
   },
 
+  beforeDestroy() {
+    // 组件销毁的时候应该同时销毁ueditor实例
+    window.UE.getEditor('editor').destroy()
+  },
 }
 </script>
 
-<style>
-.imgtxt {
-
-  &__ueditor {
-    margin: 0 15px;
-    width: 768px;
-    height: 383px;
-  }
+<style lang="postcss">
+.material-ueditor {
+  width: 768px;
+  height: 383px;
+  margin: 0 15px;
 }
 </style>
