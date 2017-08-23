@@ -230,8 +230,8 @@ export default {
   }
 
   & .tour-edition {
-    // 在动画过程中，viewpanel会有显示问题
-    animation: unset;
+    /* 在动画过程中，viewpanel会有显示问题 */
+    animation: none;
 
     & .el-dialog--large {
       width: 900px;
