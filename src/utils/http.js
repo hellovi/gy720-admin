@@ -11,6 +11,11 @@ import 'whatwg-fetch'
 
 const token = localStorage.getItem('token')
 
+const defaultHeaders = {
+  Accept: 'application/json',
+  Authorization: `Bearer ${token}`,
+}
+
 class Http {
   static install(Vue) {
     /* eslint-disable no-param-reassign */
@@ -54,7 +59,7 @@ class Http {
   static get(uri, headers = {}) {
     return fetch(Http.getUri(uri), {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...defaultHeaders,
         ...headers,
       },
       credentials: 'same-origin',
@@ -72,8 +77,8 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
+        ...defaultHeaders,
         ...headers,
       },
       body: JSON.stringify(body),
@@ -92,8 +97,8 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
+        ...defaultHeaders,
         ...headers,
       },
       body: JSON.stringify(body),
@@ -112,8 +117,8 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'PUT',
       headers: {
-        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
+        ...defaultHeaders,
         ...headers,
       },
       body: JSON.stringify(body),
@@ -131,7 +136,7 @@ class Http {
     return fetch(Http.getUri(uri), {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...defaultHeaders,
         ...headers,
       },
       credentials: 'same-origin',
