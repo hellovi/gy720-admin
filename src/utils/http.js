@@ -47,17 +47,14 @@ class Http {
       })
   }
 
-  static getUri(uri) {
-    return `${Http.HOST}${uri}`
-  }
-
   /**
    * GET请求
-   * @param {String} uri - 请求接口
+   * @param {string} uri - 请求接口
+   * @param {Object} headers - 指定额外的请求头
    * @returns {Promise}
    */
   static get(uri, headers = {}) {
-    return fetch(Http.getUri(uri), {
+    return fetch(uri, {
       headers: {
         ...defaultHeaders,
         ...headers,
@@ -69,12 +66,13 @@ class Http {
 
   /**
    * POST请求
-   * @param {String} uri - 请求接口
+   * @param {string} uri - 请求接口
    * @param {Object} body - 请求所需携带参数
+   * @param {Object} headers - 指定额外的请求头
    * @returns {Promise}
    */
   static post(uri, body, headers = {}) {
-    return fetch(Http.getUri(uri), {
+    return fetch(uri, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -89,12 +87,13 @@ class Http {
 
   /**
    * PATCH请求
-   * @param {String} uri - 请求接口
+   * @param {string} uri - 请求接口
    * @param {Object} body - 请求所需携带参数
+   * @param {Object} headers - 指定额外的请求头
    * @returns {Promise}
    */
   static patch(uri, body, headers = {}) {
-    return fetch(Http.getUri(uri), {
+    return fetch(uri, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -109,12 +108,13 @@ class Http {
 
   /**
    * PATCH请求
-   * @param {String} uri - 请求接口
+   * @param {string} uri - 请求接口
    * @param {Object} body - 请求所需携带参数
+   * @param {Object} headers - 指定额外的请求头
    * @returns {Promise}
    */
   static put(uri, body, headers = {}) {
-    return fetch(Http.getUri(uri), {
+    return fetch(uri, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -129,11 +129,12 @@ class Http {
 
   /**
    * DELETE请求
-   * @param {String} uri - 请求接口
+   * @param {string} uri - 请求接口
+   * @param {Object} headers - 指定额外的请求头
    * @returns {Promise}
    */
   static delete(uri, headers = {}) {
-    return fetch(Http.getUri(uri), {
+    return fetch(uri, {
       method: 'DELETE',
       headers: {
         ...defaultHeaders,
@@ -144,8 +145,5 @@ class Http {
       .then(Http.errorHandler)
   }
 }
-
-Http.HOST = process.env.NODE_ENV === 'production' ?
-  'https://l.gy720.com' : ''
 
 export default Http
