@@ -25,7 +25,7 @@ export default {
           text: '最近发布的作品',
         },
         {
-          to: '/user-client/center/collection',
+          to: '/user-client/center/collections',
           icon: '&#xe663;',
           text: '我的收藏',
         },

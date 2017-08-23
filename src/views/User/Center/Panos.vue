@@ -1,12 +1,12 @@
 <template>
   <div
     class="center-panos"
-    v-if="dataList"
+    v-if="panosInfo"
   >
     <!-- 缺省信息 -->
     <div
       class="empty-wrap"
-      v-if="dataList.data.length === 0"
+      v-if="panosInfo.data.length === 0"
     >
       <div class="empty">
         <div>
@@ -25,18 +25,18 @@
     <!-- 作品列表 -->
     <div
       class="center-panos__list clearfix"
-      v-if="dataList.data.length > 0"
+      v-if="panosInfo.data.length > 0"
     >
-      <PanoItem
+      <v-pano-item
         class="center-panos__item"
-        v-for="item in dataList.data"
+        v-for="item in panosInfo.data"
         :key="item.id" :pano="item"
-      ></PanoItem>
+      ></v-pano-item>
     </div>
 
     <el-button
       class="center-panos__wholepano-link"
-      v-if="dataList.data.length > 0 && rel === 'release'"
+      v-if="panosInfo.data.length > 0 && rel === 'release'"
       type="text" size="large"
       @click.stop="checkCompositions"
     >
@@ -51,27 +51,20 @@
  *
  * @author huojinzhao
  */
-import store from '@/store'
-import { mapGetters, mapState } from 'vuex'
-import { CENTER } from '@/store/mutationTypes'
-import PanoItem from './components/PanoItem'
+import { getRouteType, getAuthorsInfo } from './modules/utils'
+import vPanoItem from './components/PanoItem'
 
 export default {
-  name: 'center-panoList',
+  name: 'center-panos',
 
   components: {
-    PanoItem,
+    vPanoItem,
   },
 
-  computed: {
-    ...mapGetters({
-      dataList: 'centerDataList',
-    }),
-
-    ...mapState({
-      rel: state => state.center.linktype,
-    }),
-  },
+  data: () => ({
+    routeType: '',
+    panosInfo: null,
+  }),
 
   methods: {
     publishPano() {
@@ -84,8 +77,13 @@ export default {
   },
 
   beforeRouteEnter(to, from, next) {
-    store.commit(CENTER.LINK_UPDATE, to)
-    next()
+    getAuthorsInfo(to)
+      .then(res => next((vm) => {
+        /* eslint-disable */
+        vm.panosInfo = res
+        vm.routeType = getRouteType(to)
+        /* eslint-enable */
+      }))
   },
 }
 </script>

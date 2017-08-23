@@ -16,7 +16,7 @@ export default {
       component: views.CenterPanos,
     },
     {
-      path: 'collection',
+      path: 'collections',
       component: views.CenterPanos,
     },
     {

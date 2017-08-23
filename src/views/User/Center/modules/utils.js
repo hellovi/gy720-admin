@@ -7,7 +7,7 @@ export const getRouteType = (route) => {
 
 export const getAuthorsInfo = (route, ...args) => {
   switch (getRouteType(route)) {
-    case 'works':
+    case 'recent':
       return Ajax.readRecentworks(...args)
     case 'collections':
       return Ajax.readCollections(...args)
