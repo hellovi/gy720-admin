@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="publish-wrapper">
     <el-form
       :model="form"
       :rules="rules"
@@ -239,6 +239,9 @@ export default {
 
 <style lang="postcss">
 @import "vars.css";
+.publish-wrapper {
+  margin-top: 30px;
+}
 
 .publish-form {
   width: 1170px;

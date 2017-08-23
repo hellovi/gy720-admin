@@ -2,7 +2,7 @@
   <div>
     <app-header></app-header>
     <div class="app-body">
-      <app-user></app-user>
+      <app-user v-show="isNotPublish"></app-user>
       <router-view class="app-content"></router-view>
     </div>
     <app-footer></app-footer>
@@ -19,6 +19,12 @@ export default {
     AppHeader,
     AppFooter,
     AppUser,
+  },
+
+  computed: {
+    isNotPublish() {
+      return this.$route.path !== '/user-client/publish'
+    },
   },
 }
 </script>
