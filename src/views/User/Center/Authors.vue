@@ -1,10 +1,11 @@
 <template>
   <div class="center-authors">
 
-    <template v-if="dataList">
+    <template v-if="authorsInfo">
      <!-- 缺省信息（关注）  -->
     <div class="empty-wrap"
-      v-if="rel === 'follows' && dataList.data.length === 0"
+      v-if="routeType === 'follows'
+        && authorsInfo.data.length === 0"
     >
       <div class="empty">
         <div>
@@ -19,7 +20,8 @@
 
     <!-- 缺省信息（粉丝） -->
     <div class="empty-wrap"
-      v-if="rel === 'fans' && dataList.data.length === 0"
+      v-if="routeType === 'fans'
+        && authorsInfo.data.length === 0"
     >
       <div class="empty">
         <div>
@@ -36,13 +38,13 @@
 
     <!-- 摄影师列表 -->
     <div class="center-authors__list clearfix"
-      v-if="dataList.data.length > 0"
+      v-if="authorsInfo.data.length > 0"
     >
-      <Author-item
+      <v-author-item
         class="center-authors__item"
-        v-for="(item, index) in dataList.data"
+        v-for="(item, index) in authorsInfo.data"
         :key="item.user_id"  :author="item" :index="index">
-      </Author-item>
+      </v-author-item>
     </div>
     </template>
 
@@ -57,34 +59,26 @@
  *
  * @author huojinzhao
  */
-import { mapState, mapGetters } from 'vuex'
 import { Loading } from 'element-ui'
-import store from '@/store'
-import { CENTER } from '@/store/mutationTypes'
-import AuthorItem from './components/AuthorItem'
+import { getRouteType, getAuthorsInfo } from './modules/utils'
+import vAuthorItem from './components/AuthorItem'
 
 export default {
-  name: 'center-followList',
+  name: 'center-Authors',
 
   components: {
-    AuthorItem,
+    vAuthorItem,
   },
 
   data: () => ({
+    routeType: '',
+    authorsInfo: null,
+    loadlocked: false,
     loadingInstance: null,
     observerInstance: null,
   }),
 
   computed: {
-    ...mapState({
-      rel: state => state.center.linktype,
-      loadlock: state => state.center.loadlock,
-    }),
-
-    ...mapGetters({
-      dataList: 'centerDataList',
-    }),
-
     authorsLink() {
       // 后端地址还没有确定
     },
@@ -101,37 +95,7 @@ export default {
       this.observerInstance.observe(this.$refs.loading)
     },
 
-    lazyload() {
-      // 判断是否有懒加载进行中
-      if (this.loadlock) return
-
-      this.onLoading()
-      // 锁住懒加载
-      this.$store.commit(CENTER.LOAD_LOCK, true)
-      this.$store.dispatch(CENTER.LIST_UPDATE)
-      // 加载成功后，打开懒加载
-        .then(() => {
-          this.offLoading()
-          this.$store.commit(CENTER.LOAD_LOCK, false)
-        })
-    },
-
-    onLazyload() {
-      const currentPage = this.dataList.current_page
-      const lastPage = this.dataList.last_page
-      // 是否满足分页请求条件
-      const reqBool = currentPage < lastPage
-
-      if (reqBool) this.lazyload()
-    },
-
-    beforeLazyload(entries) {
-      if (this.dataList && entries[0].isIntersecting) {
-        this.onLazyload()
-      }
-    },
-
-    onLoading() {
+    preLoading() {
       const options = {
         target: this.$refs.loading,
         text: '努力加载中...',
@@ -140,14 +104,53 @@ export default {
       this.loadingInstance = Loading.service(options)
     },
 
+    lazyload() {
+      // 判断是否有懒加载进行中
+      if (this.loadlocked) return
+      // 显示加载状态
+      this.preLoading()
+      // 锁住懒加载
+      this.loadlocked = true
+      // 请求分页数据
+      getAuthorsInfo(this.$route, this.authorsInfo.current_page + 1)
+        .then(({ data, ...args }) => {
+          const newData = { ...this.authorInfo.data, ...data }
+          this.authorInfo = { ...args, data: newData }
+          // 加载成功后，打开懒加载
+          this.offLoading()
+          this.loadlocked = false
+        })
+    },
+
+    beforeLazyload(entries) {
+      if (this.authorsInfo && entries[0].isIntersecting) {
+        this.onLazyload()
+      }
+    },
+
     offLoading() {
       this.loadingInstance.close()
+    },
+
+    onLazyload() {
+      const currentPage = this.authorsInfo.current_page
+      const lastPage = this.authorsInfo.last_page
+      // 是否满足分页请求条件
+      const reqBool = currentPage < lastPage
+
+      if (reqBool) this.lazyload()
     },
   },
 
   beforeRouteEnter(to, from, next) {
-    store.commit(CENTER.LINK_UPDATE, to)
-    next(vm => vm.onIntersectionObserve())
+    getAuthorsInfo(to)
+      .then(res => next((vm) => {
+        /* eslint-disable */
+        vm.authorsInfo = res
+        vm.routeType = getRouteType(to)
+        /* eslint-enable */
+        vm.onIntersectionObserve()
+      }))
   },
 
   beforeRouteLeave(to, from, next) {
