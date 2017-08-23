@@ -151,7 +151,6 @@ export default {
     /* 关注/取消关注 */
 
     onToggleFollow(id) {
-      console.log(id)
       Ajax.updateAuthorFollow(id)
         .then(() => {
           const author = this.authorsInfo.data
