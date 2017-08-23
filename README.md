@@ -48,7 +48,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   - 我的消息（卢，静态完成）
   - 数据统计（霍，静态完成）
   - 我的作品（霍，基本完成，等到复用我的消息“说一说”组件）
-    - 离线下载（霍，静态完成，缺接口）
+  - - 离线下载（霍，静态完成，缺接口）
   - 账号管理（陈，静态完成）
 - 高级编辑
   - 发布流程（卢，静态完成）
