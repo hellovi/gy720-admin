@@ -98,7 +98,7 @@ export default {
   },
 
   mounted() {
-    // this.initPano(850)
+    this.initPano(this.$route.query.id)
   },
 }
 
