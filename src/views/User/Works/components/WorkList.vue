@@ -207,19 +207,24 @@ export default {
   },
 
   methods: {
+    /* 所有单作品状态控制 */
+
     initializeCheckedWorks() {
       this.checkedWordsId = []
+    },
+
+    checkAllWorks(status) {
+      this.$refs.list.forEach((work) => {
+        // eslint-disable-next-line
+        work.checked = status
+      })
     },
 
     /* 选择作品的逻辑 */
 
     onCheckAllWorks() {
       const nextStatus = !this.allWorksChecked
-      // 作品单选联动
-      this.$refs.list.forEach((work) => {
-        // eslint-disable-next-line
-        work.checked = nextStatus
-      })
+      this.checkAllWorks(nextStatus)
       // 选中作品处理
       if (nextStatus) {
         this.checkedWordsId = this.worklist.data.map(work => work.id)
@@ -246,9 +251,14 @@ export default {
 
     onCloseTransferWorksModal() {
       this.transferWorksModal.tag = false
-      if (!this.transferWorksModal.comfirmLoading) {
+      if (!this.transferWorksModal.confirmLoading) {
         this.$refs.transferWorksInfo.resetFields()
       }
+    },
+
+    resetTransferWorksModal() {
+      this.transferWorksModal.confirmLoading = false
+      this.onCloseTransferWorksModal()
     },
 
     onTransferWorksConfirm() {
@@ -267,13 +277,26 @@ export default {
       )
         .then(() => {
           this.$emit('deleteWorks', this.checkedWordsId)
-          this.transferWorksModal.confirmLoading = false
-          this.onCloseTransferWorksModal()
+          this.$message({
+            type: 'success',
+            message: '作品移动分类成功',
+          })
+        })
+        .catch((err) => {
+          this.$message({
+            type: 'error',
+            message: err.message,
+          })
+        })
+        .finally(() => {
+          this.resetTransferWorksModal()
           this.initializeCheckedWorks()
+          this.checkAllWorks(false)
         })
     },
 
     /* change pagination event */
+
     onChangePagination(page) {
       this.$router.push({
         query: { ...this.$route.query, ...{ page } },
