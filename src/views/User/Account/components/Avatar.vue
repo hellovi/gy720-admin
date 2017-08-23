@@ -33,8 +33,10 @@
    * @version 2017/08/14
    */
 
-  import AppFileUpload from '@/components/AppFileUpload'
   import AppUploadProgress from '@/components/AppUploadProgress'
+
+  // 异步加载
+  const AppFileUpload = () => import('@/components/AppFileUpload')
 
   export default {
     name: 'account-avatar',

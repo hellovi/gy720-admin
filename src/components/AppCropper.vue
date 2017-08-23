@@ -40,7 +40,6 @@
   import AppFileUpload from '@/components/AppFileUpload'
   import Cropper from 'cropperjs'
   import 'cropperjs/dist/cropper.css'
-  import '@/utils/base64'
 
   export default {
     name: 'app-cropper',
@@ -162,8 +161,8 @@
     &__sub {
       padding-top: 20px;
       text-align: center;
-      .el-button + .el-button {
-        margin-left: 40px;
+      .el-button {
+        margin: 0 20px;
       }
     }
   }

@@ -25,7 +25,9 @@
    */
 
   import 'qiniu-js'
-  import AppCropper from '@/components/AppCropper'
+
+  // 异步加载组件
+  const AppCropper = () => import('@/components/AppCropper')
 
   // 生成一个随机字符串
   const uid = Math.random().toString(36).substring(3, 8)
