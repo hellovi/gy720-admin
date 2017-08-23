@@ -45,14 +45,16 @@
 
     <!-- 关注和取关按钮 -->
     <div class="authoritem__attention">
-      <el-button
+      <el-button v-if="author.is_follow"
         class="authoritem__attention--confirm"
         type="primary"
+        @click="onToggleFollow"
       >
         <i class="iconfont">&#xe618;</i> 关注
       </el-button>
-      <el-button
+      <el-button v-else
         class="authoritem__attention--cancel"
+        @click="onToggleFollow"
       >
         取消关注
       </el-button>
@@ -127,13 +129,17 @@ export default {
 
     // 当前数据没有hash_user_id，等后端添加
     userPath() {
-      return this.$url.host(`author/${this.author.user_id}`)
+      return this.$url.host(`author/${this.author.hash_user_id}`)
     },
   },
 
   methods: {
     panoPath(id) {
       return this.$url.host(`/pano/view/${id}`)
+    },
+
+    onToggleFollow() {
+      this.$emit('togglefollow', this.author.id)
     },
   },
 }

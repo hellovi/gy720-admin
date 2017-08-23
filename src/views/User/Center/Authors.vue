@@ -43,7 +43,9 @@
       <v-author-item
         class="center-authors__item"
         v-for="(item, index) in authorsInfo.data"
-        :key="item.user_id"  :author="item" :index="index">
+        :key="item.user_id"  :author="item" :index="index"
+        @togglefollow="onToggleFollow"
+      >
       </v-author-item>
     </div>
     </template>
@@ -60,6 +62,7 @@
  * @author huojinzhao
  */
 import { Loading } from 'element-ui'
+import Ajax from './modules/ajax'
 import { getRouteType, getAuthorsInfo } from './modules/utils'
 import vAuthorItem from './components/AuthorItem'
 
@@ -85,6 +88,8 @@ export default {
   },
 
   methods: {
+    /* 懒加载初始化 */
+
     onIntersectionObserve() {
       this.observerInstance = new IntersectionObserver(
         this.beforeLazyload,
@@ -94,6 +99,8 @@ export default {
       )
       this.observerInstance.observe(this.$refs.loading)
     },
+
+    /* 懒加载 */
 
     preLoading() {
       const options = {
@@ -139,6 +146,18 @@ export default {
       const reqBool = currentPage < lastPage
 
       if (reqBool) this.lazyload()
+    },
+
+    /* 关注/取消关注 */
+
+    onToggleFollow(id) {
+      console.log(id)
+      Ajax.updateAuthorFollow(id)
+        .then(() => {
+          const author = this.authorsInfo.data
+            .find(item => item.id === id)
+          if (author) author.is_follow = !author.is_follow
+        })
     },
   },
 
