@@ -48,16 +48,19 @@ export default {
       instance.confirmButtonLoading = true
       ajax(id)
         .then(() => {
-          this.$message({ type: 'success', message: '删除成功' })
+          this.$message({
+            type: 'success',
+            message: '删除成功',
+          })
           success()
-          instance.confirmButtonLoading = false
-          done()
         })
         .catch((err) => {
           this.$message({
             type: 'error',
             message: err.message,
           })
+        })
+        .finally(() => {
           instance.confirmButtonLoading = false
           done()
         })
