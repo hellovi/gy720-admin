@@ -20,7 +20,7 @@
  */
 
 export default {
-  name: 'edit-functions__tourpanel',
+  name: 'edit-functions__tour-viewpanel',
 
   props: {
     top: {
