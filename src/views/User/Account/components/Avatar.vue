@@ -1,17 +1,22 @@
 <template>
   <div class="user-avatar">
-    <app-file-upload v-model="src"
-                     ref="fileUpload"
-                     accept="jpg,jpeg,png"
-                     size="1mb"
-                     @preview="getPreview"
-                     v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
-                     class="user-avatar__file">
+    <app-file-upload
+      v-model="src"
+      cropper
+      ref="fileUpload"
+      accept="jpg,jpeg,png"
+      size="1mb"
+      @preview="getPreview"
+      v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
+      class="user-avatar__file"
+    >
       <img :src="getStatic(src)">
-      <app-upload-progress slot="progress"
-                           :src="uploadSrc"
-                           :progress="progress"
-                           v-if="progress"></app-upload-progress>
+      <app-upload-progress
+        slot="progress"
+        :src="uploadSrc"
+        :progress="progress"
+        v-if="progress"
+      ></app-upload-progress>
     </app-file-upload>
     <div class="user-avatar__remark">
       <p>大小不超过1M</p>
@@ -45,7 +50,16 @@
         src: this.value,
         progress: 0,
         uploadSrc: null,
+        previewStyle: {},
       }
+    },
+    watch: {
+      value(val) {
+        this.src = val
+      },
+      src(val) {
+        this.$emit('input', val)
+      },
     },
     methods: {
       init() {
@@ -81,14 +95,6 @@
     mounted() {
       this.init()
     },
-    watch: {
-      value(val) {
-        this.src = val
-      },
-      src(val) {
-        this.$emit('input', val)
-      },
-    },
   }
 </script>
 
@@ -101,12 +107,12 @@
       width: 90px;
       height: 90px;
       cursor: pointer;
-      overflow: hidden;
       border: 1px solid #bfbfbf;
       background-repeat: no-repeat;
       background-position: center center;
-      & img {
-        width: 100%;
+      img {
+        max-width: 100%;
+        max-height: 100%;
       }
     }
     &__remark {

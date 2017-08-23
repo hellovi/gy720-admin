@@ -8,6 +8,12 @@
     </div>
     <slot name="right"></slot>
     <slot name="progress"></slot>
+    <app-cropper
+      v-if="cropper&&cropShow"
+      :src.sync="previemImg"
+      :visible.sync="cropShow"
+      @cropView="cropView"
+    ></app-cropper>
   </div>
 </template>
 
@@ -19,6 +25,7 @@
    */
 
   import 'qiniu-js'
+  import AppCropper from '@/components/AppCropper'
 
   // 生成一个随机字符串
   const uid = Math.random().toString(36).substring(3, 8)
@@ -26,11 +33,14 @@
   const defConfig = {
     container: `app-file-upload-container__${uid}`,
     browse_button: `app-file-upload-pickfiles__${uid}`,
-    auto_start: true,
   }
+
+  const domain = 'http://l-statics.gy720.com/'
+  const flash_swf_url = '/assets/3.0.1/lib/plupload-2.1.4/js/Moxie.swf'
 
   export default {
     name: 'app-file-upload',
+    components: { AppCropper },
     props: {
       value: [String, Array],
       options: {
@@ -49,6 +59,10 @@
         type: String,
         default: 'data/avatar/20170101/',
       },
+      autoStart: {
+        type: Boolean,
+        default: false,
+      },
       accept: {
         type: String,
         default: 'jpg, jpeg, gif, png',
@@ -57,14 +71,26 @@
         type: String,
         default: '4mb',
       },
+      cropper: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       return {
         config: { ...defConfig, ...this.options },
         uploader: {},
+        cropSrc: null,
+        cropShow: false,
+        previemImg: null,
         singleFileSrc: !this.multiple && this.value && typeof this.value === 'string' ? this.value : null,
         multiFileSrc: this.multiple && this.value.length && typeof this.value !== 'string' ? this.value : [],
       }
+    },
+    watch: {
+      previemImg(val) {
+        this.$emit('preview', val)
+      },
     },
     methods: {
       init() {
@@ -87,7 +113,7 @@
           // Ajax请求downToken的Url，私有空间时使用,JS-SDK 将向该地址POST文件的key和domain,服务端返回的JSON必须包含`url`字段，`url`值为该文件的下载地址
           // unique_names: true,                            // 默认 false，key 为文件名。若开启该选项，JS-SDK 会为每个文件自动生成key（文件名）
           // save_key: true,                                // 默认 false。若在服务端生成 uptoken 的上传策略中指定了 `save_key`，则开启，SDK在前端将不对key进行任何处理
-          domain: this.$url.static(),                       // bucket 域名，下载资源时用到，如：'http://xxx.bkt.clouddn.com/' **必需**
+          domain: domain,                                   // bucket 域名，下载资源时用到，如：'http://xxx.bkt.clouddn.com/' **必需**
           container: this.config.container,                 // 上传区域 DOM ID，默认是 browser_button 的父元素，
           max_file_size: '10mb',                            // 最大文件体积限制
           filters: {
@@ -95,12 +121,12 @@
               { extensions : this.accept },                 // 上传文件格式
             ]
           },
-          flash_swf_url: 'path/of/plupload/Moxie.swf',      // 引入 flash,相对路径
+          flash_swf_url: flash_swf_url,                     // 引入 flash,相对路径
           max_retries: 3,                                   // 上传失败最大重试次数
           dragdrop: true,                                   // 开启可拖曳上传
           drop_element: this.config.container,              // 拖曳上传区域元素的 ID，拖曳文件或文件夹后可触发上传
           chunk_size: this.chunkSize(this.size),            // 分块上传时，每块的体积
-          auto_start: this.config.auto_start,               // 选择文件后自动上传，若关闭需要自己绑定事件触发上传,
+          auto_start: this.autoStart,                       // 选择文件后自动上传，若关闭需要自己绑定事件触发上传,
           //x_vars : {
           //    自定义变量，参考http://developer.qiniu.com/docs/v6/api/overview/up/response/vars.html
           //    'time' : function(up,file) {
@@ -124,7 +150,8 @@
                 }
                 // 获取预览图片
                 this.previewImage(file, (imgSrc) => {
-                  this.$emit('preview', imgSrc)
+                  this.previemImg = imgSrc
+                  this.cropShow = true
                 })
               });
             },
@@ -159,11 +186,23 @@
                 // 更新value字段
                 this.$emit('input', this.multiFileSrc)
               } else {
+                let val = src
+
+                if (this.cropper) {
+                  // 提交七牛裁剪
+                  val = window.Qiniu.imageMogr2({
+                    crop: this.cropSrc
+                  }, src)
+
+                  // 去除域名截取链接
+                  val = val.replace(domain, '')
+                }
+
                 // 单文件
-                this.singleFileSrc = src
+                this.singleFileSrc = val
 
                 // 更新value字段
-                this.$emit('input', src)
+                this.$emit('input', val)
               }
             },
             Error: (up, err, errTip) => {
@@ -203,9 +242,16 @@
         }
 
         const options = { ...defOptions, ...this.config }
-        const uploader = Qiniu.uploader({ ...options })
+        const uploader = window.Qiniu.uploader({ ...options })
 
         this.uploader = uploader
+      },
+      cropView({crop, options}){
+        this.cropSrc = crop
+        // 关闭裁剪窗口
+        this.cropShow = false
+        // 开始上传
+        this.uploader.start()
       },
       getNumber(maxSize) {
         return parseFloat(maxSize.match(/\d+(\.\d+)?/g).join(''))
@@ -235,28 +281,31 @@
       },
       previewImage(file, callback) {
         // file为plupload事件监听函数参数中的file对象,callback为预览图片准备完成的回调函数
-        if (!file || !/image\//.test(file.type)){ // 确保文件是图片
+        // 确保文件是图片
+        if (!file || !/image\//.test(file.type)){
           return false
         }
-        if (file.type === 'image/gif') { // gif使用FileReader进行预览,因为mOxie.Image只支持jpg和png
-          let fr = new mOxie.FileReader();
+        // gif使用FileReader进行预览,因为mOxie.Image只支持jpg和png
+        if (file.type === 'image/gif') {
+          let fr = new mOxie.FileReader()
           fr.onload = function () {
-            callback(fr.result);
-            fr.destroy();
-            fr = null;
+            callback(fr.result)
+            fr.destroy()
+            fr = null
           }
-          fr.readAsDataURL(file.getSource());
+          fr.readAsDataURL(file.getSource())
         } else {
-          let preloader = new mOxie.Image();
+          let preloader = new mOxie.Image()
           preloader.onload = function () {
             // preloader.downsize(300, 300);//先压缩一下要预览的图片,宽300，高300
-            const imgsrc = preloader.type == 'image/jpeg' ? preloader.getAsDataURL('image/jpeg', 80) : preloader.getAsDataURL();
+            const imgsrc = preloader.type == 'image/jpeg' ? preloader.getAsDataURL('image/jpeg', 80) : preloader.getAsDataURL()
             // 得到图片src,实质为一个base64编码的数据
-            callback && callback(imgsrc); // callback传入的参数为预览图片的url
-            preloader.destroy();
-            preloader = null;
+            // callback传入的参数为预览图片的url
+            callback && callback(imgsrc)
+            preloader.destroy()
+            preloader = null
           };
-          preloader.load(file.getSource());
+          preloader.load(file.getSource())
         }
       },
       // 获取UPTOKEN

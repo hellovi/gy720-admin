@@ -53,6 +53,7 @@
       position: absolute;
       top: 50%;
       left: 0;
+      z-index: 3;
       width: 100%;
       height: 8px;
       border-radius: 4px;
