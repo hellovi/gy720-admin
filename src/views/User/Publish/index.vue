@@ -1,24 +1,34 @@
 <template>
   <div>
-    <el-form class="publish-form" label-width="5em">
+    <el-form
+      :model="form"
+      :rules="rules"
+      class="publish-form"
+      label-width="6em"
+      ref="form"
+      @submit.native.prevent="publish"
+    >
       <el-row>
         <el-col :span="7">
-          <el-form-item label="作品名称">
-            <el-input placeholder="请输入作品名称" v-model="form.pano_name"></el-input>
+          <el-form-item label="作品名称" prop="name">
+            <el-input placeholder="请输入作品名称" v-model="form.name"></el-input>
           </el-form-item>
         </el-col>
 
         <el-col :span="7" :offset="1">
-          <el-form-item label="作品分类">
-            <el-select v-model="form.cate_id" style="width: 100%;">
-              <el-option value="">默认分类</el-option>
+          <el-form-item label="作品分类" prop="pano_category_id">
+            <el-select v-model="form.pano_category_id" style="width: 100%;">
+              <el-option v-for="cate in cates" :key="cate.id" :value="cate.id" :label="cate.name"></el-option>
+              <el-option value="+" label="+创建分类"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
 
         <el-col :span="8" :offset="1">
-          <el-form-item label="作品标签">
-            <el-input placeholder="最多可选择3个标签"></el-input>
+          <el-form-item label="作品标签" prop="tag_ids">
+            <el-select v-model="form.tag_ids" placeholder="最多可选择3个标签" multiple :multiple-limit="3" style="width: 100%;">
+              <el-option v-for="tag in tags" :key="tag.id" :value="tag.id" :label="tag.name"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -31,7 +41,7 @@
             <div class="el-button btn-primary" id="fisheye">上传4张鱼眼图</div>
           </el-col>
           <el-col class="publish-panos__select" :span="4">
-            <el-button class="btn-warning" @click="showDialog">从素材库选择全景图</el-button>
+            <el-button class="btn-warning" @click="openMaterial">从素材库选择全景图</el-button>
           </el-col>
 
           <el-col class="publish-panos__tip" :span="12">
@@ -42,63 +52,188 @@
 
         <el-row class="publish-panos__content" :gutter="10">
           <el-col v-for="file in files" :key="file.id" :span="6">
-            <div class="publish-panos__item" :class="{uploading: file.percent < 100 }">
-              <img v-if="file.preview" :src="file.preview" :alt="file.name">
-              <el-progress :text-inside="true" :stroke-width="14" :percentage="file.percent" v-if="file.percent < 100"></el-progress>
-              <div class="publish-panos__item__footer">
-                {{ file.name }}
-                <i v-if="file.percent === 100" role="button" class="iconfont">&#xe615;</i>
-              </div>
-            </div>
+            <publish-item :file="file"></publish-item>
           </el-col>
+          <div v-if="!files.length" class="publish-panos__content__tip">请上传或从素材库中选择场景图...</div>
         </el-row>
       </div>
 
       <el-form-item class="publish-form__submit">
-        <el-button type="primary">发布</el-button>
+        <el-button type="primary" native-type="submit">发布</el-button>
       </el-form-item>
     </el-form>
 
+    <!-- 创建分类弹出 -->
+    <el-dialog title="创建作品分类" :visible.sync="active.newCate" size="tiny">
+      <el-form :model="cateForm" :rules="cateRules" label-width="6em" ref="cateForm" @submit.native.prevent="createNewCate">
+        <el-form-item label="分类名称" prop="name">
+          <el-input v-model="cateForm.name" placeholder="请填写分类名称(6个字符以内)" :maxlength="6"></el-input>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0;">
+          <el-button type="primary" native-type="submit">提交</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <!-- 素材库弹出  -->
-    <el-dialog title="素材库" :visible.sync="dialog" custom-class="material-panos">
-      <pano-material></pano-material>
-      <div class="material-panos__submit">
-        <el-button type="primary">下一步</el-button>
-      </div>
+    <el-dialog title="素材库" :visible.sync="active.material" custom-class="material-panos">
+      <pano-material :cates="cates" :next="true" @select-panos="selectPanos"></pano-material>
     </el-dialog>
   </div>
 </template>
 
 <script>
+/**
+ * 发布作品
+ * @author luminghuai
+ * @version 2017-08-22
+ * @description 缩略图还未指定为小尺寸
+ */
+
+import { mapState } from 'vuex'
+import { WORK } from '@/store/mutationTypes'
 import PanoMaterial from './components/PanoMaterial'
-import upload from './upload'
+import PublishItem from './components/PublishItem'
+import upload from './mixins/upload'
 
 export default {
   mixins: [upload],
 
   components: {
     PanoMaterial,
+    PublishItem,
   },
 
   data() {
     return {
       form: {
-        pano_name: '',
-        cate_id: '',
+        name: '',
+        pano_category_id: '',
+        tag_ids: [],
       },
-      dialog: false,
+      rules: {
+        name: [
+          { required: true, message: '作品名称不能为空', trigger: 'blur' },
+        ],
+        pano_category_id: [
+          { type: 'number', required: true, message: '作品分类不能为空', trigger: 'blur' },
+        ],
+        tag_ids: [
+          { type: 'array', required: true, message: '作品标签不能为空', trigger: 'blur' },
+        ],
+      },
+
+      cateForm: {
+        name: '',
+      },
+      cateRules: {
+        name: [
+          { required: true, message: '分类名称不能为空', trigger: 'blur' },
+          { max: 6, message: '长度必须在6个字符内', trigger: 'blur' },
+          {
+            validator: (rule, value, next) => {
+              if (this.cates.some(cate => cate.name === value)) {
+                next(new Error('分类名称不能重复'))
+              } else {
+                next()
+              }
+            },
+            trigger: 'blur',
+          },
+        ],
+      },
+
       timer: null,
+      active: {
+        newCate: false,
+        material: false,
+      },
     }
   },
 
-  methods: {
-    showDialog() {
-      this.dialog = true
+  computed: {
+    ...mapState({
+      cates: state => state.work.cates,
+      tags: state => state.work.tags,
+    }),
+  },
+
+  watch: {
+    'form.pano_category_id': function formCateId(val) {
+      if (val === '+') {
+        this.active.newCate = true
+        this.form = { ...this.form, pano_category_id: '' }
+      }
     },
+
+    'active.newCate': function activeNewCate(val) {
+      if (!val) {
+        this.$refs.cateForm.resetFields()
+      }
+    },
+  },
+
+  methods: {
+    createNewCate() {
+      this.$refs.cateForm.validate((valid) => {
+        if (valid) {
+          this.$store.dispatch(WORK.CATE.ADD, this.cateForm)
+            .then((cate_id) => {
+              this.form = { ...this.form, cate_id }
+              this.active.newCate = false
+            })
+            .catch(error => this.$message.error(error.message))
+        }
+      })
+    },
+
+    // 从素材库选中场景
+    selectPanos(panos) {
+      this.active.material = false
+      const files = panos
+        // 过滤掉已选中过的，避免场景重复
+        .filter(pano => !this.files.some(file => file.id === pano.id))
+        .map(pano => ({
+          ...pano,
+          source_scene_id: pano.id,
+          preview: this.$url.host(pano.preview_image),
+          vtour: true,
+        }))
+      this.files = [...this.files, ...files]
+    },
+
+    publish() {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.files.length < 1) {
+            this.$message.error('请选择场景素材')
+          } else {
+            const data = {
+              ...this.form,
+              thumb: this.files[0].preview,
+              scenes: this.files.map(({ source_scene_id, name }) => ({ source_scene_id, name })),
+            }
+            this.$http.post('/user/pano', data)
+              .then(({ result }) => {
+                this.$router.push(`/make-client/edit?id=${result.id}`)
+              })
+              .catch(error => this.$message.error(error.message))
+          }
+        }
+      })
+    },
+
+    openMaterial() {
+      this.active.material = true
+    },
+  },
+
+  created() {
+    this.$store.dispatch(WORK.CATE.INIT)
+    this.$store.dispatch(WORK.TAG.INIT)
   },
 }
 </script>
-
 
 <style lang="postcss">
 @import "vars.css";
@@ -161,72 +296,16 @@ export default {
   }
 
   &__content {
+    position: relative;
     min-height: 580px;
     padding: 10px 0;
-  }
 
-  &__item {
-    position: relative;
-    margin-top: 10px;
-    background-color: #bfbfbf;
-    background-origin: content-box;
-    overflow: hidden;
-
-    &::before {
-      content: "";
-      float: left;
-      margin-bottom: 50%;
-    }
-
-    &.uploading::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      z-index: 1;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    & > img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    & > .el-progress {
+    &__tip {
       position: absolute;
       top: 50%;
-      left: 0;
-      z-index: 2;
-      width: 100%;
-      transform: translateY(-50%);
-
-      .el-progress-bar__innerText {
-        margin-top: -8px;
-      }
-    }
-
-    &__footer {
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 24px;
-      padding: 0 0.2em;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #fff;
-      font-size: 12px;
-      line-height: 24px;
-
-      & > .iconfont {
-        float: right;
-        cursor: pointer;
-      }
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--gray);
     }
   }
 }

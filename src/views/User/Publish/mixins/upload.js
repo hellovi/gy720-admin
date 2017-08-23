@@ -1,12 +1,28 @@
 /**
+ * 场景上传逻辑
+ * @author luminghuai
+ * @version 2017-08-22
+ */
+
+/**
  * @typedef {Object} File
  * @property {string} id - 用作上传时的upload_id
  * @property {string} name - 场景名称
  * @property {number} percent - 上传进度
  * @property {number} [source_scene_id] - 上传成功后分配的场景id
  * @property {string} [preview] - 预览，可能是base64字符串，或src地址
- * @property {boolean} [vtour] - 是否已切图
+ * @property {boolean} vtour - 是否已切图
+ * @property {string} message - 指示上传和切图状态的文字信息
  */
+
+function File(file) {
+  const { id, name, percent } = file
+  this.id = id
+  this.name = name.replace(/\.[^.]+$/, '')
+  this.percent = percent
+  this.vtour = false
+  this.message = '等待上传...'
+}
 
 const config = {
   runtimes: 'html5,flash,html4',
@@ -43,8 +59,11 @@ export default {
      * @param {string} id - 需要更新的file对象的id
      * @param {Object} update - 需要更新的数据
      */
-    updateFile(id, update) {
-      const index = this.files.findIndex(file => file.id === id)
+    updateFile(id, update, findBySceneId) {
+      const prop = findBySceneId ? 'source_scene_id' : 'id'
+      const index = this.files
+        .findIndex(file => file[prop] === id)
+
       this.files = [
         ...this.files.slice(0, index),
         { ...this.files[index], ...update },
@@ -62,14 +81,10 @@ export default {
           FilesAdded: (up, files) => {
             [...files].forEach((file) => {
               // 为每个文件生成一个file对象，推入files数组
-              const { id, name, percent } = file
-              this.files.push({
-                id,
-                name: name.replace(/\.[^.]+$/, ''),
-                percent,
-              })
+              this.files.push(new File(file))
 
               // 为每个文件生成缩略图，并更新到对应的file对象
+              const { id } = file
               if ('FileReader' in window) {
                 const reader = new FileReader()
                 reader.addEventListener('load', (event) => {
@@ -111,10 +126,12 @@ export default {
           },
 
           FileUploaded: (up, file, res) => {
-            const { result: { source_scene_id } } = JSON.parse(res.response)
+            const { result: { preview_image, source_scene_id } } = JSON.parse(res.response)
             this.updateFile(file.id, {
               percent: 100,
               source_scene_id,
+              message: '正在排队中...',
+              preview: this.$url.host(preview_image),
             })
           },
         },
@@ -137,14 +154,10 @@ export default {
               files.forEach(file => up.removeFile(file))
             } else {
               // 使用第一张图片的信息作为整个场景的信息，生成一个file对象，推入files数组
-              const { id, name, percent } = files[0]
-              this.files.push({
-                id,
-                name: name.replace(/\.[^.]+$/, ''),
-                percent,
-              });
+              this.files.push(new File(files[0]))
 
               // 为每个文件添加`group`字段用于标识组别，其值设为该组第一张图片的`id`
+              const { id } = files[0];
               // eslint-disable-next-line
               [...files].forEach((file) => { file.group = id })
 
@@ -182,6 +195,7 @@ export default {
               this.updateFile(file.group, {
                 percent: 100,
                 source_scene_id,
+                message: '正在排队中...',
                 preview: this.$url.host(preview_image),
               })
             }
@@ -195,19 +209,30 @@ export default {
 
       uploader.init()
     },
+
+    checkVtour() {
+      this.timer = setInterval(() => {
+        const { source_scene_ids } = this
+        if (source_scene_ids.length) {
+          this.$http.post('/user/sourcescene/vtourprocess', { source_scene_ids })
+            .then(({ result }) => {
+              result.forEach(({ id, vtour_status, message }) => {
+                this.updateFile(id, {
+                  message,
+                  vtour: vtour_status === 30,
+                }, true)
+              })
+            })
+        }
+      }, 5000)
+    },
   },
 
   mounted() {
     this.initNormalUpload('normal')
     this.initFisheyeUpload('fisheye')
 
-    this.timer = setInterval(() => {
-      if (this.source_scene_ids.length) {
-        this.$http.post('/user/sourcescene/vtourprocess', {
-          source_scene_ids: this.source_scene_ids,
-        })
-      }
-    }, 5000)
+    this.checkVtour()
   },
 
   beforeDestroy() {
