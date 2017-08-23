@@ -77,7 +77,7 @@
 
     <!-- 素材库弹出  -->
     <el-dialog title="素材库" :visible.sync="active.material" custom-class="material-panos">
-      <pano-material :cates="cates" :next="true" @select-panos="selectPanos"></pano-material>
+      <pano-material :next="true" @select-panos="selectPanos"></pano-material>
     </el-dialog>
   </div>
 </template>
@@ -106,6 +106,7 @@ export default {
 
   data() {
     return {
+      // 发布表单
       form: {
         name: '',
         pano_category_id: '',
@@ -123,6 +124,7 @@ export default {
         ],
       },
 
+      // 创建分类表单
       cateForm: {
         name: '',
       },
@@ -143,7 +145,7 @@ export default {
         ],
       },
 
-      timer: null,
+      timer: null, // 存放检查切图进度的定时器
       active: {
         newCate: false,
         material: false,

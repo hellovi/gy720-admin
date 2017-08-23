@@ -7,7 +7,7 @@
           <dd
             v-for="cate in cates"
             :key="cate.id"
-            :class="{active: cate.id === currentId}"
+            :class="{active: cate.id === currentCateId}"
             @click="selectCate(cate.id)"
           >{{ cate.name }}</dd>
         </dl>
@@ -16,7 +16,7 @@
       <el-col class="pano-material__right" :span="21" v-loading="loading">
         <el-row class="pano-material__header">
           <el-col :span="4">
-            <el-checkbox :value="allChecked" @change="handleCheckAll">全选</el-checkbox>
+            <el-checkbox :value="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
           <el-col class="text-right" :span="14">
             <div class="pano-material__header__count">
@@ -30,8 +30,8 @@
 
         <div class="pano-material__content">
           <el-row :gutter="20">
-            <el-col v-for="pano in list.data" :key="pano.id" class="pano-material__item" :span="6">
-              <el-checkbox :value="checked.includes(pano.id)" @change="val => handleCheck(val, pano.id)"></el-checkbox>
+            <el-col v-for="pano in list.data" :key="pano.id" class="pano-material__item" :span="6" @click.native="selectPano(pano.id)">
+              <el-checkbox :value="checked.includes(pano.id)" @change="selectPano(pano.id, $event.target.checked)"></el-checkbox>
               <img :src="$url.host(pano.preview_image)" :alt="pano.name">
               <h4>{{ pano.name }}</h4>
             </el-col>
@@ -60,7 +60,6 @@
  * 场景素材列表
  * @author luminghuai
  * @version 2017-08-23
- * @description 分类目前是错的，还没有文档
  */
 
 import { mapState } from 'vuex'
@@ -70,10 +69,6 @@ export default {
   name: 'pano-material',
 
   props: {
-    cates: {
-      type: Array,
-      required: true,
-    },
     next: {
       type: Boolean,
       required: true,
@@ -82,7 +77,8 @@ export default {
 
   data() {
     return {
-      currentId: 1,
+      cates: [], // 场景素材分类
+      currentCateId: 1, // 当权选中的分类
       checked: [], // 存放选中项的id
       keyword: '',
       loading: false,
@@ -105,7 +101,7 @@ export default {
     },
 
     params() {
-      return `?source_scene_category_id=${this.currentId}`
+      return `?source_scene_category_id=${this.currentCateId}`
     },
   },
 
@@ -123,24 +119,26 @@ export default {
      * 选择不同的分类后，重新获取列表并清空选中项
      */
     selectCate(id) {
-      this.currentId = id
-      this.getPanos()
-      this.checked = []
+      if (id !== this.currentCateId) {
+        this.currentCateId = id
+        this.getPanos()
+        this.checked = []
+      }
     },
 
     pageChange(page) {
       this.getPanos(page)
     },
 
-    handleCheck(event, id) {
-      if (event.target.checked) {
-        this.checked.push(id)
-      } else {
+    selectPano(id, checked) {
+      if (checked || this.checked.includes(id)) {
         this.checked = this.checked.filter(item => item !== id)
+      } else {
+        this.checked.push(id)
       }
     },
 
-    handleCheckAll() {
+    selectAllPanos() {
       if (this.allChecked) {
         this.checked = []
       } else {
@@ -155,6 +153,10 @@ export default {
   },
 
   created() {
+    this.$http.get('/user/sourcescenecategory')
+      .then(({ result }) => {
+        this.cates = result
+      })
     this.getPanos()
   },
 }
@@ -233,6 +235,12 @@ export default {
 .pano-material__item {
   position: relative;
   height: 120px;
+  cursor: pointer;
+  transition: 0.2s;
+
+  &:hover {
+    opacity: 0.9;
+  }
 
   .el-checkbox {
     position: absolute;
