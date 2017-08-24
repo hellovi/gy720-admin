@@ -22,7 +22,7 @@
       <div role="button"
         class="btn-add dash-box dash-box--cubic tip tip--right"
         data-tip="添加底部菜单"
-        @click="openModal('bottomMenu')"
+        @click="openModal('menu')"
       >+</div>
     </div>
   </div>

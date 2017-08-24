@@ -4,7 +4,7 @@
       role="button"
       class="btn-add dash-box tip tip--left"
       data-tip="添加右侧菜单"
-      @click="openModal('rightMenu')"
+      @click="openModal('menu')"
     >+</div>
     <draggable :list="items">
       <transition-group tag="ul" class="edit-control__right-menu list">

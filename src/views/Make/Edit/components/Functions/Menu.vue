@@ -1,21 +1,22 @@
 <template>
   <el-dialog
-    title="bottomMenu"
+    class="edit-functions__menu"
+    title="菜单编辑"
     :visible.sync="active.menu"
-    size="tiny"
+    size="small"
   >
-      <span>bottomMenu场景</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </div>
   </el-dialog>
 </template>
 
 <script>
 /**
- * 高级编辑 - menu
- * @version 2017-08-14
+ * 高级编辑 - 菜单编辑
+ *
+ * @author huojinzhao
  */
 
 import modal from '../../mixins/modal'
@@ -26,3 +27,7 @@ export default {
   mixins: [modal],
 }
 </script>
+
+<style lang="postcss">
+
+</style>
