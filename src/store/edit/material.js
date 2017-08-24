@@ -21,10 +21,10 @@ const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1887
 // 导出的数据
 const getMaterialExport = () => ({
   tour: { url: '', id: 0 }, // 导览图(右侧菜单)
+  wechat: { url: '', id: 0 }, // 普通素材data(微信设置)
   menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
   hotspot: { title: '', id: 0 }, // 图文素材data(热点设置)
   hotspot3d: { title: '', id: 0 }, // 物品3D素材(热点设置)
-  wechat: { url: '', id: 0 }, // 普通素材data(微信设置)
 })
 
 export default {
@@ -37,6 +37,7 @@ export default {
     materialData: {
       panos: { data: [] },
       logos: { data: [] },
+      tours: { data: [] },
       hotspots: { data: [] },
       icons: { data: [] },
       ads: { data: [] },
@@ -57,9 +58,18 @@ export default {
       state.materialData[type] = data
     },
 
-    [MATERIAL.SELECT](state) {
-      state.materialExport.tour.id = 777
-      state.materialExport.tour.url = testData
+    [MATERIAL.ADD](state, result) {
+      // state.cates = [...state.cates, cate]
+      state.materialData[state.type].data.unshift(result)
+    },
+
+    [MATERIAL.SELECT](state, { id, url }) {
+      state.materialExport[state.selectFrom] = { id, url }
+      state.selectFrom = ''
+    },
+
+    [MATERIAL.SOURCE](state, { source }) {
+      state.selectFrom = source
     },
 
     [MATERIAL.RESET](state, payload) {
@@ -102,8 +112,11 @@ export default {
         })
     },
 
-    [MATERIAL.SELECT]({ commit }) {
-      commit(MATERIAL.SELECT)
+    [MATERIAL.ADD]({ commit }, data) {
+      return Http.post('/user/source', data)
+        .then(({ result }) => {
+          commit(MATERIAL.ADD, result)
+        })
     },
   },
 }
