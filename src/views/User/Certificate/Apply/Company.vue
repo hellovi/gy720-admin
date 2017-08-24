@@ -1,26 +1,5 @@
 <template>
   <div>
-    <ul class="cert-apply__term list clearfix">
-      <li>
-        <i class="iconfont">&#xe684;</i>
-        <p>15个以上精品</p>
-        <el-button type="primary" size="mini">努力中</el-button>
-        <!-- <el-button type="primary" size="mini" disabled>已符合</el-button> -->
-      </li>
-      <li>
-        <i class="iconfont">&#xe682;</i>
-        <p>总人气超过3000</p>
-        <el-button type="primary" size="mini">努力中</el-button>
-        <!-- <el-button type="primary" size="mini" disabled>已符合</el-button> -->
-      </li>
-      <li>
-        <i class="iconfont">&#xe681;</i>
-        <p>完善摄影师资料</p>
-        <el-button type="primary" size="mini">去完善</el-button>
-        <!-- <el-button type="primary" size="mini" disabled>已符合</el-button> -->
-      </li>
-    </ul>
-
     <el-form
       label-width="115px"
       label-position="left"
