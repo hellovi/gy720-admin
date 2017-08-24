@@ -7,6 +7,16 @@
   --app-user-height: 120px;
   --app-user-margin-top: 40px;
   --app-user-margin-bottom: 15px;
+  --app-user-area: calc(var(--app-user-height) + var(--app-user-margin-top) + var(--app-user-margin-bottom));
+
+  --app-body-margin-bottom: 15px;
+  --app-body-min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--app-body-margin-bottom));
+  --app-content-min-height: calc(var(--app-body-min-height) - var(--app-user-area));
+
+  --app-tab-height: 50px;
+  --app-tab-margin: 15px;
+  --app-tab-area: calc(var(--app-tab-height) + var(--app-tab-margin));
+  --app-main-content-min-height: calc(var(--app-content-min-height) - var(--app-tab-area));
 
   --gray: #999;
   --gray-light: #ccc;

@@ -32,20 +32,14 @@ export default {
 <style lang="postcss">
 @import "vars.css";
 
-:root {
-  --margin-bottom: 15px;
-  --app-body-min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--margin-bottom));
-  --app-user-area: calc(var(--app-user-height) + var(--app-user-margin-top) + var(--app-user-margin-bottom));
-}
-
 .app-body {
   max-width: var(--content-width);
   min-height: var(--app-body-min-height);
-  margin: 0 auto var(--margin-bottom);
+  margin: 0 auto var(--app-user-margin-bottom);
   overflow: hidden;
 }
 
 .app-content {
-  min-height: calc(var(--app-body-min-height) - var(--app-user-area));
+  min-height: var(--app-content-min-height);
 }
 </style>

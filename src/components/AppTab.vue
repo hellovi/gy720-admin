@@ -38,17 +38,15 @@ export default {
 @import "vars.css";
 
 .app-tab {
-  margin: 15px 0;
+  margin: var(--app-tab-margin) 0;
   overflow: hidden;
   background-color: #fff;
-  // box-shadow: var(--box-shadow-base);
   font-size: 14px;
-
 
   &__item {
     float: left;
-    height: 50px;
-    line-height: 50px;
+    height: var(--app-tab-height);
+    line-height: var(--app-tab-height);
     text-align: center;
 
     & > a {
