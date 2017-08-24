@@ -1,10 +1,22 @@
 <template>
   <el-row class="message-control">
     <el-col :span="16">
-      <el-checkbox :value="allChecked" @change="$emit('checkAll', $event)">全选</el-checkbox>
+      <el-checkbox :value="allChecked" @change="$emit('check-all')">全选</el-checkbox>
       <span style="margin-left: 20px;">
-        <el-button type="danger" size="small" :disabled="!someChecked">删除</el-button>
-        <el-button type="primary" size="small" :disabled="!someChecked">标记已读</el-button>
+        <el-button
+          type="danger"
+          size="small"
+          :disabled="!someChecked"
+          :loading="loading === 'remove-selected'"
+          @click="$emit('remove-selected')"
+        >删除</el-button>
+        <el-button
+          type="primary"
+          size="small"
+          :disabled="!someChecked"
+          :loading="loading === 'mark-selected'"
+          @click="$emit('mark-selected')"
+        >标记已读</el-button>
       </span>
     </el-col>
     <el-col :span="8">
@@ -24,6 +36,10 @@ export default {
     },
     someChecked: {
       type: Boolean,
+      required: true,
+    },
+    loading: {
+      type: Number,
       required: true,
     },
   },

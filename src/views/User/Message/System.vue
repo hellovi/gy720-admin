@@ -2,8 +2,11 @@
   <div>
     <message-control
       :allChecked="allChecked"
-      :someChecked="someChecked"
-      @checkAll="checkAll"
+      :someChecked="checked.length > 0"
+      :loading="loading"
+      @check-all="checkAll"
+      @remove-selected="removeMessage"
+      @mark-selected="markSelected"
     ></message-control>
 
     <table class="app-table">
@@ -23,16 +26,27 @@
       </thead>
       <tbody>
         <tr v-for="(message, index) in list.data" :key="message.id">
-          <td><el-checkbox :value="message.checked" @change="handleCheck(index)"></el-checkbox></td>
-          <td class="text-left">{{ message.title }}</td>
-          <td>{{ message.created_at }}</td>
-          <td><el-button type="danger" size="small">删除</el-button></td>
+          <td><el-checkbox :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
+          <td class="text-left">{{ message.content }}</td>
+          <td>{{ message.date }}</td>
+          <td>
+            <el-button
+              type="danger"
+              size="small"
+              :loading="loading === message.id"
+              @click="removeMessage(message.id)"
+            >删除</el-button>
+          </td>
         </tr>
       </tbody>
     </table>
 
+    <div v-if="isEmpty" class="empty">
+      <div>您目前还没有收到任何系统消息</div>
+    </div>
+
     <el-pagination
-      v-if="list.data.length"
+      v-if="list.last_page > 1"
       layout="prev, pager, next"
       :total="list.total"
       :current-page="list.current_page"
@@ -42,7 +56,7 @@
 </template>
 
 <script>
-// import { mapState } from 'vuex'
+import { mapState } from 'vuex'
 import { MESSAGE } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import check from './mixins/check'
@@ -57,9 +71,57 @@ export default {
     MessageControl,
   },
 
+  data() {
+    return {
+      loading: -1,
+    }
+  },
+
+  computed: {
+    ...mapState({
+      list: state => state.message.system,
+    }),
+  },
+
   methods: {
     getData(route) {
       return this.$store.dispatch(MESSAGE.SYSTEM.INIT, route.query.page)
+    },
+
+    /**
+     * 删除单个消息或已选中的所有消息，若传入id，则为前者，否则为后者
+     * 接口请求成功后，应根据id同时删去store中的对应数据
+     */
+    removeMessage(removeId) {
+      this.loading = removeId || 'remove-selected'
+
+      const ids = removeId ? [removeId] : this.checked
+
+      this.$http.post('/user/message/delete', {
+        ids: ids.map(id => ({ id })),
+      })
+        .then(() => {
+          this.$store.commit(MESSAGE.SYSTEM.DELETE, ids)
+          this.loading = -1
+        })
+    },
+
+    /**
+     * 标记所有选中项为已读
+     * 接口请求成功后，应把store中对应的未读计数减去标记项的个数
+     */
+    markSelected() {
+      this.loading = 'mark-selected'
+      this.$http.post('/user/message/read', {
+        ids: this.checked.map(id => ({ id })),
+      })
+        .then(() => {
+          this.$store.commit(MESSAGE.COUNT.UPDATE, {
+            type: 'system',
+            count: this.checked.length,
+          })
+          this.loading = -1
+        })
     },
   },
 }

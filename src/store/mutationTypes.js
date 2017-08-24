@@ -27,8 +27,13 @@ export const CENTER = {
 
 
 export const MESSAGE = {
+  COUNT: {
+    INIT: 'MESSAGE.COUNT.INIT',
+    UPDATE: 'MESSAGE.COUNT.UPDATE',
+  },
   SYSTEM: {
     INIT: 'MESSAGE.SYSTEM.INIT',
+    DELETE: 'MESSAGE.SYSTEM.DELETE',
   },
   PRIVATE: {
     INIT: 'MESSAGE.PRIVATE.INIT',
@@ -36,8 +41,6 @@ export const MESSAGE = {
   SAY: {
     INIT: 'MESSAGE.SAY.INIT',
   },
-  CHECK: 'MESSAGE.CHECK',
-  CHECK_ALL: 'MESSAGE.CHECK_ALL',
 }
 
 export const POINT = {

@@ -1,34 +1,31 @@
-import { mapState } from 'vuex'
-import { MESSAGE } from '@/store/mutationTypes'
-
 export default {
+  data() {
+    return {
+      checked: [],
+    }
+  },
+
   computed: {
-    ...mapState({
-      list: state => state.message.system,
-    }),
-
     allChecked() {
-      return this.list.data.length > 0 && this.list.data.every(item => item.checked)
-    },
-
-    someChecked() {
-      return this.list.data.length > 0 && this.list.data.some(item => item.checked)
+      return this.checked.length > 0 && this.checked.length === this.list.data.length
     },
   },
 
   methods: {
-    handleCheck(index) {
-      this.$store.commit(MESSAGE.CHECK, {
-        type: 'system',
-        index,
-      })
+    check(id) {
+      if (this.checked.includes(id)) {
+        this.checked = this.checked.filter(item => item !== id)
+      } else {
+        this.checked.push(id)
+      }
     },
 
-    checkAll({ target }) {
-      this.$store.commit(MESSAGE.CHECK_ALL, {
-        type: 'system',
-        val: target.checked,
-      })
+    checkAll() {
+      if (this.allChecked) {
+        this.checked = []
+      } else {
+        this.checked = this.list.data.map(item => item.id)
+      }
     },
   },
 }

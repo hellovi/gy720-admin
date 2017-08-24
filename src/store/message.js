@@ -1,32 +1,47 @@
-import Vue from 'vue'
 import { Http } from '@/utils'
 import { MESSAGE } from './mutationTypes'
 
 export default {
   state: {
+    counts: {},
     system: { data: [] },
   },
 
   mutations: {
-    [MESSAGE.SYSTEM.INIT](state, system) {
-      state.system = system
+    [MESSAGE.COUNT.INIT](state, counts) {
+      state.counts = counts
     },
 
-    // 更新消息项的勾选状态
-    [MESSAGE.CHECK](state, { type, index }) {
-      const item = state[type].data[index]
-      Vue.set(item, 'checked', !item.checked)
+    [MESSAGE.COUNT.UPDATE](state, { type, count }) {
+      state.counts = {
+        ...state.counts,
+        [type]: state.counts[type] - count,
+      }
     },
 
-    [MESSAGE.CHECK_ALL](state, { type, val }) {
-      state[type].data.forEach(item => Vue.set(item, 'checked', val))
+    [MESSAGE.SYSTEM.INIT](state, list) {
+      state.system = list
+    },
+
+    [MESSAGE.SYSTEM.DELETE](state, ids) {
+      state.system = {
+        ...state.system,
+        data: state.system.data.filter(({ id }) => !ids.includes(id)),
+      }
     },
   },
 
   actions: {
+    [MESSAGE.COUNT.INIT]({ commit }) {
+      Http.get('/user/message/unreadcount')
+        .then(({ result: { counts } }) => {
+          commit(MESSAGE.COUNT.INIT, counts)
+        })
+    },
+
     [MESSAGE.SYSTEM.INIT]({ commit }, page = 1) {
-      return Http.get(`/user/message/lists?type=10&page=${page}`)
-        .then(({ result }) => commit(MESSAGE.SYSTEM.INIT, result.lists))
+      return Http.get(`/user/message?page=${page}`)
+        .then(({ result }) => commit(MESSAGE.SYSTEM.INIT, result))
     },
   },
 }
