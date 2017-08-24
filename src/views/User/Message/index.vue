@@ -47,6 +47,7 @@ export default {
 @import 'vars.css';
 
 .message__content {
+  min-height: var(--app-main-content-min-height);
   padding: 20px 30px;
   background-color: #fff;
 }
