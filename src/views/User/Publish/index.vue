@@ -45,8 +45,10 @@
           </el-col>
 
           <el-col class="publish-panos__tip" :span="12">
-            <a href="http://www-statics.gy720.com/data/%E5%85%89%E9%B1%BC%E5%85%A8%E6%99%AF%E6%B5%8B%E8%AF%95%E7%B4%A0%E6%9D%90.zip"><i class="el-icon-information"></i>没有全景图？点我下载全景图、鱼眼图测试素材</a>
-            <a href="#"><i class="el-icon-information"></i>全景图、鱼眼图尺寸及格式要求说明</a>
+            <a href="http://www-statics.gy720.com/data/%E5%85%89%E9%B1%BC%E5%85%A8%E6%99%AF%E6%B5%8B%E8%AF%95%E7%B4%A0%E6%9D%90.zip">
+              <i class="el-icon-information"></i>没有全景图？点我下载全景图、鱼眼图测试素材
+            </a>
+            <a href="#" @click.prevent="active.explanation = true"><i class="el-icon-information"></i>全景图、鱼眼图尺寸及格式要求说明</a>
           </el-col>
         </el-row>
 
@@ -62,6 +64,11 @@
         <el-button type="primary" native-type="submit">发布</el-button>
       </el-form-item>
     </el-form>
+
+    <!-- 要求说明 -->
+    <el-dialog title="全景图、鱼眼图尺寸及格式要求说明" :visible.sync="active.explanation">
+      <explanation></explanation>
+    </el-dialog>
 
     <!-- 创建分类弹出 -->
     <el-dialog title="创建作品分类" :visible.sync="active.newCate" size="tiny">
@@ -92,6 +99,7 @@
 
 import { mapState } from 'vuex'
 import { WORK } from '@/store/mutationTypes'
+import Explanation from './components/Explanation'
 import PanoMaterial from './components/PanoMaterial'
 import PublishItem from './components/PublishItem'
 import upload from './mixins/upload'
@@ -100,6 +108,7 @@ export default {
   mixins: [upload],
 
   components: {
+    Explanation,
     PanoMaterial,
     PublishItem,
   },
@@ -147,6 +156,7 @@ export default {
 
       timer: null, // 存放检查切图进度的定时器
       active: {
+        explanation: false,
         newCate: false,
         material: false,
       },
@@ -244,6 +254,7 @@ export default {
 
 <style lang="postcss">
 @import "vars.css";
+
 .publish-wrapper {
   margin-top: 30px;
 }
