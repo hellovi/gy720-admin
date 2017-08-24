@@ -3,14 +3,14 @@
      <el-row :gutter="10">
         <el-col :span="4" v-for="(item, index) in dataList" :key="index">
           <el-card :body-style="{ padding: '0px' }">
-            <img :src="item.file_path" class="edit-functions__material__image"/>
+            <img :src="$url.static(item.file_path)" class="edit-functions__material__image"/>
             <div>
               <div class="bottom clearfix">
-                <h6>{{ item.title }}</h6>
+                 <h6>{{ item.title }}</h6>
                 <el-button
                   type="text" class="button"
                   v-show="selectStatus"
-                  @click="selectMater(index, item.id, item.file_path)">
+                  @click="selectMater(item.id, item.file_path)">
                   选择
                 </el-button>
               </div>
@@ -19,14 +19,13 @@
         </el-col>
      </el-row>
      <section class="edit-functions__material__upload">
-       <!-- <el-button type="primary" size="small" @click="uploadMaterial">上传新素材</el-button> -->
       <app-file-upload
         v-model="src"
         ref="fileUpload"
         accept="jpg,jpeg,png"
         size="1mb"
       >
-          <el-button type="primary" size="small" @click="uploadMaterial">上传新素材</el-button>
+          <el-button type="primary" size="small">上传新素材</el-button>
        </app-file-upload>
        <span>支持的文件格式：jpg,jpeg,png,gif,mp3 文件大小：15M以内</span>
      </section>
@@ -40,7 +39,7 @@
  */
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import AppFileUpload from '@/components/AppFileUpload'
+import AppFileUpload from './AppFileUpload'
 
 export default {
   name: 'edit-functions__material--images',
@@ -70,7 +69,7 @@ export default {
     }),
 
     dataList() {
-      return this.$store.state.edit.material.materialData[this.type]
+      return this.$store.state.edit.material.materialData[this.type].data
     },
 
     params() {
@@ -78,15 +77,27 @@ export default {
     },
   },
 
+  watch: {
+    src(val) {
+      // 添加素材,要改成监听process触发
+      this.addMaterial(val)
+    },
+  },
+
   methods: {
-    selectMater(index, id, url) {
-      // 微信设置
-      this.$store.dispatch('edit/material/select', { id, url })
-      this.$store.dispatch('edit/material/destroy')
+    selectMater(id, url) {
+      // 微信设置以及导览图
+      this.$store.commit(EDIT.MATERIAL.SELECT, { id, url })
     },
 
-    uploadMaterial() {
-
+    addMaterial(qiniu_key) {
+      const data = {
+        title: '文件名',
+        tag_id: this.currentId,
+        qiniu_key,
+        file_size: 1000,
+      }
+      this.$store.dispatch(EDIT.MATERIAL.ADD, data)
     },
 
     initMaterial(page) {
