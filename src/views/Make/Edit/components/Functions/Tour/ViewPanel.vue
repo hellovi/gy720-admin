@@ -47,7 +47,7 @@ export default {
     rotation: {
       centerPoint: null,
       initialAngle: 0,
-      originAnngle: 0,
+      originAngle: 0,
     },
   }),
 

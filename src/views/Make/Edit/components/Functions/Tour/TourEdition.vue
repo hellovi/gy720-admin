@@ -16,7 +16,10 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">选择场景</el-button>
+        <el-button
+          type="primary"
+          @click="openSceneSelection"
+        >选择场景</el-button>
         <el-button type="primary">保存</el-button>
       </el-form-item>
     </el-form>
@@ -36,6 +39,20 @@
         {{`${index + 1}、${item}`}}
       </dd>
     </dl>
+
+    <!-- 选择场景 -->
+    <el-dialog
+      class="edition__sceneSelection"
+      title="选择场景" size="large"
+      :modal="false" top="5%"
+      :visible.sync="sceneSelectionModal.tag"
+    >
+      <v-tour-scene
+        class="edition__sceneSelection-item"
+        v-for= "i in 30" :key="i"
+      >
+      </v-tour-scene>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,12 +64,14 @@
  */
 
 import vViewPanel from './ViewPanel'
+import vTourScene from './TourScene'
 
 export default {
   name: 'edit-functions__tour-edition',
 
   components: {
     vViewPanel,
+    vTourScene,
   },
 
   data: () => ({
@@ -79,7 +98,17 @@ export default {
       left: 200,
       degress: 90,
     },
+
+    sceneSelectionModal: {
+      tag: false,
+    },
   }),
+
+  methods: {
+    openSceneSelection() {
+      this.sceneSelectionModal.tag = true
+    },
+  },
 }
 </script>
 
@@ -105,6 +134,14 @@ export default {
 
     & dd {
       margin-top: 10px;
+    }
+  }
+
+  & .edition__sceneSelection {
+    text-align: left;
+
+    &-item {
+      float: left;
     }
   }
 }
