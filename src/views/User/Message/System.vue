@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="listLoading">
     <message-control
       :allChecked="allChecked"
       :someChecked="checked.length > 0"
@@ -73,7 +73,8 @@ export default {
 
   data() {
     return {
-      loading: -1,
+      listLoading: false, // 是否正在加载列表数据
+      loading: -1, // 用以存储需要显示加载状态的按钮
     }
   },
 
@@ -85,7 +86,10 @@ export default {
 
   methods: {
     getData(route) {
+      this.listLoading = true
       return this.$store.dispatch(MESSAGE.SYSTEM.INIT, route.query.page)
+        .catch(({ message }) => this.$message.error(message))
+        .then(() => { this.listLoading = false })
     },
 
     /**

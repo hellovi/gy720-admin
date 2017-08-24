@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="listLoading">
     <message-control
       :allChecked="allChecked"
       :someChecked="checked.length > 0"
@@ -87,6 +87,7 @@ export default {
 
   data() {
     return {
+      listLoading: false,
       loading: -1,
       modal: false,
       userId: -1,
@@ -142,7 +143,10 @@ export default {
     },
 
     getData(route) {
+      this.listLoading = true
       return this.$store.dispatch(MESSAGE.PRIVATE.INIT, route.query.page)
+        .catch(({ message }) => this.$message.error(message))
+        .then(() => { this.listLoading = false })
     },
   },
 }
