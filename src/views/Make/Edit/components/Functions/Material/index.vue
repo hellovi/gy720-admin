@@ -90,7 +90,7 @@ export default {
 
   methods: {
     changeType(type) {
-      this.$store.commit(EDIT.MATERIAL.TAB.SELECT, type)
+      this.$store.commit(EDIT.MATERIAL.TAB.SELECT, { type })
     },
   },
 

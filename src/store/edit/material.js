@@ -32,7 +32,7 @@ export default {
   state: {
     type: 'panos',
     selectStatus: 1,
-    selectFrom: '',
+    source: '',
     materialExport: getMaterialExport(),
     materialData: {
       panos: { data: [] },
@@ -50,8 +50,9 @@ export default {
   },
 
   mutations: {
-    [MATERIAL.TAB.SELECT](state, type) {
+    [MATERIAL.TAB.SELECT](state, { type, source = '' }) {
       state.type = type
+      state.source = source
     },
 
     [MATERIAL.INIT.LOAD](state, { type = state.type, data }) {
@@ -64,12 +65,8 @@ export default {
     },
 
     [MATERIAL.SELECT](state, { id, url }) {
-      state.materialExport[state.selectFrom] = { id, url }
-      state.selectFrom = ''
-    },
-
-    [MATERIAL.SOURCE](state, { source }) {
-      state.selectFrom = source
+      state.materialExport[state.source] = { id, url }
+      state.source = ''
     },
 
     [MATERIAL.RESET](state, payload) {
@@ -84,8 +81,8 @@ export default {
     /**
      * 根据传入的type改变选中的素材标签，并派发事件打开素材窗口
      */
-    [MATERIAL.TAB.SELECT]({ commit }, type) {
-      commit(MATERIAL.TAB.SELECT, type)
+    [MATERIAL.TAB.SELECT]({ commit }, { type, source }) {
+      commit(MATERIAL.TAB.SELECT, { type, source })
       commit(EDIT.MODAL.OPEN, 'material')
     },
 
