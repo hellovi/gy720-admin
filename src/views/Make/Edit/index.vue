@@ -77,7 +77,7 @@ export default {
     initPano(pano_id) {
       window.embedpano({
         swf: '/assets/3.0.1/lib/krpano/tour.swf',
-        xml: `/make/upload/superxml?pano_id=${pano_id}`,
+        xml: `/user/pano/xml?pano_id=${pano_id}`,
         target: 'pano-editor',
         html5: 'only+webgl+preservedrawingbuffer',
         onready: window.krpanoReady,
@@ -98,7 +98,7 @@ export default {
   },
 
   mounted() {
-    this.initPano(this.$route.query.id)
+    this.initPano(this.$route.query.pano_id)
   },
 }
 
