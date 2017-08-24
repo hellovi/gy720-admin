@@ -45,7 +45,7 @@
           </el-col>
 
           <el-col class="publish-panos__tip" :span="12">
-            <a href="#"><i class="el-icon-information"></i>没有全景图？点我下载全景图、鱼眼图测试素材</a>
+            <a href="http://www-statics.gy720.com/data/%E5%85%89%E9%B1%BC%E5%85%A8%E6%99%AF%E6%B5%8B%E8%AF%95%E7%B4%A0%E6%9D%90.zip"><i class="el-icon-information"></i>没有全景图？点我下载全景图、鱼眼图测试素材</a>
             <a href="#"><i class="el-icon-information"></i>全景图、鱼眼图尺寸及格式要求说明</a>
           </el-col>
         </el-row>
