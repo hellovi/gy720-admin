@@ -16,5 +16,9 @@ export default {
     closeModal(name) {
       this.$store.commit(EDIT.MODAL.CLOSE, name)
     },
+
+    openMaterModal(type) {
+      this.$store.dispatch(EDIT.MODAL.TAB.SELECT, type)
+    },
   },
 }
