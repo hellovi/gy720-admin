@@ -20,10 +20,6 @@ export default {
       type: String,
       default: null,
     },
-    config: {
-      type: Object,
-      default: {},
-    },
   },
 
   // watch: {
