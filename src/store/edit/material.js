@@ -53,7 +53,7 @@ export default {
       state.type = type
     },
 
-    [MATERIAL.INIT.LOAD](state, { type, data }) {
+    [MATERIAL.INIT.LOAD](state, { type = state.type, data }) {
       state.materialData[type] = data
     },
 
@@ -79,20 +79,27 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
     },
 
-    [MATERIAL.INIT.PANOS]({ commit }, params = '') {
+    [MATERIAL.INIT.NORMALS]({ commit }, params = '') {
       // const { /* id: tag_id, */ url, method = 'post' } = MATERIAL_DICT[type]
       // { file_ext: 'jpg', tag_id, per_page: 20, current_page: 1 }
+      return Http.get(`/user/source${params}`)
+        .then(({ result }) => {
+          commit(MATERIAL.INIT.LOAD, { data: result })
+        })
+        .catch(() => {
+          commit(MATERIAL.INIT.LOAD, {
+            data: [{ id: 3, file_path: testData, title: '测试素材' },
+              { id: 4, file_path: testData, title: '测试素材' },
+              { id: 5, file_path: testData, title: '测试素材' },
+            ] })
+        })
+    },
+
+    [MATERIAL.INIT.PANOS]({ commit }, params = '') {
       return Http.get(`/user/sourcescene${params}`)
         .then(({ result }) => {
           commit(MATERIAL.INIT.LOAD, { type: 'panos', data: result })
         })
-        // .catch(() => {
-        //   commit(MATERIAL.INIT, { type,
-        //     data: [{ id: 3, file_path: testData, title: '测试素材' },
-        //       { id: 4, file_path: testData, title: '测试素材' },
-        //       { id: 5, file_path: testData, title: '测试素材' },
-        //     ] })
-        // })
     },
 
     [MATERIAL.SELECT]({ commit }) {
