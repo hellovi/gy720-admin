@@ -69,14 +69,19 @@ export default {
   height: 60px;
   margin-right: 1em;
 
-  & > img {
+  img {
     width: 100%;
     height: 100%;
     border: 2px solid var(--border-color);
     border-radius: 50%;
+
+    &:hover {
+      opacity: 0.9;
+    }
   }
 
-  &::after {
+  /* 私信用户头像上的未读计数，设计图有，原型上无，后端没做 */
+  /* &::after {
     content: attr(data-count);
     position: absolute;
     top: 0;
@@ -91,7 +96,7 @@ export default {
     font-size: 12px;
     text-align: center;
     line-height: 18px;
-  }
+  } */
 }
 
 .message-summary {

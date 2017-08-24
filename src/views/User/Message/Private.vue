@@ -2,8 +2,11 @@
   <div>
     <message-control
       :allChecked="allChecked"
-      :someChecked="someChecked"
-      @checkAll="checkAll"
+      :someChecked="checked.length > 0"
+      :loading="loading"
+      @check-all="checkAll"
+      @remove-selected="removeMessage"
+      @mark-selected="markSelected"
     ></message-control>
 
     <table class="app-table">
@@ -23,25 +26,34 @@
       </thead>
       <tbody>
         <tr v-for="(message, index) in list.data" :key="message.id">
-          <td><el-checkbox :value="message.checked" @change="handleCheck(index)"></el-checkbox></td>
+          <td><el-checkbox :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
           <td class="text-left">
-            <div class="message-avatar" data-count="2">
-              <img src="http://l-statics.gy720.com/data/avatar/20170101/471811501052670905.jpg" alt="用户名">
+            <div class="message-avatar">
+              <a href="#"><img :src="$url.static(message.avatar)" :alt="message.nickname"></a>
             </div>
             <div>
-              <!-- 这里是否要跳链接 -->
-              <router-link to="/" class="hover-primary">用户名</router-link>
-              <div class="message-summary">{{ message.title }}</div>
+              <!-- 这里及上面的头像似乎应该转跳到用户主页面，但目前地址还未确定 -->
+              <a href="#" class="hover-primary">{{ message.nickname }}</a>
+              <div class="message-summary">{{ message.content }}</div>
             </div>
           </td>
-          <td>{{ message.created_at }}</td>
+          <td>{{ message.date }}</td>
           <td>
-            <el-button type="primary" size="small" @click="openChatBox">回复</el-button>
-            <el-button type="danger" size="small">删除</el-button>
+            <el-button type="primary" size="small" @click="openChatBox(message.user_id)">回复</el-button>
+            <el-button
+              type="danger"
+              size="small"
+              :loading="loading === message.id"
+              @click="removeMessage(message.id)"
+            >删除</el-button>
           </td>
         </tr>
       </tbody>
     </table>
+
+    <div v-if="isEmpty" class="empty">
+      <div>您目前还没有收到任何系统消息</div>
+    </div>
 
     <el-pagination
       v-if="list.data.length"
@@ -51,11 +63,12 @@
       @current-change="pageChange"
     ></el-pagination>
 
-    <chat-box v-model="modal"></chat-box>
+    <chat-box v-model="modal" :user-id="userId" @close="userId = -1"></chat-box>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { MESSAGE } from '@/store/mutationTypes'
 import { list } from '@/mixins'
 import check from './mixins/check'
@@ -74,19 +87,63 @@ export default {
 
   data() {
     return {
+      loading: -1,
       modal: false,
+      userId: -1,
     }
   },
 
+  computed: {
+    ...mapState({
+      list: state => state.message.private,
+    }),
+  },
+
   methods: {
-    openChatBox() {
+    /**
+     * 删除单个消息或已选中的所有消息，若传入id，则为前者，否则为后者
+     * 接口请求成功后，应根据id同时删去store中的对应数据
+     */
+    removeMessage(removeId) {
+      this.loading = removeId || 'remove-selected'
+
+      const ids = removeId ? [removeId] : this.checked
+
+      this.$http.post('/user/chat/delete', {
+        ids: ids.map(id => ({ id })),
+      })
+        .then(() => {
+          this.$store.commit(MESSAGE.PRIVATE.DELETE, ids)
+          this.loading = -1
+        })
+    },
+
+    /**
+     * 标记所有选中项为已读
+     * 接口请求成功后，应把store中对应的未读计数减去标记项的个数
+     */
+    markSelected() {
+      this.loading = 'mark-selected'
+      this.$http.post('/user/chat/read', {
+        ids: this.checked.map(id => ({ id })),
+      })
+        .then(() => {
+          this.$store.commit(MESSAGE.COUNT.UPDATE, {
+            type: 'private',
+            count: this.checked.length,
+          })
+          this.loading = -1
+        })
+    },
+
+    openChatBox(userId) {
+      this.userId = userId
       this.modal = true
     },
 
     getData(route) {
-      return this.$store.dispatch(MESSAGE.SYSTEM.INIT, route.query.page)
+      return this.$store.dispatch(MESSAGE.PRIVATE.INIT, route.query.page)
     },
   },
 }
 </script>
-
