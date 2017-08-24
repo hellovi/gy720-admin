@@ -50,14 +50,15 @@ export default {
       materialConfig: [
         { type: 'panos', id: 0, label: '全景图', comp: 'PanoMaterial' },
         { type: 'logos', id: 1, label: 'LOGO', comp: 'materialImages' },
-        { type: 'hotspots', id: 2, label: '热点图标', comp: 'materialImages' },
+        { type: 'tours', id: 2, label: '导览图', comp: 'materialImages' },
+        { type: 'hotspots', id: 7, label: '热点图标', comp: 'materialImages' },
         { type: 'icons', id: 3, label: '小图标', comp: 'materialImages' },
         { type: 'ads', id: 4, label: '地面广告', comp: 'materialImages' },
         { type: 'thumbs', id: 5, label: '缩略图', comp: 'materialImages' },
-        { type: 'infos', id: 6, label: '图文信息', comp: 'materialImageText' },
-        { type: 'objects', id: 7, label: '物品3D', comp: 'materialObject3D' },
+        { type: 'infos', id: 10, label: '图文信息', comp: 'materialImageText' },
+        { type: 'objects', id: 11, label: '物品3D', comp: 'materialObject3D' },
         { type: 'audios', id: 8, label: '音频', comp: '' },
-        { type: 'others', id: 9, label: '其他', comp: 'materialImages' },
+        { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
       ],
     }
   },
@@ -111,7 +112,7 @@ export default {
     margin-right: 10px;
 
     & .el-button {
-      width: 60px;
+      width: 55px;
       text-align: center;
       padding: 6px 5px;
     }
