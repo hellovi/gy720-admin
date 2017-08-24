@@ -37,11 +37,6 @@ export default {
     ueditor: () => System.import('../../components/Ueditor.vue'),
   },
 
-  mounted() {
-    this.detail = { ...this.detail, ...this.info }
-    this.btn_open = this.detail.btn_show === '10'
-  },
-
   methods: {
     ueRready() {
       window.console.log('ueReady')
@@ -59,6 +54,29 @@ export default {
       //   .then(() => this.$emit('submit'))
     },
   },
+
+  mounted() {
+    this.detail = { ...this.detail, ...this.info }
+    this.btn_open = this.detail.btn_show === '10'
+  },
+
+  // 在此钩子里取数据
+  activated() {
+
+  },
+  // 在此钩子里进行销毁重置操作
+  deactivated() {
+
+  },
 }
 </script>
 
+<style lang="postcss">
+  #edui_fixedlayer {
+     z-index: 9999!important;
+  }
+
+  .edui-default .edui-dialog {
+    z-index: 9999!important;
+  }
+</style>

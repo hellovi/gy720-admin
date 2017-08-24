@@ -7,15 +7,16 @@
       size="large"
     >
       <ul class="clearfix edit-functions__material__ul">
-        <li class="edit-functions__material__title list" v-for="(item, index) in mapper" :key="item.key" @click="switchType(item.key)">
+        <li
+          class="edit-functions__material__title list"
+          v-for="(item, index) in materialConfig" :key="item.type"
+          @click="changeType(item.type)"
+        >
           <el-button size="small">{{item.label}}</el-button>
         </li>
       </ul>
       <keep-alive>
-        <component :is="currentView"
-          :type = "type"
-        >
-        </component>
+        <div :is="currentView" :key="type" :current-id="currentId"></div>
       </keep-alive>
     </el-dialog>
   </div>
@@ -26,6 +27,7 @@
  * 高级编辑 - 素材库
  * @version 2017-08-21
  */
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
@@ -45,49 +47,54 @@ export default {
 
   data() {
     return {
-      type: 1,
-      mapper: [
-        { key: 0, label: '全景图', com: 'PanoMaterial' },
-        { key: 1, label: 'LOGO', com: 'materialImages' },
-        { key: 2, label: '热点图标', com: 'materialImages' },
-        { key: 3, label: '小图标', com: 'materialImages' },
-        { key: 4, label: '地面广告', com: 'materialImages' },
-        { key: 5, label: '缩略图', com: 'materialImages' },
-        { key: 6, label: '图文信息', com: 'materialImageText' },
-        { key: 7, label: '物品3D', com: 'materialObject3D' },
-        { key: 8, label: '音频', com: '' },
-        { key: 9, label: '其他', com: '' },
+      materialConfig: [
+        { type: 'panos', id: 0, label: '全景图', comp: 'PanoMaterial' },
+        { type: 'logos', id: 1, label: 'LOGO', comp: 'materialImages' },
+        { type: 'hotspots', id: 2, label: '热点图标', comp: 'materialImages' },
+        { type: 'icons', id: 3, label: '小图标', comp: 'materialImages' },
+        { type: 'ads', id: 4, label: '地面广告', comp: 'materialImages' },
+        { type: 'thumbs', id: 5, label: '缩略图', comp: 'materialImages' },
+        { type: 'infos', id: 6, label: '图文信息', comp: 'materialImageText' },
+        { type: 'objects', id: 7, label: '物品3D', comp: 'materialObject3D' },
+        { type: 'audios', id: 8, label: '音频', comp: '' },
+        { type: 'others', id: 9, label: '其他', comp: 'materialImages' },
       ],
     }
   },
 
   computed: {
+    ...mapState({
+      type: state => state.edit.material.type,
+    }),
+
+    currentMaterial() {
+      return this.materialConfig.find(item => item.type === this.type)
+    },
+
+    currentId() {
+      return this.currentMaterial.id
+    },
+
     currentView: {
       get() {
-        return this.mapper.find(item => item.key === this.type).com
+        return this.currentMaterial.comp
       },
       set() {
         // 设置素材类型前置操作
         // 判断是否为其他地方唤起？store?
       },
     },
+
   },
 
   methods: {
-    switchType(type) {
-      this.type = type
-      this.creatMaterial(type)
-    },
-
-    creatMaterial(type) {
-      // 加载素材
-      this.$store.dispatch(EDIT.MATERIAL.CREATE, { type })
-      // .then() 接口好了后这里做一步处理判断currentView的显示隐藏？
+    changeType(type) {
+      this.$store.commit(EDIT.MATERIAL.TAB.SELECT, type)
     },
   },
 
   created() {
-    this.creatMaterial(this.type)
+
   },
 }
 </script>
