@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "cropperjs": "^1.0.0-rc.3",
+    "core-js": "^2.5.0",
     "echarts": "^3.6.2",
     "element-ui": "^1.4.2",
     "intersection-observer": "^0.4.0",

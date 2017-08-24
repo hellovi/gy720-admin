@@ -1,5 +1,12 @@
-// polyfill
+// polyfills
+import 'core-js/es6/promise'
+import 'core-js/fn/typed'
+import 'core-js/es6/array'
+import 'core-js/es7/array'
+import 'core-js/es6/string'
+import 'core-js/es7/string'
 import '@/utils/base64'
+import '@/utils/placeholders'
 
 import Vue from 'vue'
 import ElementUI from 'element-ui'
