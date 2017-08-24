@@ -59,7 +59,6 @@ class Http {
         ...defaultHeaders,
         ...headers,
       },
-      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }
@@ -80,7 +79,6 @@ class Http {
         ...headers,
       },
       body: JSON.stringify(body),
-      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }
@@ -101,7 +99,6 @@ class Http {
         ...headers,
       },
       body: JSON.stringify(body),
-      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }
@@ -122,7 +119,6 @@ class Http {
         ...headers,
       },
       body: JSON.stringify(body),
-      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }
@@ -140,7 +136,6 @@ class Http {
         ...defaultHeaders,
         ...headers,
       },
-      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }
