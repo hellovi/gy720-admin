@@ -7,7 +7,7 @@
       <i class="iconfont">&#xe73c;</i>光鱼认证摄影师
     </h1>
 
-    <router-view></router-view>
+    <router-view :cert-info='certInfo'></router-view>
 
   </div>
 </template>
@@ -20,8 +20,52 @@
  * @version 2017-08-11
  */
 
+// eslint-disable-next-line
+import mock from './mock'
+
 export default {
   name: 'certifate',
+
+  data() {
+    return {
+      certInfo: {},
+    }
+  },
+
+  computed: {
+  },
+
+  methods: {
+    getCertInfo() {
+      this.$http.get('/user/certificate')
+        .then((res) => {
+          this.next(res)
+        })
+    },
+
+    getMockInfo() {
+      Promise.resolve(mock)
+        .then((res) => {
+          this.next(res)
+        })
+    },
+
+    next(res) {
+      // console.log(!res.result.certificate)
+      this.certInfo = res.result
+
+      if (!res.result.certificate) {
+        this.$router.push('/user-client/certificate/apply')
+      } else {
+        this.$router.push('/user-client/certificate/result')
+      }
+    },
+  },
+
+  created() {
+    this.getCertInfo()
+    // this.getMockInfo()
+  },
 
 }
 </script>
