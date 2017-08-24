@@ -56,7 +56,7 @@
     </div>
 
     <el-pagination
-      v-if="list.data.length"
+      v-if="list.last_page > 1"
       layout="prev, pager, next"
       :total="list.total"
       :current-page="list.current_page"

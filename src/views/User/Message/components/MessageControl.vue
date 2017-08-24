@@ -39,7 +39,7 @@ export default {
       required: true,
     },
     loading: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
   },
