@@ -54,6 +54,7 @@ export default {
     submit() {
       this.$http.post('/user/certification', this.form)
         .then((res) => {
+          // eslint-disable-next-line
           console.log(res)
         })
     },
