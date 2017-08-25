@@ -119,6 +119,7 @@
                 maxWidth: data.srcElement.width,
                 maxHeight: data.srcElement.height,
               }
+              this.$emit('crop-view', data)
             },
             ...this.options,
           })
@@ -138,7 +139,7 @@
       subCropper() {
         const { width, height, x, y } = this.cropInfo
         this.crop = `!${width}x${height}a${x}a${y}`
-        this.$emit('cropView', { crop: this.crop, options: this.cropInfo })
+        this.$emit('crop-info', this.crop, this.cropInfo)
 
         // 生成裁剪后的图片
         const srcUrl = this.cropper.getCroppedCanvas({
@@ -149,6 +150,9 @@
     },
     mounted() {
       this.init()
+    },
+    beforeDestroy() {
+      this.cropper.destroy()
     },
   }
 </script>
