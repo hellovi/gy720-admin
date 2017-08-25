@@ -8,20 +8,26 @@ import Url from './url'
 
 const dynamicLoadScript = (PATH) => {
   const FULL_PATH = Url.host(PATH)
-  const libScript = document.querySelector(`script[src="${FULL_PATH}"]`)
+  let libScript = document.querySelector(`script[src="${FULL_PATH}"]`)
 
   return new Promise((resolve) => {
-    if (libScript) {
-      // 已经加载过js库，直接执行实例初始化
+    // 如果这个tag不存在，则生成相关代码tag以加载代码
+    if (libScript === null) {
+      libScript = document.createElement('script')
+      libScript.type = 'text/javascript'
+      libScript.src = `${FULL_PATH}`
+      const s = document.getElementsByTagName('head')[0]
+      s.appendChild(libScript)
+    }
+
+    // 等待代码加载完成后回调
+    if (libScript.loaded) {
       resolve()
     } else {
-      // 动态写入script标签加载js库，确保在库加载完成后才初始化js实例
-      const script = document.createElement('script')
-      script.src = FULL_PATH
-      script.addEventListener('load', () => {
+      libScript.addEventListener('load', () => {
+        libScript.loaded = true
         resolve()
       })
-      document.body.appendChild(script)
     }
   })
 }
