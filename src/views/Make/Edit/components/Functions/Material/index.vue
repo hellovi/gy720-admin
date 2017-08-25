@@ -21,9 +21,16 @@
         </li>
       </ul>
       <keep-alive>
-        <div :is="currentView" :key="type" :current-id="currentId"></div>
+        <div
+          :is="currentView"
+          :key="type"
+          :current-id="currentId"
+          @on-manage = "openObject3D"
+        ></div>
       </keep-alive>
     </el-dialog>
+    <!--管理物品3D-->
+    <manage-object v-model="manageModel"></manage-object>
   </div>
 </template>
 
@@ -36,7 +43,7 @@ import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
-import { materialImages, materialImageText, materialObject3D } from './components'
+import { materialImages, materialImageText, materialObject3D, manageObject } from './components'
 
 export default {
   name: 'edit-functions__material',
@@ -48,6 +55,7 @@ export default {
     materialImages,
     materialImageText,
     materialObject3D,
+    manageObject,
   },
 
   data() {
@@ -65,6 +73,7 @@ export default {
         { type: 'audios', id: 8, label: '音频', comp: '' },
         { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
       ],
+      manageModel: false,
     }
   },
 
@@ -97,6 +106,10 @@ export default {
     changeType(type) {
       this.$store.commit(EDIT.MATERIAL.TAB.SELECT, { type })
     },
+
+    openObject3D(status) {
+      this.manageModel = status
+    },
   },
 
   created() {
@@ -109,6 +122,9 @@ export default {
 @import "vars.css";
 
 .edit-functions__material {
+  &__data {
+    min-height: 400px;
+  }
 
   &__ul {
     padding-left: 0px;
