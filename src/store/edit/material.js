@@ -60,7 +60,6 @@ export default {
     },
 
     [MATERIAL.ADD](state, result) {
-      // state.cates = [...state.cates, cate]
       state.materialData[state.type].data.unshift(result)
     },
 
