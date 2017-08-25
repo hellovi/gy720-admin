@@ -4,6 +4,7 @@
       title="素材库"
       :visible="active.material"
       :before-close="() => closeModal('material')"
+      :close-on-click-modal="false"
       size="large"
     >
       <ul class="clearfix edit-functions__material__ul">
@@ -124,6 +125,10 @@ export default {
 .edit-functions__material {
   &__data {
     min-height: 400px;
+  }
+
+  .el-dialog {
+    position: inherit;
   }
 
   &__ul {
