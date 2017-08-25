@@ -3,10 +3,12 @@
     <app-file-upload
       v-model="src"
       cropper
-      ref="fileUpload"
       accept="jpg,jpeg,png"
       size="1mb"
       @preview="getPreview"
+      @before-upload="beforeUpload"
+      @upload-progress="uploadProgress"
+      @upload-complete="uploadComplete"
       v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
       class="user-avatar__file"
     >
@@ -64,38 +66,32 @@
       },
     },
     methods: {
-      init() {
-        const self = this
-        const uploader = this.$refs.fileUpload.uploader
-
-        // 监听上传前处理
-        uploader.bind('BeforeUpload', () => {
-          self.progress = 0
-        })
-
-        // 监听上传进度
-        uploader.bind('UploadProgress', (up, file) => {
-          self.progress = parseInt(file.percent, 10)
-        })
-
-        // 监听上传完成
-        uploader.bind('UploadComplete', () => {
-          setTimeout(() => {
-            self.progress = 0
-          }, 800)
-        })
+      // 监听上传前处理
+      beforeUpload() {
+        this.progress = 0
       },
+
+      // 监听上传进度
+      uploadProgress(up, file) {
+        this.progress = parseInt(file.percent, 10)
+      },
+
+      // 监听上传完成
+      uploadComplete() {
+        setTimeout(() => {
+          this.progress = 0
+        }, 800)
+      },
+
       // 构建完整
       getStatic(path) {
         return path && this.$url.static(path)
       },
+
       // 获取预览图
       getPreview(src) {
         this.uploadSrc = src
       },
-    },
-    mounted() {
-      this.init()
     },
   }
 </script>

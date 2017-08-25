@@ -12,7 +12,7 @@
       v-if="cropper&&cropShow"
       :src.sync="previemImg"
       :visible.sync="cropShow"
-      @cropView="cropView"
+      @crop-info="cropInfo"
     ></app-cropper>
   </div>
 </template>
@@ -155,13 +155,16 @@
                   this.previemImg = imgSrc
                   this.cropShow = true
                 })
-              });
+              })
+              this.$emit('files-added', up, files)
             },
             BeforeUpload: (up, file) => {
               // 每个文件上传前,处理相关的事情
+              this.$emit('before-upload', up, file)
             },
             UploadProgress: (up, file) => {
               // 每个文件上传时,处理相关的事情
+              this.$emit('upload-progress', up, file)
             },
             FileUploaded: (up, file, info) => {
               // 每个文件上传成功后,处理相关的事情
@@ -206,6 +209,7 @@
                 // 更新value字段
                 this.$emit('input', val)
               }
+              this.$emit('file-uploaded', up, file, info)
             },
             Error: (up, err, errTip) => {
               //上传出错时,处理相关的事情
@@ -226,9 +230,13 @@
               }
 
               window.console.error(errTip)
+
+              this.$emit('error', up, err, errTip)
             },
             UploadComplete: () => {
-              //队列文件处理完毕后,处理相关的事情
+              // 队列文件处理完毕后,处理相关的事情
+
+              this.$emit('upload-complete')
             },
             Key: (up, file) => {
               // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
@@ -244,11 +252,9 @@
         }
 
         const options = { ...defOptions, ...this.config }
-        const uploader = window.Qiniu.uploader({ ...options })
-
-        this.uploader = uploader
+        this.uploader = window.Qiniu.uploader({ ...options })
       },
-      cropView({crop, options}){
+      cropInfo(crop){
         this.cropSrc = crop
         // 关闭裁剪窗口
         this.cropShow = false
@@ -380,6 +386,9 @@
     mounted() {
       this.init()
     },
+    beforeDestroy() {
+      this.uploader.destroy()
+    }
   }
 </script>
 
