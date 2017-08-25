@@ -73,5 +73,11 @@ export default {
 </script>
 
 <style lang="postcss">
-
+.edit-functions {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
 </style>
