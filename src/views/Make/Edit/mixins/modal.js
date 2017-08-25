@@ -22,9 +22,9 @@ export default {
     },
 
     /**
-     * 其他组件唤起素材弹框
+     * 其他组件调用素材组件
      * @param {Object} param
-     * @param {MaterialType} param.type - 素材类型
+     * @param {MaterialType} param.type -素材类型
      * @param {InvokeSource} param.source - 调用来源
      */
     openMaterModal({ type, source }) {
