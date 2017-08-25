@@ -1,25 +1,11 @@
 <template>
   <div class="edit-functions__camera">
-    <div class="top-border"></div>
-    <div class="tl-angle"></div>
-    <div class="right-border"></div>
-    <div class="tr-angle"></div>
-    <div class="bottom-border"></div>
-    <div class="br-angle"></div>
-    <div class="left-border"></div>
-    <div class="bl-angle"></div>
     <div class="camera__control">
       <el-button
         type="primary"
         @click.stop="confirm"
-      >
-        {{confirmButtonText}}
-      </el-button>
-      <el-button
-        @click.stop="cancel"
-      >
-        取消
-      </el-button>
+      >{{confirmButtonText}}</el-button>
+      <el-button @click.stop="cancel">取消</el-button>
     </div>
   </div>
 </template>
@@ -52,98 +38,64 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
 .edit-functions__camera {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80vw;
+  height: 80vh;
+  margin-left: -40vw;
+  margin-top: -40vh;
+  border: 1px solid #fff;
 
-  /* 定位 */
-  &>div {
-    position: fixed;
-  }
-
-  & > .top-border,
-  & > .bottom-border,
-  & > .left-border,
-  & > .tl-angle,
-  & > .bl-angle {
-    left: 10vw;
-  }
-
-  & > .right-border,
-  & > .tr-angle,
-  & > .br-angle {
-    right: 10vw;
-  }
-
-  & > .left-border,
-  & > .right-border,
-  & > .top-border,
-  & > .tr-angle,
-  & > .tl-angle {
-    top: 8vh;
-  }
-
-  & > .bottom-border,
-  & > .br-angle,
-  & > .bl-angle {
-    bottom: 16vh;
-  }
-
-  /* 边框显示 */
-  & div:nth-child(odd) {
-    background-color: #fff;
-  }
-
-  & > .top-border,
-  & > .bottom-border {
-    height: 1px;
-    width: 80vw;
-  }
-
-  & > .left-border,
-  & > .right-border {
-    width: 1px;
-    height: 76vh;
-  }
-
-  /* 角显示 */
-  & div:nth-child(even) {
-    box-sizing: border-box;
-    height: 50px;
+  &::before,
+  &::after,
+  .camera__control::before,
+  .camera__control::after {
+    content: "";
+    position: absolute;
     width: 50px;
-    border-width: 10px;
+    height: 50px;
+    border-style: solid;
     border-color: rgb(162, 162, 162);
+
   }
 
-  & > .tl-angle,
-  & > .bl-angle {
-    border-left-style: solid;
+  &::before {
+    top: 0;
+    left: 0;
+    border-width: 8px 0 0 8px;
   }
 
-  & > .tr-angle,
-  & > .br-angle {
-    border-right-style: solid;
-  }
-
-  & > .tl-angle,
-  & > .tr-angle {
-    border-top-style: solid;
-  }
-
-  & > .bl-angle,
-  & > .br-angle {
-    border-bottom-style: solid;
+  &::after {
+    top: 0;
+    right: 0;
+    border-width: 8px 8px 0 0;
   }
 
   & > .camera__control {
+    position: absolute;
+    bottom: 0;
     left: 0;
-    bottom: 19vh;
     width: 100%;
-    background-color: transparent !important;
+    padding-bottom: 5vh;
     text-align: center;
 
-    & > button {
-      width: 90px;
-      padding: 10px 0;
+    &::before {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 8px 8px;
+    }
+
+    &::after {
+      bottom: 0;
+      right: 0;
+      border-width: 0 8px 8px 0;
+    }
+
+    & > .el-button {
+      width: 7em;
     }
   }
 }
