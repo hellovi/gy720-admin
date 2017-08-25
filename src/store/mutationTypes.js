@@ -53,6 +53,7 @@ export const MESSAGE = {
 export const POINT = {
   TASK: {
     INIT: 'POINT.TASK.INIT',
+    UPDATE: 'POINT.TASK.UPDATE',
   },
   LOG: {
     INIT: 'POINT.LOG.INIT',

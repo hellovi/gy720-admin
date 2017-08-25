@@ -34,11 +34,17 @@ export default new Vuex.Store({
       state.userInfo = userInfo
     },
 
+    /**
+     * 更新用户积分
+     * 增加积分时，总积分和可用积分都要相应增加
+     * 删减积分时，只删减可用积分，总积分不变
+     */
     [GLOBAL.USER.UPDATE_POINT](state, update) {
+      const { integral, integral_remain } = state.userInfo
       state.userInfo = {
         ...state.userInfo,
-        integral: state.userInfo.integral + update,
-        integral_remain: state.userInfo.integral_remain + update,
+        integral: (update > 0) ? integral + update : integral,
+        integral_remain: integral_remain + update,
       }
     },
   },

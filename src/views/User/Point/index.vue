@@ -29,8 +29,11 @@ export default {
 }
 </script>
 
-<style>
+<style lang="postcss">
+@import "vars.css";
+
 .point-content {
+  min-height: var(--app-main-content-min-height);
   padding: 32px 35px;
   background-color: #fff;
 }

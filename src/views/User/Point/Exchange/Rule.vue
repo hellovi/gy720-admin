@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <table class="app-table">
       <thead>
         <tr>
@@ -9,11 +9,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="exchange in exchanges" :key="exchange.id">
-          <td>{{ exchange.describe }}</td>
-          <td>{{ exchange.score }}</td>
+        <tr v-for="exchange in list.data" :key="exchange.id">
+          <td>{{ exchange.name }}</td>
+          <td>{{ exchange.integral }}</td>
           <td>
-            <el-button type="primary" size="small" @click="handleExchange(exchange.id)">我要兑换</el-button>
+            <el-button type="primary" size="small" @click="handleExchange(exchange)">我要兑换</el-button>
           </td>
         </tr>
       </tbody>
@@ -30,58 +30,66 @@
  */
 
 import { mapState } from 'vuex'
-import { POINT } from '@/store/mutationTypes'
+import { GLOBAL, POINT } from '@/store/mutationTypes'
 
 export default {
   name: 'point-exchange-rule',
 
   data() {
     return {
+      loading: false,
       resultText: '',
     }
   },
 
   computed: {
     ...mapState({
-      exchanges: state => state.point.exchanges,
+      list: state => state.point.exchanges,
     }),
   },
 
   methods: {
-    handleExchange(id) {
+    /**
+     * 显示确认兑换窗口
+     */
+    handleExchange({ id, name, integral }) {
       const h = this.$createElement
       this.$msgbox({
         message: h('div', { class: 'exchange-confirm' }, [
           h('p', [
             '是否确认兑换',
-            h('em', '10元商业会员抵用券'),
-            '成功兑换后',
+            h('em', name),
           ]),
           h('p', [
-            '将扣除',
-            h('em', '800点积分'),
+            '成功兑换后将扣除',
+            h('em', `${integral}积分`),
           ]),
         ]),
         showCancelButton: true,
         confirmButtonText: '确认兑换',
       })
-        .then(() => this.confirmExchange(id))
+        .then(() => this.confirmExchange(id, integral))
         .catch(() => {})
     },
 
-    confirmExchange(id) {
-      this.$http.post('/user/integralexchange/create', {
-        rule_id: id,
-        count: 1,
-      })
-        // 这里应该更新userInfo中的积分，后台没有扣除积分
-        .then(() => this.$message.success('兑换成功'))
-        .catch(error => this.$message.error(error))
+    /**
+     * 确认对话后，根据id请求相应接口
+     * 兑换成功后，应更新store中用户的可用积分
+     */
+    confirmExchange(id, integral) {
+      this.$http.get(`/user/integral/gift/${id}`)
+        .then(() => {
+          this.$message.success('兑换成功')
+          this.$store.commit(GLOBAL.USER.UPDATE_POINT, -integral)
+        })
+        .catch(({ message }) => this.$message.error(message))
     },
   },
 
   created() {
+    this.loading = true
     this.$store.dispatch(POINT.EXCHANGE.INIT)
+      .then(() => { this.loading = false })
   },
 }
 </script>

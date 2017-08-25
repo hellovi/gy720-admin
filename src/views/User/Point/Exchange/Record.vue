@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <table class="app-table">
       <thead>
         <tr>
@@ -12,11 +12,11 @@
       </thead>
       <tbody>
         <tr v-for="record in list.data" :key="record.id">
-          <td>{{ record.coupon_sn }}</td>
-          <td>{{ record.describe }}</td>
-          <td>{{ record.created_at }}</td>
-          <td>{{ record.count }}</td>
-          <td>{{ record.status === 10 ? '已发放' : '已使用' }}</td>
+          <td>{{ record.code }}</td>
+          <td>{{ record.name }}</td>
+          <td>{{ record.date }}</td>
+          <td>{{ record.use_status }}</td>
+          <td>{{ record.use_status_name }}</td>
         </tr>
       </tbody>
     </table>
@@ -26,7 +26,7 @@
     </div>
 
     <el-pagination
-      v-if="list.data.length"
+      v-if="list.last_page > 1"
       layout="prev, pager, next"
       :total="list.total"
       :current-page="list.current_page"
@@ -40,7 +40,7 @@
  * 积分兑换 - 记录
  *
  * @author luminghuai
- * @version 2017-08-09
+ * @version 2017-08-25
  */
 
 import { mapState } from 'vuex'
@@ -52,6 +52,12 @@ export default {
 
   mixins: [list],
 
+  data() {
+    return {
+      loading: false,
+    }
+  },
+
   computed: {
     ...mapState({
       list: state => state.point.record,
@@ -60,7 +66,9 @@ export default {
 
   methods: {
     getData(route) {
+      this.loading = true
       return this.$store.dispatch(POINT.RECORD.INIT, route.query.page)
+        .then(() => { this.loading = false })
     },
   },
 }

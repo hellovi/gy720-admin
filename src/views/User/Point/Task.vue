@@ -1,37 +1,33 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <!--日常任务 -->
     <table class="app-table">
       <colgroup>
-        <col width="40%">
-        <col width="40%">
-        <col width="20%">
+        <col width="35%">
+        <col width="25%">
+        <col width="25%">
+        <col width="15%">
       </colgroup>
       <thead>
         <tr>
-          <th class="text-left" colspan="3">日常任务</th>
+          <th class="text-left" colspan="4">日常任务</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="task in tasks" :key="task.id">
-          <td>{{ task.describe }}</td>
-          <td>{{ formatScore(task.score) }}</td>
-          <td v-if="task.name === 'sign'">
+          <td>{{ task.name }}</td>
+          <td>{{ `+${task.integral}积分 +${task.experience}经验` }}</td>
+          <td>
+            {{ `今日已领取${task.user_mission_count}/${task.limit}次` }}
+          </td>
+          <td>
             <el-button
               type="primary"
               size="small"
-              :disabled="signed"
-              @click="goToSign"
-            >去签到</el-button>
+              :disabled="task.user_mission_count >= task.limit"
+              @click="doTask(task.id, task.integral)"
+            >{{ task.name }}</el-button>
           </td>
-          <td v-else-if="task.name === 'improve_profile'">
-            <el-button
-              type="primary"
-              size="small"
-              @click="$router.push('/user-client/accserv/info')"
-            >去完善</el-button>
-          </td>
-          <td v-else>{{ `今日已领取${task.coupon_amount}次`}}</td>
         </tr>
       </tbody>
     </table>
@@ -75,7 +71,8 @@
  * 积分任务
  *
  * @author yangjun | luminghuai
- * @version 2017-08-09
+ * @version 2017-08-25
+ * @description 去邀请功能存疑问，尚未完成
  */
 
 import { mapState } from 'vuex'
@@ -87,7 +84,7 @@ export default {
 
   data() {
     return {
-      signed: false,
+      loading: false,
       inviteUrl: '',
       inviteModal: false,
     }
@@ -100,21 +97,20 @@ export default {
   },
 
   methods: {
-    // 为不同积分显示相应的文本格式
-    formatScore(score) {
-      if (score < 0) return `积分${score}`
-      return `积分+${score} 经验+${score}`
-    },
-
-    // 签到（后台积分没有增加）
-    goToSign() {
-      this.$http.post('/user/sign/add')
+    /**
+     * 根据id请求对应任务接口
+     * 若完成任务，更新该任务的轻取次数，并更新用户信息中的积分
+     * @param {number} id - 任务id
+     * @param {number} integral - 任务所得积分
+     */
+    doTask(id, integral) {
+      this.$http.get(`/user/integral/complete/${id}`)
         .then(() => {
-          this.signed = true
-          this.$store.commit(GLOBAL.USER.UPDATE_POINT, 5)
-          this.$message.success('操作成功')
+          // 这里可能需要判断是直接完成任务还是转跳页面
+          this.$store.commit(POINT.TASK.UPDATE, id)
+          this.$store.commit(GLOBAL.USER.UPDATE_POINT, integral)
         })
-        .catch(() => this.$message.error('操作失败'))
+        .catch(({ message }) => this.$message.error(message))
     },
 
     // 邀请注册
@@ -141,19 +137,12 @@ export default {
         this.$message.error('操作失败')
       }
     },
-
-    checkSign() {
-      this.$http.get('/user/sign/check')
-        // 后台不应该返回code 0
-        .catch(() => {
-          this.signed = true
-        })
-    },
   },
 
   created() {
-    this.checkSign()
+    this.loading = true
     this.$store.dispatch(POINT.TASK.INIT)
+      .then(() => { this.loading = false })
   },
 }
 </script>

@@ -129,11 +129,15 @@
  * 积分规则
  *
  * @author yangjun | luminghuai
- * @version 2017-08-09
+ * @version 2017-08-25
  */
 
 export default {
   name: 'point-rule',
+
+  created() {
+    this.$emit('stop-loading')
+  },
 }
 </script>
 

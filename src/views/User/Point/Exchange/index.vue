@@ -9,9 +9,7 @@
       </li>
     </ul>
 
-    <keep-alive>
-      <router-view></router-view>
-    </keep-alive>
+    <router-view class="point-convert-content"></router-view>
   </div>
 </template>
 
@@ -20,7 +18,7 @@
  * 积分兑换
  *
  * @author luminghuai
- * @version 2017-08-09
+ * @version 2017-08-25
  */
 
 export default {
@@ -50,5 +48,9 @@ export default {
   & a.router-link-exact-active {
     color: var(--color-primary);
   }
+}
+
+.point-convert-content {
+  min-height: calc(var(--app-main-content-min-height) - 32px * 2 - 14px - 24px);
 }
 </style>

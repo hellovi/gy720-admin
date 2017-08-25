@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <table class="app-table">
       <thead>
         <tr>
@@ -9,10 +9,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="log in list.data" :key="log.id">
-          <td>{{ log.created_at }}</td>
-          <td>{{ formatScore(log.score) }}</td>
-          <td>{{ log.describe }}</td>
+        <tr v-for="log in list.data" :key="log.date">
+          <td>{{ log.date }}</td>
+          <!-- 这里正负数有疑问 -->
+          <td>{{ getFormattedText(log.integral, log.experience) }}</td>
+          <td>{{ log.name }}</td>
         </tr>
       </tbody>
     </table>
@@ -22,7 +23,7 @@
     </div>
 
     <el-pagination
-      v-if="list.data.length"
+      v-if="list.last_page > 1"
       layout="prev, pager, next"
       :total="list.total"
       :current-page="list.current_page"
@@ -36,7 +37,7 @@
  * 积分日志
  *
  * @author luminghuai
- * @version 2017-08-09
+ * @version 2017-08-25
  */
 
 import { mapState } from 'vuex'
@@ -48,6 +49,12 @@ export default {
 
   mixins: [list],
 
+  data() {
+    return {
+      loading: false,
+    }
+  },
+
   computed: {
     ...mapState({
       list: state => state.point.log,
@@ -56,13 +63,16 @@ export default {
 
   methods: {
     // 为不同积分显示相应的文本格式
-    formatScore(score) {
-      if (score < 0) return `积分${score}`
-      return `积分+${score} 经验+${score}`
+    getFormattedText(integral, experience) {
+      const integralText = `积分${(integral > 0) ? '+' : ''}${integral}`
+      const experienceText = `积分${(experience > 0) ? '+' : ''}${experience}`
+      return `${integralText} ${experienceText}`
     },
 
     getData(route) {
+      this.loading = true
       return this.$store.dispatch(POINT.LOG.INIT, route.query.page)
+        .then(() => { this.loading = false })
     },
   },
 }
