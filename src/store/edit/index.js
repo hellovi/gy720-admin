@@ -8,7 +8,7 @@ import author from './author'
 export default {
   state: {
     active: {
-      uiView: true,
+      control: true,
       logo: false,
       author: false,
       setting: false,

@@ -16,7 +16,7 @@
     <!--vip信息-->
     <functions-vip-info :data="pano"></functions-vip-info>
     <!--限制视角-->
-    <functions-restrict-view></functions-restrict-view>
+    <functions-restrict-view v-if="active.restrictView"></functions-restrict-view>
   </div>
 </template>
 

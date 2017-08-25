@@ -31,9 +31,8 @@ export default {
 
   methods: {
     openRestrictView() {
+      this.closeModal('control')
       this.openModal('restrictView')
-      // 隐藏UI层
-      this.closeModal('uiView')
     },
   },
 }

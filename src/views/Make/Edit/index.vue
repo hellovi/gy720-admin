@@ -5,7 +5,7 @@
     <div id="pano-editor"></div>
 
     <!--UI层-->
-    <div class="edit-control" v-show="active.uiView">
+    <div class="edit-control" v-show="active.control">
       <top-left></top-left>
       <top-center></top-center>
       <top-right></top-right>
