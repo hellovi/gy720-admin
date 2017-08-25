@@ -53,7 +53,6 @@
       </el-form-item>
       <!-- 图文信息 -->
       <el-form-item
-        key="3"
         v-if="choosedOption.type_id === 2"
         label="图文信息"
         prop="data"
@@ -89,7 +88,7 @@
       >
         <el-input
           class="info__gps"
-          placeholder="点击此处，打开地图，选择详细地址"
+          placeholder="点击此处，打开地图导航，创建导航信息"
           v-model="menuInfo.data"
           :disabled="true"
           @click.native="openGps"
@@ -117,6 +116,18 @@
         @click="onSubmitMenuInfo"
       >确 定</el-button>
     </div>
+
+    <!-- 地图导航组件 -->
+    <el-dialog
+      class="menu__gps"
+      title="地址导航" size="large"
+      :modal="false"
+      :visible.sync="gpsModal.tag"
+    >
+      <v-menu-gps
+        @choose="onChooseGps"
+      ></v-menu-gps>
+    </el-dialog>
   </el-dialog>
 </template>
 
@@ -127,11 +138,16 @@
  * @author huojinzhao
  */
 import modal from '@/views/Make/Edit/mixins/modal'
+import vMenuGps from './MenuGps'
 
 export default {
   name: 'edit-functions__menu',
 
   mixins: [modal],
+
+  components: {
+    vMenuGps,
+  },
 
   data: () => ({
     issuetxt: '',
@@ -179,6 +195,10 @@ export default {
         { required: true, message: '菜单内容不能为空', trigger: 'blur' },
       ],
     },
+
+    gpsModal: {
+      tag: false,
+    },
   }),
 
   watch: {
@@ -187,6 +207,9 @@ export default {
   },
 
   methods: {
+
+    /* 切换菜单选项 */
+
     onChooseOption(option) {
       const name = this.menuInfo.menu_name
       this.choosedOption = { ...option }
@@ -194,14 +217,29 @@ export default {
       if (name) this.menuInfo.menu_name = name
     },
 
+    /* 图文信息 */
+
     openImagetext() {
       // console.log('打开图文信息')
       // this.openMaterialModal(type: imagetext)
     },
 
+    /* 地址导航 */
+
     openGps() {
-      // console.log('打开地图导航')
+      this.gpsModal.tag = true
     },
+
+    closeGps() {
+      //
+    },
+
+    onChooseGps(data) {
+      this.menuInfo.data = data
+      this.closeGps()
+    },
+
+    /* menu组件逻辑 */
 
     onSubmitMenuInfo() {
       this.$refs.menuForm.validate((valid) => {
@@ -232,6 +270,8 @@ export default {
 }
 
 .edit-functions__menu {
+
+  overflow: auto;
 
   /* elementUI 样式重置 */
   & .el-dialog__body {
@@ -310,6 +350,16 @@ export default {
           color: var(--color-warning);
         }
       }
+    }
+  }
+
+  /* 地图导航弹窗 */
+  .menu__gps {
+    position: static !important;
+    animation: none;
+
+    .el-dialog--large {
+      width: 940px;
     }
   }
 }
