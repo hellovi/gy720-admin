@@ -12,7 +12,12 @@
           v-for="(item, index) in materialConfig" :key="item.type"
           @click="changeType(item.type)"
         >
-          <el-button size="small">{{item.label}}</el-button>
+          <el-button
+            :class="{'edit-functions__material__button--active': item.id === currentId }"
+            size="small"
+          >
+           {{item.label}}
+          </el-button>
         </li>
       </ul>
       <keep-alive>
@@ -101,6 +106,8 @@ export default {
 </script>
 
 <style lang="postcss">
+@import "vars.css";
+
 .edit-functions__material {
 
   &__ul {
@@ -116,6 +123,11 @@ export default {
       text-align: center;
       padding: 6px 5px;
     }
+  }
+
+  &__button--active {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
   }
 }
 </style>

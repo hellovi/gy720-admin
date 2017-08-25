@@ -1,6 +1,6 @@
 <template>
-   <div class="edit-functions__material__data">
-     <el-row :gutter="10">
+   <div class="edit-functions__material__wrap">
+     <el-row :gutter="10" class="edit-functions__material__data"  v-loading="loading">
         <el-col :span="4" v-for="(item, index) in dataList" :key="index">
           <el-card :body-style="{ padding: '0px' }">
             <img :src="$url.static(item.file_path)" class="edit-functions__material__image"/>
@@ -59,6 +59,7 @@ export default {
   data() {
     return {
       src: '',
+      loading: false,
     }
   },
 
@@ -101,8 +102,12 @@ export default {
     },
 
     initMaterial(page) {
+      this.loading = true
       const params = page ? `${this.params}&page=${page}` : this.params
       this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, params)
+        .then(() => {
+          this.loading = false
+        })
     },
   },
 
@@ -116,7 +121,7 @@ export default {
 <style lang="postcss">
 @import "vars.css";
 .edit-functions__material {
-  &__data {
+  &__wrap {
     .el-card {
       text-align: center;
       padding-top: 10px;
@@ -130,6 +135,10 @@ export default {
         margin: 10px auto 10px;
       }
     }
+  }
+
+  &__data {
+    min-height: 400px;
   }
 
   &__image {
