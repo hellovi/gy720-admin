@@ -1,7 +1,7 @@
 <template>
    <div class="edit-functions__material__wrap">
      <el-row :gutter="10" class="edit-functions__material__data"  v-loading="loading">
-        <el-col :span="4" v-for="(item, index) in dataList" :key="index">
+        <el-col :span="4" v-for="(item, index) in dataList" :key="item.id">
           <el-card :body-style="{ padding: '0px' }">
             <img :src="$url.static(item.file_path)" class="edit-functions__material__image"/>
             <div>
@@ -24,6 +24,7 @@
         ref="fileUpload"
         accept="jpg,jpeg,png"
         size="1mb"
+        auto-start
       >
           <el-button type="primary" size="small">上传新素材</el-button>
        </app-file-upload>
@@ -39,7 +40,7 @@
  */
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import AppFileUpload from './AppFileUpload'
+import AppFileUpload from '@/components/AppFileUpload'
 
 export default {
   name: 'edit-functions__material--images',
@@ -50,9 +51,6 @@ export default {
     currentId: {
       type: Number,
       default: 1,
-    },
-    normalMaterial: {
-      type: Array,
     },
   },
 
@@ -135,10 +133,6 @@ export default {
         margin: 10px auto 10px;
       }
     }
-  }
-
-  &__data {
-    min-height: 400px;
   }
 
   &__image {
