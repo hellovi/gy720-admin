@@ -109,6 +109,7 @@
       background-repeat: no-repeat;
       background-position: center center;
       img {
+        width: 100%;
         max-width: 100%;
         max-height: 100%;
       }

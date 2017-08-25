@@ -354,7 +354,7 @@
             if (ajax.status === 200) {
               const res = Qiniu.parseJSON(ajax.responseText)
               if (res.status.code === 1 && res.result.uptoken) {
-                const uptoken = res.result.uptoken
+                uptoken = res.result.uptoken
                 const segments = uptoken.split(":")
                 const putPolicy = Qiniu.parseJSON(Qiniu.URLSafeBase64Decode(segments[2]))
                 const serverTime = this.getTimestamp(new Date(ajax.getResponseHeader("date")))
@@ -386,9 +386,6 @@
     mounted() {
       this.init()
     },
-    beforeDestroy() {
-      this.uploader.destroy()
-    }
   }
 </script>
 
