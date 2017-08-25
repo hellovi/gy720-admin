@@ -1,140 +1,142 @@
 <template>
-  <div class="restrict-view">
-    <!--上-->
-    <el-row class="v-box v-box__top">
-      <el-col :span="12">
-        限制：<span class="v-box__txt">{{ restrict.vlookatmin }}</span>
-        <el-button
-          type="warning"
-          :disabled="isDefault('vlookatmin')"
-          @click="reset('vlookatmin')"
-        >重置</el-button>
-      </el-col>
-
-      <el-col :span="12">
-        当前：<span class="v-box__txt">{{ view.vlookat }}</span>
-        <el-button
-          type="primary"
-          :disabled="!isDefault('vlookatmin') || view.vlookat >= 0"
-          @click="setView('vlookatmin', 'vlookat')"
-        >设定</el-button>
-      </el-col>
-    </el-row>
-
-    <!--下-->
-    <el-row class="v-box v-box__bottom">
-      <el-col :span="12">
-        限制：<span class="v-box__txt">{{ restrict.vlookatmax }}</span>
-        <el-button
-          type="warning"
-          :disabled="isDefault('vlookatmax')"
-          @click="reset('vlookatmax')"
-        >重置</el-button>
-      </el-col>
-
-      <el-col :span="12">
-        当前：<span class="v-box__txt">{{ view.vlookat }}</span>
-        <el-button
-          type="primary"
-          :disabled="!isDefault('vlookatmax') || view.vlookat >= 0"
-          @click="setView('vlookatmax', 'vlookat')"
-        >设定</el-button>
-      </el-col>
-    </el-row>
-
-    <!--左-->
-    <div class="v-box v-box__left">
-      <div class="top">
-        限制：<span class="v-box__txt">{{ restrict.hlookatmin }}</span>
-        <el-button
-          type="warning"
-          :disabled="isDefault('hlookatmin')"
-          @click="reset('hlookatmin')"
-        >重置</el-button>
-      </div>
-
-      <div class="bottom">
-        当前：<span class="v-box__txt">{{ view.hlookat }}</span>
-        <el-button
-          type="primary"
-          :disabled="!isDefault('hlookatmin') || view.hlookat >= 0"
-          @click="setView('hlookatmin', 'hlookat')"
-        >设定</el-button>
-      </div>
-    </div>
-
-    <!--右-->
-    <div class="v-box v-box__right">
-      <div class="top">
-        <el-button
-          type="warning"
-          :disabled="isDefault('hlookatmax')"
-          @click="reset('hlookatmax')"
-        >重置</el-button>
-        限制：<span class="v-box__txt">{{ restrict.hlookatmax }}</span>
-      </div>
-
-      <div class="bottom">
-        <el-button
-          type="primary"
-          :disabled="!isDefault('hlookatmax') || view.hlookat >= 0"
-          @click="setView('hlookatmax', 'hlookat')"
-        >设定</el-button>
-        当前：<span class="v-box__txt">{{ view.hlookat }}</span>
-      </div>
-    </div>
-
-    <!-- 中 -->
-    <div class="v-center-box">
-      <div class="v-box v-box__center">
-        最小 fov： <span class="v-box__txt"> {{ restrict.fovmin }}</span>
-        <el-button
-          type="primary"
-          :disabled="!isDefault('fovmin')"
-          @click="setView('fovmin', 'fov')"
-        >设定</el-button>
-        <el-button
-          type="warning"
-          :disabled="isDefault('fovmin')"
-          @click="reset('fovmin')"
-        >重置</el-button>
-      </div>
-
-      <div class="v-box v-box__center">
-        当前 fov： {{ view.fov }}
-      </div>
-
-      <div class="v-box v-box__center">
-        最大 fov： <span class="v-box__txt"> {{ restrict.fovmax }}</span>
-        <el-button
-          type="primary"
-          :disabled="!isDefault('fovmax')"
-          @click="setView('fovmax', 'fov')"
-        >设定</el-button>
-        <el-button
-          type="warning"
-          :disabled="isDefault('fovmax')"
-          @click="reset('fovmax')"
-        >重置</el-button>
-      </div>
-    </div>
-
-    <!-- 操作 -->
-    <div class="restrict-view__sub">
-      <div class="sub-row">
-        <el-button type="primary" @click="saveView">保存当前设置</el-button>
-      </div>
-
-      <el-row class="sub-row">
-        <el-col :span="12" class="sub-row__col">
-          <el-button type="primary" @click="resetAll">全部重置</el-button>
+  <transition name="edit-function-fade">
+    <div class="restrict-view">
+      <!--上-->
+      <el-row class="v-box v-box__top">
+        <el-col :span="12">
+          限制：<span class="v-box__txt">{{ restrict.vlookatmin }}</span>
+          <el-button
+            type="warning"
+            :disabled="isDefault('vlookatmin')"
+            @click="reset('vlookatmin')"
+          >重置</el-button>
         </el-col>
-        <el-col :span="12" class="sub-row__col">
-          <el-button type="primary" @click="close">取消</el-button>
+
+        <el-col :span="12">
+          当前：<span class="v-box__txt">{{ view.vlookat }}</span>
+          <el-button
+            type="primary"
+            :disabled="!isDefault('vlookatmin') || view.vlookat >= 0"
+            @click="setView('vlookatmin', 'vlookat')"
+          >设定</el-button>
         </el-col>
       </el-row>
+
+      <!--下-->
+      <el-row class="v-box v-box__bottom">
+        <el-col :span="12">
+          限制：<span class="v-box__txt">{{ restrict.vlookatmax }}</span>
+          <el-button
+            type="warning"
+            :disabled="isDefault('vlookatmax')"
+            @click="reset('vlookatmax')"
+          >重置</el-button>
+        </el-col>
+
+        <el-col :span="12">
+          当前：<span class="v-box__txt">{{ view.vlookat }}</span>
+          <el-button
+            type="primary"
+            :disabled="!isDefault('vlookatmax') || view.vlookat >= 0"
+            @click="setView('vlookatmax', 'vlookat')"
+          >设定</el-button>
+        </el-col>
+      </el-row>
+
+      <!--左-->
+      <div class="v-box v-box__left">
+        <div class="top">
+          限制：<span class="v-box__txt">{{ restrict.hlookatmin }}</span>
+          <el-button
+            type="warning"
+            :disabled="isDefault('hlookatmin')"
+            @click="reset('hlookatmin')"
+          >重置</el-button>
+        </div>
+
+        <div class="bottom">
+          当前：<span class="v-box__txt">{{ view.hlookat }}</span>
+          <el-button
+            type="primary"
+            :disabled="!isDefault('hlookatmin') || view.hlookat >= 0"
+            @click="setView('hlookatmin', 'hlookat')"
+          >设定</el-button>
+        </div>
+      </div>
+
+      <!--右-->
+      <div class="v-box v-box__right">
+        <div class="top">
+          <el-button
+            type="warning"
+            :disabled="isDefault('hlookatmax')"
+            @click="reset('hlookatmax')"
+          >重置</el-button>
+          限制：<span class="v-box__txt">{{ restrict.hlookatmax }}</span>
+        </div>
+
+        <div class="bottom">
+          <el-button
+            type="primary"
+            :disabled="!isDefault('hlookatmax') || view.hlookat >= 0"
+            @click="setView('hlookatmax', 'hlookat')"
+          >设定</el-button>
+          当前：<span class="v-box__txt">{{ view.hlookat }}</span>
+        </div>
+      </div>
+
+      <!-- 中 -->
+      <div class="v-center-box">
+        <div class="v-box v-box__center">
+          最小 fov： <span class="v-box__txt"> {{ restrict.fovmin }}</span>
+          <el-button
+            type="primary"
+            :disabled="!isDefault('fovmin')"
+            @click="setView('fovmin', 'fov')"
+          >设定</el-button>
+          <el-button
+            type="warning"
+            :disabled="isDefault('fovmin')"
+            @click="reset('fovmin')"
+          >重置</el-button>
+        </div>
+
+        <div class="v-box v-box__center">
+          当前 fov： {{ view.fov }}
+        </div>
+
+        <div class="v-box v-box__center">
+          最大 fov： <span class="v-box__txt"> {{ restrict.fovmax }}</span>
+          <el-button
+            type="primary"
+            :disabled="!isDefault('fovmax')"
+            @click="setView('fovmax', 'fov')"
+          >设定</el-button>
+          <el-button
+            type="warning"
+            :disabled="isDefault('fovmax')"
+            @click="reset('fovmax')"
+          >重置</el-button>
+        </div>
+      </div>
+
+      <!-- 操作 -->
+      <div class="restrict-view__sub">
+        <div class="sub-row">
+          <el-button type="primary" @click="saveView">保存当前设置</el-button>
+        </div>
+
+        <el-row class="sub-row">
+          <el-col :span="12" class="sub-row__col">
+            <el-button type="primary" @click="resetAll">全部重置</el-button>
+          </el-col>
+          <el-col :span="12" class="sub-row__col">
+            <el-button type="primary" @click="close">取消</el-button>
+          </el-col>
+        </el-row>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>

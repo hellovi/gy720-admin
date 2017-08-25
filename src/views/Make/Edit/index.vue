@@ -5,18 +5,20 @@
     <div id="pano-editor"></div>
 
     <!--UI层-->
-    <div class="edit-control" v-show="active.control">
-      <top-left></top-left>
-      <top-center></top-center>
-      <top-right></top-right>
-      <right-top></right-top>
-      <right-middle></right-middle>
-      <hotspot></hotspot>
-      <scene></scene>
-      <bottom-left></bottom-left>
-      <bottom-center></bottom-center>
-      <bottom-right></bottom-right>
-    </div>
+    <transition name="edit-control-fade">
+      <div class="edit-control" v-show="active.control">
+        <top-left></top-left>
+        <top-center></top-center>
+        <top-right></top-right>
+        <right-top></right-top>
+        <right-middle></right-middle>
+        <hotspot></hotspot>
+        <scene></scene>
+        <bottom-left></bottom-left>
+        <bottom-center></bottom-center>
+        <bottom-right></bottom-right>
+      </div>
+    </transition>
 
     <!--功能层-->
     <edit-functions></edit-functions>
@@ -98,7 +100,7 @@ export default {
   },
 
   mounted() {
-    this.initPano(this.$route.query.pano_id)
+    // this.initPano(this.$route.query.pano_id)
   },
 }
 
@@ -115,10 +117,34 @@ export default {
   background-color: #000;
 }
 
+/* 控制层 淡入淡出 */
+.edit-control-fade-enter-active,
+.edit-control-fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.edit-control-fade-enter,
+.edit-control-fade-leave-to {
+  opacity: 0;
+}
+
+/* 功能层淡入淡出 */
+.edit-function-fade-enter-active,
+.edit-function-fade-leave-active {
+  transition: 0.3s;
+}
+
+.edit-function-fade-enter,
+.edit-function-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
 .edit-control {
   position: absolute;
   top: 0;
   left: 0;
+  z-index: 1;
   width: 100%;
   height: 100%;
   overflow: hidden;

@@ -18,14 +18,17 @@
  * @version 2017-08-11
  */
 
-import { EDIT } from '@/store/mutationTypes'
+import modal from '../../mixins/modal'
 
 export default {
   name: 'edit-bottom-right',
 
+  mixins: [modal],
+
   methods: {
     onOpenSnapshot() {
-      this.$store.commit(EDIT.MODAL.OPEN, 'snapshot')
+      this.closeModal('control')
+      this.openModal('snapshot')
     },
   },
 }

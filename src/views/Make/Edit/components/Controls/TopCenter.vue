@@ -6,7 +6,7 @@
     <el-button class="tip tip--bottom" data-tip="限制视角" type="primary" @click="openRestrictView">
       <i class="iconfont">&#xe627;</i>
     </el-button>
-    <el-button class="tip tip--bottom" data-tip="初始画面" type="primary" @click="openModal('initialview')">
+    <el-button class="tip tip--bottom" data-tip="初始画面" type="primary" @click="openInitialviewView">
       <i class="iconfont">&#xe628;</i>
     </el-button>
     <el-button class="tip tip--bottom" data-tip="场景分组" type="primary" @click="openModal('group')">
@@ -33,6 +33,11 @@ export default {
     openRestrictView() {
       this.closeModal('control')
       this.openModal('restrictView')
+    },
+
+    openInitialviewView() {
+      this.closeModal('control')
+      this.openModal('initialview')
     },
   },
 }

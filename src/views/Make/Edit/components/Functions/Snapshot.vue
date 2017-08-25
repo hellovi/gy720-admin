@@ -1,12 +1,13 @@
 <template>
   <div class="edit-functions__snapshot">
-    <v-camera
-      v-if="active.snapshot"
-      confirmButtonText="拍照"
-      @cancel="onCloseCamera"
-      @confirm="onConfirmSnapshot"
-    >
-    </v-camera>
+    <transition name="edit-function-fade">
+      <v-camera
+        v-if="active.snapshot"
+        confirmButtonText="拍照"
+        @cancel="onCloseCamera"
+        @confirm="onConfirmSnapshot"
+      ></v-camera>
+    </transition>
 
     <el-dialog
       class="snapshot-result"
@@ -70,6 +71,7 @@ export default {
   methods: {
     onCloseCamera() {
       this.closeModal('snapshot')
+      this.openModal('control')
     },
 
     openSnapshotResultModal() {

@@ -1,10 +1,12 @@
 <template>
-  <v-camera
-    v-if="active.initialview"
-    confirmButtonText="设置画面"
-    @confirm="onConfirmInitialView"
-    @cancel="closeModal('initialview')">
-  </v-camera>
+  <transition name="edit-function-fade">
+    <v-camera
+      v-if="active.initialview"
+      confirmButtonText="设置画面"
+      @confirm="onConfirmInitialView"
+      @cancel="close">
+    </v-camera>
+  </transition>
 </template>
 
 <script>
@@ -64,6 +66,11 @@ export default {
             message: '初始画面设置失败',
           })
         })
+    },
+
+    close() {
+      this.closeModal('initialview')
+      this.openModal('control')
     },
   },
 }
