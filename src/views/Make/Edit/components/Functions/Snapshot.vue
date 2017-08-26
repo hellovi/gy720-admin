@@ -4,7 +4,7 @@
       <v-camera
         v-if="active.snapshot"
         confirmButtonText="拍照"
-        @cancel="onCloseCamera"
+        @cancel="close"
         @confirm="onConfirmSnapshot"
       ></v-camera>
     </transition>
@@ -40,6 +40,7 @@
 import { mapState } from 'vuex'
 import vCamera from './components/Camera'
 import modal from '../../mixins/modal'
+import esc from '../../mixins/esc'
 
 const CREATE_SNAPSHOT_API = '/make/pubset/photograph'
 // const GET_SNANPSHOT_API = '/make/pubset/downphotograph'
@@ -47,7 +48,7 @@ const CREATE_SNAPSHOT_API = '/make/pubset/photograph'
 export default {
   name: 'edit-functions__snapshot',
 
-  mixins: [modal],
+  mixins: [modal, esc],
 
   components: {
     vCamera,
@@ -69,7 +70,7 @@ export default {
   },
 
   methods: {
-    onCloseCamera() {
+    close() {
       this.closeModal('snapshot')
       this.openModal('control')
     },

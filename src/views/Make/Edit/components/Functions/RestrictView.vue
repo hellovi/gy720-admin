@@ -150,6 +150,7 @@
 /** @typedef {'fov'|'vlookat'|'hlookat'} ViewProp */
 
 import modal from '../../mixins/modal'
+import esc from '../../mixins/esc'
 
 // eslint-disable-next-line
 const krpano = window.__krpano
@@ -166,7 +167,7 @@ const defaultRestrict = {
 export default {
   name: 'edit-functions-restrict',
 
-  mixins: [modal],
+  mixins: [modal, esc],
 
   data() {
     return {
@@ -251,13 +252,6 @@ export default {
       this.closeModal('restrictView')
       this.openModal('control')
     },
-
-    /**
-     * 使得用户可以使用键盘上的esc键退出，27为esc键的keyCode
-     */
-    escape(event) {
-      if (event.keyCode === 27) this.close()
-    },
   },
 
   created() {
@@ -266,12 +260,10 @@ export default {
       // this.getFov()
       // this.getLookat()
     }, 300)
-    document.addEventListener('keyup', escape)
   },
 
   beforeDestroy() {
     clearInterval(this.timer)
-    document.removeEventListener('keyup', escape)
   },
 }
 </script>

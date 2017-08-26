@@ -18,11 +18,12 @@
 import { mapState } from 'vuex'
 import vCamera from './components/Camera'
 import modal from '../../mixins/modal'
+import esc from '../../mixins/esc'
 
 export default {
   name: 'edit-functions__initialview',
 
-  mixins: [modal],
+  mixins: [modal, esc],
 
   components: {
     vCamera,
