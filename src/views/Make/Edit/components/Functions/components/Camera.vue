@@ -48,6 +48,7 @@ export default {
   margin-left: -40vw;
   margin-top: -40vh;
   border: 1px solid #fff;
+  pointer-events: none;
 
   &::before,
   &::after,
@@ -96,6 +97,7 @@ export default {
 
     & > .el-button {
       width: 7em;
+      pointer-events: auto;
     }
   }
 }

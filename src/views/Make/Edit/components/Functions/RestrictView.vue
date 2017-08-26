@@ -284,6 +284,11 @@ export default {
   width: 100%;
   height: 100%;
   color: #fff;
+  pointer-events: none;
+
+  .el-button {
+    pointer-events: auto;
+  }
 
   .v-box {
     border: 1px solid #fff;
