@@ -1,173 +1,134 @@
 <template>
-  <el-dialog
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :title="title"
-    :visible.sync="show"
-    @close="closeCropper"
-  >
-    <div class="app-cropper">
-      <div class="app-cropper__left">
-        <img
-          :src="src"
-          alt="图像"
-          ref="preview"
-        >
-      </div>
-      <el-row class="app-cropper__sub">
-        <div
-          :is="fileUploadCom"
-          :accept="fileUpload.$props.accept"
-          :size="fileUpload.$props.size"
-          :options="fileUploadConfig"
-          @preview="getPreview"
-        >
-          <el-button type="info">换一张</el-button>
-        </div>
-        <el-button type="success" @click="subCropper">上传所选区域</el-button>
-      </el-row>
+  <el-dialog :title="title" :visible="visible" :before-close="close">
+    <div class="app-cropper-img">
+      <img :src="src" alt="图像" ref="preview">
+    </div>
+    <div class="app-cropper-btns">
+      <label role="button" class="el-button el-button--info" :for="inputId">换一张</label>
+      <el-button type="success" @click="confirm">上传所选区域</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-  /**
-   * 图片截图组件 | 依赖 element-ui
-   * @author  chenliangshan
-   * @version 2017/08/22
-   */
+/**
+ * 图片截图组件 | 依赖 element-ui
+ * @author  chenliangshan | luminghuai
+ * @version 2017/08/26
+ */
 
-  import AppFileUpload from '@/components/AppFileUpload'
-  import Cropper from 'cropperjs'
-  import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
+import 'cropperjs/dist/cropper.css'
 
-  export default {
-    name: 'app-cropper',
-    props: {
-      src: {
-        type: String,
-        default: '',
-      },
-      visible: {
-        type: Boolean,
-        default: false,
-      },
-      title: {
-        type: String,
-        default: '上传图片',
-      },
-      aspectRatio: {
-        type: Number,
-        default: 1,
-      },
-      options: {
-        type: Object,
-        default() {
-          return {}
-        },
-      },
-    },
-    data() {
-      return {
-        fileUploadCom: AppFileUpload,
-        show: this.visible,
-        cropper: null,
-        cropInfo: {},
-      }
-    },
-    computed: {
-      fileUpload() {
-        let parent = this.$parent
-        while (parent.$options.name !== 'app-file-upload') {
-          parent = parent.$parent
-        }
-        return parent
-      },
-      fileUploadConfig() {
-        const fileUpload = this.fileUpload.$props
-        return {
-          ...fileUpload.options,
-          browse_button: `${fileUpload.options.browse_button}-corp`,
-          container: `${fileUpload.options.container}-corp`,
-        }
-      },
-    },
-    watch: {
-      visible(val) {
-        this.show = val
-      },
-      show(val) {
-        this.$emit('update:visible', val)
-      },
-    },
-    methods: {
-      init() {
-        this.$nextTick(() => {
-          this.cropper = new Cropper(this.$refs.preview, {
-            viewMode: 1,
-            dragMode: 'move',
-            aspectRatio: this.aspectRatio,
-            autoCropArea: 0.8,
-            crop: (data) => {
-              const detail = {}
-              Object.keys(data.detail).forEach((v) => {
-                detail[v] = +Math.round(data.detail[v])
-              })
+export default {
+  name: 'app-cropper',
 
-              this.cropInfo = {
-                ...detail,
-                maxWidth: data.srcElement.width,
-                maxHeight: data.srcElement.height,
-              }
-              this.$emit('crop-view', data)
-            },
-            ...this.options,
-          })
-        })
+  props: {
+    visible: {
+      type: Boolean,
+      default: false,
+    },
+    title: {
+      type: String,
+      default: '上传图片',
+    },
+    src: {
+      type: String,
+      default: '',
+    },
+    containerId: {
+      type: String,
+      required: true,
+    },
+    aspectRatio: {
+      type: Number,
+      default: 1,
+    },
+    options: {
+      type: Object,
+      default() {
+        return {}
       },
-      // 换一张更新父级组件字段
-      getPreview(src) {
-        this.cropper.destroy()
-        this.init()
-        this.$emit('update:src', src)
-      },
-      // 关闭截图窗口回调函数
-      closeCropper(data) {
-        this.$emit('close', data)
-      },
-      // 确认裁剪
-      subCropper() {
-        const { width, height, x, y } = this.cropInfo
-        this.crop = `!${width}x${height}a${x}a${y}`
-        this.$emit('crop-info', this.crop, this.cropInfo)
+    },
+  },
 
-        // 生成裁剪后的图片
-        const srcUrl = this.cropper.getCroppedCanvas({
-          fillColor: '#fff',
-        }).toDataURL('image/jpeg')
-        this.$emit('update:src', srcUrl)
-      },
-    },
-    mounted() {
-      this.init()
-    },
-    beforeDestroy() {
+  data() {
+    return {
+      cropper: null,
+      cropInfo: {},
+      inputId: '',
+    }
+  },
+
+  watch: {
+    // 重新选择图片后（触发src更新），应根据新的图片重建cropper实例
+    src() {
       this.cropper.destroy()
+      this.$nextTick(() => this.init())
     },
-  }
+  },
+
+  methods: {
+    init() {
+      this.cropper = new Cropper(this.$refs.preview, {
+        viewMode: 1,
+        dragMode: 'move',
+        aspectRatio: this.aspectRatio,
+        autoCropArea: 0.8,
+        crop: (event) => {
+          this.cropInfo = Object.keys(event.detail).reduce((result, key) => ({
+            ...result,
+            [key]: Math.round(event.detail[key]),
+          }), {
+            maxWidth: event.target.width,
+            maxHeight: event.target.height,
+          })
+
+          this.$emit('crop-view', event)
+        },
+        ...this.options,
+      })
+    },
+
+    /**
+     * 确认剪裁
+     */
+    confirm() {
+      this.$emit('crop', this.cropInfo)
+      this.close()
+    },
+
+    close() {
+      this.$emit('update:visible', false)
+    },
+  },
+
+  // 根据传入的containerId获取上传控件的id，供“换一张”按钮使用
+  created() {
+    this.inputId = document.getElementById(this.containerId).querySelector('input').id
+  },
+
+  mounted() {
+    this.$nextTick(() => this.init())
+  },
+
+  beforeDestroy() {
+    this.cropper.destroy()
+  },
+}
 </script>
 
 <style lang="postcss">
-  .app-cropper{
-    &__left {
-      max-height: 350px;
-    }
-    &__sub {
-      padding-top: 20px;
-      text-align: center;
-      .el-button {
-        margin: 0 20px;
-      }
-    }
+.app-cropper-img {
+  max-height: 350px;
+}
+
+.app-cropper-btns {
+  padding-top: 20px;
+  text-align: center;
+
+  .el-button {
+    margin: 0 20px;
   }
+}
 </style>
