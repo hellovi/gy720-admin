@@ -89,7 +89,7 @@
         <el-input
           class="info__gps"
           placeholder="点击此处，打开地图导航，创建导航信息"
-          v-model="menuInfo.data"
+          :value="menuInfo.data | adjustGpsText"
           :disabled="true"
           @click.native="openGps"
         ></el-input>
@@ -125,7 +125,7 @@
       :visible.sync="gpsModal.tag"
     >
       <v-menu-gps
-        @choose="onChooseGps"
+        @submit="onChooseGps"
       ></v-menu-gps>
     </el-dialog>
   </el-dialog>
@@ -182,7 +182,7 @@ export default {
 
     menuInfo: {
       menu_name: '',
-      data: null,
+      data: '',
       is_tips: 0,
     },
 
@@ -204,6 +204,16 @@ export default {
   watch: {
     // 图文信息store，赋值给data,
     // this.$children.map.data，赋值给data
+  },
+
+  filters: {
+    adjustGpsText(val) {
+      const index = val.indexOf('|')
+      const result = index === -1
+        ? ''
+        : val.slice(index + 1)
+      return result
+    },
   },
 
   methods: {
@@ -231,11 +241,11 @@ export default {
     },
 
     closeGps() {
-      //
+      this.gpsModal.tag = false
     },
 
     onChooseGps(data) {
-      this.menuInfo.data = data
+      this.menuInfo.data = `${data.curPoi}|${data.curAddress}`
       this.closeGps()
     },
 

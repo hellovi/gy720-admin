@@ -7,27 +7,44 @@
       label-width="80px"
     >
       <!-- 模糊搜索 -->
-      <el-form-item>
+      <el-form-item
+        class="gps__search"
+      >
         <el-select
-          size="small"
-          filterable remote
-        ></el-select>
+          v-model="searchingInfo"
+          placeholder="请输入关键字"
+          size="small" :filterable="true" :clearable="true"
+          :remote="true" :remote-method="onSearchingHelp"
+        >
+          <el-option
+            v-for="help in searchingHelps" :key="help.id"
+            :label="help.name"
+            :value="help.name"
+          ></el-option>
+        </el-select>
         <el-button
           size="small"type="primary"
+          @click="onSearchAddress"
         >搜索信息</el-button>
       </el-form-item>
       <!-- 当前坐标 -->
       <el-form-item
         label="当前坐标"
       >
-        <el-input size="small"></el-input>
+        <el-input
+          size="small"
+          v-model="mapInfo.geoInfo.curPoi"
+        ></el-input>
       </el-form-item>
       <!-- 当前地址 -->
       <el-form-item
         label="当前地址"
         class="gps__address"
       >
-        <el-input size="small"></el-input>
+        <el-input
+          size="small"
+          v-model="mapInfo.geoInfo.curAddress"
+        ></el-input>
       </el-form-item>
       <!-- 确认提交 -->
       <el-form-item
@@ -35,6 +52,7 @@
       >
         <el-button
           size="small" type="primary"
+          @click="onSubmitGps"
         >提交位置</el-button>
       </el-form-item>
     </el-form>
@@ -43,9 +61,9 @@
     <div class="gps-below">
       <!-- 城市、缩放等级 -->
       <header class="gps-below__header">
-        <span>厦门市</span>
+        <span>{{this.mapInfo.city}}</span>
         <!-- 更换城市下拉选择 -->
-        <el-dropdown trigger="click" menu-align="start">
+        <el-dropdown trigger="hover" menu-align="start">
           <!-- hover -->
           <span class="el-dropdown-link">
             [更换城市]
@@ -60,6 +78,7 @@
             <el-dropdown-item>
               <span
                 v-for="city in chinaCity.hotcities" :key="city"
+                @click.stop="onChooseCity(city)"
               >{{city}}</span>
             </el-dropdown-item>
             <!--  -->
@@ -70,36 +89,18 @@
               <h5>{{province.name}}</h5>
               <span
                 v-for="city in province.cities" :key="city"
+                @click.stop="onChooseCity(city)"
               >{{city}}</span>
             </el-dropdown-item>
             <!--  -->
           </el-dropdown-menu>
         </el-dropdown>
-        <span>当前缩放等级: 10</span>
+        <span>当前缩放等级: {{mapInfo.zoom}}</span>
       </header>
-      <!-- 搜索结果 -->
-      <aside
-        class="gps-below__aside"
-        v-if="false"
-      >
-        <dl v-for="i in 10" :key="i">
-          <dt>{{data.name}}</dt>
-          <dd>地址：{{data.address}}</dd>
-          <dd>电话：{{data.phone}}</dd>
-          <dd>坐标：{{data.latLng.lat}},{{data.latLng.lng}}</dd>
-        </dl>
-      </aside>
-      <!-- 没有搜索结果 -->
-      <aside
-        class="gps-below__aside"
-        v-else-if="false"
-      >
-        <span>对不起，没有搜索到你要找的结果!</span>
-      </aside>
       <!-- tips -->
       <aside
         class="gps-below__aside"
-        v-else
+        v-if= "!searchedAddresses"
       >
         <h3>功能简介</h3>
          <p>1、支持地址 精确/模糊 查询；</p>
@@ -110,9 +111,31 @@
          <p>2、点击某点或某结果，右上角会显示相应该点的坐标和地址。</p>
         </ul>
       </aside>
+      <!-- 搜索结果 -->
+      <aside
+        class="gps-below__aside"
+        v-else-if="searchedAddresses.length > 0"
+      >
+        <dl
+          v-for="item in searchedAddresses" :key="item.name"
+          @click="onChooseSearchedPoi(item)"
+        >
+          <dt>{{item.name}}</dt>
+          <dd>地址：{{item.address}}</dd>
+          <dd>电话：{{item.phone}}</dd>
+          <dd>坐标：{{item.latLng.lat}},{{item.latLng.lng}}</dd>
+        </dl>
+      </aside>
+      <!-- 没有搜索结果 -->
+      <aside
+        class="gps-below__aside"
+        v-else
+      >
+        <span>对不起，没有搜索到你要找的结果!</span>
+      </aside>
       <!-- 地图容器 -->
       <div
-        id="edit-functions__menu-tencentmap"
+        ref="tencentmap"
         class="gps-below__map"
       ></div>
     </div>
@@ -127,20 +150,116 @@
  */
 
 import chinaCity from './modules/city'
+import TencentMap from './modules/tencentMap'
 
 export default {
   name: 'edit-functions__menu-gps',
 
   data: () => ({
-    data: {
-      name: '厦门软件园二期',
-      address: '福建省厦门市思明区观日路4号，福建省厦门市思明区观日路4号，福建省厦门市思明区观日路4号',
-      phone: '0592-1111111',
-      latLng: { lat: '24.485660', lng: '118.180950' },
-    },
+    temp: null,
 
     chinaCity,
+
+    map: null,
+
+    mapInfo: {
+      city: '',
+      zoom: 10,
+      geoInfo: {
+        curAddress: '',
+        curPoi: '',
+      },
+    },
+
+    searchingInfo: '',
+
+    searchingHelps: [],
+
+    searchedAddresses: null,
   }),
+
+  methods: {
+    locateCity({ name, latLng }) {
+      this.mapInfo.city = name
+      this.map.mapInstance.setCenter(latLng)
+    },
+
+    onChooseCity(cityName) {
+      const server = new TencentMap.api
+        .CityService({
+          complete: ({ detail }) => {
+            this.locateCity(detail)
+          },
+        })
+      server.searchCityByName(cityName)
+      this.map.mapInstance.zoomTo(10)
+    },
+
+    onSearchingHelp(keyword) {
+      this.searchingInfo = keyword
+      this.searchingHelps = []
+      this.searchPoisOnline(keyword,
+        (pois) => { this.searchingHelps = pois },
+      )
+    },
+
+    onSearchAddress() {
+      this.searchPoisOnline(this.searchingInfo,
+        (pois) => { this.searchedAddresses = pois },
+        () => { this.searchedAddresses = [] },
+      )
+    },
+
+    searchPoisOnline(
+      keyword,
+      success,
+      error = () => {},
+    ) {
+      // 检索初始化
+      const server = new TencentMap.api
+        .SearchService({
+          pageIndex: 1,
+          pageCapacity: 10,
+          location: this.mapInfo.city,
+          autoExtend: false,
+        })
+      server.setComplete(({ detail: { pois } }) => {
+        success(pois)
+      })
+      server.setError(() => error())
+      server.search(keyword)
+    },
+
+    onChooseSearchedPoi(poi) {
+      this.mapInfo.geoInfo
+        .curAddress = poi.address
+      this.mapInfo.geoInfo
+        .curPoi = `${poi.latLng.lat},${poi.latLng.lng}`
+    },
+
+    onSubmitGps() {
+      this.$emit('submit', this.mapInfo.geoInfo)
+    },
+  },
+
+  mounted() {
+    this.map = new TencentMap(this.$refs.tencentmap)
+
+    this.map.initLabelServer()
+
+    this.map.initCityServer(({ detail }) => {
+      this.locateCity(detail)
+    })
+
+    TencentMap.api.event
+      .addListener(this.map.mapInstance, 'zoom_changed',
+        ({ target }) => {
+          this.mapInfo.zoom = target.zoom
+        },
+      )
+
+    this.mapInfo.geoInfo = this.map.labelGeoInfo
+  },
 }
 </script>
 
@@ -164,6 +283,9 @@ export default {
 
     &__search {
 
+      & input {
+        cursor: text;
+      }
     }
 
     &__pos {
@@ -217,6 +339,13 @@ export default {
       width: 33%;
       overflow-x: hidden;
       overflow-y: auto;
+
+      & dl {
+        cursor: pointer;
+        &:hover {
+          background-color: var(--gray-light);
+        }
+      }
 
       & > h3:first-of-type { margin: 14px 0; }
       & dt { font-size: 16px; color: var(--color-primary); }
