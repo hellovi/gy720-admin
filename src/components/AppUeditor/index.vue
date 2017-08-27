@@ -64,7 +64,44 @@
       },
       initEditor() {
         this.$nextTick(() => {
+          const self = this
+
+          // 自定义请求报头信息-加载服务器配置
+          // eslint-disable-next-line
+          window.UE.Editor.prototype.loadServerConfig = function() {
+            const me = this
+            setTimeout(() => {
+              try {
+                // eslint-disable-next-line
+                me.options.imageUrl && me.setOpt('serverUrl', me.options.imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2'))
+
+                const configUrl = `${me.getActionUrl('config')}&noCache=${Date.now()}`
+
+                /* eslint no-underscore-dangle: 0 */
+                me._serverConfigLoaded = false
+
+                /* 发出ajax请求 */
+                self.$http.get(configUrl)
+                  .then((res) => {
+                    const config = res
+                    window.UE.utils.extend(me.options, config)
+                    me.fireEvent('serverConfigLoaded')
+                    me._serverConfigLoaded = true
+                  })
+                  .catch((error) => {
+                    // eslint-disable-next-line
+                    console.error(error)
+                  })
+              } catch (e) {
+                // eslint-disable-next-line
+                console.error(e)
+              }
+            })
+          }
+
+          // 实例富文本编辑器
           this.instance = window.UE.getEditor(this.editorId, this.ueditorConfig)
+
           // 绑定事件，当 UEditor 初始化完成后，将编辑器实例通过自定义的 ready 事件交出去
           this.instance.addListener('ready', () => {
             this.instance.setContent(this.value)
