@@ -65,11 +65,7 @@ class Ajax {
       cate_id = DEFAULT_CATE_ID,
       page = 1,
       per_page = 8,
-    } = {
-      cate_id: DEFAULT_CATE_ID,
-      page: 1,
-      per_page: 8,
-    },
+    } = {},
   ) {
     /* eslint-disable */
     const url = WORKS_API
