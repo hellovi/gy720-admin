@@ -125,6 +125,7 @@
       :visible.sync="gpsModal.tag"
     >
       <v-menu-gps
+        v-if="gpsModal.tag"
         @submit="onChooseGps"
       ></v-menu-gps>
     </el-dialog>

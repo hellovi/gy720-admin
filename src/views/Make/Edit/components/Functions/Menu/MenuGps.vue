@@ -235,6 +235,7 @@ export default {
         .curAddress = poi.address
       this.mapInfo.geoInfo
         .curPoi = `${poi.latLng.lat},${poi.latLng.lng}`
+      this.map.setGeo(poi.latLng)
     },
 
     onSubmitGps() {
