@@ -16,7 +16,7 @@
       <tbody>
         <tr v-for="task in tasks" :key="task.id">
           <td>{{ task.name }}</td>
-          <td>{{ `+${task.integral}积分 +${task.experience}经验` }}</td>
+          <td>{{ `${task.integral}积分 ${task.experience}经验`.replace(/(^|\s)(?=\d+)/g, '$1+') }}</td>
           <td>
             {{ `今日已领取${task.user_mission_count}/${task.limit}次` }}
           </td>

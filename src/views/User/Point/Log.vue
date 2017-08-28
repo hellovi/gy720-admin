@@ -12,7 +12,7 @@
         <tr v-for="log in list.data" :key="log.date">
           <td>{{ log.date }}</td>
           <!-- 这里正负数有疑问 -->
-          <td>{{ getFormattedText(log.integral, log.experience) }}</td>
+          <td>{{ `积分${log.integral} 经验${log.experience}`.replace(/([^-\d])(?=\d+)/g, '$1+') }}</td>
           <td>{{ log.name }}</td>
         </tr>
       </tbody>
@@ -62,13 +62,6 @@ export default {
   },
 
   methods: {
-    // 为不同积分显示相应的文本格式
-    getFormattedText(integral, experience) {
-      const integralText = `积分${(integral > 0) ? '+' : ''}${integral}`
-      const experienceText = `积分${(experience > 0) ? '+' : ''}${experience}`
-      return `${integralText} ${experienceText}`
-    },
-
     getData(route) {
       this.loading = true
       return this.$store.dispatch(POINT.LOG.INIT, route.query.page)
