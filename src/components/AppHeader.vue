@@ -6,11 +6,11 @@
 
     <nav class="app-header__nav">
       <ul class="list clearfix">
-        <li><router-link to="/" href="#">首页</router-link></li>
-        <li><router-link to="/" href="#">720°全景</router-link></li>
-        <li><router-link to="/" href="#">摄影师</router-link></li>
-        <li><router-link to="/" href="#">服务</router-link></li>
-        <li><router-link to="/" href="#">话题</router-link></li>
+        <li><a href="/">首页</a></li>
+        <li><a href="/pano">720°全景</a></li>
+        <li><a href="/author">摄影师</a></li>
+        <li><a href="/service">服务</a></li>
+        <li><a href="/forum">话题</a></li>
       </ul>
     </nav>
 
