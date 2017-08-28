@@ -12,14 +12,14 @@
   import { dynamicLoadScript } from '@/utils'
   import './ueditor.config'
   import UEajax from './ueditor.ajax'
-  // import UEautoupload from './plugins/autoupload'
+  import UEautoupload from './plugins/autoupload'
 
   // 默认配置
   const defConfig = {
     autoClearinitialContent: true, // focus时自动清空初始化时的内容
     wordCount: false, // 关闭字数统计
     elementPathEnabled: false, // 关闭elementPath
-    initialFrameHeight: 350, // 默认的编辑区域高度
+    initialFrameHeight: 250, // 默认的编辑区域高度
   }
 
   export default {
@@ -66,43 +66,11 @@
       },
       initEditor() {
         this.$nextTick(() => {
-          // const self = this
-
-          // 自定义请求报头信息-加载服务器配置
-          /*eslint-disable*/
-          /*window.UE.Editor.prototype.loadServerConfig = function() {
-            const me = this
-            setTimeout(() => {
-              try {
-                // eslint-disable-next-line
-                me.options.imageUrl && me.setOpt('serverUrl', me.options.imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2'))
-
-                const configUrl = `${me.getActionUrl('config')}&noCache=${Date.now()}`
-
-                /!* eslint no-underscore-dangle: 0 *!/
-                me._serverConfigLoaded = false
-
-                /!* 发出ajax请求 *!/
-                self.$http.get(configUrl)
-                  .then((res) => {
-                    const config = res
-                    window.UE.utils.extend(me.options, config)
-                    me.fireEvent('serverConfigLoaded')
-                    me._serverConfigLoaded = true
-                  })
-                  .catch((error) => {
-                    // eslint-disable-next-line
-                    console.error(error)
-                  })
-              } catch (e) {
-                // eslint-disable-next-line
-                console.error(e)
-              }
-            })
-          }*/
           // 重置UEditor全局UE.ajax方法
           window.UE.ajax = UEajax()
-          // window.UE.plugin.register('autoupload2', UEautoupload, 'autoupload')
+
+          // 重置自动上传图片插件
+          window.UE.plugin.register('autoupload', UEautoupload)
 
           // 实例富文本编辑器
           this.instance = window.UE.getEditor(this.editorId, this.ueditorConfig)
