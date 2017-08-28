@@ -15,6 +15,10 @@ const WORKS_API = '/user/pano'
 const PUT_WORKS_CATE_API = '/user/pano/category'
 
 class Ajax {
+  // static properties
+
+  static defaultCateId = DEFAULT_CATE_ID
+
   // 分类相关请求
 
   /**
@@ -103,7 +107,5 @@ class Ajax {
     return Http.delete(`${WORKS_API}/${workId}`)
   }
 }
-
-Ajax.defaultCateId = DEFAULT_CATE_ID
 
 export default Ajax

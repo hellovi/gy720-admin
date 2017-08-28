@@ -16,6 +16,10 @@ const TOGGLE_FOLLOW_URL = '/user/follower'
 const TOGGLE_COLLECTION_URL = '/user/collect'
 
 class Ajax {
+  // static properties
+
+  static defaultPerpage = DEFAULT_INFO_PERPAGE
+
   // 公共方法
 
   /**
@@ -109,7 +113,5 @@ class Ajax {
     return Http.get(`${TOGGLE_COLLECTION_URL}/${id}`)
   }
 }
-
-Ajax.defaultPerpage = DEFAULT_INFO_PERPAGE
 
 export default Ajax
