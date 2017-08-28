@@ -4,13 +4,15 @@
 
 <script>
   /**
-   * 富文本编辑器基于ueditor
+   * 富文本编辑器基于UEditor
    * @author  chenliangshan
    * @version 2017/08/25
    */
 
   import { dynamicLoadScript } from '@/utils'
   import './ueditor.config'
+  import UEajax from './ueditor.ajax'
+  // import UEautoupload from './plugins/autoupload'
 
   // 默认配置
   const defConfig = {
@@ -64,11 +66,11 @@
       },
       initEditor() {
         this.$nextTick(() => {
-          const self = this
+          // const self = this
 
           // 自定义请求报头信息-加载服务器配置
-          // eslint-disable-next-line
-          window.UE.Editor.prototype.loadServerConfig = function() {
+          /*eslint-disable*/
+          /*window.UE.Editor.prototype.loadServerConfig = function() {
             const me = this
             setTimeout(() => {
               try {
@@ -77,10 +79,10 @@
 
                 const configUrl = `${me.getActionUrl('config')}&noCache=${Date.now()}`
 
-                /* eslint no-underscore-dangle: 0 */
+                /!* eslint no-underscore-dangle: 0 *!/
                 me._serverConfigLoaded = false
 
-                /* 发出ajax请求 */
+                /!* 发出ajax请求 *!/
                 self.$http.get(configUrl)
                   .then((res) => {
                     const config = res
@@ -97,7 +99,10 @@
                 console.error(e)
               }
             })
-          }
+          }*/
+          // 重置UEditor全局UE.ajax方法
+          window.UE.ajax = UEajax()
+          // window.UE.plugin.register('autoupload2', UEautoupload, 'autoupload')
 
           // 实例富文本编辑器
           this.instance = window.UE.getEditor(this.editorId, this.ueditorConfig)
