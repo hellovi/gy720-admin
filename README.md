@@ -41,7 +41,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 - 关于我们 (周，静态已完成，有旧模板，新模板未套)
 - 个人中心
   - 认证（周，静态完成）
-  - 积分体系（卢，静态完成）
+  - 积分体系（卢，除去邀请功能不明确外，其余已完成）
   - 购买流程（周，静态完成）
   - 最新发布的作品 (霍，已完成，缺收藏接口)
   - 我的收藏（霍，已完成，缺收藏接口）
@@ -60,7 +60,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   - 初始画面（霍，已完成）
   - 分享（霍，已完成）
   - 场景分组(杨)
-  - 作品设置
+  - 作品设置（卢，静态完成）
   - 素材库(杨，静态完成，物品3d，音频等再对接口，预估8.29)
   - 视角（陈，静态完成，可测试）
   - 皮肤
