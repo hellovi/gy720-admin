@@ -31,7 +31,14 @@
       </keep-alive>
     </el-dialog>
     <!--管理物品3D-->
-    <manage-object v-model="manageModel"></manage-object>
+    <manage-object
+      v-show="manageModel"
+      v-model="manageModel"
+      :cate-list="cateList"
+      @createCate="onCreateCate"
+      @deleteCate="onDeleteCate"
+    >
+    </manage-object>
   </div>
 </template>
 
@@ -45,6 +52,7 @@ import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
 import { materialImages, materialImageText, materialObject3D, manageObject } from './components'
+import Ajax from './components/Manage3d/module/ajax'
 
 export default {
   name: 'edit-functions__material',
@@ -74,6 +82,7 @@ export default {
         { type: 'audios', id: 8, label: '音频', comp: '' },
         { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
       ],
+      cateList: [], // 物品3D分类
       manageModel: false,
     }
   },
@@ -110,6 +119,16 @@ export default {
 
     openObject3D(status) {
       this.manageModel = status
+      Ajax.getCatelist()
+        .then((data) => { this.cateList = data })
+    },
+
+    onCreateCate(cate) {
+      this.cateList.push(cate)
+    },
+
+    onDeleteCate(cateId) {
+      this.cateList = this.cateList.filter(cate => cate.id !== cateId)
     },
   },
 
