@@ -4,6 +4,7 @@ import scene from './scene'
 import material from './material'
 import logo from './logo'
 import author from './author'
+import menu from './menu'
 
 export default {
   state: {
@@ -32,6 +33,7 @@ export default {
     author,
     material,
     scene,
+    menu,
   },
 
   actions: {

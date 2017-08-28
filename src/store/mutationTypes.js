@@ -112,4 +112,14 @@ export const EDIT = {
   SCENE: {
 
   },
+
+  // 菜单管理
+  MENU: {
+    INIT: 'EDIT.MENU.INIT',
+    LOCATE: 'EDIT.MENU.LOCATE',
+    CREATE: 'EDIT.MENU.CREATE',
+    DELETE: 'EDIT.MENU.DELETE',
+    PATCH_INFO: 'EDIT.MENU.PATCH_INFO',
+    REPLACE_LIST: 'EDIT.MENU.REPLACE_LIST',
+  },
 }
