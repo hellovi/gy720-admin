@@ -1,5 +1,6 @@
 // polyfills
 import 'core-js/es6/promise'
+import 'core-js/es7/promise'
 import 'core-js/fn/typed'
 import 'core-js/es6/array'
 import 'core-js/es7/array'
