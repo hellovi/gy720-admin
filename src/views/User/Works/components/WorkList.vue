@@ -119,9 +119,9 @@
 import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
 import appPurchase from '@/components/AppPurchase'
+import deleteItem from '@/mixins/deleteItem'
 
 import Ajax from '../module/ajax'
-import deleteItemMixin from '../module/deleteItemMixin'
 
 import vWorkItem from './WorkItem'
 import vOfflineDoc from './OfflineDoc'
@@ -129,7 +129,7 @@ import vOfflineDoc from './OfflineDoc'
 export default {
   name: 'works-work-list',
 
-  mixins: [deleteItemMixin],
+  mixins: [deleteItem],
 
   components: {
     vWorkItem,

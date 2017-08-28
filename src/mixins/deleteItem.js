@@ -1,11 +1,16 @@
 /**
- * 我的作品 - 删除作品&作品分类
+ * @description 删除事务mixin，进行警告确认和结果回显
  *
  * @author huojinzhao
- * @description 删除都是用到id，并做警告确认和结果回显
- * @param ajax 封装好的请求方法
- * @param success 删除成功的回调，写在各自组件中
+ *
+ * @param {String} title - 删除弹框的标题
+ * @param {String|render} message - 删除弹窗的警告内容提示
+ * @param {int} itemId - 删除目标的id
+ * @param {Function} ajax - 执行删除事务请求的方法，各自组件中维护
+ * @param {Function} success - 删除成功的回调，各自组件中维护
  */
+
+/* eslint-disable no-underscore-dangle, no-param-reassign */
 
 export default {
   methods: {
@@ -23,28 +28,27 @@ export default {
         showCancelButton: true,
         cancelButtonText: '取消',
         type: 'warning',
-        beforeClose: this.submitItemDelete(itemId, ajax, success),
+        beforeClose: this._submitItemDelete(itemId, ajax, success),
       })
     },
 
-    submitItemDelete(...args) {
+    _submitItemDelete(...args) {
       return (action, instance, done) => {
         if (action === 'confirm') {
-          this.deleteHandler(...args, instance, done)
+          this._deleteHandler(...args, instance, done)
         } else {
           done()
         }
       }
     },
 
-    deleteHandler(
+    _deleteHandler(
       id,
       ajax,
       success,
       instance,
       done,
     ) {
-      /* eslint-disable */
       instance.confirmButtonLoading = true
       ajax(id)
         .then(() => {
@@ -64,7 +68,6 @@ export default {
           instance.confirmButtonLoading = false
           done()
         })
-      /* eslint-enable */
     },
   },
 }

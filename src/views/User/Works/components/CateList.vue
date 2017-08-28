@@ -60,14 +60,15 @@
  * @author huojinzhao
  */
 
+import deleteItem from '@/mixins/deleteItem'
+
 import Ajax from '../module/ajax'
-import deleteItemMixin from '../module/deleteItemMixin'
 import vCateItem from './CateItem'
 
 export default {
   name: 'works-cate-list',
 
-  mixins: [deleteItemMixin],
+  mixins: [deleteItem],
 
   components: { vCateItem },
 
