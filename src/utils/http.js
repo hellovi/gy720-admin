@@ -37,7 +37,7 @@ class Http {
           if (!res.status || res.status.code === 1) {
             return res
           }
-          throw new Error(res.status.reason)
+          throw res
         })
     }
 

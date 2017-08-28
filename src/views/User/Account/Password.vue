@@ -67,13 +67,14 @@
     data() {
       return {
         userPwd: {
-          oldPassword: null,
-          newPassword: null,
+          old_password: null,
+          new_password: null,
           new_password_confirmation: null,
         },
         rules: {
           old_password: [
             { required: true, message: '请输入旧密码', trigger: 'blur' },
+            { type: 'string', min: 6, max: 64, message: '密码长度为6~64个字符', trigger: 'blur' },
           ],
           new_password: [
             { required: true, message: '请输入新密码', trigger: 'blur' },
@@ -83,6 +84,7 @@
           ],
           new_password_confirmation: [
             { required: true, message: '请输入确认密码', trigger: 'blur' },
+            { type: 'string', min: 6, max: 64, message: '密码长度为6~64个字符', trigger: 'blur' },
             { validator: equalRule, refs: this.$refs, equal: 'newPassword', message: '确认密码与新密码不一致', trigger: 'blur' },
           ],
         },

@@ -39,12 +39,21 @@ export default {
       }
     },
 
-    errorHandler({ errors, message, title = alertDefaultTitle }) {
+    errorHandler({ errors, status, message, title = alertDefaultTitle }) {
       this.formLoading = false
       this.formAlertTitle = title
       this.formAlertType = 'error'
       if (errors) {
         this.formAlert = errors
+      } else if (status) {
+        const isObj = data => Object.prototype.toString.call(data) === '[object Object]'
+        let errorArr = []
+        if (isObj(status.reason)) {
+          errorArr = Object.values(status.reason).reduce((result, item) => result.concat(item), [])
+        } else {
+          errorArr.push(status.reason)
+        }
+        this.formAlert = { error: errorArr }
       } else if (message) {
         this.formAlert = { error: [message] }
       } else {
