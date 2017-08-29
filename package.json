@@ -11,8 +11,8 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
-    "cropperjs": "^1.0.0-rc.3",
     "core-js": "^2.5.0",
+    "cropperjs": "^1.0.0-rc.3",
     "echarts": "^3.6.2",
     "element-ui": "^1.4.2",
     "intersection-observer": "^0.4.0",
@@ -20,9 +20,9 @@
     "normalize.css": "^7.0.0",
     "qiniu-js": "^1.0.22",
     "qrcode": "^0.9.0",
-    "sortablejs": "1.4.2",
     "vue": "^2.4.2",
     "vue-router": "^2.7.0",
+    "vuedraggable": "^2.14.1",
     "vuex": "^2.3.1",
     "whatwg-fetch": "^2.0.3"
   },

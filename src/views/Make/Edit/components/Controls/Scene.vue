@@ -33,7 +33,7 @@
  * @version 2017-08-11
  */
 
-import { Draggable } from '@/components'
+import Draggable from 'vuedraggable'
 import modal from '../../mixins/modal'
 import EditTools from './EditTools'
 

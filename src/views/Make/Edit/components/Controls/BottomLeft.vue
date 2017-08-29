@@ -46,7 +46,7 @@
  * @author luminghuai | huojinzhao
  */
 
-import { Draggable } from '@/components'
+import Draggable from 'vuedraggable'
 import modal from '../../mixins/modal'
 import menu from './mixins/menu'
 import EditTools from './EditTools'
