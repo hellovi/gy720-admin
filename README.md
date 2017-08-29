@@ -65,7 +65,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   - 视角（陈，静态完成，可测试）
   - 皮肤
   - 分享二维码隐藏
-  - 右侧/底部菜单 (霍，静态完成)
+  - 右侧/底部菜单 (霍，已完成)
   - 导览图（霍，静态完成）
   - 热点添加(杨，静态完成，对接接口预估1.5天)
   - 场景的添加(杨，与素材库一起完成)
