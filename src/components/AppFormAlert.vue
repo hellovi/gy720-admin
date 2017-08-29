@@ -24,7 +24,8 @@
   import { isEmpty } from 'lodash'
 
   export default {
-    name: 'form-alert',
+    name: 'app-form-alert',
+
     props: {
       title: {
         type: String,

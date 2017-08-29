@@ -27,7 +27,8 @@ Vue
   .use(Url)
   .use(ElementUI)
 
-Vue.component(components.AppTab.name, components.AppTab, components.AppFormAlert)
+Vue.component(components.AppTab.name, components.AppTab)
+Vue.component(components.AppFormAlert.name, components.AppFormAlert)
 
 /* eslint-disable no-new */
 new Vue({
