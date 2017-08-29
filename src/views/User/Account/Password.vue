@@ -1,12 +1,10 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <form-alert
+      <app-form-alert
         label-width="200px"
-        :title="formAlertTitle"
-        :type="formAlertType"
         :contents="this.formAlert"
-      ></form-alert>
+      ></app-form-alert>
       <el-form
         :model="userPwd"
         :rules="rules"
@@ -56,14 +54,14 @@
    * @version 2017/08/14
    */
 
+  import AppFormAlert from '@/components/AppFormAlert'
   import form from './mixins/form'
   import { pwdRule, equalRule, noEqualRule } from './rules'
-  import FormAlert from './components/Alert'
 
   export default {
     name: 'account-password',
     mixins: [form],
-    components: { FormAlert },
+    components: { AppFormAlert },
     data() {
       return {
         userPwd: {

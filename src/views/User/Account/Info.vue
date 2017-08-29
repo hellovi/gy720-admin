@@ -1,12 +1,10 @@
 <template>
   <el-row>
     <el-col :span="12">
-      <form-alert
+      <app-form-alert
         label-width="200px"
-        :title="formAlertTitle"
-        :type="formAlertType"
         :contents="this.formAlert"
-      ></form-alert>
+      ></app-form-alert>
       <el-form
         :model="userInfo"
         :rules="rules"
@@ -57,16 +55,16 @@
    */
 
   import { GLOBAL } from '@/store/mutationTypes'
+  import AppFormAlert from '@/components/AppFormAlert'
   import Avatar from './components/Avatar'
   import AddressSelect from './components/Address'
-  import FormAlert from './components/Alert'
   import { strToArr } from './utils'
   import form from './mixins/form'
 
   export default {
     name: 'account-info',
     mixins: [form],
-    components: { Avatar, AddressSelect, FormAlert },
+    components: { Avatar, AddressSelect, AppFormAlert },
     data() {
       return {
         areaKey: ['region_id', 'city_id', 'area_id'],

@@ -32,11 +32,9 @@
                   :model="userEmailBind"
                   v-else
                 >
-                  <form-alert
-                    :title="formAlertTitle"
-                    :type="formAlertType"
+                  <app-form-alert
                     :contents="this.formAlert"
-                  ></form-alert>
+                  ></app-form-alert>
                   <el-form-item prop="email">
                     <el-input
                       placeholder="输入邮箱"
@@ -135,14 +133,14 @@
    * @version 2017/08/17
    */
 
+  import AppFormAlert from '@/components/AppFormAlert'
   import form from './mixins/form'
   import TimerBtn from './components/TimerBtn'
-  import FormAlert from './components/Alert'
 
   export default {
     name: 'account-bind',
     mixins: [form],
-    components: { TimerBtn, FormAlert },
+    components: { TimerBtn, AppFormAlert },
     data() {
       return {
         emailVisible: false,

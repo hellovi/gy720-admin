@@ -4,14 +4,10 @@
  * @version 2017/08/11
  */
 
-const alertDefaultTitle = '提交出现错误'
-
 export default {
   data() {
     return {
       formAlert: {},
-      formAlertType: null,
-      formAlertTitle: null,
       formLoading: false,
       formRef: 'form',
     }
@@ -28,37 +24,8 @@ export default {
       })
     },
 
-    successHandler({ message, title = alertDefaultTitle }) {
-      this.formLoading = false
-      this.formAlertTitle = title
-      this.formAlertType = 'success'
-      if (message) {
-        this.formAlert = { success: [message] }
-      } else {
-        this.formAlert = { success: ['提交成功'] }
-      }
-    },
-
-    errorHandler({ errors, status, message, title = alertDefaultTitle }) {
-      this.formLoading = false
-      this.formAlertTitle = title
-      this.formAlertType = 'error'
-      if (errors) {
-        this.formAlert = errors
-      } else if (status) {
-        const isObj = data => Object.prototype.toString.call(data) === '[object Object]'
-        let errorArr = []
-        if (isObj(status.reason)) {
-          errorArr = Object.values(status.reason).reduce((result, item) => result.concat(item), [])
-        } else {
-          errorArr.push(status.reason)
-        }
-        this.formAlert = { error: errorArr }
-      } else if (message) {
-        this.formAlert = { error: [message] }
-      } else {
-        this.formAlert = { error: ['服务端错误，请联系网站管理员或稍后重试'] }
-      }
+    errorHandler(errors) {
+      this.formAlert = errors
       this.formLoading = false
     },
   },
