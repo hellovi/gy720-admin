@@ -11,7 +11,7 @@
         <aside class="manage3d__aside">
 
           <div class="manage3d__aside__btn">
-            <el-button type="primary" @click="model.create = true">创建物品3D</el-button>
+            <el-button type="primary" @click="onCreateWork">创建物品3D</el-button>
           </div>
 
           <div class="manage3d__aside__catelist">
@@ -35,12 +35,17 @@
         </aside>
         <!--主列表-->
         <section class="manage3d__list">
-
+           <v-obj-item
+              class="manage3d__list__item"
+              v-for="obj in objList.data" :key="obj.id"
+              :item="obj"
+              @editWork="onEditWork"
+            >
+            </v-obj-item>
         </section>
 
         <!-- 创建分类弹窗  -->
         <el-dialog
-          class="works-catelist__create"
           :visible.sync="createCateModal.tag"
           size="tiny" title="创建作品分类"
           :modal="false"
@@ -76,6 +81,56 @@
           </div>
         </el-dialog>
 
+        <!-- 创建物品3D弹窗  -->
+        <el-dialog
+          :visible.sync="createWorkModal.tag"
+          size="tiny" title="创建"
+          :modal="false"
+          @close="onCloseCreateWorkModal"
+        >
+          <el-form
+            :model="createWorkInfo"
+            ref="createWorkInfo"
+            :rules="createWorkRules"
+            label-width="95px"
+          >
+            <el-form-item
+              prop="title"
+              label="项目名称"
+            >
+              <el-input v-model="createWorkInfo.title"></el-input>
+            </el-form-item>
+            <el-form-item label="所属分类" prop="source_rotate_category_id">
+              <el-select v-model="createWorkInfo.source_rotate_category_id">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              prop="remark"
+              label="项目简介"
+              type="textarea"
+              :rows="3"
+            >
+              <el-input v-model="createWorkInfo.remark"></el-input>
+            </el-form-item>
+            <el-form-item
+              prop="list_order"
+              label="排序"
+            >
+              <el-input v-model="createWorkInfo.list_order"></el-input>
+            </el-form-item>
+          </el-form>
+          <div slot="footer">
+            <el-button type="primary"
+              :loading="createWorkModal.confirmLoading"
+              @click="onCreateWorkConfirm"
+            >提交</el-button>
+            <el-button
+              @click="onCloseCreateWorkModal"
+            >取消</el-button>
+          </div>
+        </el-dialog>
         <!--删除分类 弹出框-->
 
       </div>
@@ -91,6 +146,7 @@
 import { mapState } from 'vuex'
 // import { EDIT } from '@/store/mutationTypes'
 import vCateItem from './components/CateItem'
+import vObjItem from './components/ObjectItem'
 import Ajax from './module/ajax'
 import deleteItemMixin from './module/deleteItemMixin'
 
@@ -99,7 +155,7 @@ export default {
 
   mixins: [deleteItemMixin],
 
-  components: { vCateItem },
+  components: { vCateItem, vObjItem },
 
   props: {
     value: {
@@ -108,7 +164,11 @@ export default {
     },
     cateList: {
       type: Array,
-      default: [],
+      required: true,
+    },
+    objList: {
+      type: Object,
+      required: true,
     },
   },
 
@@ -120,7 +180,20 @@ export default {
         manage: false, // 管理分类
         delete: false, // 删除分类
       },
+      // 创建/修改分类与作品
+      // createModal: {
+      //   cate: {
+      //     tag: false,
+      //     confirmLoading: false,
+      //   },
+      //   work: {
+      //     tag: false,
+      //     confirmLoading: false,
+      //   },
+      // },
+      // createInfo: {
 
+      // },
       // 新分类
       createCateModal: {
         tag: false,
@@ -152,6 +225,45 @@ export default {
         ],
       },
 
+      // 新作品
+      createWorkModal: {
+        tag: false,
+        confirmLoading: false,
+      },
+      createWorkInfo: {
+        id: 0,
+        title: '',
+        list_order: 1,
+        source_rotate_category_id: 1,
+        remark: '',
+      },
+      createWorkRules: {
+        name: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请输入分类名称',
+          },
+          {
+            pattern: /^\S{1,30}$/,
+            trigger: 'blur',
+            message: '名称长度应在1到30个字符之间',
+          },
+        ],
+        list_order: [
+          {
+            required: true,
+            trigger: 'blur',
+            message: '请输入分类排序',
+          },
+        ],
+      },
+
+      edit: {
+        cate: -1,
+        work: -1,
+      },
+
       cateItems: [], // 分类
       currentCateId: null, // 当前选中的分类
       removeId: -1, // 要删除的分类的id
@@ -179,6 +291,7 @@ export default {
       this.choosedCateId = cateId
     },
 
+    // 分类
     onCreateCate() {
       this.createCateModal.tag = true
     },
@@ -218,6 +331,66 @@ export default {
         })
     },
 
+    // 作品
+    onCreateWork() {
+      this.createWorkModal.tag = true
+    },
+    onCloseCreateWorkModal() {
+      this.createWorkModal.tag = false
+      if (!this.createWorkModal.confirmLoading) {
+        this.$refs.createWorkInfo.resetFields()
+      }
+    },
+
+    resetCreateWorkModal() {
+      this.createWorkModal.confirmLoading = false
+      this.onCloseCreateWorkModal()
+    },
+
+    onCreateWorkConfirm() {
+      this.$refs.createWorkInfo.validate((valid) => {
+        if (valid) {
+          this.createWorkModal.confirmLoading = true
+          if (this.edit.work > 0) {
+            // 修改
+            this.submitWorkEdit()
+          } else {
+            // 新增
+            this.submitWorkCreate()
+          }
+          this.edit.work = -1
+        }
+      })
+    },
+
+    submitWorkCreate() {
+      Ajax.createObj(this.createWorkInfo)
+        .then((id) => {
+          this.$emit('createWork', { id, ...this.createWorkInfo })
+          this.$message({ type: 'success', message: '作品创建成功' })
+        })
+        .catch((err) => {
+          this.$message({ type: 'error', message: err.message })
+        })
+        .finally(() => {
+          this.resetCreateWorkModal()
+        })
+    },
+
+    submitWorkEdit() {
+      Ajax.updateObj(this.edit.work, this.createWorkInfo)
+        .then(() => {
+          this.$emit('editWork', { ...this.createWorkInfo })
+          this.$message({ type: 'success', message: '作品修改成功' })
+        })
+        .catch((err) => {
+          this.$message({ type: 'error', message: err.message })
+        })
+        .finally(() => {
+          this.resetCreateWorkModal()
+        })
+    },
+
     onDeleteCate(cateId) {
       const h = this.$createElement
       const message = h(
@@ -237,6 +410,14 @@ export default {
           this.$emit('deleteCate', cateId)
         },
       })
+    },
+
+    onEditWork(workId) {
+      const info = this.objList.data.find(obj => obj.id === workId)
+      this.createWorkInfo = { ...info }
+      this.onCreateWork()
+      this.edit.work = workId
+      // this.submitWorkEdit(workId)
     },
   },
 
