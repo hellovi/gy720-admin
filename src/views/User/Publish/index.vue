@@ -61,7 +61,7 @@
       </div>
 
       <el-form-item class="publish-form__submit">
-        <el-button type="primary" native-type="submit">发布</el-button>
+        <el-button type="primary" native-type="submit" :loading="formLoading">发布</el-button>
       </el-form-item>
     </el-form>
 
@@ -73,11 +73,12 @@
     <!-- 创建分类弹出 -->
     <el-dialog title="创建作品分类" :visible.sync="active.newCate" size="tiny">
       <el-form :model="cateForm" :rules="cateRules" label-width="6em" ref="cateForm" @submit.native.prevent="createNewCate">
+        <app-form-alert label-width="6em" :contents="cateErrors"></app-form-alert>
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="cateForm.name" placeholder="请填写分类名称(6个字符以内)" :maxlength="6"></el-input>
         </el-form-item>
         <el-form-item style="margin-bottom: 0;">
-          <el-button type="primary" native-type="submit">提交</el-button>
+          <el-button type="primary" native-type="submit" :loading="cateLoading">提交</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -132,6 +133,7 @@ export default {
           { type: 'array', required: true, message: '作品标签不能为空', trigger: 'blur' },
         ],
       },
+      formLoading: false,
 
       // 创建分类表单
       cateForm: {
@@ -153,6 +155,8 @@ export default {
           },
         ],
       },
+      cateErrors: null,
+      cateLoading: false,
 
       timer: null, // 存放检查切图进度的定时器
       active: {
@@ -189,12 +193,17 @@ export default {
     createNewCate() {
       this.$refs.cateForm.validate((valid) => {
         if (valid) {
+          this.cateLoading = true
+          this.cateErrors = null
           this.$store.dispatch(WORK.CATE.ADD, this.cateForm)
             .then((cate_id) => {
               this.form = { ...this.form, cate_id }
               this.active.newCate = false
             })
-            .catch(error => this.$message.error(error.message))
+            .catch((res) => { this.cateErrors = res })
+            .then(() => {
+              this.cateLoading = false
+            })
         }
       })
     },
@@ -225,6 +234,7 @@ export default {
           if (this.files.length < 1) {
             this.$message.error('请选择场景素材')
           } else {
+            this.formLoading = true
             const data = {
               ...this.form,
               thumb: this.files[0].preview,
@@ -234,7 +244,11 @@ export default {
               .then(({ result }) => {
                 this.$router.push(`/make-client/edit?pano_id=${result.hash_pano_id}`)
               })
-              .catch(error => this.$message.error(error.message))
+              .catch(({ status: { reason } }) => {
+                const error = Object.keys(reason).reduce((str, key, index) => `${str} ${index + 1}.${reason[key]}`, '')
+                this.$message.error(error)
+              })
+              .then(() => { this.formLoading = false })
           }
         }
       })
