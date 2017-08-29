@@ -24,6 +24,7 @@
           <el-button
             size="small"
             type="warning"
+            @click="selectMater(listData[0].id, listData[0].title)"
           >选择</el-button>
           <el-button
             size="small"
@@ -55,6 +56,7 @@
    * @author  chenliangshan
    * @version 2017/08/25
    */
+  import { EDIT } from '@/store/mutationTypes'
 
   const ImageTextDialog = () => import('./ImageTextDialog')
 
@@ -66,6 +68,7 @@
     data: () => ({
       listData: [
         {
+          id: 1,
           title: 'test',
           created_at: '2017-08-25 16:39:05',
         },
@@ -76,6 +79,9 @@
     methods: {
       addImageText() {
         this.visible = true
+      },
+      selectMater(id, title) {
+        this.$store.commit(EDIT.MATERIAL.SELECT, { id, title })
       },
     },
 
