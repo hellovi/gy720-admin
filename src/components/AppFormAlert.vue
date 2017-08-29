@@ -1,9 +1,12 @@
 <template>
-  <div class="app-alert" v-bind:style="{paddingLeft: labelWidth}">
+  <div
+    class="app-alert"
+    v-bind:style="{paddingLeft: labelWidth}"
+    v-if="flatContents.length"
+  >
     <el-alert
       :title="title"
       :type="type"
-      v-if="flatContents.length"
       show-icon>
       <div v-for="msg in flatContents" v-html="msg"></div>
     </el-alert>
