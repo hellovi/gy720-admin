@@ -88,7 +88,7 @@ export default {
     getData(route) {
       this.listLoading = true
       return this.$store.dispatch(MESSAGE.SYSTEM.INIT, route.query.page)
-        .catch(({ message }) => this.$message.error(message))
+        .catch(({ status }) => this.$message.error(status.reason))
         .then(() => { this.listLoading = false })
     },
 

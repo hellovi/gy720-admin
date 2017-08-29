@@ -110,7 +110,7 @@ export default {
           this.$store.commit(POINT.TASK.UPDATE, id)
           this.$store.commit(GLOBAL.USER.UPDATE_POINT, integral)
         })
-        .catch(({ message }) => this.$message.error(message))
+        .catch(({ status }) => this.$message.error(status.reason))
     },
 
     // 邀请注册

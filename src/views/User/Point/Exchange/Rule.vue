@@ -82,7 +82,7 @@ export default {
           this.$message.success('兑换成功')
           this.$store.commit(GLOBAL.USER.UPDATE_POINT, -integral)
         })
-        .catch(({ message }) => this.$message.error(message))
+        .catch(({ status }) => this.$message.error(status.reason))
     },
   },
 
