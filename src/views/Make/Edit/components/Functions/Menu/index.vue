@@ -22,8 +22,6 @@
       </li>
     </ul>
 
-    <!-- 错误信息回显 -->
-
     <!-- 填写表单 -->
     <el-form class="info"
       label-width= "80px"
@@ -31,6 +29,10 @@
       :rules="menuInfoRule"
       ref="menuForm"
     >
+
+      <!-- 错误信息回显 -->
+      <app-form-alert :contents="errorReasons"></app-form-alert>
+
       <!-- 菜单名称 -->
       <el-form-item
         label="菜单名称"
@@ -312,6 +314,7 @@ export default {
 
     closeMenu() {
       this.$refs.menuForm.resetFields()
+      this.errorReasons = {}
       this.confirmLoading = false
       this.closeModal('menu')
     },
