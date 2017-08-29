@@ -64,7 +64,7 @@
         <el-input
           class="info__imagetext"
           placeholder="点击此处，从素材库中选择图文信息"
-          v-model="menuInfo.data"
+          :value="menuInfo.data | adjustDataDisplay"
           :disabled="true"
           @click.native="openImagetext"
         ></el-input>
@@ -94,7 +94,7 @@
         <el-input
           class="info__gps"
           placeholder="点击此处，打开地图导航，创建导航信息"
-          :value="menuInfo.data | adjustGpsText"
+          :value="menuInfo.data | adjustDataDisplay"
           :disabled="true"
           @click.native="openGps"
         ></el-input>
@@ -233,16 +233,19 @@ export default {
       editionType: state => state.edit.menu.editionType,
       editionInfo: state => state.edit.menu.editionInfo,
       position: state => state.edit.menu.position,
+      // 图文数据
+      imageText: state => state.edit.material.materialExport.menu,
     }),
   },
 
   watch: {
     'active.menu': 'initMenuInfo',
-    // 图文信息store，赋值给data,
+
+    'imageText.title': 'checkImageText',
   },
 
   filters: {
-    adjustGpsText(val) {
+    adjustDataDisplay(val) {
       const index = val.indexOf('|')
       const result = index === -1
         ? ''
@@ -256,19 +259,29 @@ export default {
     /* 切换菜单选项 */
 
     onChooseOption(type_id) {
-      const { pano_id, id, title, is_tip } = this.menuInfo
+      const { pano_id, id, title, is_tip, position } = this.menuInfo
       this.$refs.menuForm.resetFields()
       this.menuInfo = {
         ...this.menuBakInfo,
-        ...{ type_id, title, id, is_tip, pano_id },
+        ...{ type_id, title, id, is_tip, pano_id, position },
       }
     },
 
     /* 图文信息 */
 
+    // 打开图文信息
     openImagetext() {
       // console.log('打开图文信息')
-      // this.openMaterialModal(type: imagetext)
+      this.openMaterModal({ type: 'infos', source: 'menu' })
+    },
+
+    // 确认图文信息
+    checkImageText(value) {
+      if (value.length) {
+        const data = this.imageText
+        this.menuInfo.data = `${data.id}|${data.title}`
+        this.resetMaterExport('menu')
+      }
     },
 
     /* 地址导航 */
