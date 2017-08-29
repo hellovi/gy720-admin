@@ -12,7 +12,7 @@
       v-else
     >
       <app-form-alert
-        :contents="this.formAlert"
+        :contents="formAlert"
       ></app-form-alert>
       <el-form-item :prop="formModel.account">
         <el-input

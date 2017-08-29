@@ -3,7 +3,7 @@
     <el-col :span="12">
       <app-form-alert
         label-width="200px"
-        :contents="this.formAlert"
+        :contents="formAlert"
       ></app-form-alert>
       <el-form
         :model="userInfo"
