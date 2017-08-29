@@ -11,7 +11,7 @@ const DEFAULT_CATE_ID = 1
 
 // 接口
 const CATE_API = '/user/sourcerotatecategory'
-const WORKS_API = '/user/pano'
+const WORKS_API = '/user/sourcerotate'
 const PUT_WORKS_CATE_API = '/user/pano/category'
 
 class Ajax {
@@ -65,21 +65,44 @@ class Ajax {
       cate_id = DEFAULT_CATE_ID,
       page = 1,
       per_page = 8,
-    } = {
-      cate_id: DEFAULT_CATE_ID,
-      page: 1,
-      per_page: 8,
-    },
+    } = {},
   ) {
     /* eslint-disable */
     const url = WORKS_API
-      + `?pano_category_id=${cate_id}`
+      + `?source_rotate_category_id=${cate_id}`
       + `&page=${page}`
       + `&per_page=${per_page}`
     /* eslint-enable */
     return Http.get(url)
       .then(({ result }) => result)
   }
+
+
+  /**
+   * 新增物品3D
+   *
+   * @method POST
+   * @param {String} cateName - 新增分类的名称
+   * @return {Promise/int} data - 新增分类id
+   */
+  static createObj(cateInfo) {
+    return Http.post(WORKS_API, cateInfo)
+      .then(({ result }) => result.id)
+  }
+
+  /**
+   * 修改物品3D作品
+   *
+   * @method PUT
+   * @param {Number} workId - 作品的id
+   * @return {Promise} data - needless
+   */
+  static updateObj(workId, createWorkInfo) {
+    return Http.put(`${WORKS_API}/${workId}`, {
+      ...createWorkInfo,
+    })
+  }
+
 
   /**
    * 移动作品到其他分类
