@@ -232,7 +232,7 @@ export default {
             }
             this.$http.post('/user/pano', data)
               .then(({ result }) => {
-                this.$router.push(`/make-client/edit?pano_id=${result.id}`)
+                this.$router.push(`/make-client/edit?pano_id=${result.hash_pano_id}`)
               })
               .catch(error => this.$message.error(error.message))
           }
