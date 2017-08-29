@@ -41,7 +41,7 @@
 
   .user-center-account {
     &__content {
-      height: var(--app-main-content-min-height);
+      min-height: var(--app-main-content-min-height);
       padding: 45px 20px;
       background-color: #fff;
      }
