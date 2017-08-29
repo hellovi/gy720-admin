@@ -19,7 +19,7 @@ export default {
       message,
       itemId,
       ajax,
-      success,
+      success = () => {},
     }) {
       this.$msgbox({
         title,
