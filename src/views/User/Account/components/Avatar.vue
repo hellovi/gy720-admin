@@ -9,10 +9,11 @@
       @before-upload="beforeUpload"
       @upload-progress="uploadProgress"
       @upload-complete="uploadComplete"
+      @error="uploadError"
       v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
       class="user-avatar__file"
     >
-      <img :src="getStatic(src)">
+      <img :src="getStatic(src)" v-if="!progress">
       <app-upload-progress
         slot="progress"
         :src="uploadSrc"
@@ -80,12 +81,17 @@
       uploadComplete() {
         setTimeout(() => {
           this.progress = 0
-        }, 800)
+        }, 300)
+      },
+
+      // 监听上传出错
+      uploadError() {
+        this.progress = 0
       },
 
       // 构建完整
       getStatic(path) {
-        return path && this.$url.static(path)
+        return path ? this.$url.static(path) : ''
       },
 
       // 获取预览图
@@ -110,6 +116,7 @@
       background-position: center center;
       img {
         width: 100%;
+        height: 100%;
         max-width: 100%;
         max-height: 100%;
       }

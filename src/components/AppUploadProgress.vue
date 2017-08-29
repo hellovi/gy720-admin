@@ -1,6 +1,6 @@
 <template>
   <div class="avatar-progress">
-    <img :src="src">
+    <img :src="src" class="avatar-progress__preview">
     <div class="avatar-progress__shade"></div>
     <div class="avatar-progress__bar" :style="{width: `${progress}%`}"></div>
   </div>
@@ -37,8 +37,9 @@
     height: 100%;
     width: 100%;
     background-color: rgba(255, 255, 255, 1);
-    & img {
+    &__preview {
       width: 100%;
+      height: 100%;
     }
     &__shade {
       position: absolute;
