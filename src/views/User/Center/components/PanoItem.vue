@@ -74,17 +74,17 @@ export default {
 
   computed: {
     userPath() {
-      return this.$url.host(`author/${this.pano.hashUserId}`)
+      return this.$url.host(`author/${this.pano.hash_user_id}`)
     },
 
     panoPath() {
-      return this.$url.host(`/pano/view/${this.pano.hashPanoId}`)
+      return this.$url.host(`/pano/view/${this.pano.hash_pano_id}`)
     },
   },
 
   methods: {
     toPanoEdit() {
-      this.$router.push(`/make-client/edit?pano_id=${this.pano.id}`)
+      this.$router.push(`/make-client/edit?pano_id=${this.pano.hash_pano_id}`)
     },
 
     onToggleCollection() {
