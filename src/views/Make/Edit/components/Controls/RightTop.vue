@@ -7,7 +7,7 @@
       data-tip="添加右侧菜单"
       @click="openMenuEdition()"
     >+</div>
-    <draggable :list="menulist">
+    <draggable :list="menulist" @end="onResortMenulist">
       <transition-group
         tag="ul"
         class="edit-control__right-menu list"

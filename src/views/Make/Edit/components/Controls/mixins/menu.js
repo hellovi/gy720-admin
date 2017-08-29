@@ -62,8 +62,9 @@ export default {
       return this.$store.dispatch(MENU.DELETE, id)
     },
 
+    // 这里需要注意，drag操作会直接修改store数据
     onResortMenulist() {
-      //
+      this.$store.dispatch(MENU.REPLACE_LIST, this.menulist)
     },
   },
 }

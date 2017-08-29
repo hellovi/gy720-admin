@@ -105,9 +105,11 @@ export default class Ajax {
    * @param {MenuInfo[]} menulist
    */
   static replaceMenulist(menulist) {
-    const url = SORT_MENU_API
-      + `?pano_id=${this.defautlPanoId}`
+    const body = { sort: menulist }
 
-    return Http.post(url, menulist)
+    const url = SORT_MENU_API
+      + `?pano_id=${this.defaultPanoId}`
+
+    return Http.post(url, body)
   }
 }

@@ -11,7 +11,10 @@
     </div>
 
     <div class="edit-control__bottom-menu-wrapper">
-      <draggable :list="menulist" element="span">
+      <draggable element="span"
+        :list="menulist"
+        @end="onResortMenulist"
+      >
         <transition-group
           tag="ul"
           class="edit-control__button-menu list"

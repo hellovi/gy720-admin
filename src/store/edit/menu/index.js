@@ -64,9 +64,10 @@ export default {
         })
     },
 
-    [MENU.REPLACE_LIST](state, menulist) {
-      state[state.position] = menulist
-    },
+    // drag操作直接在组件中修改了menulist排序
+    // [MENU.REPLACE_LIST](state, menulist) {
+    //   state[state.position] = menulist
+    // },
   },
 
   actions: {
