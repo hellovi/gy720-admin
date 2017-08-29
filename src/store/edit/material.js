@@ -64,8 +64,20 @@ export default {
       state.materialData[state.type].data.unshift(result)
     },
 
-    [MATERIAL.SELECT](state, { id, url }) {
-      state.materialExport[state.source] = { id, url }
+    [MATERIAL.SELECT](state, { id = 0, url = '', title = '' }) {
+      const source = state.source
+      const materExport = state.materialExport
+      switch (state.type) {
+        case 'infos':
+          materExport[source] = { id, title }
+          break
+        case 'objects':
+          materExport[source] = { id, title }
+          break
+        default:
+          // 普通素材
+          materExport[source] = { id, url }
+      }
       state.source = ''
     },
 
