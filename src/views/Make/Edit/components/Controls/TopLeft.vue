@@ -19,8 +19,8 @@
       </template>
       <edit-tools
         dir="right"
-        @onEdit="editLogo"
-        @onDelete="removeLogo"
+        @edit="editLogo"
+        @delete="removeLogo"
       ></edit-tools>
     </div>
     <!--作品作者-->
@@ -75,7 +75,7 @@ export default {
     // 编辑LOGO
     editLogo() {
       if (this.editAutho()) {
-        this.openModal('logo')
+        this.openModal('logos')
       }
     },
 
@@ -156,6 +156,7 @@ export default {
 
 .el-tooltip__popper.edit-tip {
   background-color: rgba(51, 51, 51, .95);
+  cursor: pointer;
   .vip {
     color:#ffc000;
   }

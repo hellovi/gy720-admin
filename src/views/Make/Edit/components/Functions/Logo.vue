@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     title="Logo编辑"
-    :visible.sync="active.logo"
+    :visible.sync="active.logos"
     size="small"
   >
       <el-form label-width="120px">
@@ -24,7 +24,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeModal('logo')">取 消</el-button>
+        <el-button @click="closeModal('logos')">取 消</el-button>
         <el-button type="primary" @click="subLogo">确 定</el-button>
       </span>
   </el-dialog>
