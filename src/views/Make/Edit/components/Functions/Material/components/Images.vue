@@ -87,6 +87,7 @@ export default {
     selectMater(id, url) {
       // 微信设置以及导览图
       this.$store.commit(EDIT.MATERIAL.SELECT, { id, url })
+      this.$store.commit(EDIT.MODAL.CLOSE, 'material')
     },
 
     addMaterial(qiniu_key) {
