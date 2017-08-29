@@ -85,7 +85,7 @@ class Ajax {
    * @param {String} cateName - 新增分类的名称
    * @return {Promise/int} data - 新增分类id
    */
-  static createObj(cateInfo) {
+  static createWork(cateInfo) {
     return Http.post(WORKS_API, cateInfo)
       .then(({ result }) => result.id)
   }
@@ -97,9 +97,9 @@ class Ajax {
    * @param {Number} workId - 作品的id
    * @return {Promise} data - needless
    */
-  static updateObj(workId, createWorkInfo) {
-    return Http.put(`${WORKS_API}/${workId}`, {
-      ...createWorkInfo,
+  static updateWork({ id, info }) {
+    return Http.put(`${WORKS_API}/${id}`, {
+      ...info,
     })
   }
 
