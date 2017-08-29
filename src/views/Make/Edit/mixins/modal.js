@@ -35,7 +35,7 @@ export default {
      * @param {InvokeSource} source - 调用来源
      */
     resetMaterExport(source) {
-      this.$store.dispatch(EDIT.MATERIAL.RESET, source)
+      this.$store.commit(EDIT.MATERIAL.RESET, source)
     },
   },
 }
