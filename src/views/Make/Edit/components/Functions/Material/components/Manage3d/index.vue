@@ -11,12 +11,12 @@
         <aside class="manage3d__aside">
 
           <div class="manage3d__aside__btn">
-            <el-button type="primary" @click="onCreateWork">创建物品3D</el-button>
+            <el-button type="primary" @click="onCreate('work')">创建物品3D</el-button>
           </div>
 
           <div class="manage3d__aside__catelist">
             <a class="hover-primary manage3d__aside__catelist__item"
-             @click="onCreateCate"
+             @click="onCreate('cate')"
             >
              +创建新分类
             </a>
@@ -35,7 +35,7 @@
         </aside>
         <!--主列表-->
         <section class="manage3d__list">
-           <v-obj-item
+            <v-obj-item
               class="manage3d__list__item"
               v-for="obj in objList.data" :key="obj.id"
               :item="obj"
@@ -46,62 +46,62 @@
 
         <!-- 创建分类弹窗  -->
         <el-dialog
-          :visible.sync="createCateModal.tag"
+          :visible.sync="cate.modal.tag"
           size="tiny" title="创建作品分类"
           :modal="false"
-          @close="onCloseCreateCateModal"
+          @close="onCloseCreateModal('cate')"
         >
           <el-form
-            :model="createCateInfo"
-            ref="createCateInfo"
-            :rules="createCateRules"
+            :model="cate.info"
+            ref="cateInfo"
+            :rules="cate.rules"
             label-width="95px"
           >
             <el-form-item
               prop="name"
               label="分类名称"
             >
-              <el-input v-model="createCateInfo.name"></el-input>
+              <el-input v-model="cate.info.name"></el-input>
             </el-form-item>
             <el-form-item
               prop="list_order"
               label="分类排序"
             >
-              <el-input v-model="createCateInfo.list_order"></el-input>
+              <el-input v-model="cate.info.list_order"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer">
             <el-button type="primary"
-              :loading="createCateModal.confirmLoading"
-              @click="onCreateCateConfirm"
+              :loading="cate.modal.confirmLoading"
+              @click="onCreateConfirm('cate')"
             >提交</el-button>
             <el-button
-              @click="onCloseCreateCateModal"
+              @click="onCloseCreateModal('cate')"
             >取消</el-button>
           </div>
         </el-dialog>
 
         <!-- 创建物品3D弹窗  -->
         <el-dialog
-          :visible.sync="createWorkModal.tag"
+          :visible.sync="work.modal.tag"
           size="tiny" title="创建"
           :modal="false"
-          @close="onCloseCreateWorkModal"
+          @close="onCloseCreateModal('work')"
         >
           <el-form
-            :model="createWorkInfo"
-            ref="createWorkInfo"
-            :rules="createWorkRules"
+            :model="work.info"
+            ref="workInfo"
+            :rules="work.rules"
             label-width="95px"
           >
             <el-form-item
               prop="title"
               label="项目名称"
             >
-              <el-input v-model="createWorkInfo.title"></el-input>
+              <el-input v-model="work.info.title"></el-input>
             </el-form-item>
             <el-form-item label="所属分类" prop="source_rotate_category_id">
-              <el-select v-model="createWorkInfo.source_rotate_category_id">
+              <el-select v-model="work.info.source_rotate_category_id">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
@@ -112,22 +112,22 @@
               type="textarea"
               :rows="3"
             >
-              <el-input v-model="createWorkInfo.remark"></el-input>
+              <el-input v-model="work.info.remark"></el-input>
             </el-form-item>
             <el-form-item
               prop="list_order"
               label="排序"
             >
-              <el-input v-model="createWorkInfo.list_order"></el-input>
+              <el-input v-model="work.info.list_order"></el-input>
             </el-form-item>
           </el-form>
           <div slot="footer">
             <el-button type="primary"
-              :loading="createWorkModal.confirmLoading"
-              @click="onCreateWorkConfirm"
+              :loading="work.modal.confirmLoading"
+              @click="onCreateConfirm('work')"
             >提交</el-button>
             <el-button
-              @click="onCloseCreateWorkModal"
+              @click="onCloseCreateModal('work')"
             >取消</el-button>
           </div>
         </el-dialog>
@@ -149,6 +149,20 @@ import vCateItem from './components/CateItem'
 import vObjItem from './components/ObjectItem'
 import Ajax from './module/ajax'
 import deleteItemMixin from './module/deleteItemMixin'
+
+const defaultInfo = {
+  cate: {
+    name: '',
+    list_order: 255,
+  },
+  work: {
+    id: 0,
+    title: '',
+    list_order: 1,
+    source_rotate_category_id: 1,
+    remark: '',
+  },
+}
 
 export default {
   name: 'edit-functions__material--manage3d',
@@ -175,95 +189,75 @@ export default {
   data() {
     return {
       choosedCateId: 1,
-      model: {
-        create: false, // 创建物品
-        manage: false, // 管理分类
-        delete: false, // 删除分类
+      cate: {
+        editId: -1,
+        modal: {
+          tag: false,
+          confirmLoading: false,
+        },
+        // info: {
+        //   name: '',
+        //   list_order: 255,
+        // },
+        info: defaultInfo.cate,
+        rules: {
+          name: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请输入分类名称',
+            },
+            {
+              pattern: /^\S{3,6}$/,
+              trigger: 'blur',
+              message: '名称长度应在3到6个字符之间',
+            },
+          ],
+          list_order: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请输入分类排序',
+            },
+          ],
+        },
       },
-      // 创建/修改分类与作品
-      // createModal: {
-      //   cate: {
-      //     tag: false,
-      //     confirmLoading: false,
-      //   },
-      //   work: {
-      //     tag: false,
-      //     confirmLoading: false,
-      //   },
-      // },
-      // createInfo: {
-
-      // },
-      // 新分类
-      createCateModal: {
-        tag: false,
-        confirmLoading: false,
+      work: {
+        editId: -1,
+        modal: {
+          tag: false,
+          confirmLoading: false,
+        },
+        // info: {
+        //   id: 0,
+        //   title: '',
+        //   list_order: 1,
+        //   source_rotate_category_id: 1,
+        //   remark: '',
+        // },
+        info: defaultInfo.work,
+        rules: {
+          title: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请输入物品名称',
+            },
+            {
+              pattern: /^\S{1,30}$/,
+              trigger: 'blur',
+              message: '名称长度应在1到30个字符之间',
+            },
+          ],
+          list_order: [
+            {
+              required: true,
+              trigger: 'blur',
+              message: '请输入分类排序',
+            },
+          ],
+        },
       },
-      createCateInfo: {
-        name: '',
-        list_order: 255,
-      },
-      createCateRules: {
-        name: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请输入分类名称',
-          },
-          {
-            pattern: /^\S{3,6}$/,
-            trigger: 'blur',
-            message: '名称长度应在3到6个字符之间',
-          },
-        ],
-        list_order: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请输入分类排序',
-          },
-        ],
-      },
-
-      // 新作品
-      createWorkModal: {
-        tag: false,
-        confirmLoading: false,
-      },
-      createWorkInfo: {
-        id: 0,
-        title: '',
-        list_order: 1,
-        source_rotate_category_id: 1,
-        remark: '',
-      },
-      createWorkRules: {
-        name: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请输入分类名称',
-          },
-          {
-            pattern: /^\S{1,30}$/,
-            trigger: 'blur',
-            message: '名称长度应在1到30个字符之间',
-          },
-        ],
-        list_order: [
-          {
-            required: true,
-            trigger: 'blur',
-            message: '请输入分类排序',
-          },
-        ],
-      },
-
-      edit: {
-        cate: -1,
-        work: -1,
-      },
-
       cateItems: [], // 分类
       currentCateId: null, // 当前选中的分类
       removeId: -1, // 要删除的分类的id
@@ -290,107 +284,88 @@ export default {
     onChooseCate(cateId) {
       this.choosedCateId = cateId
     },
-
-    // 分类
-    onCreateCate() {
-      this.createCateModal.tag = true
+    // 首字母大写
+    firstUpperCase(str) {
+      return str.toLowerCase().replace(/( |^)[a-z]/g, L => L.toUpperCase())
     },
-
-    onCloseCreateCateModal() {
-      this.createCateModal.tag = false
-      if (!this.createCateModal.confirmLoading) {
-        this.$refs.createCateInfo.resetFields()
+    // 打开弹窗
+    onCreate(type) {
+      this[type].modal.tag = true
+    },
+    // 关闭弹窗
+    onCloseCreateModal(type) {
+      this[type].modal.tag = false
+      if (!this[type].modal.confirmLoading) {
+        this[type].info = defaultInfo[type]
+        this[type].editId = -1
+        // if (this[type].editId > 0) {
+        //   // 修改(要重置到默认状态)
+        //   this[type].info = defaultInfo[type]
+        //   this[type].editId = -1
+        // } else {
+        //   // 新增
+        //   this.$refs[`${type}Info`].resetFields()
+        // }
       }
     },
-
-    resetCreateCateModal() {
-      this.createCateModal.confirmLoading = false
-      this.onCloseCreateCateModal()
+    // 重置弹窗
+    resetCreateModal(type) {
+      this[type].modal.confirmLoading = false
+      this.onCloseCreateModal(type)
     },
-
-    onCreateCateConfirm() {
-      this.$refs.createCateInfo.validate((valid) => {
+    // 点击确认按钮去验证
+    onCreateConfirm(type) {
+      const upperType = this.firstUpperCase(type)
+      this.$refs[`${type}Info`].validate((valid) => {
         if (valid) {
-          this.createCateModal.confirmLoading = true
-          this.submitCateCreate()
-        }
-      })
-    },
-
-    submitCateCreate() {
-      Ajax.createCate(this.createCateInfo)
-        .then((id) => {
-          this.$emit('createCate', { id, ...this.createCateInfo })
-          this.$message({ type: 'success', message: '分类创建成功' })
-        })
-        .catch((err) => {
-          this.$message({ type: 'error', message: err.message })
-        })
-        .finally(() => {
-          this.resetCreateCateModal()
-        })
-    },
-
-    // 作品
-    onCreateWork() {
-      this.createWorkModal.tag = true
-    },
-    onCloseCreateWorkModal() {
-      this.createWorkModal.tag = false
-      if (!this.createWorkModal.confirmLoading) {
-        this.$refs.createWorkInfo.resetFields()
-      }
-    },
-
-    resetCreateWorkModal() {
-      this.createWorkModal.confirmLoading = false
-      this.onCloseCreateWorkModal()
-    },
-
-    onCreateWorkConfirm() {
-      this.$refs.createWorkInfo.validate((valid) => {
-        if (valid) {
-          this.createWorkModal.confirmLoading = true
-          if (this.edit.work > 0) {
+          this[type].modal.confirmLoading = true
+          if (this[type].editId > 0) {
             // 修改
-            this.submitWorkEdit()
+            this.submitCreate({
+              type,
+              ajax: Ajax[`update${upperType}`],
+              data: { id: this[type].editId, info: this[type].info },
+              success: () => {
+                this.$emit(`edit${upperType}`, { ...this[type].info })
+                this.$message({ type: 'success', message: '修改成功' })
+              },
+            })
           } else {
             // 新增
-            this.submitWorkCreate()
+            this.submitCreate({
+              type,
+              ajax: Ajax[`create${upperType}`],
+              data: this[type].info,
+              success: (id) => {
+                this.$emit(`create${upperType}`, { ...this[type].info, id })
+                this.$message({ type: 'success', message: '创建成功' })
+              },
+            })
           }
-          this.edit.work = -1
         }
       })
     },
-
-    submitWorkCreate() {
-      Ajax.createObj(this.createWorkInfo)
+    // 验证成功并提交(新增/修改)
+    submitCreate({ type, ajax, data, success }) {
+      ajax(data)
         .then((id) => {
-          this.$emit('createWork', { id, ...this.createWorkInfo })
-          this.$message({ type: 'success', message: '作品创建成功' })
+          success(id)
         })
         .catch((err) => {
           this.$message({ type: 'error', message: err.message })
         })
         .finally(() => {
-          this.resetCreateWorkModal()
+          this.resetCreateModal(type)
         })
     },
-
-    submitWorkEdit() {
-      Ajax.updateObj(this.edit.work, this.createWorkInfo)
-        .then(() => {
-          this.$emit('editWork', { ...this.createWorkInfo })
-          this.$message({ type: 'success', message: '作品修改成功' })
-        })
-        .catch((err) => {
-          this.$message({ type: 'error', message: err.message })
-        })
-        .finally(() => {
-          this.resetCreateWorkModal()
-        })
+    // 编辑作品
+    onEditWork(workId) {
+      const info = this.objList.data.find(obj => obj.id === workId)
+      this.work.info = { ...info }
+      this.onCreate('work')
+      this.work.editId = workId
     },
-
+    // 删除分类
     onDeleteCate(cateId) {
       const h = this.$createElement
       const message = h(
@@ -411,21 +386,8 @@ export default {
         },
       })
     },
-
-    onEditWork(workId) {
-      const info = this.objList.data.find(obj => obj.id === workId)
-      this.createWorkInfo = { ...info }
-      this.onCreateWork()
-      this.edit.work = workId
-      // this.submitWorkEdit(workId)
-    },
   },
 
-  // 父组件做请求
-  // created() {
-  //   Ajax.getCatelist()
-  //     .then((data) => { this.cateList = data })
-  // },
 }
 </script>
 
