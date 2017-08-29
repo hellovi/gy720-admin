@@ -4,6 +4,7 @@
       :allChecked="allChecked"
       :someChecked="checked.length > 0"
       :loading="loading"
+      show-mark-button
       @check-all="checkAll"
       @remove-selected="removeMessage"
       @mark-selected="markSelected"

@@ -11,6 +11,7 @@
           @click="$emit('remove-selected')"
         >删除</el-button>
         <el-button
+          v-if="showMarkButton"
           type="primary"
           size="small"
           :disabled="!someChecked"
@@ -41,6 +42,10 @@ export default {
     loading: {
       type: [Number, String],
       required: true,
+    },
+    showMarkButton: {
+      type: Boolean,
+      default: false,
     },
   },
 }
