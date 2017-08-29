@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 /** @typedef {'panos'|'logos'|'tours'|'hotspots'|'icons'|'ads'|'thumbs'|'infos'|'objects'|'audios'|'others'} MaterialType - 素材类型 */
-/** @typedef {'tour'|'wechat'|'menu','hotspot'|'hotspot3d'} InvokeSource - 调用来源 */
+/** @typedef {'tour'|'wechat'|'menu'|'logos'|'hotspot'|'hotspot3d'} InvokeSource - 调用来源 */
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
@@ -29,6 +29,13 @@ export default {
      */
     openMaterModal({ type, source }) {
       this.$store.dispatch(EDIT.MATERIAL.TAB.SELECT, { type, source })
+    },
+    /**
+     * 其他组件调用素材组件重置方法
+     * @param {InvokeSource} source - 调用来源
+     */
+    resetMaterExport(source) {
+      this.$store.dispatch(EDIT.MATERIAL.RESET, source)
     },
   },
 }

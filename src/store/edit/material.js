@@ -25,6 +25,7 @@ const getMaterialExport = () => ({
   menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
   hotspot: { title: '', id: 0 }, // 图文素材data(热点设置)
   hotspot3d: { title: '', id: 0 }, // 物品3D素材(热点设置)
+  logos: { url: '', id: 0 }, // LOGO素材(LOGO设置)
 })
 
 export default {
@@ -68,10 +69,9 @@ export default {
       state.source = ''
     },
 
-    [MATERIAL.RESET](state, payload) {
-      const from = payload.from
-      state.materialExport[from] = {
-        ...getMaterialExport()[from],
+    [MATERIAL.RESET](state, source) {
+      state.materialExport[source] = {
+        ...getMaterialExport()[source],
       }
     },
   },
