@@ -14,18 +14,17 @@ export default {
     position: '',
     bottom_menu: [],
     right_menu: [],
-    menuEdition: null,
+    editionType: '',
+    editionInfo: {},
   },
 
   mutations: {
     [MENU.INIT](state, {
       bottomList,
       rightList,
-      panoId,
     }) {
-      Ajax.defaultPanoId = panoId
       state.bottom_menu = bottomList
-      state.bottom_menu = rightList
+      state.right_menu = rightList
     },
 
     [MENU.LOCATE](state, position) {
@@ -39,6 +38,20 @@ export default {
     [MENU.DELETE](state, id) {
       state[state.position] = state[state.position]
         .filter(item => item.id !== id)
+    },
+
+    /**
+     * @param {object} payload
+     * @param {string} payload.editionType
+     * @param {object} payload.editionInfo
+     */
+    [MENU.PREPARE_EDITION](state, payload) {
+      state.editionType = payload.editionType
+      state.editionInfo = payload.editionInfo
+    },
+
+    [MENU.FINISH_EDITION](state) {
+      state.editionInfo = {}
     },
 
     [MENU.PATCH_INFO](state, menuInfo) {
@@ -58,22 +71,20 @@ export default {
 
   actions: {
     [MENU.INIT]({ commit }, panoId) {
+      Ajax.defaultPanoId = panoId
+
       Promise.all([
         Ajax.readMenulist('bottom_menu'),
         Ajax.readMenulist('right_menu'),
       ])
         .then(([bottomList, rightList]) => {
-          commit(MENU.INIT, {
-            bottomList,
-            rightList,
-            panoId,
-          })
+          commit(MENU.INIT, { bottomList, rightList })
         })
     },
 
     [MENU.CREATE]({ commit }, menuInfo) {
       return Ajax.insertMenu(menuInfo)
-        .then(() => commit(MENU.CREATE, menuInfo))
+        .then(res => commit(MENU.CREATE, res))
     },
 
     [MENU.DELETE]({ commit }, id) {
@@ -83,7 +94,10 @@ export default {
 
     [MENU.PATCH_INFO]({ commit }, menuInfo) {
       return Ajax.updateMenuInfo(menuInfo)
-        .then(() => commit(MENU.PATCH_INFO, menuInfo))
+        .then(() => {
+          commit(MENU.PATCH_INFO, menuInfo)
+          commit(MENU.FINISH_EDITION)
+        })
     },
 
     [MENU.REPLACE_LIST]({ commit }, menulist) {

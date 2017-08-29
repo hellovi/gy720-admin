@@ -10,7 +10,7 @@ const MENU_API = '/user/panomenu'
 const SORT_MENU_API = '/user/panomenu/sort'
 
 /**
- *菜单位置：
+ * 菜单位置：
  *   position: bottom_menu底部菜单，right_menu 右侧菜单
  * 菜单类型：
  *   type_id: 1网址链接， 2图文信息，3地图导航，4电话拨号
@@ -45,10 +45,11 @@ export default class Ajax {
    *
    * @method  POST
    * @param   {MenuInfo}  info
-   * @return  {Promise}   dataless
+   * @return  {Promise}   type: object, 创建成功后端返回带id的menu
    */
   static insertMenu(info) {
     return Http.post(MENU_API, info)
+      .then(({ result }) => result)
   }
 
   /**
@@ -56,7 +57,7 @@ export default class Ajax {
    *
    * @method  GET
    * @param   {number}    position
-   * @return  {Promise}   菜单列表
+   * @return  {Promise}   type: array，菜单列表
    */
   static readMenulist(position) {
     const url = MENU_API
@@ -64,6 +65,7 @@ export default class Ajax {
       + `&position=${position}`
 
     return Http.get(url)
+      .then(({ result }) => result)
   }
 
   /**
