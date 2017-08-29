@@ -2,7 +2,7 @@
   <el-dialog
     class="edit-functions__menu"
     title="菜单编辑"
-    :visible.sync="active.menu"
+    :visible="active.menu"
     size="small"
     :before-close="closeMenu"
   >
@@ -10,17 +10,19 @@
     <ul class="options clearfix">
       <li class="options__item-container"
         v-for="option in optionlist" :key="option.title"
-        @click.stop="onChooseOption(option)"
+        @click.stop="onChooseOption(option.type_id)"
       >
         <i class="options__item-icon iconfont"
           :class="{
-             active: option.type_id === choosedOption.type_id
+             active: option.type_id === menuInfo.type_id
           }"
           v-html="option.iconfont"
         ></i>
         <span class="options__item-title">{{option.title}}</span>
       </li>
     </ul>
+
+    <!-- 错误信息回显 -->
 
     <!-- 填写表单 -->
     <el-form class="info"
@@ -32,16 +34,16 @@
       <!-- 菜单名称 -->
       <el-form-item
         label="菜单名称"
-        prop="menu_name"
+        prop="title"
       >
         <el-input
           placeholder="请填写菜单名称（4个字符以内）"
-          v-model="menuInfo.menu_name"
+          v-model="menuInfo.title"
         ></el-input>
       </el-form-item>
       <!-- 网址链接 -->
       <el-form-item
-        v-if="choosedOption.type_id === 1"
+        v-if="menuInfo.type_id === 1"
         label="网址链接"
         prop="data"
       >
@@ -53,7 +55,7 @@
       </el-form-item>
       <!-- 图文信息 -->
       <el-form-item
-        v-if="choosedOption.type_id === 2"
+        v-if="menuInfo.type_id === 2"
         label="图文信息"
         prop="data"
       >
@@ -67,12 +69,13 @@
       </el-form-item>
       <!-- 图文信息：未读提示 -->
       <el-form-item
-        v-show="choosedOption.type_id === 2"
+        v-show="menuInfo.type_id === 2"
         label="未读提示"
         prop="is_tips"
       >
         <el-switch
           on-text="开" off-text="关"
+          :on-value="1" :off-value="0"
           v-model="menuInfo.is_tips" :disabled="false"
         ></el-switch>
         <span class="info__tip-doc">
@@ -82,7 +85,7 @@
       </el-form-item>
       <!-- 地图导航 -->
       <el-form-item
-        v-show="choosedOption.type_id === 3"
+        v-show="menuInfo.type_id === 3"
         label="地图导航"
         prop="data"
       >
@@ -96,7 +99,7 @@
       </el-form-item>
       <!-- 电话拨号 -->
       <el-form-item
-        v-show="choosedOption.type_id === 4"
+        v-show="menuInfo.type_id === 4"
         label="电话号码"
         prop="data"
       >
@@ -113,6 +116,7 @@
         @click="closeMenu"
       >取 消</el-button>
       <el-button type="primary"
+        :loading="confirmLoading"
         @click="onSubmitMenuInfo"
       >确 定</el-button>
     </div>
@@ -125,7 +129,7 @@
       :visible.sync="gpsModal.tag"
     >
       <v-menu-gps
-        v-if="gpsModal.tag"
+        :visible="gpsModal.tag"
         @submit="onChooseGps"
       ></v-menu-gps>
     </el-dialog>
@@ -138,8 +142,13 @@
  *
  * @author huojinzhao
  */
+
+import { mapState } from 'vuex'
 import modal from '@/views/Make/Edit/mixins/modal'
+import { EDIT } from '@/store/mutationTypes'
 import vMenuGps from './MenuGps'
+
+const { MENU } = EDIT
 
 export default {
   name: 'edit-functions__menu',
@@ -151,8 +160,10 @@ export default {
   },
 
   data: () => ({
-    issuetxt: '',
-    subscribetxt: '',
+    confirmLoading: false,
+
+    // 提交表单失败，服务端reason数据
+    errorReasons: {},
 
     optionlist: [
       {
@@ -177,23 +188,36 @@ export default {
       },
     ],
 
-    choosedOption: {
+    menuInfo: {
+      title: '',
+      data: '',
       type_id: 1,
+      is_tips: 0,
+      pano_id: null,
+      position: '',
     },
 
-    menuInfo: {
-      menu_name: '',
-      data: '',
-      is_tips: 0,
-    },
+    menuBakInfo: {},
 
     menuInfoRule: {
-      menu_name: [
-        { required: true, message: '请输入菜单名称', trigger: 'blur' },
-        { pattern: /^\S{1,4}$/, message: '长度应在4个字符以内', trigger: 'blur' },
+      title: [
+        {
+          required: true,
+          message: '请输入菜单名称',
+          trigger: 'blur',
+        },
+        {
+          pattern: /^\S{1,4}$/,
+          message: '长度应在4个字符以内',
+          trigger: 'blur',
+        },
       ],
       data: [
-        { required: true, message: '菜单内容不能为空', trigger: 'blur' },
+        {
+          required: true,
+          message: '菜单内容不能为空',
+          trigger: 'blur',
+        },
       ],
     },
 
@@ -202,9 +226,17 @@ export default {
     },
   }),
 
+  computed: {
+    ...mapState({
+      editionType: state => state.edit.menu.editionType,
+      editionInfo: state => state.edit.menu.editionInfo,
+      position: state => state.edit.menu.position,
+    }),
+  },
+
   watch: {
+    'active.menu': 'initMenuInfo',
     // 图文信息store，赋值给data,
-    // this.$children.map.data，赋值给data
   },
 
   filters: {
@@ -221,11 +253,13 @@ export default {
 
     /* 切换菜单选项 */
 
-    onChooseOption(option) {
-      const name = this.menuInfo.menu_name
-      this.choosedOption = { ...option }
+    onChooseOption(type_id) {
+      const { pano_id, id, title, is_tip } = this.menuInfo
       this.$refs.menuForm.resetFields()
-      if (name) this.menuInfo.menu_name = name
+      this.menuInfo = {
+        ...this.menuBakInfo,
+        ...{ type_id, title, id, is_tip, pano_id },
+      }
     },
 
     /* 图文信息 */
@@ -254,19 +288,59 @@ export default {
 
     onSubmitMenuInfo() {
       this.$refs.menuForm.validate((valid) => {
-        if (valid) this.submitMenuInfo()
+        if (valid) {
+          this.submitMenuInfo()
+            .then(() => {
+              this.closeMenu()
+            })
+            .catch((error) => {
+              this.errorReasons = error
+              this.confirmLoading = false
+            })
+        }
       })
     },
 
     submitMenuInfo() {
-      // console.log('sucess')
+      this.confirmLoading = true
       // then: 成功回显; catch: 错误回显; finally: 关闭弹窗;
+      if (this.editionType === 'create') {
+        return this.$store.dispatch(MENU.CREATE, { ...this.menuInfo })
+      }
+      return this.$store.dispatch(MENU.PATCH_INFO, { ...this.menuInfo })
     },
 
     closeMenu() {
       this.$refs.menuForm.resetFields()
+      this.confirmLoading = false
       this.closeModal('menu')
     },
+
+    initMenuInfo(value) {
+      if (value) {
+        const pano_id = this.$route.query.pano_id
+        const position = this.position
+        this.menuInfo = {
+          ...this.menuInfo,
+          ...this.editionInfo,
+          ...{ pano_id, position },
+        }
+      } else {
+        this.recoverMenuInfo()
+      }
+    },
+
+    backupInitialMenu() {
+      this.menuBakInfo = { ...this.menuInfo }
+    },
+
+    recoverMenuInfo() {
+      this.menuInfo = { ...this.menuBakInfo }
+    },
+  },
+
+  created() {
+    this.backupInitialMenu()
   },
 }
 </script>

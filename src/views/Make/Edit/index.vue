@@ -97,6 +97,8 @@ export default {
   created() {
     const pano_id = this.$route.query.pano_id
     this.$store.dispatch(EDIT.GET_PANOINFO, pano_id)
+    // 菜单初始化
+    this.$store.dispatch(EDIT.MENU.INIT, pano_id)
   },
 
   mounted() {

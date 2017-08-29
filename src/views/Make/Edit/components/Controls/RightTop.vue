@@ -1,16 +1,26 @@
 <template>
   <div class="edit-control__right-top">
     <div
-      role="button"
       class="btn-add dash-box tip tip--left"
+      role="button"
+      v-show="menulist.length < 5"
       data-tip="添加右侧菜单"
-      @click="openModal('menu')"
+      @click="openMenuEdition()"
     >+</div>
-    <draggable :list="items">
-      <transition-group tag="ul" class="edit-control__right-menu list">
-        <li class="dash-box" v-for="item in items" :key="item">
-          <span>{{ item }}</span>
-          <edit-tools dir="left"></edit-tools>
+    <draggable :list="menulist">
+      <transition-group
+        tag="ul"
+        class="edit-control__right-menu list"
+      >
+        <li class="dash-box"
+          v-for="item in menulist" :key="item.id"
+        >
+          <span>{{ item.title }}</span>
+          <edit-tools
+            dir="left"
+            @edit="openMenuEdition(item)"
+            @delete="onDeleteMenu(item.id)"
+          ></edit-tools>
         </li>
       </transition-group>
     </draggable>
@@ -20,28 +30,27 @@
 <script>
 /**
  * 高级编辑 - 右侧菜单
- * @author luminghuai
- * @version 2017-08-11
+ *
+ * @author luminghuai | huojinzhao
  */
 
 import { Draggable } from '@/components'
 import EditTools from './EditTools'
 import modal from '../../mixins/modal'
+import menu from './mixins/menu'
 
 export default {
   name: 'edit-right-top',
 
-  mixins: [modal],
+  mixins: [modal, menu],
 
   components: {
     Draggable,
     EditTools,
   },
 
-  data() {
-    return {
-      items: [1, 2, 3, 4, 5],
-    }
+  created() {
+    this.menuLocation = 'right_menu'
   },
 }
 </script>

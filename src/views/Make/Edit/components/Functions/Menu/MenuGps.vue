@@ -5,10 +5,13 @@
       class="gips-above"
       :inline="true"
       label-width="80px"
+      ref="gpsForm"
+      :model="mapInfo.geoInfo"
     >
       <!-- 模糊搜索 -->
       <el-form-item
         class="gps__search"
+        prop=""
       >
         <el-select
           v-model="searchingInfo"
@@ -30,6 +33,7 @@
       <!-- 当前坐标 -->
       <el-form-item
         label="当前坐标"
+        prop="curPoi"
       >
         <el-input
           size="small"
@@ -38,8 +42,9 @@
       </el-form-item>
       <!-- 当前地址 -->
       <el-form-item
-        label="当前地址"
         class="gps__address"
+        label="当前地址"
+        prop="curAddress"
       >
         <el-input
           size="small"
@@ -155,6 +160,13 @@ import TencentMap from './modules/tencentMap'
 export default {
   name: 'edit-functions__menu-gps',
 
+  props: {
+    visible: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
   data: () => ({
     temp: null,
 
@@ -177,6 +189,15 @@ export default {
 
     searchedAddresses: null,
   }),
+
+  watch: {
+    visible(value) {
+      if (!value) {
+        this.$refs.gpsForm.resetFields()
+        this.resetSearchedInfo()
+      }
+    },
+  },
 
   methods: {
     locateCity({ name, latLng }) {
@@ -240,6 +261,12 @@ export default {
 
     onSubmitGps() {
       this.$emit('submit', this.mapInfo.geoInfo)
+    },
+
+    resetSearchedInfo() {
+      this.searchingInfo = ''
+      this.searchingHelps = []
+      this.searchedAddresses = null
     },
   },
 

@@ -11,18 +11,29 @@
     </div>
 
     <div class="edit-control__bottom-menu-wrapper">
-      <draggable :list="items" element="span">
-        <transition-group tag="ul" class="edit-control__button-menu list">
-          <li class="dash-box" v-for="item in items" :key="item">
-            <span>{{ item }}</span>
-            <edit-tools dir="top"></edit-tools>
+      <draggable :list="menulist" element="span">
+        <transition-group
+          tag="ul"
+          class="edit-control__button-menu list"
+        >
+          <li class="dash-box"
+            v-for="item in menulist" :key="item.id"
+          >
+            <span>{{ item.title }}</span>
+            <edit-tools
+              dir="top"
+              @edit="openMenuEdition(item)"
+              @delete="onDeleteMenu(item.id)"
+            ></edit-tools>
           </li>
         </transition-group>
       </draggable>
-      <div role="button"
+      <div
         class="btn-add dash-box dash-box--cubic tip tip--right"
+        role="button"
+        v-show="menulist.length < 3"
         data-tip="添加底部菜单"
-        @click="openModal('menu')"
+        @click="openMenuEdition()"
       >+</div>
     </div>
   </div>
@@ -31,28 +42,27 @@
 <script>
 /**
  * 高级编辑 - 场景/分享/底部菜单
- * @author luminghuai
- * @version 2017-08-11
+ *
+ * @author luminghuai | huojinzhao
  */
 
 import { Draggable } from '@/components'
 import modal from '../../mixins/modal'
+import menu from './mixins/menu'
 import EditTools from './EditTools'
 
 export default {
   name: 'edit-bottom-left',
 
-  mixins: [modal],
+  mixins: [modal, menu],
 
   components: {
     Draggable,
     EditTools,
   },
 
-  data() {
-    return {
-      items: [0, 2, 3, 4, 5],
-    }
+  created() {
+    this.menuLocation = 'bottom_menu'
   },
 }
 </script>
