@@ -35,7 +35,10 @@
       v-show="manageModel"
       v-model="manageModel"
       :cate-list="cateList"
+      :obj-list="objList"
       @createCate="onCreateCate"
+      @createWork="onCreateWork"
+      @editWork="onEditWork"
       @deleteCate="onDeleteCate"
     >
     </manage-object>
@@ -83,6 +86,7 @@ export default {
         { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
       ],
       cateList: [], // 物品3D分类
+      objList: { data: [] },
       manageModel: false,
     }
   },
@@ -121,10 +125,27 @@ export default {
       this.manageModel = status
       Ajax.getCatelist()
         .then((data) => { this.cateList = data })
+      Ajax.getWorklist()
+        .then((data) => { this.objList = data })
     },
 
     onCreateCate(cate) {
       this.cateList.push(cate)
+    },
+
+    onCreateWork(work) {
+      this.objList.data.push(work)
+    },
+
+    onEditWork(work) {
+      const editWork = this.objList.data
+      editWork[editWork.findIndex(obj => obj.id === work.id)] = { ...work }
+      // this.objList.data = editWork.map((item) => {
+      //   if (item.id === work.id) {
+      //     return { ...work }
+      //   }
+      //   return item
+      // })
     },
 
     onDeleteCate(cateId) {

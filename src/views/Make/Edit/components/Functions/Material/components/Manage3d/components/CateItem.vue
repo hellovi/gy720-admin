@@ -58,7 +58,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="postcss">
 @import 'vars.css';
 
 .manage3d-cateitem {
