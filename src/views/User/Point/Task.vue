@@ -118,13 +118,9 @@ export default {
       this.inviteModal = true
     },
 
-    // 请求连接、创建二维码（这里每次请求感觉不合适）
+    // 此处邀请链接从何得来，存疑问
     createQrcode() {
-      this.$http.get('/user/invitelink')
-        .then(({ result: { base_url, invite_code } }) => {
-          this.inviteUrl = `${base_url}?invite_code=${invite_code}`
-          QRCode.toCanvas(this.$refs.canvas, this.inviteUrl, () => {})
-        })
+      QRCode.toCanvas(this.$refs.canvas, 'http://www.exemple.com/', () => {})
     },
 
     // 复制链接（可能需要处理Safari下的兼容性）
