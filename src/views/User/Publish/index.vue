@@ -101,10 +101,10 @@ export default {
           { required: true, message: '作品名称不能为空', trigger: 'blur' },
         ],
         pano_category_id: [
-          { type: 'number', required: true, message: '作品分类不能为空', trigger: 'blur' },
+          { type: 'number', required: true, message: '作品分类不能为空', trigger: 'change' },
         ],
         tag_ids: [
-          { type: 'array', required: true, message: '作品标签不能为空', trigger: 'blur' },
+          { type: 'array', required: true, message: '作品标签不能为空', trigger: 'change' },
         ],
       },
       formLoading: false,
