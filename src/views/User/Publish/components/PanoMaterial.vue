@@ -189,7 +189,7 @@ export default {
   }
 
   &__content {
-    min-height: 600px;
+    min-height: 420px;
     padding: 20px 0;
   }
 }
@@ -235,6 +235,7 @@ export default {
 .pano-material__item {
   position: relative;
   height: 120px;
+  margin-bottom: 20px;
   cursor: pointer;
   transition: 0.2s;
 
