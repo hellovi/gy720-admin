@@ -7,42 +7,44 @@
       :visible.sync="active.tour"
     >
       <ul class="tour-guidemap__list clearfix">
-        <li v-for="i in 30" :key="i" class="tour-guidemap__item">
+        <li
+          class="tour-guidemap__item"
+          v-for="tour in tourlist" :key="tour.id"
+        >
           <div class="tour-guidemap__item-control">
             <!-- 编辑 -->
             <i
               class="iconfont"
-              @click="onEditTour"
+              @click="activateTourEdition"
             >&#xe614;</i>
             <!-- 删除 -->
             <i
               class="iconfont"
-              @click="onDeleteTour"
+              @click="preDeleteTour(tour.id)"
             >&#xe615;</i>
           </div>
           <div>
-            <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
+            <img :src="$url.static(tour.image)">
           </div>
-          <p>导览图{{i}}</p>
+          <p>{{tour.name}}</p>
         </li>
-        <li class="tour-guidemap__create" @click="onCreateTour"> + </li>
+        <li
+          class="tour-guidemap__create"
+          v-if="tourlist.length < 5"
+          @click="activateTourCreation"
+        > + </li>
       </ul>
     </el-dialog>
 
     <!-- 新增导览 -->
     <el-dialog
       title="添加地图" size="small"
-      :visible.sync="createTourModal.tag"
+      :visible.sync="createTourModal.active"
     >
-      <v-tour-creation></v-tour-creation>
-      <div slot="footer">
-        <el-button type="primary"
-          @click="onConfirmTourCreation"
-        >提交</el-button>
-        <el-button
-          @click="onEndTourCreation"
-        >取消</el-button>
-      </div>
+      <v-tour-creation
+        @submit="createTour"
+        @cancel="deactivateTourCreation"
+      ></v-tour-creation>
     </el-dialog>
 
     <!-- 编辑导览 -->
@@ -50,7 +52,7 @@
       class="tour-edition"
       title="添加场景视角展示" size="large" top="5%"
       :close-on-click-modal="false"
-      :visible.sync="editTourModal.tag"
+      :visible.sync="editTourModal.active"
     >
       <v-tour-edition></v-tour-edition>
     </el-dialog>
@@ -65,11 +67,15 @@
  */
 
 import modal from '@/views/Make/Edit/mixins/modal'
+import deleteItem from '@/mixins/deleteItem'
 import vTourCreation from './TourCreation'
 import vTourEdition from './TourEdition'
+import Ajax from './modules/Ajax'
 
 export default {
   name: 'edit-functions__tour',
+
+  mixins: [modal, deleteItem],
 
   components: {
     vTourCreation,
@@ -77,60 +83,79 @@ export default {
   },
 
   data: () => ({
+    tourlist: [],
+
+    tourInfo: {},
+
     createTourModal: {
-      tag: false,
+      active: false,
       confirmLoading: false,
     },
+
     editTourModal: {
-      tag: false,
+      active: false,
+      confirmLoading: false,
     },
   }),
 
   methods: {
-    onCreateTour() {
-      this.createTourModal.tag = true
+    /* ------ initialization ------ */
+
+    fetchTourlist() {
+      Ajax.readTourlist()
+        .then((res) => { this.tourlist = res })
     },
 
-    onConfirmTourCreation() {
-      this.$message({
-        message: '创建成功',
-        type: 'success',
-      })
-      this.onEndTourCreation()
-      this.onEditTour()
+    /* ------ application ------ */
+
+    /* --- control --- */
+
+    deactivateTourCreation() {
+      this.createTourModal.active = false
     },
 
-    onEndTourCreation() {
-      this.createTourModal.tag = false
+    /* --- creation --- */
+
+    activateTourCreation() {
+      this.createTourModal.active = true
     },
 
-    onDeleteTour() {
-      this.$msgbox({
+    createTour(tourInfo) {
+      this.tourlist.push(tourInfo)
+      this.deactivateTourCreation()
+      // this.activateTourEdition()
+    },
+
+    /* --- deletion */
+
+    preDeleteTour(tourId) {
+      this.onDeleteItem({
         title: '删除导览提示',
         message: '此操作将永久删除该导览, 是否继续?',
-        type: 'warning',
-        showCancelButton: true,
+        itemId: tourId,
+        ajax: this.deleteTour,
+        success: this.tourDeletionSucceed,
       })
-        .then(() => {
-          this.$message({
-            message: '删除成功',
-            type: 'success',
-          })
-        })
-        .catch(() => {
-          this.$message({
-            message: '删除失败',
-            type: 'error',
-          })
-        })
     },
 
-    onEditTour() {
-      this.editTourModal.tag = true
+    deleteTour(tourId) {
+      return Ajax.removeTourInfo(tourId)
+    },
+
+    tourDeletionSucceed(tourId) {
+      this.tourlist = this.tourlist
+        .filter(tour => tour.id !== tourId)
+    },
+
+    activateTourEdition() {
+      this.editTourModal.active = true
     },
   },
 
-  mixins: [modal],
+  created() {
+    Ajax.defaultPanoId = this.$route.query.pano_id
+    this.fetchTourlist()
+  },
 }
 </script>
 
