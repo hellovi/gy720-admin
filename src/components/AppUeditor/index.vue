@@ -57,6 +57,14 @@
       },
     },
 
+    watch: {
+      value(val) {
+        if (this.instance && Object.keys(this.instance).length) {
+          this.instance.setContent(val || '')
+        }
+      },
+    },
+
     methods: {
       insertScriptTag() {
         dynamicLoadScript(`${this.path}ueditor.all.min.js`)
@@ -77,12 +85,19 @@
 
           // 绑定事件，当 UEditor 初始化完成后，将编辑器实例通过自定义的 ready 事件交出去
           this.instance.addListener('ready', () => {
-            this.instance.setContent(this.value)
+            this.instance.setContent(this.value || '')
             this.instance.addListener('contentChange', () => {
               const wordCount = this.instance.getContentLength(true)
               const content = this.instance.getContent()
               const plainTxt = this.instance.getPlainTxt()
               this.$emit('contentChange', { wordCount, content, plainTxt })
+            })
+
+            // 失焦再同步数据
+            this.instance.addListener('blur', () => {
+              const content = this.instance.getContent()
+              this.$emit('input', content)
+              this.$emit('update:value', content)
             })
             this.$emit('ready', this.instance)
           })
