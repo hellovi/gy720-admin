@@ -11,6 +11,7 @@
  * @property {number} percent - 上传进度
  * @property {number} [source_scene_id] - 上传成功后分配的场景id
  * @property {string} [preview] - 预览，可能是base64字符串，或src地址
+ * @property {string} [thumb] - 场景封面
  * @property {boolean} vtour - 是否已切图
  * @property {string} message - 指示上传和切图状态的文字信息
  */
@@ -126,12 +127,15 @@ export default {
           },
 
           FileUploaded: (up, file, res) => {
-            const { result: { preview_image, source_scene_id } } = JSON.parse(res.response)
+            const { result } = JSON.parse(res.response)
+            const { preview_image, thumb, source_scene_id } = result
+
             this.updateFile(file.id, {
               percent: 100,
               source_scene_id,
               message: '正在排队中...',
               preview: this.$url.host(preview_image),
+              thumb,
             })
           },
         },
@@ -187,7 +191,8 @@ export default {
           FileUploaded: (up, file, res) => {
             // 后端返回的response前会多出一串“stitching successfully ”，必须手动处理掉
             const response = res.response.replace(/[^{]*(?=\{)/, '')
-            const { result: { fisheye_gid, preview_image, source_scene_id } } = JSON.parse(response)
+            const { result } = JSON.parse(response)
+            const { fisheye_gid, thumb, preview_image, source_scene_id } = result
 
             this.fisheye_gid = fisheye_gid
 
@@ -197,6 +202,7 @@ export default {
                 source_scene_id,
                 message: '正在排队中...',
                 preview: this.$url.host(preview_image),
+                thumb,
               })
             }
           },

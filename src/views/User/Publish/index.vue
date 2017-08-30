@@ -238,7 +238,7 @@ export default {
             const data = {
               ...this.form,
               thumb: this.files[0].preview,
-              scenes: this.files.map(({ source_scene_id, name }) => ({ source_scene_id, name })),
+              scenes: this.files.map(({ source_scene_id, name, thumb }) => ({ source_scene_id, name, thumb })),
             }
             this.$http.post('/user/pano', data)
               .then(({ result }) => {
