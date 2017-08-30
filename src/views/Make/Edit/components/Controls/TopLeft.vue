@@ -75,7 +75,7 @@ export default {
     // 编辑LOGO
     editLogo() {
       if (this.editAutho()) {
-        this.openModal('logos')
+        this.openModal('logo')
       }
     },
 
@@ -99,14 +99,14 @@ export default {
     // 显示隐藏作者名称
     editAuthor() {
       if (this.editAutho()) {
-        // TODO 显示隐藏作者名称状态
+        // TODO 更新显示隐藏作者名称状态
       }
     },
 
     // 控制操作权限
     editAutho() {
       // TODO 单个作品vip条件判断
-      if (!this.userInfo.is_vip) {
+      if (this.userInfo.is_vip) {
         this.openModal('vipInfo')
         return false
       }
@@ -152,6 +152,8 @@ export default {
   font-size: 14px;
   line-height: 26px;
   cursor: pointer;
+  position: relative;
+  z-index: 6;
 }
 
 .el-tooltip__popper.edit-tip {

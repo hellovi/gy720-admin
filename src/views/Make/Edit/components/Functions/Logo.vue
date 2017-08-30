@@ -1,14 +1,16 @@
 <template>
   <el-dialog
     title="Logo编辑"
-    :visible.sync="active.logos"
+    :visible.sync="active.logo"
     size="small"
+    @close="closeChangLogo"
   >
       <el-form label-width="120px">
         <el-form-item label="Logo图片">
           <div class="change-logo">
-            <img v-if="true" :src="require('@/assets/logo-edit.png')" alt="logo">
-            <img v-else src="" alt="logo">
+            <!--TODO 判断原本图片-->
+            <img v-if="!formLogo.url" :src="require('@/assets/logo-edit.png')" alt="logo">
+            <img v-else :src="$url.static(formLogo.url)" alt="logo">
             <div class="change-logo__shade" @click="changLogo">
               <span class="txt">
                 <i class="icon el-icon-picture"></i> <br>
@@ -18,13 +20,11 @@
           </div>
         </el-form-item>
         <el-form-item label="Logo链接">
-          <el-input placeholder="请输入链接">
-            <template slot="prepend">Http://</template>
-          </el-input>
+          <el-input placeholder="Http://" v-model="logoUrl"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="closeModal('logos')">取 消</el-button>
+        <el-button @click="closeModal('logo')">取 消</el-button>
         <el-button type="primary" @click="subLogo">确 定</el-button>
       </span>
   </el-dialog>
@@ -37,6 +37,7 @@
  * @version 2017-08-21
  */
 
+import { mapState } from 'vuex'
 import modal from '../../mixins/modal'
 
 export default {
@@ -44,10 +45,31 @@ export default {
 
   mixins: [modal],
 
+  data: () => ({
+    logoUrl: null,
+  }),
+
+  computed: {
+    ...mapState({
+      formLogo: state => state.edit.material.materialExport.logos,
+    }),
+  },
+
   methods: {
     // 选择LOGO图片
     changLogo() {
-      // TODO 调用素材组件
+      this.openMaterModal({
+        type: 'logos',
+        source: 'logos',
+      })
+    },
+
+    closeChangLogo() {
+      this.resetFormLogo()
+    },
+
+    resetFormLogo() {
+      this.resetMaterExport('logos')
     },
 
     // 提交更换LOGO
