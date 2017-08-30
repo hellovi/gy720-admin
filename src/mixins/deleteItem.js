@@ -56,13 +56,16 @@ export default {
             type: 'success',
             message: '删除成功',
           })
-          success()
+          success(id)
         })
         .catch((err) => {
-          this.$message({
-            type: 'error',
-            message: err.message,
-          })
+          const message = err.message
+            && typeof err.message === 'string'
+            && err.message.length > 0
+            ? err.message
+            : '删除失败'
+
+          this.$message({ type: 'error', message })
         })
         .finally(() => {
           instance.confirmButtonLoading = false
