@@ -13,7 +13,7 @@
         <right-top></right-top>
         <right-middle></right-middle>
         <hotspot></hotspot>
-        <scene></scene>
+        <scene :scenes="scenes"></scene>
         <bottom-left></bottom-left>
         <bottom-center></bottom-center>
         <bottom-right></bottom-right>
@@ -72,6 +72,7 @@ export default {
   computed: {
     ...mapState({
       active: state => state.edit.active,
+      scenes: state => state.edit.scenes,
     }),
   },
 
@@ -99,6 +100,8 @@ export default {
     this.$store.dispatch(EDIT.GET_PANOINFO, pano_id)
     // 菜单初始化
     this.$store.dispatch(EDIT.MENU.INIT, pano_id)
+    // 获取场景信息
+    this.$store.dispatch(EDIT.SCENE.INIT, this.$route.query.pano_id)
   },
 
   mounted() {

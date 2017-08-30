@@ -2,24 +2,27 @@
   <div class="edit-control__scene">
     <div class="edit-scene clearfix">
       <div class="edit-scene__left-arrow iconfont" @click="scrollToLeft">&#xe651;</div>
-      <draggable :list="items">
+
+      <draggable :list="scenes">
         <transition-group tag="ul" class="list clearfix" ref="list" style="left: 0px;">
           <li
-            v-for="item in items"
-            :key="item"
+            v-for="scene in scenes"
+            :key="scene.id"
             class="edit-scene__item"
-            :class="{'edit-scene__item--active': item === current}"
+            :class="{'edit-scene__item--active': scene.id === activeSceneId}"
           >
-            <div class="edit-scene__item__wrapper" @click="selectScene(item)">
-              <img class="edit-scene__item__image" src="http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg" alt="场景名称">
-              <span class="edit-scene__item__title">{{ item }}</span>
+            <div class="edit-scene__item__wrapper" @click="selectScene(scene.id)">
+              <img class="edit-scene__item__image" src="http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg" :alt="scene.name">
+              <span class="edit-scene__item__title">{{ scene.name }}</span>
             </div>
             <edit-tools dir="top" @onEdit="openModal('scene')"></edit-tools>
           </li>
         </transition-group>
       </draggable>
+
       <div class="edit-scene__right-arrow iconfont" @click="scrollToRight">&#xe7a2;</div>
     </div>
+
     <div class="edit-scene-upload tip tip--top" data-tip="上传场景">
       <div role="button" class="btn-add dash-box">+</div>
     </div>
@@ -79,10 +82,16 @@ export default {
     Minor,
   },
 
+  props: {
+    scenes: {
+      type: Array,
+      required: true,
+    },
+  },
+
   data() {
     return {
-      current: 1,
-      items: [1, 2, 3, 4, 5],
+      activeSceneId: null,
 
       edit: false,
       tabs: ['基本信息', '场景特效', '背景音乐', '功能微调'],
@@ -90,9 +99,17 @@ export default {
     }
   },
 
+  watch: {
+    scenes(val) {
+      if (!this.activeSceneId) {
+        this.activeSceneId = val[0].id
+      }
+    },
+  },
+
   methods: {
-    selectScene(index) {
-      this.current = index
+    selectScene(id) {
+      this.activeSceneId = id
     },
 
     // 125是每个场景图的宽度 + 5px margin
@@ -202,14 +219,14 @@ export default {
     width: var(--scene-size);
     height: var(--scene-size);
     cursor: pointer;
-    transition: 1s;
+    transition: transform 1s;
 
     &:hover > .edit-tools {
       visibility: visible;
     }
 
     &--active {
-      box-shadow: 0 0 0 2px #ffc000;
+     outline: 2px solid #ffc000;
     }
 
     & + li {
@@ -218,7 +235,7 @@ export default {
 
     &__wrapper {
       position: relative;
-      z-index: 1;
+      z-index: 10;
     }
 
     &__image {

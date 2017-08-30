@@ -111,7 +111,7 @@ export const EDIT = {
 
   // 场景模块
   SCENE: {
-
+    INIT: 'EDIT.SCENE.INIT',
   },
 
   // 菜单管理
