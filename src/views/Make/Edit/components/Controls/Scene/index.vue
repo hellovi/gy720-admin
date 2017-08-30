@@ -124,8 +124,11 @@ export default {
 }
 </script>
 
-
 <style lang="postcss">
+:root {
+  --scene-size: 60px;
+}
+
 .edit-control__scene {
   position: absolute;
   bottom: 80px;
@@ -186,7 +189,7 @@ export default {
 
   .list {
     position: relative;
-    height: 60px;
+    height: var(--scene-size);
     padding: 0 5px;
     text-align: center;
     white-space: nowrap;
@@ -196,8 +199,8 @@ export default {
   &__item {
     position: relative;
     display: inline-block;
-    width: 120px;
-    height: 60px;
+    width: var(--scene-size);
+    height: var(--scene-size);
     cursor: pointer;
     transition: 1s;
 
@@ -220,8 +223,8 @@ export default {
 
     &__image {
       display: block;
-      width: 100%;
-      height: 100%;
+      width: var(--scene-size);
+      height: var(--scene-size);
     }
 
     &__title {
