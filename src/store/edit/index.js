@@ -25,7 +25,8 @@ export default {
       vipInfo: false,
       restrictView: false,
     },
-    panoinfo: {},
+
+    panoInfo: {},
   },
 
   modules: {
@@ -56,4 +57,11 @@ export default {
       state.panoinfo = panoinfo
     },
   },
+
+  getters: {
+    isVip(state, getters, { userInfo }) {
+      return userInfo.is_vip || state.panoInfo.is_vip
+    },
+  },
+
 }

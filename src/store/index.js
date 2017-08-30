@@ -15,12 +15,6 @@ export default new Vuex.Store({
     userInfo: {},
   },
 
-  getters: {
-    isVip(state) {
-      return state.userInfo.is_vip
-    },
-  },
-
   modules: {
     work,
     message,

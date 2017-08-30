@@ -8,8 +8,8 @@
       <span>Hi，<em>{{ userInfo.nickname }}</em></span>
       <span v-if="userInfo.is_certificate" class="app-user__badge">个人认证</span>
       <router-link to="/user-client/certificate" v-else class="app-user__badge app-user__badge--gray">未认证</router-link>
-      <span :class="{'app-user__vip': isVip}">
-        <i v-if="isVip" class="iconfont">&#xe6b7;</i>
+      <span :class="{'app-user__vip': userInfo.is_vip}">
+        <i v-if="userInfo.is_vip" class="iconfont">&#xe6b7;</i>
         {{ userInfo.vip_name }}
       </span>
     </div>
@@ -28,14 +28,13 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'app-user',
 
   computed: {
     ...mapState(['userInfo']),
-    ...mapGetters(['isVip']),
   },
 
   methods: {

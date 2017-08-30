@@ -65,7 +65,7 @@ export default {
 
   computed: {
     ...mapState({
-      pano: state => state.edit.panoinfo,
+      pano: state => state.edit.panoInfo,
       active: state => state.edit.active,
     }),
   },
