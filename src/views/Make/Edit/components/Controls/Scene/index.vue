@@ -206,7 +206,7 @@ export default {
     }
 
     &--active {
-      outline: 2px solid #ffc000;
+      box-shadow: 0 0 0 2px #ffc000;
     }
 
     & + li {
