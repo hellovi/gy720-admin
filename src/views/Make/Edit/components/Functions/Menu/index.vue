@@ -280,7 +280,6 @@ export default {
 
     // 打开图文信息
     openImagetext() {
-      // console.log('打开图文信息')
       this.openMaterModal({ type: 'infos', source: 'menu' })
     },
 
