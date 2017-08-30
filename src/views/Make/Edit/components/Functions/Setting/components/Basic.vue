@@ -17,7 +17,7 @@
       </div>
 
       <div class="setting-img">
-        <h5 class="setting-img__title vip">开场提示</h5>
+        <h5 class="setting-img__title edit-setting__vip">开场提示</h5>
         <img class="setting-img__img" :src="require('@/assets/help.png')" alt="开场提示">
         <div class="setting-img__desc">商业功能，可自定义更换图片，支持JPG、PNG格式上传</div>
         <div class="setting-img__button">
@@ -43,16 +43,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="作品名称" label-width="5em">
-        <div class="description">
-          <el-input type="textarea" :rows="3" placeholder="作品简介（1000个字符以内）"></el-input>
-          <div>免费版功能，可对整个全景作品添加介绍信息，非单个场景的简介</div>
-        </div>
+        <el-input type="textarea" :rows="3" placeholder="作品简介（1000个字符以内）"></el-input>
+        <div class="edit-setting__tip">商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现</div>
       </el-form-item>
       <el-form-item label="滚动文字" label-width="5em">
-        <div class="description">
-          <el-input class="vip" type="textarea" :rows="3" placeholder="滚动文字（500个字符以内）"></el-input>
-          <div>商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现</div>
-        </div>
+        <el-input class="edit-setting__vip" type="textarea" :rows="3" placeholder="滚动文字（500个字符以内）"></el-input>
+        <div class="edit-setting__tip">商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现</div>
       </el-form-item>
     </el-col>
   </el-row>

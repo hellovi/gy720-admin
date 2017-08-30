@@ -16,15 +16,14 @@
         </div>
       </div>
     </el-col>
+
     <el-col :span="14" :offset="2">
       <el-form-item label="场景名称" label-width="5em">
           <el-input placeholder="请输入场景名称"></el-input>
       </el-form-item>
       <el-form-item label="场景介绍" label-width="5em">
-        <div class="description">
-          <el-input type="textarea" :rows="6" placeholder="请输入场景介绍"></el-input>
-          <div>免费版功能，可对该场景添加相关的文字介绍，添加后文字介绍出现在左侧的菜单中，与场景切换实时同步</div>
-        </div>
+        <el-input type="textarea" :rows="6" placeholder="请输入场景介绍"></el-input>
+        <div class="edit-setting__tip">免费版功能，可对该场景添加相关的文字介绍，添加后文字介绍出现在左侧的菜单中，与场景切换实时同步</div>
       </el-form-item>
     </el-col>
   </el-row>

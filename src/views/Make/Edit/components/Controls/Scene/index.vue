@@ -26,7 +26,7 @@
 
     <!-- 场景设置弹框 -->
     <el-dialog :visible.sync="edit" title="场景设置" size="large">
-      <nav class="edit-setting-nav">
+      <nav class="edit-setting__nav">
         <ul class="list clearfix">
           <li
             v-for="(tab, index) in tabs"
@@ -36,7 +36,7 @@
           >{{ tab }}</li>
         </ul>
       </nav>
-      <el-form class="edit-setting-form">
+      <el-form class="edit-setting__form">
         <basic v-show="activeTab === 0"></basic>
         <special-effect v-show="activeTab === 1"></special-effect>
         <music v-show="activeTab === 2"></music>

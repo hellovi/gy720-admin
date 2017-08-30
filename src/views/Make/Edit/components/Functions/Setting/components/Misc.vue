@@ -28,9 +28,9 @@
         </el-select>
       </el-form-item>
       <el-form-item label="Loading提示文字" label-width="9em">
-        <div class="description" style="width: 196px;">
-          <el-input class="vip"></el-input>
-          <div>商业版功能，作者可自定义加载时显示的文字内容</div>
+        <div style="width: 196px;">
+          <el-input class="edit-setting__vip"></el-input>
+          <div class="edit-setting__tip">商业版功能，作者可自定义加载时显示的文字内容</div>
         </div>
       </el-form-item>
     </div>

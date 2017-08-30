@@ -1,7 +1,7 @@
 <template>
   <div class="edit-setting">
     <el-dialog title="设置" :visible="active.setting" size="large" :before-close="close">
-      <nav class="edit-setting-nav">
+      <nav class="edit-setting__nav">
         <ul class="list clearfix">
           <li
             v-for="(tab, index) in tabs"
@@ -11,7 +11,7 @@
           >{{ tab }}</li>
         </ul>
       </nav>
-      <el-form class="edit-setting-form">
+      <el-form class="edit-setting__form">
         <basic v-show="activeTab === 0"></basic>
         <wechat v-show="activeTab === 1"></wechat>
         <music v-show="activeTab === 2" :form="form"></music>
@@ -82,32 +82,34 @@ export default {
       height: 36px;
     }
   }
-}
 
-.edit-setting-nav {
-  border-bottom: 1px dotted var(--border-color);
-  margin-top: -20px;
+  &__nav {
+    border-bottom: 1px dotted var(--border-color);
+    margin-top: -20px;
 
-  & > ul {
-    & > li {
-      float: left;
-      width: 25%;
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      cursor: pointer;
+    & > ul {
+      & > li {
+        float: left;
+        width: 25%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        cursor: pointer;
 
-      &.active {
-        color: var(--color-primary);
+        &.active {
+          color: var(--color-primary);
+        }
       }
     }
   }
-}
 
-.edit-setting-form {
-  padding: 20px 50px;
+  &__form {
+    padding: 20px 50px;
+  }
 
-  .vip {
+  &__vip {
+    position: relative;
+
     &::before {
       content: "VIP";
       position: absolute;
@@ -121,18 +123,11 @@ export default {
     }
   }
 
-  .description {
-    & > .el-input,
-    & > .el-textarea {
-      position: relative;
-      margin-bottom: 5px;
-    }
-
-    & > div {
-      color: var(--gray);
-      font-size: 12px;
-      line-height: 1.4;
-    }
+  &__tip {
+    margin-top: 6px;
+    color: var(--gray);
+    font-size: 12px;
+    line-height: 1.4;
   }
 }
 

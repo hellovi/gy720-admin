@@ -7,7 +7,7 @@
           <img class="setting-img__img" src="#" alt="补天图片">
         </div>
       </div>
-      <div class="float-left description">
+      <div class="float-left">
         <el-button type="primary">选择图片</el-button>
         <el-form-item label="应用到其它场景" label-width="8em">
           <el-checkbox-group>
@@ -15,7 +15,7 @@
             <el-checkbox label="所有场景" name="type"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <div style="margin-top: -20px;">免费版功能，遮盖场景天花板、广告宣传等用途</div>
+        <div class="edit-setting__tip">免费版功能，遮盖场景天花板、广告宣传等用途</div>
       </div>
     </section>
 
@@ -26,7 +26,7 @@
           <img class="setting-img__img" src="#" alt="补地图片">
         </div>
       </div>
-      <div class="float-left description">
+      <div class="float-left">
         <el-button type="primary">选择图片</el-button>
         <el-form-item label="应用到其它场景" label-width="8em">
           <el-checkbox-group>
@@ -34,7 +34,7 @@
             <el-checkbox label="所有场景" name="type"></el-checkbox>
           </el-checkbox-group>
         </el-form-item>
-        <div style="margin-top: -20px;">免费版功能，遮盖场景天花板、广告宣传等用途</div>
+        <div class="edit-setting__tip">免费版功能，遮盖场景天花板、广告宣传等用途</div>
       </div>
     </section>
   </div>
