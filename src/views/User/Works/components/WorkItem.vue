@@ -22,7 +22,7 @@
     <div class="workitem__info">
       <!-- 第一行 -->
       <div class="workitem__info-name">
-        <span v-if="isOwnWork"
+        <span v-if="item.is_vip"
           class="workitem__info-name--isvip"
         >
           商业作品
@@ -134,11 +134,6 @@ export default {
     // 作品封面在七牛云地址
     workAvatarPath() {
       return this.$url.static(this.item.thumb)
-    },
-
-    // 判断是否购买作品
-    isOwnWork() {
-      return this.item.pay_name === '20'
     },
   },
 
