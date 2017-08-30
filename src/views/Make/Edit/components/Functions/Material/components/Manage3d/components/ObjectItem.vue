@@ -11,7 +11,7 @@
           <el-button size="mini" type="primary">管理图片</el-button>
           <el-button size="mini" @click="onEditWork">修改</el-button>
           <el-button size="mini">预览</el-button>
-          <el-button type="warning" size="mini">删除</el-button>
+          <el-button type="warning" size="mini" @click.stop="onDeleteWork">删除</el-button>
         </el-col>
       </el-row>
       <el-row>
@@ -39,6 +39,10 @@ export default {
   methods: {
     onEditWork() {
       this.$emit('editWork', this.item.id)
+    },
+
+    onDeleteWork() {
+      this.$emit('deleteItem', 'work', this.item.id)
     },
   },
 }

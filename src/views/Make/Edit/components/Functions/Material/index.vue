@@ -36,10 +36,12 @@
       v-model="manageModel"
       :cate-list="cateList"
       :obj-list="objList"
+      :current-cate="currentCate"
       @createCate="onCreateCate"
       @createWork="onCreateWork"
       @editWork="onEditWork"
-      @deleteCate="onDeleteCate"
+      @deleteItem="onDelete"
+      @changeCate="onChangeCate"
     >
     </manage-object>
   </div>
@@ -82,12 +84,13 @@ export default {
         { type: 'thumbs', id: 5, label: '缩略图', comp: 'materialImages' },
         { type: 'infos', id: 10, label: '图文信息', comp: 'materialImageText' },
         { type: 'objects', id: 11, label: '物品3D', comp: 'materialObject3D' },
-        { type: 'audios', id: 8, label: '音频', comp: '' },
+        { type: 'audios', id: 9, label: '音频', comp: 'materialImages' },
         { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
       ],
       cateList: [], // 物品3D分类
       objList: { data: [] },
       manageModel: false,
+      currentCate: 1,
     }
   },
 
@@ -129,6 +132,12 @@ export default {
         .then((data) => { this.objList = data })
     },
 
+    onChangeCate(id) {
+      this.currentCate = id
+      Ajax.getWorklist({ cate_id: id })
+        .then((data) => { this.objList = data })
+    },
+
     onCreateCate(cate) {
       this.cateList.push(cate)
     },
@@ -148,8 +157,12 @@ export default {
       // })
     },
 
-    onDeleteCate(cateId) {
-      this.cateList = this.cateList.filter(cate => cate.id !== cateId)
+    onDelete(type, id) {
+      if (type === 'cate') {
+        this.cateList = this.cateList.filter(cate => cate.id !== id)
+      } else {
+        this.objList.data = this.objList.data.filter(cate => cate.id !== id)
+      }
     },
   },
 
@@ -189,6 +202,44 @@ export default {
   &__button--active {
     color: var(--color-primary);
     border-color: var(--color-primary);
+  }
+}
+
+.edit-functions__material {
+  &__wrap {
+    .el-card {
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    .el-col {
+      margin-bottom: 10px;
+    }
+
+    .bottom {
+      position: relative;
+
+      & > h6 {
+        font-size: 12px;
+        margin: 10px auto 10px;
+      }
+    }
+  }
+
+  &__image {
+    max-height: 40px;
+  }
+
+  &__upload {
+    margin-top: 20px;
+
+    .el-button {
+      margin-right: 10px;
+    }
+
+    & > span {
+      color: var(--gray);
+    }
   }
 }
 </style>

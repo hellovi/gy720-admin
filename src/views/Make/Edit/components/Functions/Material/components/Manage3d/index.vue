@@ -26,7 +26,7 @@
               v-for="cate in cateList" :key="cate.id"
               :item="cate"
               :active="cate.id === choosedCateId"
-              @deleteCate="onDeleteCate"
+              @deleteItem="onDelete"
               @chooseCate="onChooseCate"
             >
             </v-cate-item>
@@ -40,6 +40,7 @@
               v-for="obj in objList.data" :key="obj.id"
               :item="obj"
               @editWork="onEditWork"
+              @deleteItem="onDelete"
             >
             </v-obj-item>
         </section>
@@ -184,6 +185,10 @@ export default {
       type: Object,
       required: true,
     },
+    currentCate: {
+      type: Number,
+      required: true,
+    },
   },
 
   data() {
@@ -258,10 +263,6 @@ export default {
           ],
         },
       },
-      cateItems: [], // 分类
-      currentCateId: null, // 当前选中的分类
-      removeId: -1, // 要删除的分类的id
-      items: [], // 物品
     }
   },
 
@@ -280,9 +281,16 @@ export default {
     },
   },
 
+  watch: {
+    currentCate(val) {
+      this.work.info.source_rotate_category_id = val
+    },
+  },
+
   methods: {
     onChooseCate(cateId) {
       this.choosedCateId = cateId
+      this.$emit('changeCate', cateId)
     },
     // 首字母大写
     firstUpperCase(str) {
@@ -297,15 +305,8 @@ export default {
       this[type].modal.tag = false
       if (!this[type].modal.confirmLoading) {
         this[type].info = defaultInfo[type]
+        // this.$refs[`${type}Info`].resetFields()
         this[type].editId = -1
-        // if (this[type].editId > 0) {
-        //   // 修改(要重置到默认状态)
-        //   this[type].info = defaultInfo[type]
-        //   this[type].editId = -1
-        // } else {
-        //   // 新增
-        //   this.$refs[`${type}Info`].resetFields()
-        // }
       }
     },
     // 重置弹窗
@@ -365,27 +366,30 @@ export default {
       this.onCreate('work')
       this.work.editId = workId
     },
-    // 删除分类
-    onDeleteCate(cateId) {
+    // 删除分类/作品
+    onDelete(type, id) {
+      const upperType = this.firstUpperCase(type)
+      const title = type === 'cate' ? '分类' : '作品'
       const h = this.$createElement
       const message = h(
         'div',
         [
           h('p', '确定要删除吗？'),
-          h('p', '此操作将永久删除该分类，是否继续'),
+          h('p', `此操作将永久删除该${title}，是否继续`),
         ],
       )
 
       this.onDeleteItem({
-        title: '删除分类',
+        title: `删除${title}`,
         message,
-        itemId: cateId,
-        ajax: Ajax.deleteCate,
+        itemId: id,
+        ajax: Ajax[`delete${upperType}`],
         success: () => {
-          this.$emit('deleteCate', cateId)
+          this.$emit('deleteItem', type, id)
         },
       })
     },
+
   },
 
 }

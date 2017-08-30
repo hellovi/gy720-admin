@@ -53,7 +53,7 @@ export default {
     },
 
     onDeleteCate() {
-      this.$emit('deleteCate', this.item.id)
+      this.$emit('deleteItem', 'cate', this.item.id)
     },
   },
 }
