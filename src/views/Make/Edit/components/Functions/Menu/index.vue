@@ -76,11 +76,13 @@
         prop="is_tips"
       >
         <el-switch
+          class="info__tips-switch"
           on-text="开" off-text="关"
           :on-value="1" :off-value="0"
-          v-model="menuInfo.is_tips" :disabled="false"
+          v-model="menuInfo.is_tips" :disabled="!hasTipsPrivilege"
+          @click.native="openTipsPrivilege"
         ></el-switch>
-        <span class="info__tip-doc">
+        <span class="info__tips-doc">
           （菜单未阅读，显示高亮红点提示）
           <em>VIP</em>
         </span>
@@ -236,6 +238,10 @@ export default {
       // 图文数据
       imageText: state => state.edit.material.materialExport.menu,
     }),
+
+    hasTipsPrivilege() {
+      return this.$store.getters.isVip
+    },
   },
 
   watch: {
@@ -246,11 +252,14 @@ export default {
 
   filters: {
     adjustDataDisplay(val) {
-      const index = val.indexOf('|')
-      const result = index === -1
-        ? ''
-        : val.slice(index + 1)
-      return result
+      if (typeof val === 'string') {
+        const index = val.indexOf('|')
+        const result = index === -1
+          ? ''
+          : val.slice(index + 1)
+        return result
+      }
+      return ''
     },
   },
 
@@ -282,6 +291,12 @@ export default {
         this.menuInfo.data = `${data.id}|${data.title}`
         this.resetMaterExport('menu')
       }
+    },
+
+    // 购买tips服务
+    openTipsPrivilege() {
+      if (this.hasTipsPrivilege) return
+      this.openModal('vipInfo')
     },
 
     /* 地址导航 */
@@ -442,7 +457,14 @@ export default {
       }
     }
 
-    &__tip {
+    &__tips {
+
+      &-switch {
+
+        & .el-switch__label {
+          cursor: pointer;
+        }
+      }
 
       &-doc {
         color: var(--gray);
