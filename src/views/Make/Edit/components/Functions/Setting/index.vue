@@ -30,6 +30,7 @@
  * @version 2017-08-25
  */
 import { mapState } from 'vuex'
+import errorHandle from '@/mixins/errorHandle'
 import modal from '../../../mixins/modal'
 import Basic from './components/Basic'
 import Wechat from './components/Wechat'
@@ -39,7 +40,7 @@ import Misc from './components/Misc'
 export default {
   name: 'edit-functions-setting',
 
-  mixins: [modal],
+  mixins: [errorHandle, modal],
 
   components: {
     Basic,
@@ -116,20 +117,7 @@ export default {
           this.$message.success('操作成功')
           this.closeModal('setting')
         })
-        .catch(({ status: { reason } }) => {
-          const h = this.$createElement
-          this.$msgbox({
-            type: 'error',
-            customClass: 'error-message-box',
-            title: '提交错误',
-            message: h(
-              'div',
-              null,
-              Object.keys(reason).map((key, index) => h('p', null, `${index + 1}.${reason[key]}`)),
-            ),
-            confirmButtonText: '确定',
-          })
-        })
+        .catch(({ status: { reason } }) => this.showError(reason))
     },
   },
 }
