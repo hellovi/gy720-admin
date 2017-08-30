@@ -2,90 +2,307 @@
   <el-dialog
     :visible.sync="show"
     :modal="false"
+    top="0%"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    @open="getInfo"
+    @close="resetFields"
+    class="image-text-dialog"
   >
-    <el-input placeholder="请输入标题"></el-input>
-    <app-ueditor
-      :value="detail.content"
-      @contentChange="contentChange"
-      @ueReady="ueRready"
-    ></app-ueditor>
-    <!-- <form-group class="imgtxt__footer" label="链接按钮" type="checkbox" name="btnswitch" v-model="btn_open"></form-group>
-    <form-group class="imgtxt__footer btnname" label="按钮名称" name="btnname" placeholder="例如：点击购买" v-model="detail.btn_title"></form-group>
-    <form-group class="imgtxt__footer linkaddr" label="链接地址" name="linkaddr" placeholder="例如：http://abc.com" v-model="detail.btn_url"></form-group> -->
-    <el-button type="primary">提交</el-button>
+    <app-form-alert
+      :contents="msgAlert"
+    ></app-form-alert>
+    <el-form
+      :model="detail"
+      :ref="formRef"
+      :rules="rules"
+    >
+      <el-form-item prop="title">
+        <el-input placeholder="请输入标题" v-model="detail.title"></el-input>
+      </el-form-item>
+      <el-form-item prop="content">
+        <app-ueditor
+          v-model="detail.content"
+          @ready="ueditorReady"
+          style="min-height: 280px"
+        ></app-ueditor>
+      </el-form-item>
+      <el-form-item>
+        <el-row class="image-text-dialog__btn">
+          <el-col :span="3">
+            链接按钮
+          </el-col>
+          <el-col :span="3">
+            <el-form-item prop="btn_show">
+              <el-switch
+                v-model="detail.btn_show"
+                on-text="开"
+                off-text="关"
+                :on-value="20"
+                :off-value="10"
+              ></el-switch>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            按钮名称
+          </el-col>
+          <el-col :span="5">
+            <el-form-item prop="btn_title">
+              <el-input
+                placeholder="例如:点击购买"
+                v-model="detail.btn_title"
+                size="small"
+                :disabled="disabled"
+                @change="validChange('btn_title')"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="3">
+            链接地址
+          </el-col>
+          <el-col :span="7">
+            <el-form-item prop="btn_url">
+              <el-input
+                placeholder="例如:http://gy720.com"
+                v-model="detail.btn_url"
+                size="small"
+                :disabled="disabled"
+                @change="validChange('btn_url')"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form-item>
+    </el-form>
+    <el-row class="image-text-dialog__sub">
+      <el-button type="primary" :loading="formLoading" @click="beforeSubmit">提交</el-button>
+      <el-button @click="resetForm">重置</el-button>
+    </el-row>
   </el-dialog>
 </template>
 
 <script>
 
-export default {
-  components: {
-    AppUeditor: () => System.import('@/components/AppUeditor'),
-  },
-  props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    info: {
-      type: Object,
-    },
-  },
+  const defInfo = {
+    id: null,
+    title: null,
+    btn_title: null,
+    btn_url: null,
+    btn_show: 10,
+    content: null,
+    created_at: null,
+  }
 
-  data: () => ({
-    detail: {
-      title: '',
-      btn_title: '',
-      btn_url: '',
-      btn_show: '20',
-      content: '',
+  export default {
+    components: {
+      AppUeditor: () => System.import('@/components/AppUeditor'),
     },
-    editor: null,
-    btn_open: false,
-    show: this.visible,
-  }),
-
-  watch: {
-    visible(val) {
-      this.show = val
-    },
-    show(val) {
-      this.$emit('input', val)
-      this.$emit('update:visible', val)
-    },
-  },
-
-  methods: {
-    ueRready() {
-      window.console.log('ueReady')
+    props: {
+      visible: {
+        type: Boolean,
+        default: false,
+      },
+      id: {
+        type: Number,
+        default: null,
+      },
+      type: {
+        type: String,
+        default: 'add',
+      },
     },
 
-    contentChange(change) {
-      window.console.log(change)
-      this.detail.content = change.content
+    data: () => ({
+      detail: {
+        ...defInfo,
+      },
+      msgAlert: {},
+      formLoading: false,
+      formRef: 'form',
+      show: this.visible,
+      info: {},
+    }),
+
+    computed: {
+      disabled() {
+        return this.detail.btn_show === 10
+      },
+      rules() {
+        let rules
+        const defRules = {
+          title: [
+            { required: true, message: '请输入标题' },
+            { type: 'string', max: 30, message: '标题不能超过30个字符' },
+          ],
+          content: [
+            { required: true, message: '请输入内容', trigger: 'blur' },
+            { type: 'string', max: 300000, message: '内容不能超过300000个字符' },
+          ],
+        }
+        if (this.detail.btn_show === 20) {
+          rules = {
+            ...defRules,
+            btn_title: [
+              { required: true, message: '请输入名称' },
+              { type: 'string', max: 10, message: '不能超出10个字符' },
+            ],
+            btn_url: [
+              { required: true, message: '请输入链接地址' },
+              { type: 'url', message: '链接地址格式有误' },
+              { type: 'string', max: 300, message: '不能超出300个字符' },
+            ],
+          }
+        } else {
+          this.resetField(['btn_title', 'btn_url'])
+          rules = {
+            ...defRules,
+          }
+        }
+
+        return rules
+      },
     },
 
-    submit() {
-      window.console.log('submit')
-      this.detail.btn_show = this.btn_open ? '10' : '20'
-      // ajax.post('/make/article/add', this.detail)
-      //   .then(() => this.$emit('submit'))
-    },
-  },
+    watch: {
+      visible(val) {
+        this.show = val
+      },
 
-  mounted() {
-    this.detail = { ...this.detail, ...this.info }
-    this.btn_open = this.detail.btn_show === '10'
-  },
-}
+      show(val) {
+        this.$emit('input', val)
+        this.$emit('update:visible', val)
+      },
+    },
+
+    methods: {
+      // 监听指定字段值触发校验
+      validChange(name) {
+        this.$refs[this.formRef].validateField(name)
+      },
+
+      // 编辑时获取初始值
+      getInfo() {
+        this.$nextTick(() => {
+          if (this.id) {
+            this.$http.get(`/user/sourcearticle/${this.id}`)
+              .then((res) => {
+                this.info = { ...res.result }
+                this.detail = { ...this.info }
+              })
+          }
+        })
+      },
+
+      // 富文本编辑器事件监听
+      ueditorReady(editor) {
+        editor.addListener('blur', () => {
+          this.$refs[this.formRef].validateField('content')
+        })
+      },
+
+      // 指定字段重置
+      resetField(name = []) {
+        this.$nextTick(() => {
+          if (Object.keys(this.$refs).length) {
+            name.map(val => this.$refs[this.formRef]
+              .fields.find(item => item.prop === val).resetField())
+          }
+        })
+      },
+
+      // 重置表单为默认值
+      resetFields() {
+        this.show = false
+        // 赋值默认值
+        this.detail = { ...defInfo }
+        this.$nextTick(() => {
+          this.formLoading = false
+          this.$refs[this.formRef].resetFields()
+          this.$emit('close')
+        })
+      },
+
+      // 重置表单为初始值
+      resetForm() {
+        if (this.type === 'add') {
+          this.$refs[this.formRef].resetFields()
+        } else {
+          this.detail = { ...this.info }
+        }
+      },
+
+      // 表单提示前校验
+      beforeSubmit() {
+        this.$refs[this.formRef].validate((valid) => {
+          if (valid) {
+            this.msgAlert = {}
+            this.formLoading = true
+            if (this.detail.id) {
+              return this.updateForm()
+            }
+            return this.submitForm()
+          }
+          return false
+        })
+      },
+
+      // 表单提交-新增
+      submitForm() {
+        this.$http.post('/user/sourcearticle', this.detail)
+          .then(() => {
+            this.$message.success('新增成功！')
+            this.$emit('update')
+            this.resetFields()
+          })
+          .catch((errors) => {
+            this.errorHandler(errors)
+          })
+      },
+
+      // 表单提交-更新
+      updateForm() {
+        this.$http.put(`/user/sourcearticle/${this.detail.id}`, this.detail)
+          .then(() => {
+            this.$message.success('更新成功！')
+            this.$emit('update')
+            this.resetFields()
+          })
+          .catch((errors) => {
+            this.errorHandler(errors)
+          })
+      },
+
+      // 表单报错处理
+      errorHandler(errors) {
+        this.msgAlert = errors
+        this.formLoading = false
+      },
+
+    },
+  }
 </script>
 
 <style lang="postcss">
-  #edui_fixedlayer {
-     z-index: 9999!important;
-  }
-
-  .edui-default .edui-dialog {
-    z-index: 9999!important;
+  .image-text-dialog{
+    .el-form-item__content {
+      line-height: inherit;
+    }
+    .is-error {
+      .edui-editor {
+        border-color: #ff4949;
+      }
+    }
+    &__btn {
+      line-height: 30px;
+      .el-input {
+        padding-right: 8px;
+      }
+    }
+    &__sub {
+      text-align: center;
+      .el-button {
+        width: 100px;
+      }
+    }
   }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="material-image-text">
     <el-table
-      :data="listData"
+      :data="listData.data"
       style="width:100%"
     >
       <el-table-column
@@ -23,30 +23,47 @@
         <template scope="scope">
           <el-button
             size="small"
-            type="warning"
+            type="info"
             @click="selectMater(listData[0].id, listData[0].title)"
           >选择</el-button>
           <el-button
             size="small"
-            type="info"
+            type="success"
           >预览</el-button>
           <el-button
             size="small"
-            type="success"
+            type="warning"
+            @click="editInfo(scope)"
           >修改</el-button>
           <el-button
             size="small"
             type="danger"
+            @click="deleteData(scope.row)"
           >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      layout="prev, pager, next"
+      :page-size="perPage"
+      :total="listData.total"
+      v-if="listData.total"
+    >
+    </el-pagination>
     <el-row class="material-image-text__tools">
       <el-button type="primary" @click="addImageText">添加图文信息</el-button>
     </el-row>
+    <!--添加|修改窗口-->
     <image-text-dialog
       :visible.sync="visible"
+      :id="currentEditId"
+      :type="dialogType"
+      @close="dialogClose"
+      @update="dataUpdate"
     ></image-text-dialog>
+    <!--预览窗口-->
+    <image-text-preview:visible.sync="preShow"
+    ></image-text-preview>
   </div>
 </template>
 
@@ -66,27 +83,94 @@
     components: { ImageTextDialog },
 
     data: () => ({
-      listData: [
-        {
-          id: 1,
-          title: 'test',
-          created_at: '2017-08-25 16:39:05',
-        },
-      ],
+      listData: {},
+      currentEditId: null,
       visible: false,
+      dialogType: null,
+      perPage: 8,
+      preShow: false,
     }),
 
     methods: {
-      addImageText() {
-        this.visible = true
+      // 获取列表数据
+      getListData(page = 1) {
+        this.$http.get(`/user/sourcearticle?page=${page}&per_page=${this.perPage}`)
+          .then((res) => {
+            this.listData = res.result
+          })
       },
+
+      // 添加列表数据
+      addImageText() {
+        this.openDialog('add')
+      },
+
+      // 编辑列表数据
+      editInfo(data) {
+        this.currentEditId = data.row.id
+        this.openDialog('edit')
+      },
+
+      // 选择数据
       selectMater(id, title) {
         this.$store.commit(EDIT.MATERIAL.SELECT, { id, title })
       },
+
+      // 打开新增|修改窗口
+      openDialog(type = 'add') {
+        this.visible = true
+        this.dialogType = type
+      },
+
+      // 关闭修改窗口回调
+      dialogClose() {
+        this.currentEditId = null
+      },
+
+      // 修改列表回调
+      dataUpdate() {
+        this.getListData()
+      },
+
+      // 删除数据
+      deleteData(item) {
+        this.$confirm('确认删除该数据, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(() => {
+          this.$http.delete(`/user/sourcearticle/${item.id}`)
+            .then(() => {
+              this.$message({
+                type: 'success',
+                message: '删除成功!',
+                onClose: () => {
+                  this.getListData()
+                },
+              })
+            })
+            .catch((errors) => {
+              this.$notify.error({
+                title: '删除出错!',
+                message: errors.status.reason,
+              })
+            })
+        })
+      },
+
+      // 打开预览窗口
+      openPreView(item) {
+        console.log(item)
+      },
+
     },
 
     mounted() {
 
+    },
+
+    created() {
+      this.getListData()
     },
   }
 </script>
@@ -95,9 +179,13 @@
   .material-image-text{
     min-height: 400px;
     max-height: 500px;
+    padding-bottom: 36px;
     position: relative;
     .el-table {
       min-height: 350px;
+    }
+    .el-pagination {
+      margin-top: 10px;
     }
     &__tools {
       position: absolute;
