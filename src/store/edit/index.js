@@ -39,8 +39,8 @@ export default {
 
   actions: {
     [EDIT.GET_PANOINFO]({ commit }, pano_id) {
-      Http.post('/make/pano/info', { pano_id })
-        .then(res => commit(EDIT.GET_PANOINFO, res.result))
+      Http.get(`/user/pubset/get?pano_id=${pano_id}`)
+        .then(({ result }) => commit(EDIT.GET_PANOINFO, result))
     },
   },
 
@@ -53,8 +53,8 @@ export default {
       state.active[name] = false
     },
 
-    [EDIT.GET_PANOINFO](state, panoinfo) {
-      state.panoinfo = panoinfo
+    [EDIT.GET_PANOINFO](state, panoInfo) {
+      state.panoInfo = panoInfo
     },
   },
 
@@ -63,5 +63,4 @@ export default {
       return userInfo.is_vip || state.panoInfo.is_vip
     },
   },
-
 }
