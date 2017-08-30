@@ -99,11 +99,13 @@ export default {
   &__message {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 0;
     z-index: 2;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
+    width: 100%;
     font-size: 14px;
     color: #fff;
+    text-align: center;
   }
 
   &__footer {

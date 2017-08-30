@@ -73,6 +73,22 @@ export default {
       ]
     },
 
+    /**
+     * 处理上传错误
+     * 若上传出错，提示错误，并在2两秒后移除该文件
+     * @param {number} id - 出错文件的id
+     * @param {string} message - 粗错信息
+     */
+    handleUploadError(id, message) {
+      this.updateFile(id, {
+        percent: 100,
+        message,
+      })
+      setTimeout(() => {
+        this.files = this.files.filter(file => file.id !== id)
+      }, 2000)
+    },
+
     initNormalUpload(browse_button) {
       const uploader = new window.plupload.Uploader({
         ...config,
@@ -128,16 +144,20 @@ export default {
           },
 
           FileUploaded: (up, file, res) => {
-            const { result } = JSON.parse(res.response)
-            const { preview_image, thumb, source_scene_id } = result
+            const { result, status: { code, reason } } = JSON.parse(res.response)
 
-            this.updateFile(file.id, {
-              percent: 100,
-              source_scene_id,
-              message: '正在排队中...',
-              preview: this.$url.host(preview_image),
-              thumb,
-            })
+            if (code === 0) {
+              this.handleUploadError(file.id, reason)
+            } else {
+              const { preview_image, thumb, source_scene_id } = result
+              this.updateFile(file.id, {
+                percent: 100,
+                source_scene_id,
+                message: '正在排队中...',
+                preview: this.$url.host(preview_image),
+                thumb,
+              })
+            }
           },
         },
       })
@@ -192,19 +212,23 @@ export default {
           FileUploaded: (up, file, res) => {
             // 后端返回的response前会多出一串“stitching successfully ”，必须手动处理掉
             const response = res.response.replace(/[^{]*(?=\{)/, '')
-            const { result } = JSON.parse(response)
-            const { fisheye_gid, thumb, preview_image, source_scene_id } = result
+            const { result, status: { code, reason } } = JSON.parse(response)
 
-            this.fisheye_gid = fisheye_gid
+            if (code === 0) {
+              this.handleUploadError(file.id, reason)
+            } else {
+              const { fisheye_gid, thumb, preview_image, source_scene_id } = result
+              this.fisheye_gid = fisheye_gid
 
-            if (preview_image) {
-              this.updateFile(file.group, {
-                percent: 100,
-                source_scene_id,
-                message: '正在排队中...',
-                preview: this.$url.host(preview_image),
-                thumb,
-              })
+              if (preview_image) {
+                this.updateFile(file.group, {
+                  percent: 100,
+                  source_scene_id,
+                  message: '正在排队中...',
+                  preview: this.$url.host(preview_image),
+                  thumb,
+                })
+              }
             }
           },
 
