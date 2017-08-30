@@ -79,6 +79,7 @@ export default {
 
     .el-button {
       width: 12em;
+      height: 36px;
     }
   }
 }

@@ -23,6 +23,29 @@
     <div class="edit-scene-upload tip tip--top" data-tip="上传场景">
       <div role="button" class="btn-add dash-box">+</div>
     </div>
+
+    <!-- 场景设置弹框 -->
+    <el-dialog :visible.sync="edit" title="场景设置" size="large">
+      <nav class="edit-setting-nav">
+        <ul class="list clearfix">
+          <li
+            v-for="(tab, index) in tabs"
+            :key="tab"
+            :class="{active: activeTab === index}"
+            @click="activeTab = index"
+          >{{ tab }}</li>
+        </ul>
+      </nav>
+      <el-form class="edit-setting-form">
+        <basic v-show="activeTab === 0"></basic>
+        <special-effect v-show="activeTab === 1"></special-effect>
+        <music v-show="activeTab === 2"></music>
+        <minor v-show="activeTab === 3"></minor>
+      </el-form>
+      <div slot="footer" class="edit-setting__footer">
+        <el-button type="primary">确定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -30,12 +53,17 @@
 /**
  * 高级编辑 - 场景
  * @author luminghuai
- * @version 2017-08-11
+ * @version 2017-08-30
+ * @description 场景设置弹框共用Setting模块的样式
  */
 
 import Draggable from 'vuedraggable'
-import modal from '../../mixins/modal'
-import EditTools from './EditTools'
+import modal from '../../../mixins/modal'
+import EditTools from '../EditTools'
+import Basic from './components/Basic'
+import SpecialEffect from './components/SpecialEffect'
+import Music from './components/Music'
+import Minor from './components/Minor'
 
 export default {
   name: 'edit-scene',
@@ -45,12 +73,20 @@ export default {
   components: {
     Draggable,
     EditTools,
+    Basic,
+    SpecialEffect,
+    Music,
+    Minor,
   },
 
   data() {
     return {
       current: 1,
       items: [1, 2, 3, 4, 5],
+
+      edit: false,
+      tabs: ['基本信息', '场景特效', '背景音乐', '功能微调'],
+      activeTab: 0,
     }
   },
 
