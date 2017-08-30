@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-functions__material__object">
+  <div class="edit-functions__material__wrap">
     <el-row :gutter="10" class="edit-functions__material__data"  v-loading="loading">
         <el-col :span="4" v-for="(item, index) in dataList" :key="item.id">
           <el-card :body-style="{ padding: '0px' }">
@@ -49,13 +49,18 @@ export default {
       return this.$store.state.edit.material.materialData[this.type].data
     },
 
+    params() {
+      // 这里需要加其他参数???
+      return '?'
+    },
+
   },
 
   methods: {
     initMaterial(page) {
       this.loading = true
       const params = page ? `${this.params}&page=${page}` : this.params
-      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, params)
+      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, { type: 'objects', params })
         .then(() => {
           this.loading = false
         })
@@ -63,19 +68,12 @@ export default {
   },
 
   created() {
-    // 初始化操作等接口确定
-    // this.initMaterial(1)
+    this.initMaterial(1)
   },
 
 }
 </script>
 
 <style lang="postcss">
-@import "vars.css";
 
-.edit-functions__material {
-  &__object {
-
-  }
-}
 </style>

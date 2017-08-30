@@ -109,7 +109,7 @@ export default {
     getPanos(page) {
       this.loading = true
       const params = page ? `${this.params}&page=${page}` : this.params
-      this.$store.dispatch(EDIT.MATERIAL.INIT.PANOS, params)
+      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, { type: 'panos', params })
         .then(() => {
           this.loading = false
         })
