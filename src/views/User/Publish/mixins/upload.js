@@ -38,6 +38,7 @@ export default {
     return {
       files: [], /** @type {File[]} */
       fisheye_gid: null,
+      timer: null, // 存放检查切图进度的定时器
     }
   },
 
