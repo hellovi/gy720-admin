@@ -13,7 +13,6 @@
           >
             <el-button type="primary" size="small">更换</el-button>
           </app-file-upload>
-
         </div>
       </div>
 
@@ -74,8 +73,6 @@ export default {
 
 <style lang="postcss">
 .edit-setting-basic {
-  padding: 0 50px;
-
   .el-select {
     width: 100%;
   }

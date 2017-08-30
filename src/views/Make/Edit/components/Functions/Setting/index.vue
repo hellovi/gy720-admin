@@ -104,7 +104,7 @@ export default {
 }
 
 .edit-setting-form {
-  padding-top: 20px;
+  padding: 20px 50px;
 
   .vip {
     &::before {

@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-setting-misc clearfix">
+  <div class="clearfix">
     <div class="float-left">
       <el-form-item label="初始场景动画效果" label-width="9em">
         <el-select>
@@ -60,11 +60,3 @@
     </div>
   </div>
 </template>
-
-<style lang="postcss">
-@import "vars.css";
-
-.edit-setting-misc {
-  padding: 0 50px;
-}
-</style>

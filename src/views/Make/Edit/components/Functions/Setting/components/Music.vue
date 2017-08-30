@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-setting-music">
+  <div>
     <el-form-item label="电脑版背景音乐默认开启" label-width="12em">
       <el-switch :value="form.test"></el-switch>
     </el-form-item>
@@ -28,9 +28,3 @@ export default {
   },
 }
 </script>
-
-<style lang="postcss">
-.edit-setting-music {
-  padding: 0 140px;
-}
-</style>

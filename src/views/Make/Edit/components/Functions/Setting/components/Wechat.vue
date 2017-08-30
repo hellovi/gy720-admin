@@ -1,5 +1,5 @@
 <template>
-  <el-row class="edit-setting-wechat">
+  <el-row>
     <el-col :span="8">
       <div class="setting-img">
         <h5 class="setting-img__title">朋友圈小图标</h5>
@@ -49,9 +49,3 @@ export default {
   },
 }
 </script>
-
-<style lang="postcss">
-.edit-setting-wechat {
-  padding: 0 50px;
-}
-</style>
