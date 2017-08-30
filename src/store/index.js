@@ -9,7 +9,6 @@ import point from './point'
 import purchase from './purchase'
 import edit from './edit'
 
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -59,12 +58,6 @@ export default new Vuex.Store({
     [GLOBAL.USER.INIT]({ commit }) {
       return Http.get('/user/info')
         .then(({ result }) => commit(GLOBAL.USER.INIT, result))
-    },
-  },
-
-  getters: {
-    isVip(state) {
-      return state.userInfo.is_vip
     },
   },
 })
