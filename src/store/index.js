@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import DefaultAvatar from '@/assets/default-avatar.jpg'
 import { Http } from '@/utils'
 import { GLOBAL } from './mutationTypes'
 import work from './work'
@@ -8,11 +9,14 @@ import point from './point'
 import purchase from './purchase'
 import edit from './edit'
 
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userInfo: {},
+    userInfo: {
+      avatar: DefaultAvatar,
+    },
   },
 
   modules: {
@@ -24,8 +28,16 @@ export default new Vuex.Store({
   },
 
   mutations: {
+    /**
+     * 设置用户信息
+     * 如果后端返回的信息中没有头像，必须使用默认头像
+     * 这个写法稍微有点不干净，但可以确保每个使用到头像的地方都正常工作，而不需要各个地方单独做这个逻辑判断
+     */
     [GLOBAL.USER.INIT](state, userInfo) {
-      state.userInfo = userInfo
+      state.userInfo = {
+        ...userInfo,
+        ...(userInfo.avatar ? {} : { avatar: DefaultAvatar }),
+      }
     },
 
     /**
@@ -47,6 +59,12 @@ export default new Vuex.Store({
     [GLOBAL.USER.INIT]({ commit }) {
       return Http.get('/user/info')
         .then(({ result }) => commit(GLOBAL.USER.INIT, result))
+    },
+  },
+
+  getters: {
+    isVip(state) {
+      return state.userInfo.is_vip
     },
   },
 })
