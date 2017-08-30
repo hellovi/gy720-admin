@@ -37,7 +37,7 @@
           当前：<span class="v-box__txt">{{ view.vlookat }}</span>
           <el-button
             type="primary"
-            :disabled="!isDefault('vlookatmax') || view.vlookat >= 0"
+            :disabled="!isDefault('vlookatmax') || view.vlookat < 0"
             @click="setView('vlookatmax', 'vlookat')"
           >设定</el-button>
         </el-col>
@@ -58,7 +58,7 @@
           当前：<span class="v-box__txt">{{ view.hlookat }}</span>
           <el-button
             type="primary"
-            :disabled="!isDefault('hlookatmin') || view.hlookat >= 0"
+            :disabled="!isDefault('hlookatmin') || view.hlookat > 0"
             @click="setView('hlookatmin', 'hlookat')"
           >设定</el-button>
         </div>
@@ -78,7 +78,7 @@
         <div class="bottom">
           <el-button
             type="primary"
-            :disabled="!isDefault('hlookatmax') || view.hlookat >= 0"
+            :disabled="!isDefault('hlookatmax') || view.hlookat <= 0"
             @click="setView('hlookatmax', 'hlookat')"
           >设定</el-button>
           当前：<span class="v-box__txt">{{ view.hlookat }}</span>
@@ -186,15 +186,15 @@ export default {
      * 获取fov，表示视角的深度
      */
     getFov() {
-      this.fov = Math.floor(krpano.get('view.fov'))
+      this.view.fov = Math.floor(krpano.get('view.fov'))
     },
 
     /**
      * 获取lookat，示视角的在横轴和纵轴上的位置
      */
     getLookat() {
-      this.hlookat = Math.floor(krpano.get('view.hlookat'))
-      this.vlookat = Math.floor(krpano.get('view.vlookat'))
+      this.view.hlookat = Math.floor(krpano.get('view.hlookat'))
+      this.view.vlookat = Math.floor(krpano.get('view.vlookat'))
     },
 
     /**
@@ -240,9 +240,16 @@ export default {
       })
     },
 
-    // 保存当前的视角限制
+    /**
+     * 保存当前的视角限制
+     */
     saveView() {
-      // TODO 最终视角数据提交后端
+      this.$http.post('/user/scene/defaultangle', {
+        ...this.view,
+        ...this.restrict,
+        pano_id: this.$route.query.pano_id,
+        id: '', // 暂缺获取场景id的接口
+      })
     },
 
     /**
@@ -256,9 +263,8 @@ export default {
 
   created() {
     this.timer = setInterval(() => {
-      // TODO 获取视角数据
-      // this.getFov()
-      // this.getLookat()
+      this.getFov()
+      this.getLookat()
     }, 300)
   },
 

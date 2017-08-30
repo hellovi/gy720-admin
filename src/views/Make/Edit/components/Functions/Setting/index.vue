@@ -12,13 +12,13 @@
         </ul>
       </nav>
       <el-form class="edit-setting__form">
-        <basic v-show="activeTab === 0"></basic>
-        <wechat v-show="activeTab === 1"></wechat>
+        <basic v-show="activeTab === 0" :form="form"></basic>
+        <wechat v-show="activeTab === 1" :form="form"></wechat>
         <music v-show="activeTab === 2" :form="form"></music>
-        <misc v-show="activeTab === 3"></misc>
+        <misc v-show="activeTab === 3" :form="form"></misc>
       </el-form>
       <div slot="footer" class="edit-setting__footer">
-        <el-button type="primary">确定</el-button>
+        <el-button type="primary" @click="submit">确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -29,6 +29,7 @@
  * 高级编辑 - 设置
  * @version 2017-08-25
  */
+import { mapState } from 'vuex'
 import modal from '../../../mixins/modal'
 import Basic from './components/Basic'
 import Wechat from './components/Wechat'
@@ -53,14 +54,82 @@ export default {
       activeTab: 0,
 
       form: {
-        test: true,
+        // 基本信息
+        name: '',
+        thumb: '',
+        privacy: 1, // 1公开,2加密
+        password: '',
+        is_show: 10, // 10是,20否
+        pano_remark: '',
+        scroll_text: '',
+        // 微信设置
+        wx_share_title: '',
+        wx_share_remark: '',
+        wx_friend_icon: null,
+        // 背景音乐
+        pc_bg_music: 1,
+        mobile_bg_music: 1,
+        bg_music_src: '',
+        bg_music_name: null, // 用处不明？？
+        // 功能微调
+        init_scene_anime: 1,
+        scene_change_type: 0,
+        auto_scene_time: 60,
+        auto_rotate_speed: 3,
+        loading_text: 'GY720.COM...',
+
+        show_scene_thumb: 1,
+        auto_rotate: 1,
+        pc_auto_scene: 0,
+        mobile_auto_scene: 0,
+        auto_mobile_gyro: 1,
+        show_hit_like: 1,
+        show_comment: 1,
       },
     }
+  },
+
+  computed: {
+    ...mapState({
+      panoInfo: state => state.edit.panoInfo,
+    }),
+  },
+
+  watch: {
+    panoInfo(val) {
+      const { isVip, company_name, ...others } = val
+      this.form = {
+        ...this.form,
+        ...others,
+      }
+    },
   },
 
   methods: {
     close() {
       this.closeModal('setting')
+    },
+
+    submit() {
+      this.$http.post('/user/pubset/update', this.form)
+        .then(() => {
+          this.$message.success('操作成功')
+          this.closeModal('setting')
+        })
+        .catch(({ status: { reason } }) => {
+          const h = this.$createElement
+          this.$msgbox({
+            type: 'error',
+            customClass: 'error-message-box',
+            title: '提交错误',
+            message: h(
+              'div',
+              null,
+              Object.keys(reason).map((key, index) => h('p', null, `${index + 1}.${reason[key]}`)),
+            ),
+            confirmButtonText: '确定',
+          })
+        })
     },
   },
 }
@@ -71,7 +140,7 @@ export default {
 
 .edit-setting {
   .el-dialog__body {
-    height: 580px;
+    height: 620px;
   }
 
   &__footer {
@@ -128,6 +197,10 @@ export default {
     color: var(--gray);
     font-size: 12px;
     line-height: 1.4;
+
+    .el-form-item + & {
+      margin-top: -20px;
+    }
   }
 }
 

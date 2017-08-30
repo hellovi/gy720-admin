@@ -3,7 +3,7 @@
     <el-col :span="8">
       <div class="setting-img">
         <h5 class="setting-img__title">朋友圈小图标</h5>
-        <img class="setting-img__img" :src="iconUrl" alt="朋友圈小图标">
+        <img class="setting-img__img" :src="form.wx_friend_icon || iconUrl" alt="朋友圈小图标">
         <div class="setting-img__button">
           <el-button
             type="primary"
@@ -15,10 +15,18 @@
     </el-col>
     <el-col :span="16">
       <el-form-item label="分享标题" label-width="6em">
-        <el-input placeholder="微信分享单独设置的标题"></el-input>
+        <el-input
+          placeholder="微信分享单独设置的标题"
+          v-model="form.wx_share_title"
+        ></el-input>
       </el-form-item>
       <el-form-item label="分享标题" label-width="6em">
-        <el-input type="textarea" :rows="4" placeholder="微信分享单独设置的简介"></el-input>
+        <el-input
+          type="textarea"
+          :rows="4"
+          placeholder="微信分享单独设置的简介"
+          v-model="form.wx_share_remark"
+        ></el-input>
       </el-form-item>
     </el-col>
   </el-row>
@@ -34,6 +42,13 @@ export default {
   name: 'edit-setting-wechat',
 
   mixins: [modal],
+
+  props: {
+    form: {
+      type: Object,
+      required: true,
+    },
+  },
 
   computed: {
     ...mapState({
