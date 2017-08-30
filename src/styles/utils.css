@@ -19,6 +19,15 @@
   text-overflow: ellipsis;
 }
 
+/* 浮动 */
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
 /* 文本对齐 */
 .text-left {
   text-align: left !important;

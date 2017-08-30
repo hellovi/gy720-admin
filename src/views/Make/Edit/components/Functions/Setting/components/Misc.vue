@@ -1,6 +1,6 @@
 <template>
   <div class="edit-setting-misc clearfix">
-    <div style="float: left">
+    <div class="float-left">
       <el-form-item label="初始场景动画效果" label-width="9em">
         <el-select>
           <el-option label="无效果"></el-option>
@@ -34,7 +34,8 @@
         </div>
       </el-form-item>
     </div>
-    <div style="float: right">
+
+    <div class="float-right">
       <el-form-item label="默认显示场景缩略图" label-width="11em">
         <el-switch></el-switch>
       </el-form-item>
