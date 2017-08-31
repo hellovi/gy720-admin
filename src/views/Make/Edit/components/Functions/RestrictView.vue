@@ -123,15 +123,19 @@
       <!-- 操作 -->
       <div class="restrict-view__sub">
         <div class="sub-row">
-          <el-button type="primary" @click="saveView">保存当前设置</el-button>
+          <el-button
+            type="primary"
+            @click="saveView"
+            :loading="loading"
+          >保存当前设置</el-button>
         </div>
 
         <el-row class="sub-row">
           <el-col :span="12" class="sub-row__col">
-            <el-button type="primary" @click="resetAll">全部重置</el-button>
+            <el-button type="warning" @click="resetAll">全部重置</el-button>
           </el-col>
           <el-col :span="12" class="sub-row__col">
-            <el-button type="primary" @click="close">取消</el-button>
+            <el-button @click="close">取消</el-button>
           </el-col>
         </el-row>
       </div>
@@ -143,17 +147,17 @@
 /**
  * 高级编辑-限制视角
  * @author  luminhuai | chenliangshan
- * @version 2017/08/21
+ * @version 2017/08/31
  */
 
+/* eslint-disable no-underscore-dangle */
 /** @typedef {'vlookatmin'|'hlookatmin'|'hlookatmax'|'vlookatmax'|'fovmin'|'fovmax'} RestrictProp */
 /** @typedef {'fov'|'vlookat'|'hlookat'} ViewProp */
 
+import { mapGetters } from 'vuex'
 import modal from '../../mixins/modal'
 import esc from '../../mixins/esc'
 
-// eslint-disable-next-line
-const krpano = window.__krpano
 // 默认的视角设置
 const defaultRestrict = {
   vlookatmin: -90, // 上
@@ -178,7 +182,12 @@ export default {
         hlookat: 0, // 横向
         vlookat: 0, // 纵向
       },
+      loading: false,
     }
+  },
+
+  computed: {
+    ...mapGetters(['activeScene']),
   },
 
   methods: {
@@ -186,15 +195,15 @@ export default {
      * 获取fov，表示视角的深度
      */
     getFov() {
-      this.view.fov = Math.floor(krpano.get('view.fov'))
+      this.view.fov = Math.floor(window.__krpano.get('view.fov'))
     },
 
     /**
      * 获取lookat，示视角的在横轴和纵轴上的位置
      */
     getLookat() {
-      this.view.hlookat = Math.floor(krpano.get('view.hlookat'))
-      this.view.vlookat = Math.floor(krpano.get('view.vlookat'))
+      this.view.hlookat = Math.floor(window.__krpano.get('view.hlookat'))
+      this.view.vlookat = Math.floor(window.__krpano.get('view.vlookat'))
     },
 
     /**
@@ -213,10 +222,10 @@ export default {
     setView(rProp, vProp) {
       const val = this.view[vProp]
       this.restrict[rProp] = val
-      krpano.set(`view.${rProp}`, val)
+      window.__krpano.set(`view.${rProp}`, val)
 
       if (rProp === 'fovmin') {
-        krpano.set('view.maxpixelzoom', 0)
+        window.__krpano.set('view.maxpixelzoom', 0)
       }
     },
 
@@ -227,7 +236,7 @@ export default {
     reset(prop) {
       const val = defaultRestrict[prop]
       this.restrict[prop] = val
-      krpano.set(`view.${prop}`, val)
+      window.__krpano.set(`view.${prop}`, val)
     },
 
     /**
@@ -236,7 +245,7 @@ export default {
     resetAll() {
       this.restrict = { ...defaultRestrict }
       Object.keys(this.restrict).forEach((prop) => {
-        krpano.set(`view.${prop}`, this.restrict[prop])
+        window.__krpano.set(`view.${prop}`, this.restrict[prop])
       })
     },
 
@@ -244,12 +253,24 @@ export default {
      * 保存当前的视角限制
      */
     saveView() {
-      this.$http.post('/user/scene/defaultangle', {
+      this.loading = true
+
+      this.$http.post('/user/scene/viewangle', {
         ...this.view,
         ...this.restrict,
         pano_id: this.$route.query.pano_id,
-        id: '', // 暂缺获取场景id的接口
+        id: this.activeScene.id,
       })
+        .then(() => {
+          this.close()
+          this.$message.success('操作成功')
+        })
+        .catch(({ status: { reason } }) => {
+          this.$message.error(reason)
+        })
+        .then(() => {
+          this.loading = false
+        })
     },
 
     /**
