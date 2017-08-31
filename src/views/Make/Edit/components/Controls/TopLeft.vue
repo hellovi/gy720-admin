@@ -1,11 +1,10 @@
 <template>
   <div class="edit-control__top-left">
     <!--作品LOGO-->
-    <div class="edit-logo" :class="{'edit-logo__add': !true}">
-      <!--TODO Logo显示判断-->
-      <template v-if="true">
+    <div class="edit-logo" :class="{'edit-logo__add': !panoInfo.logo}">
+      <template v-if="panoInfo.logo">
         <!--更换Logo-->
-        <img class="edit-logo__image" :src="require('@/assets/logo-edit.png')" alt="logo">
+        <img class="edit-logo__image" :src="$url.static(panoInfo.logo)" alt="logo">
       </template>
       <template v-else>
         <!--添加Logo-->
@@ -31,8 +30,7 @@
       <!--作者名称内容-->
       <div class="edit-author" @click="editAuthor">
         作者：
-        <!--TODO 作者名称及显示判断-->
-        <span v-if="true">某某某</span>
+        <span v-if="panoInfo.show_nickname === 20 || !panoInfo.show_nickname">{{ panoInfo.nickname }}</span>
         <span v-else>（昵称已隐藏）</span>
       </div>
       <!--提示语-->
@@ -52,6 +50,7 @@
  */
 
 import { mapState } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 import modal from '../../mixins/modal'
 import EditTools from './EditTools'
 
@@ -66,7 +65,7 @@ export default {
 
   computed: {
     ...mapState({
-      pano: state => state.edit.panoinfo,
+      panoInfo: state => state.edit.panoInfo,
       userInfo: state => state.userInfo,
     }),
   },
@@ -87,11 +86,21 @@ export default {
           cancelButtonText: '取消',
           type: 'warning',
         }).then(() => {
-          // TODO 删除LOGO
-          this.$message({
-            type: 'success',
-            message: '删除成功',
+          this.$http.post('/user/pubset/logo', {
+            logo: null,
+            pano_id: this.panoInfo.hash_pano_id,
           })
+            .then(() => {
+              this.$message.success('Logo删除成功!')
+
+              // 更新store panoInfo
+              this.updatePanoInfo({ logo: null })
+
+              this.closeModal('logo')
+            })
+            .catch((res) => {
+              this.$notify.error(res.status.reason)
+            })
         })
       }
     },
@@ -99,18 +108,37 @@ export default {
     // 显示隐藏作者名称
     editAuthor() {
       if (this.editAutho()) {
-        // TODO 更新显示隐藏作者名称状态
+        const show_nickname = this.panoInfo.show_nickname === 10 ? 20 : 10
+        this.$http.post('/user/pubset/author', {
+          show_nickname,
+          pano_id: this.panoInfo.hash_pano_id,
+        })
+          .then(() => {
+            this.$message.success('设置成功')
+            // 更新store panoInfo
+            this.updatePanoInfo({ show_nickname })
+          })
+          .catch((res) => {
+            this.$notify.error(res.status.reason)
+          })
       }
     },
 
     // 控制操作权限
     editAutho() {
-      // TODO 单个作品vip条件判断
-      if (this.userInfo.is_vip) {
+      if (!this.userInfo.is_vip && !this.panoInfo.is_vip) {
         this.openModal('vipInfo')
         return false
       }
       return true
+    },
+
+    // 更新store panoInfo
+    updatePanoInfo(updateInfo = {}) {
+      this.$store.commit(EDIT.GET_PANOINFO, {
+        ...this.panoInfo,
+        ...updateInfo,
+      })
     },
   },
 }
