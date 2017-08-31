@@ -21,8 +21,6 @@
    * @version 2017/08/29
    */
 
-  import { isEmpty } from 'lodash'
-
   export default {
     name: 'app-form-alert',
 
@@ -47,7 +45,7 @@
 
     computed: {
       flatContents() {
-        return isEmpty(this.contents) ? [] : this.errorHandler(this.contents)
+        return Object.keys(this.contents).length ? this.errorHandler(this.contents) : []
       },
     },
 

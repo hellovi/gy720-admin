@@ -16,7 +16,6 @@
     "echarts": "^3.7.0",
     "element-ui": "^1.4.3",
     "intersection-observer": "^0.4.2",
-    "lodash": "^4.17.4",
     "normalize.css": "^7.0.0",
     "qiniu-js": "^1.0.22",
     "qrcode": "^0.9.0",

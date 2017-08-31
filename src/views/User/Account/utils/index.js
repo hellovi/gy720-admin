@@ -5,8 +5,6 @@
 
 /*eslint-disable*/
 
-import { isNaN } from 'lodash'
-
 /**
  * 字符串转为数组
  * @param dataString  {String}
@@ -17,7 +15,7 @@ export const strToArr = (dataString, split = ',') => {
   const arr = []
   const dataArr = dataString ? dataString.split(split) : []
   dataArr.forEach((data) => {
-    arr.push(isNaN(parseInt(data)) ? data : +data)
+    arr.push(isNaN(parseInt(data, 10)) ? data : +data)
   })
   return arr
 }

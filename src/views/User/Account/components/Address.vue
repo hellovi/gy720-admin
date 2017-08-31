@@ -24,8 +24,9 @@
    * @version 2017/08/10
    */
 
-  import { isEmpty } from 'lodash'
   import { strToArr } from '../utils'
+
+  const isEmpty = obj => Object.keys(obj).length
 
   export default {
     name: 'address-select',
