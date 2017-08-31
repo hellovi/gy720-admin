@@ -26,9 +26,10 @@
 
     <div class="edition__map">
       <v-view-panel
-        :top.sync="viewPanelInfo.top"
-        :left.sync="viewPanelInfo.left"
-        :degress.sync="viewPanelInfo.degress"
+        v-for="panel in viewPanellist" :key="panel.scene_id"
+        :top.sync="panel.top"
+        :left.sync="panel.left"
+        :degress.sync="panel.degress"
       ></v-view-panel>
       <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
     </div>
@@ -42,14 +43,16 @@
 
     <!-- 选择场景 -->
     <el-dialog
-      class="edition__sceneSelection"
+      class="edition__selection"
       title="选择场景" size="large"
       :modal="false" top="5%"
-      :visible.sync="sceneSelectionModal.tag"
+      :visible.sync="sceneSelectionModal.active"
     >
       <v-tour-scene
-        class="edition__sceneSelection-item"
-        v-for= "i in 30" :key="i"
+        class="edition__selection-item"
+        v-for= "scene in scenelist" :key="scene.id"
+        :scene="scene"
+        @choose="onChooseScene"
       >
       </v-tour-scene>
     </el-dialog>
@@ -63,6 +66,7 @@
  * @author huojinzhao
  */
 
+import Ajax from './modules/Ajax'
 import vViewPanel from './ViewPanel'
 import vTourScene from './TourScene'
 
@@ -72,6 +76,13 @@ export default {
   components: {
     vViewPanel,
     vTourScene,
+  },
+
+  props: {
+    tourId: {
+      type: Number,
+      required: true,
+    },
   },
 
   data: () => ({
@@ -88,32 +99,76 @@ export default {
 
     tourEditionRules: {
       name: [
-        { required: true, message: '请输入地图名称', trigger: 'blur' },
-        { pattern: /^\S{1,4}$/, message: '请输入4个字符以内', trigger: 'blur' },
+        {
+          required: true,
+          message: '请输入地图名称',
+          trigger: 'blur',
+        },
+        {
+          pattern: /^\S{1,4}$/,
+          message: '请输入4个字符以内',
+          trigger: 'blur',
+        },
       ],
     },
 
-    viewPanelInfo: {
-      top: 100,
-      left: 200,
-      degress: 90,
+    viewPanellist: [],
+
+    viewPanelOrigin: {
+      pano_map_id: 0,
+      scene_id: 0,
+      top: 0,
+      left: 0,
+      degress: 0,
     },
 
+    scenelist: [],
+
     sceneSelectionModal: {
-      tag: false,
+      active: false,
     },
   }),
 
   methods: {
     openSceneSelection() {
-      this.sceneSelectionModal.tag = true
+      this.sceneSelectionModal.active = true
     },
+
+    closeSceneSelection() {
+      this.sceneSelectionModal.active = false
+    },
+
+    onChooseScene(scene_id) {
+      // 更新场景列表中项目的选择状态
+      const scene = this.scenelist
+        .find(item => item.id === scene_id)
+      if (scene) scene.is_used = true
+      // 新增viewPanel
+      this.viewPanellist.push({
+        ...this.viewPanelOrigin,
+        ...{ scene_id },
+      })
+      // 关闭场景选择
+      this.closeSceneSelection()
+    },
+  },
+
+  created() {
+    // 读取导览详情
+
+    // 读取场景选择列表
+    Ajax.readScenelist()
+      .then((res) => { this.scenelist = res })
+
+    // 设置viewPanelOrigin对应的导览id
+    this.viewPanelOrigin.pano_map_id = this.tourId
   },
 }
 </script>
 
 <style lang="postcss">
 .edit-functions__tour-edition {
+  padding-bottom: 10px;
   text-align: center;
 
   & .edition__editor {
@@ -137,11 +192,17 @@ export default {
     }
   }
 
-  & .edition__sceneSelection {
+  & .edition__selection {
     text-align: left;
 
     &-item {
       float: left;
+    }
+
+    & .el-dialog__body::after {
+      content: '';
+      display: block;
+      clear: both;
     }
   }
 }

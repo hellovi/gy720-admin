@@ -54,7 +54,10 @@
       :close-on-click-modal="false"
       :visible.sync="editTourModal.active"
     >
-      <v-tour-edition></v-tour-edition>
+      <v-tour-edition
+        v-if="editTourModal.active"
+        :tour-id="editTourModal.tourId"
+      ></v-tour-edition>
     </el-dialog>
   </div>
 </template>
@@ -95,6 +98,7 @@ export default {
     editTourModal: {
       active: false,
       confirmLoading: false,
+      tourId: 0,
     },
   }),
 
@@ -153,7 +157,10 @@ export default {
   },
 
   created() {
+    // Ajax初始化
     Ajax.defaultPanoId = this.$route.query.pano_id
+
+    // 读取导览列表
     this.fetchTourlist()
   },
 }

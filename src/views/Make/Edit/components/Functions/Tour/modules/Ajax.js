@@ -7,7 +7,7 @@
 import Http from '@/utils/http'
 
 const TOUR_API = '/user/panomap'
-// const TOUR_VIEW_API = 'user/panomapscene'
+const TOUR_VIEW_API = '/user/panomapscene/scenes'
 
 /**
  * @desc    编辑导览详情的数据结构
@@ -51,7 +51,7 @@ export default class Ajax {
     return url
   }
 
-  /* ------ application ------ */
+  /* ------ tour application ------ */
 
   /**
    * @desc    获取导览列表
@@ -104,7 +104,7 @@ export default class Ajax {
    * @desc  修改导览
    *
    * @method  PUT
-   * @param   {TourInfo}    tourInfo     - 导览信息
+   * @param   {TourInfo}   tourInfo      - 导览信息
    *
    * @return  {Promise}    type: Object  - 修改后的导览详情
    */
@@ -130,4 +130,27 @@ export default class Ajax {
       id: tourId,
     }))
   }
+
+  /* ------ view application ------ */
+
+  /**
+   * @desc  获取场景选择列表
+   *
+   * @method  GET
+   *
+   * @return  {Promise}     type:Array   - 场景列表
+   */
+  static readScenelist() {
+    return Http.get(this.setQueryUrl({
+      host: TOUR_VIEW_API,
+      pano_id: this.defaultPanoId,
+    }))
+      .then(({ result }) => result)
+  }
+
+  /**
+   *
+   *
+   *
+   */
 }

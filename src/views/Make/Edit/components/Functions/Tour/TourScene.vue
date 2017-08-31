@@ -1,13 +1,20 @@
 <template>
-  <div class="edit-functions__tour-scene">
+  <div
+   :class="{
+      'edit-functions__tour-scene': true,
+      'forbidden': scene.is_used,
+    }"
+    @click="onChooseScene"
+  >
     <img :src="scene.thumb">
-    <span>已添加</span>
+    <span v-if="scene.is_used">已添加</span>
+    <span v-else>选择</span>
   </div>
 </template>
 
 <script>
 /**
- * 高级编辑 - 导览 - 场景项
+ * 高级编辑 - 导览 - 场景选择场景项
  *
  * @author huojinzhao
  */
@@ -18,10 +25,24 @@ export default {
   props: {
     scene: {
       type: Object,
-      // require: true,
-      default: () => ({
-        thumb: 'http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg',
-      }),
+      require: true,
+    },
+  },
+
+  methods: {
+    onChooseScene() {
+      if (this.scene.is_used) {
+        this.$message({
+          type: 'error',
+          message: '该场景已添加，不能重复添加',
+        })
+      } else {
+        this.$message({
+          type: 'info',
+          message: '选择场景成功',
+        })
+        this.$emit('choose', this.scene.id)
+      }
     },
   },
 }
@@ -39,6 +60,10 @@ export default {
   width: 100px;
   text-align: center;
   cursor: pointer;
+
+  &.forbidden {
+    cursor: not-allowed;
+  }
 
   & img {
     width: 100%;
