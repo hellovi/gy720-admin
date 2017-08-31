@@ -24,11 +24,13 @@
           <el-button
             size="small"
             type="info"
-            @click="selectMater(listData[0].id, listData[0].title)"
+            v-if="selectStatus"
+            @click="selectMater(scope.row.id, scope.row.title)"
           >选择</el-button>
           <el-button
             size="small"
             type="success"
+            @click="openPreView(scope.row)"
           >预览</el-button>
           <el-button
             size="small"
@@ -54,16 +56,37 @@
       <el-button type="primary" @click="addImageText">添加图文信息</el-button>
     </el-row>
     <!--添加|修改窗口-->
-    <image-text-dialog
+    <el-dialog
       :visible.sync="visible"
-      :id="currentEditId"
-      :type="dialogType"
-      @close="dialogClose"
-      @update="dataUpdate"
-    ></image-text-dialog>
+      :modal="false"
+      top="2%"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      >
+      <image-text-dialog
+        :visible="visible"
+        :id="currentEditId"
+        :type="dialogType"
+        @close="dialogClose"
+        @update="dataUpdate"
+        v-if="addRendered"
+      ></image-text-dialog>
+    </el-dialog>
+
     <!--预览窗口-->
-    <image-text-preview:visible.sync="preShow"
-    ></image-text-preview>
+    <el-dialog
+      :visible.sync="preShow"
+      :modal="false"
+      top="2%"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <image-text-preview
+        :visible="preShow"
+        :id="preViewId"
+        v-if="preViewRendered"
+      ></image-text-preview>
+    </el-dialog>
   </div>
 </template>
 
@@ -73,14 +96,16 @@
    * @author  chenliangshan
    * @version 2017/08/25
    */
-  import { EDIT } from '@/store/mutationTypes'
 
-  const ImageTextDialog = () => import('./ImageTextDialog')
+  import { EDIT } from '@/store/mutationTypes'
 
   export default {
     name: 'image-text',
 
-    components: { ImageTextDialog },
+    components: {
+      ImageTextDialog: () => import('./ImageTextDialog'),
+      ImageTextPreview: () => import('./ImageTextPreview'),
+    },
 
     data: () => ({
       listData: {},
@@ -88,8 +113,32 @@
       visible: false,
       dialogType: null,
       perPage: 8,
+      preViewId: null,
       preShow: false,
+      addRendered: false,
+      preViewRendered: false,
     }),
+
+    computed: {
+      selectStatus() {
+        return this.$store.state.edit.material.selectStatus
+      },
+    },
+
+    watch: {
+      // 监听添加窗口打开时渲染内容
+      visible(val) {
+        if (val) {
+          this.addRendered = true
+        }
+      },
+      // 监听预览窗口打开时渲染内容
+      preShow(val) {
+        if (val) {
+          this.preViewRendered = true
+        }
+      },
+    },
 
     methods: {
       // 获取列表数据
@@ -160,12 +209,9 @@
 
       // 打开预览窗口
       openPreView(item) {
-        console.log(item)
+        this.preShow = true
+        this.preViewId = item.id
       },
-
-    },
-
-    mounted() {
 
     },
 

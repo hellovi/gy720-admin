@@ -1,14 +1,5 @@
 <template>
-  <el-dialog
-    :visible.sync="show"
-    :modal="false"
-    top="0%"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    @open="getInfo"
-    @close="resetFields"
-    class="image-text-dialog"
-  >
+  <div class="image-text-dialog">
     <app-form-alert
       :contents="msgAlert"
     ></app-form-alert>
@@ -78,7 +69,7 @@
       <el-button type="primary" :loading="formLoading" @click="beforeSubmit">提交</el-button>
       <el-button @click="resetForm">重置</el-button>
     </el-row>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -100,7 +91,7 @@
     props: {
       visible: {
         type: Boolean,
-        default: false,
+        default: true,
       },
       id: {
         type: Number,
@@ -119,7 +110,6 @@
       msgAlert: {},
       formLoading: false,
       formRef: 'form',
-      show: this.visible,
       info: {},
     }),
 
@@ -165,12 +155,11 @@
 
     watch: {
       visible(val) {
-        this.show = val
-      },
-
-      show(val) {
-        this.$emit('input', val)
-        this.$emit('update:visible', val)
+        if (val) {
+          this.open()
+        } else {
+          this.close()
+        }
       },
     },
 
@@ -278,6 +267,22 @@
         this.formLoading = false
       },
 
+      // 打开
+      open() {
+        this.getInfo()
+        this.$emit('open')
+      },
+
+      // 关闭
+      close() {
+        this.resetFields()
+        this.$emit('close')
+      },
+
+    },
+
+    mounted() {
+      this.open()
     },
   }
 </script>
