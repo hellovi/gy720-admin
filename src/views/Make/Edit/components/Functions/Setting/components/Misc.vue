@@ -46,7 +46,12 @@
       </el-form-item>
       <el-form-item label="Loading提示文字" label-width="9em">
         <div style="width: 196px;">
-          <el-input class="edit-setting__vip" v-model="form.loading_text"></el-input>
+          <el-input
+            class="edit-setting__vip"
+            :readonly="!isVip"
+            v-model="form.loading_text"
+            @focus="$emit('focus-on-vip-field')"
+          ></el-input>
           <div class="edit-setting__tip">商业版功能，作者可自定义加载时显示的文字内容</div>
         </div>
       </el-form-item>
@@ -85,6 +90,10 @@ export default {
   props: {
     form: {
       type: Object,
+      required: true,
+    },
+    isVip: {
+      type: Boolean,
       required: true,
     },
   },

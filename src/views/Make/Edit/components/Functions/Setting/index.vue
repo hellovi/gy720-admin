@@ -12,10 +12,10 @@
         </ul>
       </nav>
       <el-form class="edit-setting__form">
-        <basic v-show="activeTab === 0" :form="form"></basic>
+        <basic v-show="activeTab === 0" :form="form" :isVip="isVip" @focus-on-vip-field="focusOnVipField"></basic>
         <wechat v-show="activeTab === 1" :form="form"></wechat>
         <music v-show="activeTab === 2" :form="form"></music>
-        <misc v-show="activeTab === 3" :form="form"></misc>
+        <misc v-show="activeTab === 3" :form="form" :isVip="isVip" @focus-on-vip-field="focusOnVipField"></misc>
       </el-form>
       <div slot="footer" class="edit-setting__footer">
         <el-button type="primary" @click="submit">确定</el-button>
@@ -29,7 +29,7 @@
  * 高级编辑 - 设置
  * @version 2017-08-25
  */
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import errorHandle from '@/mixins/errorHandle'
 import modal from '../../../mixins/modal'
 import Basic from './components/Basic'
@@ -94,6 +94,7 @@ export default {
     ...mapState({
       panoInfo: state => state.edit.panoInfo,
     }),
+    ...mapGetters(['isVip']),
   },
 
   watch: {
@@ -109,6 +110,12 @@ export default {
   methods: {
     close() {
       this.closeModal('setting')
+    },
+
+    focusOnVipField() {
+      if (!this.isVip) {
+        this.openModal('vipInfo')
+      }
     },
 
     submit() {
@@ -177,6 +184,13 @@ export default {
       color: #ffc000;
       font-size: 12px;
       font-style: italic;
+    }
+
+    .el-input__inner,
+    .el-textarea__inner {
+      border-color: #d1dbe5;
+      background-color: #eef1f6;
+      color: #bbb;
     }
   }
 

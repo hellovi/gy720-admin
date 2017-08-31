@@ -23,7 +23,7 @@
         <img class="setting-img__img" :src="require('@/assets/help.png')" alt="开场提示">
         <div class="setting-img__desc">商业功能，可自定义更换图片，支持JPG、PNG格式上传</div>
         <div class="setting-img__button">
-          <el-button type="primary" size="small">选择</el-button>
+          <el-button type="primary" size="small" @click="selectStartImg">选择</el-button>
         </div>
       </div>
     </el-col>
@@ -63,6 +63,8 @@
           type="textarea"
           :rows="3"
           placeholder="滚动文字（500个字符以内）"
+          :readonly="!isVip"
+          @focus="$emit('focus-on-vip-field')"
           v-model="form.scroll_text"
         ></el-input>
         <div class="edit-setting__tip">商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现</div>
@@ -86,10 +88,21 @@ export default {
       type: Object,
       required: true,
     },
+    isVip: {
+      type: Boolean,
+      required: true,
+    },
+  },
+
+  methods: {
+    selectStartImg() {
+      if (!this.isVip) {
+        this.$emit('focus-on-vip-field')
+      }
+    },
   },
 }
 </script>
-
 
 <style lang="postcss">
 .edit-setting-basic {
