@@ -42,7 +42,7 @@
       :visible.sync="createTourModal.active"
     >
       <v-tour-creation
-        @submit="createTour"
+        @submit="tourCreationSucceed"
         @cancel="deactivateTourCreation"
       ></v-tour-creation>
     </el-dialog>
@@ -110,23 +110,27 @@ export default {
 
     /* --- control --- */
 
-    deactivateTourCreation() {
-      this.createTourModal.active = false
-    },
-
-    /* --- creation --- */
-
     activateTourCreation() {
       this.createTourModal.active = true
     },
 
-    createTour(tourInfo) {
+    deactivateTourCreation() {
+      this.createTourModal.active = false
+    },
+
+    activateTourEdition() {
+      this.editTourModal.active = true
+    },
+
+    /* --- creation --- */
+
+    tourCreationSucceed(tourInfo) {
       this.tourlist.push(tourInfo)
       this.deactivateTourCreation()
       // this.activateTourEdition()
     },
 
-    /* --- deletion */
+    /* --- deletion --- */
 
     preDeleteTour(tourId) {
       this.onDeleteItem({
@@ -145,10 +149,6 @@ export default {
     tourDeletionSucceed(tourId) {
       this.tourlist = this.tourlist
         .filter(tour => tour.id !== tourId)
-    },
-
-    activateTourEdition() {
-      this.editTourModal.active = true
     },
   },
 
