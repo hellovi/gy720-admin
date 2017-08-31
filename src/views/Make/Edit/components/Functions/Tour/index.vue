@@ -12,12 +12,17 @@
           v-for="tour in tourlist" :key="tour.id"
         >
           <div class="tour-guidemap__item-control">
-            <!-- 编辑 -->
+            <!-- 编辑导览 -->
             <i
               class="iconfont"
               @click="activateTourEdition"
             >&#xe614;</i>
-            <!-- 删除 -->
+            <!-- 编辑视角 -->
+            <i
+              class="iconfont"
+              @click="activateViewEdition"
+            >&#xe6bc;</i>
+            <!-- 删除导览 -->
             <i
               class="iconfont"
               @click="preDeleteTour(tour.id)"
@@ -31,33 +36,33 @@
         <li
           class="tour-guidemap__create"
           v-if="tourlist.length < 5"
-          @click="activateTourCreation"
+          @click="activateTourEdition"
         > + </li>
       </ul>
     </el-dialog>
 
-    <!-- 新增导览 -->
-    <el-dialog
-      title="添加地图" size="small"
-      :visible.sync="createTourModal.active"
-    >
-      <v-tour-creation
-        @submit="tourCreationSucceed"
-        @cancel="deactivateTourCreation"
-      ></v-tour-creation>
-    </el-dialog>
-
     <!-- 编辑导览 -->
     <el-dialog
-      class="tour-edition"
-      title="添加场景视角展示" size="large" top="5%"
-      :close-on-click-modal="false"
-      :visible.sync="editTourModal.active"
+      title="编辑导览图" size="small"
+      :visible.sync="tourEditionModal.active"
     >
       <v-tour-edition
-        v-if="editTourModal.active"
-        :tour-id="editTourModal.tourId"
+        @submit="tourEditionSucceed"
+        @cancel="deactivateTourEdition"
       ></v-tour-edition>
+    </el-dialog>
+
+    <!-- 编辑视角 -->
+    <el-dialog
+      class="tour-edition"
+      title="编辑导览图视角" size="large" top="5%"
+      :close-on-click-modal="false"
+      :visible.sync="viewEditionModal.active"
+    >
+      <v-view-edition
+        v-if="viewEditionModal.active"
+        :tour-id="viewEditionModal.tourId"
+      ></v-view-edition>
     </el-dialog>
   </div>
 </template>
@@ -66,13 +71,13 @@
 /**
  * 高级编辑 - 导览图
  *
- * @author hjz
+ * @author huojinzhao
  */
 
 import modal from '@/views/Make/Edit/mixins/modal'
 import deleteItem from '@/mixins/deleteItem'
-import vTourCreation from './TourCreation'
 import vTourEdition from './TourEdition'
+import vViewEdition from './ViewEdition'
 import Ajax from './modules/Ajax'
 
 export default {
@@ -81,8 +86,8 @@ export default {
   mixins: [modal, deleteItem],
 
   components: {
-    vTourCreation,
     vTourEdition,
+    vViewEdition,
   },
 
   data: () => ({
@@ -90,14 +95,12 @@ export default {
 
     tourInfo: {},
 
-    createTourModal: {
+    tourEditionModal: {
       active: false,
-      confirmLoading: false,
     },
 
-    editTourModal: {
+    viewEditionModal: {
       active: false,
-      confirmLoading: false,
       tourId: 0,
     },
   }),
@@ -114,23 +117,23 @@ export default {
 
     /* --- control --- */
 
-    activateTourCreation() {
-      this.createTourModal.active = true
-    },
-
-    deactivateTourCreation() {
-      this.createTourModal.active = false
-    },
-
     activateTourEdition() {
-      this.editTourModal.active = true
+      this.tourEditionModal.active = true
+    },
+
+    deactivateTourEdition() {
+      this.tourEditionModal.active = false
+    },
+
+    activateViewEdition() {
+      this.viewEditionModal.active = true
     },
 
     /* --- creation --- */
 
-    tourCreationSucceed(tourInfo) {
+    tourEditionSucceed(tourInfo) {
       this.tourlist.push(tourInfo)
-      this.deactivateTourCreation()
+      this.deactivateTourEdition()
       // this.activateTourEdition()
     },
 
@@ -228,19 +231,24 @@ export default {
         padding: 2px 5px;
         width: 100%;
         background-color: color(black alpha(30%));
-        text-align: left;
 
         & > i {
           color: white;
-          font-size: 12px;
+          font-size: 14px;
 
           &:hover {
             color: var(--color-warning);
           }
         }
 
-        & i + i {
+        & i:first-of-type {
+          float: left;
+          font-size: 12px;
+        }
+
+        & i:last-of-type {
           float: right;
+          font-size: 12px;
         }
       }
 

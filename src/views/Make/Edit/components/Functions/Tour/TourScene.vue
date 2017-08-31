@@ -20,7 +20,7 @@
  */
 
 export default {
-  name: 'edit-functions-tour-scene',
+  name: 'edit-functions__tour-scene',
 
   props: {
     scene: {

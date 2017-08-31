@@ -1,101 +1,86 @@
 <template>
-  <div class="edit-functions__tour-edition">
-    <el-form
-      class="edition__editor"
-      label="80px" :inline="true"
-      :model="tourEditionInfo"
-      :rules="tourEditionRules"
-    >
-      <el-form-item
-        label="地图名称"
-        prop="name"
-      >
-        <el-input
-          v-model="tourEditionInfo.name"
-          placeholder="输入4个字符以内"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="openSceneSelection"
-        >选择场景</el-button>
-        <el-button type="primary">保存</el-button>
-      </el-form-item>
-    </el-form>
+  <el-form
+    class="edit-functions__tour-edition"
+    label-width="80px"
+    ref="tourEditionForm"
+    :model="tourEditionInfo"
+    :rules="tourEditionRules"
+  >
+    <!-- 后端错误回显 -->
+    <app-form-alert
+      :contents="errorReasons"
+    ></app-form-alert>
 
-    <div class="edition__map">
-      <v-view-panel
-        v-for="panel in viewPanellist" :key="panel.scene_id"
-        :top.sync="panel.top"
-        :left.sync="panel.left"
-        :degress.sync="panel.degress"
-      ></v-view-panel>
-      <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
+    <!-- 表单项 -->
+    <el-form-item
+      class="edition__name"
+      label="导览名称"
+      prop="name"
+    >
+      <el-input
+        v-model="tourEditionInfo.name"
+        placeholder="请输入地图名称，例如一楼、二楼、单元一等（输入4个字符以内）"
+      >
+      </el-input>
+    </el-form-item>
+    <el-form-item
+      class="edition__material"
+      label="导览地图"
+      prop="image"
+    >
+      <img
+        v-if="tourEditionInfo.image.length"
+        class="edition__material__display"
+        :src="$url.static(tourEditionInfo.image)">
+      <el-button
+        @click="onChooseMaterial"
+      >选择素材</el-button>
+      <el-button
+        @click="resetEditionImage"
+      >删除</el-button>
+      <span class="edition__material__note">
+        选择平面地图，500px分辨率以上
+      </span>
+    </el-form-item>
+    <!-- 控制按钮 -->
+    <div
+      class="edition__control"
+    >
+      <el-button type="primary"
+        :loading="confirmLoading"
+        @click="preSubmit"
+      >提交</el-button>
+      <el-button
+        @click="cancel"
+      >取消</el-button>
     </div>
-
-    <dl class="edition__doc">
-      <dt>帮助操作：</dt>
-      <dd v-for="(item, index) in helpDoc" :key="item">
-        {{`${index + 1}、${item}`}}
-      </dd>
-    </dl>
-
-    <!-- 选择场景 -->
-    <el-dialog
-      class="edition__selection"
-      title="选择场景" size="large"
-      :modal="false" top="5%"
-      :visible.sync="sceneSelectionModal.active"
-    >
-      <v-tour-scene
-        class="edition__selection-item"
-        v-for= "scene in scenelist" :key="scene.id"
-        :scene="scene"
-        @choose="onChooseScene"
-      >
-      </v-tour-scene>
-    </el-dialog>
-  </div>
+  </el-form>
 </template>
 
 <script>
 /**
- * 高级编辑 - 编辑导览、场景视角
+ * 高级编辑 - 导览 - 编辑导览信息
  *
  * @author huojinzhao
  */
 
+import modal from '@/views/Make/Edit/mixins/modal'
 import Ajax from './modules/Ajax'
-import vViewPanel from './ViewPanel'
-import vTourScene from './TourScene'
 
 export default {
   name: 'edit-functions__tour-edition',
 
-  components: {
-    vViewPanel,
-    vTourScene,
-  },
-
-  props: {
-    tourId: {
-      type: Number,
-      required: true,
-    },
-  },
+  mixins: [modal],
 
   data: () => ({
-    helpDoc: [
-      '点击 "选择场景" 按钮，选择需要添加视角展示的场景；',
-      '拖动雷达的圆心，可以设置在地图中位置；',
-      '拖动雷达的外环区域，可以设置视角方向；',
-      '操作完成后, 记得点击 "保存" 哦。',
-    ],
-
     tourEditionInfo: {
       name: '',
+      image: '',
     },
+
+    confirmLoading: false,
+
+    editionImageRef: null,
 
     tourEditionRules: {
       name: [
@@ -110,99 +95,118 @@ export default {
           trigger: 'blur',
         },
       ],
+      image: [
+        {
+          required: true,
+          message: '请选择地图素材',
+          trigger: 'change',
+        },
+      ],
     },
 
-    viewPanellist: [],
-
-    viewPanelOrigin: {
-      pano_map_id: 0,
-      scene_id: 0,
-      top: 0,
-      left: 0,
-      degress: 0,
-    },
-
-    scenelist: [],
-
-    sceneSelectionModal: {
-      active: false,
-    },
+    errorReasons: null,
   }),
 
-  methods: {
-    openSceneSelection() {
-      this.sceneSelectionModal.active = true
-    },
-
-    closeSceneSelection() {
-      this.sceneSelectionModal.active = false
-    },
-
-    onChooseScene(scene_id) {
-      // 更新场景列表中项目的选择状态
-      const scene = this.scenelist
-        .find(item => item.id === scene_id)
-      if (scene) scene.is_used = true
-      // 新增viewPanel
-      this.viewPanellist.push({
-        ...this.viewPanelOrigin,
-        ...{ scene_id },
-      })
-      // 关闭场景选择
-      this.closeSceneSelection()
+  computed: {
+    tourMaterial() {
+      return this.$store.state.edit.material.materialExport.tour
     },
   },
 
-  created() {
-    // 读取导览详情
+  watch: {
+    'tourMaterial.url': 'checkTourMaterial',
+  },
 
-    // 读取场景选择列表
-    Ajax.readScenelist()
-      .then((res) => { this.scenelist = res })
+  methods: {
+    onChooseMaterial() {
+      this.openMaterModal({ type: 'tours', source: 'tour' })
+    },
 
-    // 设置viewPanelOrigin对应的导览id
-    this.viewPanelOrigin.pano_map_id = this.tourId
+    checkTourMaterial(val) {
+      if (val.length) {
+        this.resetEditionImage()
+        this.tourEditionInfo.image = val
+      }
+      this.resetMaterExport('tour')
+    },
+
+    resetEditionImage() {
+      this.editionImageRef.resetField()
+    },
+
+    preSubmit() {
+      this.$refs.tourEditionForm
+        .validate((valid) => {
+          if (valid) this.submit()
+        })
+    },
+
+    submit() {
+      this.confirmLoading = true
+
+      Ajax.insertTourInfo(this.tourEditionInfo)
+        .then((res) => {
+          this.$emit('submit', res)
+          this.$message({
+            message: '创建成功',
+            type: 'success',
+          })
+          this.cancel()
+        })
+        .catch((error) => {
+          this.confirmLoading = false
+          this.errorReasons = error
+        })
+    },
+
+    cancel() {
+      this.$emit('cancel')
+      this.errorReasons = {}
+      this.confirmLoading = false
+      this.$refs.tourEditionForm.resetFields()
+    },
+  },
+
+  mounted() {
+    this.$refs.tourEditionForm.fields
+      .forEach((item) => {
+        if (item.prop === 'image') {
+          this.editionImageRef = item
+        }
+      })
   },
 }
 </script>
 
 <style lang="postcss">
+@import 'vars.css';
+
 .edit-functions__tour-edition {
-  padding-bottom: 10px;
-  text-align: center;
 
-  & .edition__editor {
-    text-align: left;
-  }
+  & .edition {
 
-  & .edition__map {
-    position: relative;
-    display: inline-block;
+    &__material {
 
-    & > img {
-      max-width: 800px;
-    }
-  }
+      &__display {
+        float: left;
+        margin-right: 10px;
+        height: 35px;
+      }
 
-  & .edition__doc {
-    text-align: left;
+      &__note {
+        float: right;
 
-    & dd {
-      margin-top: 10px;
-    }
-  }
-
-  & .edition__selection {
-    text-align: left;
-
-    &-item {
-      float: left;
+        &::before {
+          content: '\e621';
+          color: var(--disabled-color-base);
+          font-family: 'iconfont';
+        }
+      }
     }
 
-    & .el-dialog__body::after {
-      content: '';
-      display: block;
-      clear: both;
+    &__control {
+      margin-top: 35px;
+      text-align: right;
     }
   }
 }
