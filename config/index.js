@@ -38,7 +38,7 @@ module.exports = {
       '/api/': proxySetting,
       '/make/': proxySetting,
       '/data/': proxySetting,
-      '/assets/': proxySetting,
+      '/assets/3.0.1/lib/': proxySetting,
       '/sms/': proxySetting,
       '/mail/': proxySetting,
       // '/lib/': proxySetting,
