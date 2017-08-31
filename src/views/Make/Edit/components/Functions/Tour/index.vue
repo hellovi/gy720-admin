@@ -15,12 +15,12 @@
             <!-- 编辑导览 -->
             <i
               class="iconfont"
-              @click="activateTourEdition"
+              @click="() => activateTourEdition(tour)"
             >&#xe614;</i>
             <!-- 编辑视角 -->
             <i
               class="iconfont"
-              @click="activateViewEdition"
+              @click="() => activateViewEdition(tour)"
             >&#xe6bc;</i>
             <!-- 删除导览 -->
             <i
@@ -35,8 +35,8 @@
         </li>
         <li
           class="tour-guidemap__create"
-          v-if="tourlist.length < 5"
-          @click="activateTourEdition"
+          v-show="tourlist.length < 5"
+          @click="() => activateTourEdition()"
         > + </li>
       </ul>
     </el-dialog>
@@ -45,9 +45,14 @@
     <el-dialog
       title="编辑导览图" size="small"
       :visible.sync="tourEditionModal.active"
+      :before-close="deactivateTourEdition"
     >
       <v-tour-edition
-        @submit="tourEditionSucceed"
+        :visible="tourEditionModal.active"
+        :type="tourEditionModal.type"
+        :tour-info="tourInfo"
+        @create="tourEditionCreated"
+        @update="tourEditionUpdated"
         @cancel="deactivateTourEdition"
       ></v-tour-edition>
     </el-dialog>
@@ -97,6 +102,7 @@ export default {
 
     tourEditionModal: {
       active: false,
+      type: 'create',
     },
 
     viewEditionModal: {
@@ -117,12 +123,19 @@ export default {
 
     /* --- control --- */
 
-    activateTourEdition() {
+    activateTourEdition(tourInfo) {
+      if (tourInfo) {
+        this.tourInfo = tourInfo
+        this.tourEditionModal.type = 'update'
+      }
       this.tourEditionModal.active = true
     },
 
     deactivateTourEdition() {
       this.tourEditionModal.active = false
+      // 始终以creation为初始状态
+      this.tourInfo = {}
+      this.tourEditionModal.type = 'create'
     },
 
     activateViewEdition() {
@@ -131,10 +144,20 @@ export default {
 
     /* --- creation --- */
 
-    tourEditionSucceed(tourInfo) {
+    tourEditionCreated(tourInfo) {
       this.tourlist.push(tourInfo)
       this.deactivateTourEdition()
-      // this.activateTourEdition()
+      // this.activateTourEdition(tourInfo)
+    },
+
+    /* --- updation --- */
+
+    tourEditionUpdated(tourInfo) {
+      const index = this.tourlist
+        .findIndex(item => item.id === tourInfo.id)
+      if (index > -1) {
+        this.$set(this.tourlist, index, tourInfo)
+      }
     },
 
     /* --- deletion --- */

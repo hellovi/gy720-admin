@@ -3,7 +3,7 @@
     class="edit-functions__tour-edition"
     label-width="80px"
     ref="tourEditionForm"
-    :model="tourEditionInfo"
+    :model="editionInfo"
     :rules="tourEditionRules"
   >
     <!-- 后端错误回显 -->
@@ -18,7 +18,7 @@
       prop="name"
     >
       <el-input
-        v-model="tourEditionInfo.name"
+        v-model="editionInfo.name"
         placeholder="请输入地图名称，例如一楼、二楼、单元一等（输入4个字符以内）"
       >
       </el-input>
@@ -29,13 +29,17 @@
       prop="image"
     >
       <img
-        v-if="tourEditionInfo.image.length"
+        v-if="editionInfo.image.length"
         class="edition__material__display"
-        :src="$url.static(tourEditionInfo.image)">
+        :src="$url.static(editionInfo.image)">
       <el-button
+        :disabled="type === 'update'"
         @click="onChooseMaterial"
       >选择素材</el-button>
       <el-button
+        v-show="type === 'create'
+          &&editionInfo.image.length > 0
+        "
         @click="resetEditionImage"
       >删除</el-button>
       <span class="edition__material__note">
@@ -72,11 +76,27 @@ export default {
 
   mixins: [modal],
 
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    tourInfo: {
+      type: Object,
+    },
+  },
+
   data: () => ({
-    tourEditionInfo: {
+    editionOriginInfo: {
       name: '',
       image: '',
     },
+
+    editionInfo: null,
 
     confirmLoading: false,
 
@@ -115,59 +135,105 @@ export default {
 
   watch: {
     'tourMaterial.url': 'checkTourMaterial',
+
+    visible(val) {
+      if (val) this.checkEditionInfo()
+    },
   },
 
   methods: {
-    onChooseMaterial() {
-      this.openMaterModal({ type: 'tours', source: 'tour' })
+    /* ------ initialization ------ */
+
+    checkEditionInfo() {
+      this.$refs.tourEditionForm.resetFields()
+      this.editionInfo = {
+        ...this.editionOriginInfo,
+        ...this.tourInfo,
+      }
     },
 
     checkTourMaterial(val) {
       if (val.length) {
         this.resetEditionImage()
-        this.tourEditionInfo.image = val
+        this.editionInfo.image = val
       }
       this.resetMaterExport('tour')
+    },
+
+    /* ------ application ------ */
+
+    /* --- control --- */
+
+    onChooseMaterial() {
+      this.openMaterModal({ type: 'tours', source: 'tour' })
     },
 
     resetEditionImage() {
       this.editionImageRef.resetField()
     },
 
+    cancel() {
+      this.$emit('cancel')
+      this.errorReasons = {}
+      this.confirmLoading = false
+    },
+
+    /* --- submit --- */
+
     preSubmit() {
       this.$refs.tourEditionForm
         .validate((valid) => {
-          if (valid) this.submit()
+          if (valid) {
+            this.submit()
+              .then(() => this.cancel())
+              .catch((error) => {
+                this.confirmLoading = false
+                this.errorReasons = error
+              })
+          }
         })
     },
 
     submit() {
       this.confirmLoading = true
+      if (this.type === 'create') {
+        return this.createTourInfo()
+      }
+      // update
+      return this.patchTourInfo()
+    },
 
-      Ajax.insertTourInfo(this.tourEditionInfo)
+    createTourInfo() {
+      return Ajax.insertTourInfo(this.editionInfo)
         .then((res) => {
-          this.$emit('submit', res)
+          this.$emit('create', res)
           this.$message({
             message: '创建成功',
             type: 'success',
           })
-          this.cancel()
-        })
-        .catch((error) => {
-          this.confirmLoading = false
-          this.errorReasons = error
         })
     },
 
-    cancel() {
-      this.$emit('cancel')
-      this.errorReasons = {}
-      this.confirmLoading = false
-      this.$refs.tourEditionForm.resetFields()
+    patchTourInfo() {
+      const tourInfo = { ...this.editionInfo }
+      return Ajax.updateTourInfo(tourInfo)
+        .then(() => {
+          this.$emit('update', tourInfo)
+          this.$message({
+            message: '更新成功',
+            type: 'success',
+          })
+        })
     },
   },
 
+  created() {
+    this.editionInfo = { ...this.editionOriginInfo }
+  },
+
   mounted() {
+    this.checkEditionInfo()
+
     this.$refs.tourEditionForm.fields
       .forEach((item) => {
         if (item.prop === 'image') {
