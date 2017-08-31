@@ -55,7 +55,7 @@
             <el-col :span="20" class="third-content">
               <template v-if="!bindInfo.chat">
                 <p class="txt">您尚未绑定“微信账号”，绑定后您可以直接使用微信快捷方式登录</p>
-                <a class="ahref" href="" target="_blank">立即绑定</a>
+                <a class="ahref" href="/user/auth/weixinweb" target="_blank">立即绑定</a>
               </template>
               <template v-else>
                 <p class="ahref">已绑定账号：{{ bindInfo.chat }}</p>
