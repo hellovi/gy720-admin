@@ -23,6 +23,7 @@ export default {
       initialview: false,
       vipInfo: false,
       restrictView: false,
+      object3d: false,
     },
 
     panoInfo: {},

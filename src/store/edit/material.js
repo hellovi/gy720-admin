@@ -14,20 +14,22 @@ const { MATERIAL } = EDIT
 
 const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
 
-const MATERIAL_DICT = {
-  panos: { url: '/user/sourcescene' },
-  objects: { url: '/user/sourcerotate' },
-  normals: { url: '/user/source' },
-}
+// const MATERIAL_DICT = {
+//   panos: { url: '/user/sourcescene' },
+//   objects: { url: '/user/sourcerotate' },
+//   normals: { url: '/user/source' },
+// }
 
 // 导出的数据
 const getMaterialExport = () => ({
+  menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
   tour: { url: '', id: 0 }, // 导览图(右侧菜单)
   wechat: { url: '', id: 0 }, // 普通素材data(微信设置)
-  menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
+  logos: { url: '', id: 0 }, // LOGO素材(LOGO设置)
+  audio: { title: '', url: '', id: 0 }, // 音频素材(背景音乐)
   hotspot: { title: '', id: 0 }, // 图文素材data(热点设置)
   hotspot3d: { title: '', id: 0 }, // 物品3D素材(热点设置)
-  logos: { url: '', id: 0 }, // LOGO素材(LOGO设置)
+  hotspotAudio: { title: '', url: '', id: 0 }, // 音频素材(热点设置)
 })
 
 export default {
@@ -77,8 +79,8 @@ export default {
           materExport[source] = { id, title }
           break
         default:
-          // 普通素材
-          materExport[source] = { id, url }
+          // 普通以及音频素材
+          materExport[source] = { id, url, title }
       }
       state.source = ''
     },
@@ -99,8 +101,8 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
     },
 
-    [MATERIAL.INIT.NORMALS]({ commit }, { type = 'normals', params = '' }) {
-      return Http.get(`${MATERIAL_DICT[type].url}${params}`)
+    [MATERIAL.INIT.NORMALS]({ commit }, { url, params = '' }) {
+      return Http.get(`${url}${params}`)
         .then(({ result }) => {
           commit(MATERIAL.INIT.LOAD, { data: result })
         })
@@ -115,36 +117,7 @@ export default {
 
     [MATERIAL.ADD]({ commit }, data) {
       return Http.post('/user/source', data)
-        .then(({ result }) => {
-          commit(MATERIAL.ADD, result)
-        })
+        .then(({ result }) => commit(MATERIAL.ADD, result))
     },
-
-    // [MATERIAL.INIT.PANOS]({ commit }, params = '') {
-    //   return Http.get(`/user/sourcescene${params}`)
-    //     .then(({ result }) => {
-    //       commit(MATERIAL.INIT.LOAD, { type: 'panos', data: result })
-    //     })
-    // },
-    // [MATERIAL.INIT.NORMALS]({ commit }, params = '') {
-    // const { /* id: tag_id, */ url, method = 'post' } = MATERIAL_DICT[type]
-    // { file_ext: 'jpg', tag_id, per_page: 20, current_page: 1 }
-    // return Http.get(`/user/source${params}`)
-    //   .then(({ result }) => {
-    //     commit(MATERIAL.INIT.LOAD, { data: result })
-    //   })
-    //   .catch(() => {
-    //     commit(MATERIAL.INIT.LOAD, {
-    //       data: [{ id: 3, file_path: testData, title: '测试素材' },
-    //         { id: 4, file_path: testData, title: '测试素材' },
-    //         { id: 5, file_path: testData, title: '测试素材' },
-    //       ] })
-    //   })
-    // [MATERIAL.INIT.ROTATE]({ commit }, params = '') {
-    //   return Http.get(`/user/sourcerotate${params}`)
-    //     .then(({ result }) => {
-    //       commit(MATERIAL.INIT.LOAD, { type: 'objects', data: result })
-    //     })
-    // },
   },
 }

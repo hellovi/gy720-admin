@@ -1,39 +1,38 @@
 <template>
   <div class="edit-functions__material">
-    <el-dialog
-      title="素材库"
-      :visible="active.material"
-      :before-close="() => closeModal('material')"
-      :close-on-click-modal="false"
-      size="large"
-    >
-      <ul class="clearfix edit-functions__material__ul">
+    <el-dialog title="素材库" custom-class="material-dialog" :visible="active.material" :before-close="close">
+      <!-- 分类标签栏 -->
+      <ul class="material-tabs clearfix list">
         <li
-          class="edit-functions__material__title list"
-          v-for="(item, index) in materialConfig" :key="item.type"
-          @click="changeType(item.type)"
-        >
-          <el-button
-            :class="{'edit-functions__material__button--active': item.id === currentId }"
-            size="small"
-          >
-           {{item.label}}
-          </el-button>
-        </li>
+          v-for="material in materials"
+          :key="material.type"
+          class="material-tabs__item"
+          :class="{'material-tabs__item--active': material.id === activeMaterial.id}"
+          @click="changeType(material.type)"
+        >{{ material.label }}</li>
       </ul>
+
+      <!-- 素材列表 -->
       <keep-alive>
         <div
-          :is="currentView"
-          :key="type"
-          :current-id="currentId"
-          @on-manage = "openObject3D"
+          :is="activeMaterial.view || 'material-list'"
+          :key="activeType"
+          class="material-content"
+          :active-type="activeMaterial.type"
+          :active-id="activeMaterial.id"
         ></div>
       </keep-alive>
+
+      <material-footer
+        :active-type="activeMaterial.type"
+        :active-id="activeMaterial.id"
+      ></material-footer>
+
     </el-dialog>
-    <!--管理物品3D-->
+
+    <!-- 管理物品3D -->
     <manage-object
-      v-show="manageModel"
-      v-model="manageModel"
+      :value="active.object3d"
       :cate-list="cateList"
       :obj-list="objList"
       :current-cate="currentCate"
@@ -42,8 +41,7 @@
       @editWork="onEditWork"
       @deleteItem="onDelete"
       @changeCate="onChangeCate"
-    >
-    </manage-object>
+    ></manage-object>
   </div>
 </template>
 
@@ -56,118 +54,62 @@ import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
-import { materialImages, materialImageText, materialObject3D, manageObject } from './components'
-import Ajax from './components/Manage3d/module/ajax'
+import { MaterialList, MaterialFooter, ImageText, manageObject } from './components'
 
 export default {
-  name: 'edit-functions__material',
+  name: 'edit-functions-material',
 
   mixins: [modal],
 
   components: {
     PanoMaterial,
-    materialImages,
-    materialImageText,
-    materialObject3D,
+    MaterialList,
+    MaterialFooter,
+    ImageText,
     manageObject,
   },
 
   data() {
     return {
-      materialConfig: [
-        { type: 'panos', id: 0, label: '全景图', comp: 'PanoMaterial' },
-        { type: 'logos', id: 1, label: 'LOGO', comp: 'materialImages' },
-        { type: 'tours', id: 2, label: '平面地图', comp: 'materialImages' },
-        { type: 'hotspots', id: 7, label: '热点图标', comp: 'materialImages' },
-        { type: 'icons', id: 3, label: '朋友圈小图标', comp: 'materialImages' },
-        { type: 'ads', id: 4, label: '天空/地面广告', comp: 'materialImages' },
-        { type: 'thumbs', id: 5, label: '场景缩略图', comp: 'materialImages' },
-        { type: 'infos', id: 10, label: '图文信息', comp: 'materialImageText' },
-        { type: 'objects', id: 11, label: '物品3D', comp: 'materialObject3D' },
-        { type: 'audios', id: 9, label: '音频', comp: 'materialImages' },
-        { type: 'others', id: 6, label: '其他', comp: 'materialImages' },
+      materials: [
+        { type: 'panos', id: 0, label: '全景图', view: 'PanoMaterial' },
+        { type: 'logos', id: 1, label: 'LOGO' },
+        { type: 'tours', id: 2, label: '平面地图' },
+        { type: 'hotspots', id: 7, label: '热点图标' },
+        { type: 'icons', id: 3, label: '朋友圈小图标' },
+        { type: 'ads', id: 4, label: '天空/地面广告' },
+        { type: 'thumbs', id: 5, label: '场景缩略图' },
+        { type: 'infos', id: 10, label: '图文信息', view: 'image-text' },
+        { type: 'objects', id: 11, label: '物品3D' },
+        { type: 'audios', id: 9, label: '音频' },
+        { type: 'others', id: 6, label: '其他' },
       ],
+
       cateList: [], // 物品3D分类
       objList: { data: [] },
-      manageModel: false,
       currentCate: 1,
     }
   },
 
   computed: {
     ...mapState({
-      type: state => state.edit.material.type,
+      active: state => state.edit.active,
+      activeType: state => state.edit.material.type,
     }),
 
-    currentMaterial() {
-      return this.materialConfig.find(item => item.type === this.type)
+    activeMaterial() {
+      return this.materials.find(({ type }) => type === this.activeType)
     },
-
-    currentId() {
-      return this.currentMaterial.id
-    },
-
-    currentView: {
-      get() {
-        return this.currentMaterial.comp
-      },
-      set() {
-        // 设置素材类型前置操作
-        // 判断是否为其他地方唤起？store?
-      },
-    },
-
   },
 
   methods: {
+    close() {
+      this.closeModal('material')
+    },
+
     changeType(type) {
       this.$store.commit(EDIT.MATERIAL.TAB.SELECT, { type })
     },
-
-    openObject3D(status) {
-      this.manageModel = status
-      Ajax.getCatelist()
-        .then((data) => { this.cateList = data })
-      Ajax.getWorklist()
-        .then((data) => { this.objList = data })
-    },
-
-    onChangeCate(id) {
-      this.currentCate = id
-      Ajax.getWorklist({ cate_id: id })
-        .then((data) => { this.objList = data })
-    },
-
-    onCreateCate(cate) {
-      this.cateList.push(cate)
-    },
-
-    onCreateWork(work) {
-      this.objList.data.push(work)
-    },
-
-    onEditWork(work) {
-      const editWork = this.objList.data
-      editWork[editWork.findIndex(obj => obj.id === work.id)] = { ...work }
-      // this.objList.data = editWork.map((item) => {
-      //   if (item.id === work.id) {
-      //     return { ...work }
-      //   }
-      //   return item
-      // })
-    },
-
-    onDelete(type, id) {
-      if (type === 'cate') {
-        this.cateList = this.cateList.filter(cate => cate.id !== id)
-      } else {
-        this.objList.data = this.objList.data.filter(cate => cate.id !== id)
-      }
-    },
-  },
-
-  created() {
-
   },
 }
 </script>
@@ -175,9 +117,48 @@ export default {
 <style lang="postcss">
 @import "vars.css";
 
-.edit-functions__material {
+.material-dialog {
+  width: 1200px;
+}
+
+.material-tabs {
+  margin-bottom: 1em;
+
+  &__item {
+    float: left;
+    padding: 0.4em 0.8em;
+    border-radius: 2px;
+    background-color: var(--gray-extra-light);
+    cursor: pointer;
+
+    & + li {
+      margin-left: 1em;
+    }
+
+    &--active {
+      background-color: var(--color-primary);
+      color: #fff;
+    }
+  }
+}
+.material-content {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: var(--gray-extra-light);
+
+  .el-pagination {
+    margin-top: 15px;
+  }
+}
+
+/* .edit-functions__material {
   &__data {
     min-height: 400px;
+    position: relative;
+
+
   }
 
   .el-dialog {
@@ -205,6 +186,7 @@ export default {
     border-color: var(--color-primary);
   }
 }
+
 
 .edit-functions__material {
   &__wrap {
@@ -242,5 +224,5 @@ export default {
       color: var(--gray);
     }
   }
-}
+} */
 </style>

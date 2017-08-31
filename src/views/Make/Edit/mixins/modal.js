@@ -1,6 +1,7 @@
 // eslint-disable-next-line
 /** @typedef {'panos'|'logos'|'tours'|'hotspots'|'icons'|'ads'|'thumbs'|'infos'|'objects'|'audios'|'others'} MaterialType - 素材类型 */
-/** @typedef {'tour'|'wechat'|'menu'|'logos'|'hotspot'|'hotspot3d'} InvokeSource - 调用来源 */
+// eslint-disable-next-line
+/** @typedef {'tour'|'wechat'|'menu'|'logos'|'hotspot'|'hotspot3d'|'audio'|'hotspotAudio'} InvokeSource - 调用来源 */
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'

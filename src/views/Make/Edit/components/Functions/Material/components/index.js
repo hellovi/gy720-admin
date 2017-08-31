@@ -1,4 +1,4 @@
-export { default as materialImages } from './Images'
-export { default as materialImageText } from './ImageText/index'
-export { default as materialObject3D } from './Object3D'
+export { default as MaterialList } from './MaterialList'
+export { default as MaterialFooter } from './MaterialFooter'
+export { default as ImageText } from './ImageText/index'
 export { default as manageObject } from './Manage3d'
