@@ -23,7 +23,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 ## 功能分块
 
 - 首页
-- 登录注册 (周，第三方登录|验证码|注册|找回密码接口未套)
+- 登录/注册/找回密码/第三方登录 (周，已完成)
 - 720全景
   - 作品列表 (周，新模板已完成)
   - 收藏作品 (周，新模板已完成)
