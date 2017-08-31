@@ -22,9 +22,9 @@ export default {
       scene: false,
       snapshot: false,
       initialview: false,
-      vipInfo: false,
       restrictView: false,
       object3d: false,
+      vipInfo: false, // vip购买窗口
     },
 
     panoInfo: {},
