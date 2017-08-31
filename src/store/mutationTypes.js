@@ -112,6 +112,7 @@ export const EDIT = {
   // 场景模块
   SCENE: {
     INIT: 'EDIT.SCENE.INIT',
+    UPDATE: 'EDIT.SCENE.UPDATE',
   },
 
   // 菜单管理

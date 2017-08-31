@@ -9,7 +9,7 @@
             v-for="scene in scenes"
             :key="scene.id"
             class="edit-scene__item"
-            :class="{'edit-scene__item--active': scene.id === activeSceneId}"
+            :class="{'edit-scene__item--active': scene.active}"
           >
             <div class="edit-scene__item__wrapper" @click="selectScene(scene.id)">
               <img class="edit-scene__item__image" src="http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg" :alt="scene.name">
@@ -61,6 +61,7 @@
  */
 
 import Draggable from 'vuedraggable'
+import { EDIT } from '@/store/mutationTypes'
 import modal from '../../../mixins/modal'
 import EditTools from '../EditTools'
 import Basic from './components/Basic'
@@ -91,25 +92,15 @@ export default {
 
   data() {
     return {
-      activeSceneId: null,
-
       edit: false,
       tabs: ['基本信息', '场景特效', '背景音乐', '功能微调'],
       activeTab: 0,
     }
   },
 
-  watch: {
-    scenes(val) {
-      if (!this.activeSceneId) {
-        this.activeSceneId = val[0].id
-      }
-    },
-  },
-
   methods: {
     selectScene(id) {
-      this.activeSceneId = id
+      this.$store.commit(EDIT.SCENE.UPDATE, { id, update: { active: true } })
     },
 
     // 125是每个场景图的宽度 + 5px margin
@@ -226,7 +217,7 @@ export default {
     }
 
     &--active {
-     outline: 2px solid #ffc000;
+     box-shadow: 0 0 0 2px #ffc000;
     }
 
     & + li {

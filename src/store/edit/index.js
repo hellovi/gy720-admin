@@ -62,14 +62,46 @@ export default {
       state.panoInfo = panoInfo
     },
 
+    /**
+     * 获取场景数据
+     * 把第一个场景设为当前场景
+     */
     [EDIT.SCENE.INIT](state, scenes) {
-      state.scenes = scenes
+      state.scenes = [
+        { ...scenes[0], active: true },
+        ...scenes.slice(1),
+      ]
+    },
+
+    /**
+     * 更新某一个场景的信息
+     * 若更新的属性是active，则必须把其它场景的active重置为false
+     * @param {Object} state
+     * @param {{ id: string, update: Object }} data
+     */
+    [EDIT.SCENE.UPDATE](state, { id, update }) {
+      state.scenes = state.scenes.map((scene) => {
+        if (scene.id === id) {
+          return { ...scene, ...update }
+        }
+        if (update.active) {
+          return { ...scene, active: false }
+        }
+        return scene
+      })
     },
   },
 
   getters: {
     isVip(state, getters, { userInfo }) {
       return userInfo.is_vip || state.panoInfo.is_vip
+    },
+
+    /**
+     * 当前场景
+     */
+    activeScene(state) {
+      return state.scenes.find(scene => scene.active)
     },
   },
 }
