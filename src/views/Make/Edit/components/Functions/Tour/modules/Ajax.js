@@ -7,7 +7,9 @@
 import Http from '@/utils/http'
 
 const TOUR_API = '/user/panomap'
-const TOUR_VIEW_API = '/user/panomapscene/scenes'
+const TOUR_VIEWS_API = '/user/panomapscene/batchupdate'
+const DELETE_TOUR_VIEW_API = '/user/panomapscene'
+const TOUR_SCENES_API = '/user/panomapscene/scenes'
 
 /**
  * @desc    编辑导览详情的数据结构
@@ -142,15 +144,41 @@ export default class Ajax {
    */
   static readScenelist() {
     return Http.get(this.setQueryUrl({
-      host: TOUR_VIEW_API,
+      host: TOUR_SCENES_API,
       pano_id: this.defaultPanoId,
     }))
       .then(({ result }) => result)
   }
 
   /**
+   * @desc  批量添加/修改场景视角
    *
+   * @method  POST
+   * @param   {Array}       viewlist
+   * @param   {number}      tourId
    *
-   *
+   * @return  {Promise}     dataless
    */
+  static replaceViewConfig(viewlist, tourId) {
+    return Http.post(this.setQueryUrl({
+      host: TOUR_VIEWS_API,
+      pano_id: this.defaultPanoId,
+      pano_map_id: tourId,
+    }), { update: viewlist })
+  }
+
+  /**
+   * @desc 删除场景视角
+   *
+   * @method  DELETE
+   * @param   {number}      viewId
+   *
+   * @return  {Promise}     dataless
+   */
+  static deleteSceneView(viewId) {
+    return Http.delete(this.setParamUrl({
+      host: DELETE_TOUR_VIEW_API,
+      id: viewId,
+    }))
+  }
 }

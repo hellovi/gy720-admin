@@ -1,14 +1,16 @@
 <template>
-  <div class="edit-functions__view-edition">
+  <div class="edit-functions__view-edition" v-if="viewInfo">
 
     <div class="edition__map">
       <v-view-panel
-        v-for="view in viewlist" :key="view.scene_id"
+        v-for="(view, index) in viewInfo.map_scenes"
+        :key="view.scene_id"
         :top.sync="view.top"
         :left.sync="view.left"
-        :degress.sync="view.degress"
+        :degress.sync="view.degrees"
+        @delete="preDeleteView(index)"
       ></v-view-panel>
-      <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
+      <img :src="$url.static(viewInfo.image)">
     </div>
 
     <dl class="edition__doc">
@@ -39,9 +41,11 @@
       >添加场景</el-button>
       <el-button
         type="primary"
+        @click="submit"
       >完成编辑</el-button>
       <el-button
         type="ghost"
+        @click="cancel"
       >取消编辑</el-button>
     </div>
   </div>
@@ -82,15 +86,15 @@ export default {
       '操作完成后, 请记得点击 "完成编辑" 保存操作。',
     ],
 
-    viewlist: [],
+    viewInfo: [],
 
     viewOrigin: {
       id: 0,
-      pano_map_id: 0,
+      // pano_map_id: 0,
       scene_id: 0,
       top: 0,
       left: 0,
-      degress: 0,
+      degrees: 0,
     },
 
     scenelist: [],
@@ -101,6 +105,8 @@ export default {
   }),
 
   methods: {
+    /* --- 场景逻辑 --- */
+
     openSceneSelection() {
       this.sceneSelectionModal.active = true
     },
@@ -115,24 +121,89 @@ export default {
         .find(item => item.id === scene_id)
       if (scene) scene.is_used = true
       // 新增viewPanel
-      this.viewlist.push({
+      this.viewInfo.map_scenes.push({
         ...this.viewOrigin,
         ...{ scene_id },
       })
       // 关闭场景选择
       this.closeSceneSelection()
     },
+
+    /* --- 删除场景 --- */
+
+    preDeleteView(index) {
+      const views = this.viewInfo.map_scenes
+      const id = views[index].id
+      if (id) {
+        Ajax.deleteSceneView(id)
+          .then(() => {
+            this.$message({
+              message: '删除视角成功',
+              type: 'success',
+            })
+            this.deleteView(index)
+          })
+          .catch(() => {
+            this.$message({
+              message: '删除视角失败',
+              type: 'error',
+            })
+          })
+      } else {
+        this.deleteView(index)
+      }
+    },
+
+    deleteView(index) {
+      const views = this.viewInfo.map_scenes
+      // 重置对应场景状态
+      const scene = this.scenelist
+        .find(item => item.id === views[index].scene_id)
+      if (scene) scene.is_used = false
+      // 删除视角
+      this.$delete(views, index)
+    },
+
+    /* --- 提交操作 ---- */
+
+    submit() {
+      Ajax.replaceViewConfig(
+        this.viewInfo.map_scenes,
+        this.tourId,
+      )
+        .then(() => {
+          this.$message({
+            message: '视角编辑操作完成',
+            type: 'success',
+          })
+          this.cancel()
+        })
+        .catch((error) => {
+          this.$message({
+            message: error.status.reason.update[0],
+            type: 'error',
+          })
+        })
+    },
+
+    cancel() {
+      this.$emit('cancel')
+    },
   },
 
   created() {
     // 读取导览详情
+    if (this.tourId) {
+      Ajax.retrieveTourInfo(this.tourId)
+        .then((res) => { this.viewInfo = res })
+    }
 
     // 读取场景选择列表
     Ajax.readScenelist()
       .then((res) => { this.scenelist = res })
 
     // 设置viewPanelOrigin对应的导览id
-    this.viewOrigin.pano_map_id = this.tourId
+    // this.viewOrigin.pano_map_id = this.tourId
   },
 }
 </script>

@@ -63,10 +63,12 @@
       title="编辑导览图视角" size="large" top="5%"
       :close-on-click-modal="false"
       :visible.sync="viewEditionModal.active"
+      :before-close="deactivateViewEdition"
     >
       <v-view-edition
         v-if="viewEditionModal.active"
         :tour-id="viewEditionModal.tourId"
+        @cancel="deactivateViewEdition"
       ></v-view-edition>
     </el-dialog>
   </div>
@@ -138,8 +140,18 @@ export default {
       this.tourEditionModal.type = 'create'
     },
 
-    activateViewEdition() {
+    activateViewEdition(tourInfo) {
+      if (tourInfo) {
+        this.viewEditionModal.tourId = tourInfo.id
+      }
       this.viewEditionModal.active = true
+    },
+
+    deactivateViewEdition() {
+      this.viewEditionModal = {
+        active: false,
+        tourId: 0,
+      }
     },
 
     /* --- creation --- */
@@ -147,7 +159,7 @@ export default {
     tourEditionCreated(tourInfo) {
       this.tourlist.push(tourInfo)
       this.deactivateTourEdition()
-      // this.activateTourEdition(tourInfo)
+      this.activateViewEdition(tourInfo)
     },
 
     /* --- updation --- */
