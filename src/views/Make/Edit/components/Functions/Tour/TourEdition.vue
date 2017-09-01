@@ -1,147 +1,267 @@
 <template>
-  <div class="edit-functions__tour-edition">
-    <el-form
-      class="edition__editor"
-      label="80px" :inline="true"
-      :model="tourEditionInfo"
-      :rules="tourEditionRules"
-    >
-      <el-form-item
-        label="地图名称"
-        prop="name"
-      >
-        <el-input
-          v-model="tourEditionInfo.name"
-          placeholder="输入4个字符以内"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="openSceneSelection"
-        >选择场景</el-button>
-        <el-button type="primary">保存</el-button>
-      </el-form-item>
-    </el-form>
+  <el-form
+    class="edit-functions__tour-edition"
+    label-width="80px"
+    ref="tourEditionForm"
+    :model="editionInfo"
+    :rules="tourEditionRules"
+  >
+    <!-- 后端错误回显 -->
+    <app-form-alert
+      :contents="errorReasons"
+    ></app-form-alert>
 
-    <div class="edition__map">
-      <v-view-panel
-        :top.sync="viewPanelInfo.top"
-        :left.sync="viewPanelInfo.left"
-        :degress.sync="viewPanelInfo.degress"
-      ></v-view-panel>
-      <img :src="$url.static('data/avatar/20170101/471811501052670905.jpg')">
+    <!-- 表单项 -->
+    <el-form-item
+      class="edition__name"
+      label="导览名称"
+      prop="name"
+    >
+      <el-input
+        v-model="editionInfo.name"
+        placeholder="请输入地图名称，例如一楼、二楼、单元一等（输入4个字符以内）"
+      >
+      </el-input>
+    </el-form-item>
+    <el-form-item
+      class="edition__material"
+      label="导览地图"
+      prop="image"
+    >
+      <img
+        v-if="editionInfo.image.length"
+        class="edition__material__display"
+        :src="$url.static(editionInfo.image)">
+      <el-button
+        :disabled="type === 'update'"
+        @click="onChooseMaterial"
+      >选择素材</el-button>
+      <el-button
+        v-show="type === 'create'
+          &&editionInfo.image.length > 0
+        "
+        @click="resetEditionImage"
+      >删除</el-button>
+      <span class="edition__material__note">
+        选择平面地图，500px分辨率以上
+      </span>
+    </el-form-item>
+    <!-- 控制按钮 -->
+    <div
+      class="edition__control"
+    >
+      <el-button type="primary"
+        :loading="confirmLoading"
+        @click="preSubmit"
+      >提交</el-button>
+      <el-button
+        @click="cancel"
+      >取消</el-button>
     </div>
-
-    <dl class="edition__doc">
-      <dt>帮助操作：</dt>
-      <dd v-for="(item, index) in helpDoc" :key="item">
-        {{`${index + 1}、${item}`}}
-      </dd>
-    </dl>
-
-    <!-- 选择场景 -->
-    <el-dialog
-      class="edition__sceneSelection"
-      title="选择场景" size="large"
-      :modal="false" top="5%"
-      :visible.sync="sceneSelectionModal.tag"
-    >
-      <v-tour-scene
-        class="edition__sceneSelection-item"
-        v-for= "i in 30" :key="i"
-      >
-      </v-tour-scene>
-    </el-dialog>
-  </div>
+  </el-form>
 </template>
 
 <script>
 /**
- * 高级编辑 - 编辑导览、场景视角
+ * 高级编辑 - 导览 - 编辑导览信息
  *
  * @author huojinzhao
  */
 
-import vViewPanel from './ViewPanel'
-import vTourScene from './TourScene'
+import { EDIT } from '@/store/mutationTypes'
+import modal from '@/views/Make/Edit/mixins/modal'
+import Ajax from './modules/Ajax'
 
 export default {
   name: 'edit-functions__tour-edition',
 
-  components: {
-    vViewPanel,
-    vTourScene,
+  mixins: [modal],
+
+  props: {
+    visible: {
+      type: Boolean,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+    },
+    tourInfo: {
+      type: Object,
+    },
   },
 
   data: () => ({
-    helpDoc: [
-      '点击 "选择场景" 按钮，选择需要添加视角展示的场景；',
-      '拖动雷达的圆心，可以设置在地图中位置；',
-      '拖动雷达的外环区域，可以设置视角方向；',
-      '操作完成后, 记得点击 "保存" 哦。',
-    ],
-
-    tourEditionInfo: {
+    editionOriginInfo: {
       name: '',
+      image: '',
     },
+
+    editionInfo: null,
+
+    confirmLoading: false,
+
+    editionImageRef: null,
 
     tourEditionRules: {
       name: [
-        { required: true, message: '请输入地图名称', trigger: 'blur' },
-        { pattern: /^\S{1,4}$/, message: '请输入4个字符以内', trigger: 'blur' },
+        {
+          required: true,
+          message: '请输入地图名称',
+          trigger: 'blur',
+        },
+        {
+          pattern: /^\S{1,4}$/,
+          message: '请输入4个字符以内',
+          trigger: 'blur',
+        },
+      ],
+      image: [
+        {
+          required: true,
+          message: '请选择地图素材',
+          trigger: 'change',
+        },
       ],
     },
 
-    viewPanelInfo: {
-      top: 100,
-      left: 200,
-      degress: 90,
-    },
-
-    sceneSelectionModal: {
-      tag: false,
-    },
+    errorReasons: null,
   }),
 
-  methods: {
-    openSceneSelection() {
-      this.sceneSelectionModal.tag = true
+  watch: {
+    visible(val) {
+      if (val) this.checkEditionInfo()
     },
+  },
+
+  methods: {
+    /* ------ initialization ------ */
+
+    checkEditionInfo() {
+      this.$refs.tourEditionForm.resetFields()
+      this.editionInfo = {
+        ...this.editionOriginInfo,
+        ...this.tourInfo,
+      }
+    },
+
+    /* ------ application ------ */
+
+    /* --- control --- */
+
+    onChooseMaterial() {
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'tours')
+        .then((item) => {
+          this.resetEditionImage()
+          this.editionInfo.image = item.file_path
+        })
+    },
+
+    resetEditionImage() {
+      this.editionImageRef.resetField()
+    },
+
+    cancel() {
+      this.$emit('cancel')
+      this.errorReasons = {}
+      this.confirmLoading = false
+    },
+
+    /* --- submit --- */
+
+    preSubmit() {
+      this.$refs.tourEditionForm
+        .validate((valid) => {
+          if (valid) {
+            this.submit()
+              .then(() => this.cancel())
+              .catch((error) => {
+                this.confirmLoading = false
+                this.errorReasons = error
+              })
+          }
+        })
+    },
+
+    submit() {
+      this.confirmLoading = true
+      if (this.type === 'create') {
+        return this.createTourInfo()
+      }
+      // update
+      return this.patchTourInfo()
+    },
+
+    createTourInfo() {
+      return Ajax.insertTourInfo(this.editionInfo)
+        .then((res) => {
+          this.$emit('create', res)
+          this.$message({
+            message: '创建成功',
+            type: 'success',
+          })
+        })
+    },
+
+    patchTourInfo() {
+      const tourInfo = { ...this.editionInfo }
+      return Ajax.updateTourInfo(tourInfo)
+        .then(() => {
+          this.$emit('update', tourInfo)
+          this.$message({
+            message: '更新成功',
+            type: 'success',
+          })
+        })
+    },
+  },
+
+  created() {
+    this.editionInfo = { ...this.editionOriginInfo }
+  },
+
+  mounted() {
+    this.checkEditionInfo()
+
+    this.$refs.tourEditionForm.fields
+      .forEach((item) => {
+        if (item.prop === 'image') {
+          this.editionImageRef = item
+        }
+      })
   },
 }
 </script>
 
 <style lang="postcss">
+@import 'vars.css';
+
 .edit-functions__tour-edition {
-  text-align: center;
 
-  & .edition__editor {
-    text-align: left;
-  }
+  & .edition {
 
-  & .edition__map {
-    position: relative;
-    display: inline-block;
+    &__material {
 
-    & > img {
-      max-width: 800px;
+      &__display {
+        float: left;
+        margin-right: 10px;
+        height: 35px;
+      }
+
+      &__note {
+        float: right;
+
+        &::before {
+          content: '\e621';
+          color: var(--disabled-color-base);
+          font-family: 'iconfont';
+        }
+      }
     }
-  }
 
-  & .edition__doc {
-    text-align: left;
-
-    & dd {
-      margin-top: 10px;
-    }
-  }
-
-  & .edition__sceneSelection {
-    text-align: left;
-
-    &-item {
-      float: left;
+    &__control {
+      margin-top: 35px;
+      text-align: right;
     }
   }
 }

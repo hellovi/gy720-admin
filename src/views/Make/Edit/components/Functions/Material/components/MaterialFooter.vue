@@ -1,7 +1,10 @@
 <template>
   <footer class="material-footer">
-    <el-button type="primary" v-if="activeType === 'infos'">添加图文信息</el-button>
-
+    <span v-if="activeType === 'panos'">
+      <div class="el-button btn-primary" id="normal">上传2:1全景图</div>
+      <div class="el-button btn-primary" id="fisheye">上传4张鱼眼图</div>
+    </span>
+    <el-button type="primary" v-else-if="activeType === 'infos'" @click="openImageTextAdd">添加图文信息</el-button>
     <el-button type="primary" v-else-if="activeType === 'objects'" @click="openObjectManage">管理物品3D</el-button>
 
     <div v-else>
@@ -29,7 +32,14 @@
 </template>
 
 <script>
+/**
+ * 素材 - 底部操作栏
+ * @author luminghuai
+ * @version 2017-09-01
+ */
+
 import { EDIT } from '@/store/mutationTypes'
+import upload from '@/views/User/Publish/mixins/upload'
 import modal from '../../../../mixins/modal'
 
 const AppFileUpload = () => import('@/components/AppFileUpload')
@@ -42,7 +52,9 @@ const requiredRatios = {
 }
 
 export default {
-  mixins: [modal],
+  name: 'edit-material-footer',
+
+  mixins: [modal, upload],
 
   components: {
     AppFileUpload,
@@ -71,6 +83,11 @@ export default {
   methods: {
     openObjectManage() {
       this.openModal('object3d')
+      this.$store.dispatch(EDIT.OBJECT.CATE.INIT)
+    },
+
+    openImageTextAdd() {
+      this.openModal('imageTextEdit')
     },
 
     filesAdded(up, files) {
@@ -107,7 +124,7 @@ export default {
         file_size: file.size,
       }
 
-      this.$store.dispatch(EDIT.MATERIAL.ADD, data)
+      this.$store.dispatch(EDIT.MATERIAL.CREATE, data)
         .then(() => { this.filename = '' })
     },
 
@@ -117,8 +134,10 @@ export default {
 </script>
 
 <style lang="postcss">
+@import "vars.css";
+
 .material-footer {
-  margin-top: 10px;
+  margin-top: 20px;
 
   .el-button {
     padding: 8px 12px;
@@ -128,7 +147,7 @@ export default {
     display: inline-block;
     margin-left: 0.6em;
     color: var(--gray);
-    font-size: 14px;
+    font-size: 13px;
 
     & > li {
       display: inline-block;

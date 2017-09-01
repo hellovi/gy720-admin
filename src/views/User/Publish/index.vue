@@ -215,6 +215,10 @@ export default {
 
 .publish-wrapper {
   margin-top: 30px;
+
+  .pano-material__content {
+    min-height: 420px;
+  }
 }
 
 .publish-form {

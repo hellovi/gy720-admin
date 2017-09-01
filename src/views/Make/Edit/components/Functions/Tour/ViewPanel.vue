@@ -9,6 +9,9 @@
       ref="point"
       @mousedown="onTranslate"
     ></div>
+    <i class="iconfont"
+      @click.stop.prevent="onDeleteView"
+    >&#xe607;</i>
   </div>
 </template>
 
@@ -186,6 +189,11 @@ export default {
       const opposite = centerPoint.y - mousePoint.clientY
       return this.get360Angle(base, opposite)
     },
+
+    /* --- 删除 --- */
+    onDeleteView() {
+      this.$emit('delete')
+    },
   },
 
   mounted() {
@@ -206,7 +214,6 @@ export default {
   width: 60px;
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.5);
-  overflow: hidden;
   cursor: pointer;
 
   &::before {
@@ -217,7 +224,8 @@ export default {
     width: 0;
     height: 0;
     border-style: solid;
-    border-width: 30px 60px;
+    border-width: 28px;
+    border-radius: 50%;
     border-color: rgb(238, 124, 31) transparent transparent;
     transform: translate(-50%, -50%);
   }
@@ -246,6 +254,32 @@ export default {
     border-radius: 50%;
     background-color: rgb(238, 124, 31);
     transform: translate(-50%, -50%);
+  }
+
+  & > i {
+    position:absolute;
+    visibility: hidden;
+    top: -25px;
+    right: -25px;
+    margin: 20px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    line-height: 20px;
+    width: 20px;
+    font-size: 15px;
+    color: white;
+    overflow: hidden;
+
+    &:hover {
+      visibility: visible;
+    }
+  }
+
+  &:hover {
+
+    & > i {
+      visibility: visible;
+    }
   }
 }
 </style>

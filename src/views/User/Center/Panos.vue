@@ -37,7 +37,7 @@
 
     <el-button
       class="center-panos__wholepano-link"
-      v-if="panosInfo.data.length > 0 && rel === 'release'"
+      v-if="panosInfo.data.length > 0 && routeType === 'release'"
       type="text" size="large"
       @click.stop="checkCompositions"
     >

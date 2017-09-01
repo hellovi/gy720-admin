@@ -21,7 +21,7 @@
 import modal from '../../mixins/modal'
 
 export default {
-  name: 'edit-functions__author',
+  name: 'edit-functions-author',
 
   mixins: [modal],
 }

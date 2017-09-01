@@ -34,34 +34,34 @@
               ></el-switch>
             </el-form-item>
           </el-col>
-          <el-col :span="3">
-            按钮名称
-          </el-col>
-          <el-col :span="5">
-            <el-form-item prop="btn_title">
-              <el-input
-                placeholder="例如:点击购买"
-                v-model="detail.btn_title"
-                size="small"
-                :disabled="disabled"
-                @change="validChange('btn_title')"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="3">
-            链接地址
-          </el-col>
-          <el-col :span="7">
-            <el-form-item prop="btn_url">
-              <el-input
-                placeholder="例如:http://gy720.com"
-                v-model="detail.btn_url"
-                size="small"
-                :disabled="disabled"
-                @change="validChange('btn_url')"
-              ></el-input>
-            </el-form-item>
-          </el-col>
+          <template v-if="!disabled">
+            <el-col :span="3">
+              按钮名称
+            </el-col>
+            <el-col :span="5">
+              <el-form-item prop="btn_title">
+                <el-input
+                  placeholder="例如:点击购买"
+                  v-model="detail.btn_title"
+                  size="small"
+                  @change="validChange('btn_title')"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="3">
+              链接地址
+            </el-col>
+            <el-col :span="7">
+              <el-form-item prop="btn_url">
+                <el-input
+                  placeholder="例如:http://gy720.com"
+                  v-model="detail.btn_url"
+                  size="small"
+                  @change="validChange('btn_url')"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </template>
         </el-row>
       </el-form-item>
     </el-form>
@@ -111,45 +111,30 @@
       formLoading: false,
       formRef: 'form',
       info: {},
+      rules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+          { type: 'string', max: 30, message: '标题不能超过30个字符', trigger: 'blur' },
+        ],
+        content: [
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { type: 'string', max: 300000, message: '内容不能超过300000个字符', trigger: 'blur' },
+        ],
+        btn_title: [
+          { required: true, message: '请输入名称', trigger: 'blur' },
+          { type: 'string', max: 10, message: '不能超出10个字符', trigger: 'blur' },
+        ],
+        btn_url: [
+          { required: true, message: '请输入链接地址', trigger: 'blur' },
+          { type: 'url', message: '链接地址格式有误', trigger: 'blur' },
+          { type: 'string', max: 300, message: '不能超出300个字符', trigger: 'blur' },
+        ],
+      },
     }),
 
     computed: {
       disabled() {
         return this.detail.btn_show === 10
-      },
-      rules() {
-        let rules
-        const defRules = {
-          title: [
-            { required: true, message: '请输入标题' },
-            { type: 'string', max: 30, message: '标题不能超过30个字符' },
-          ],
-          content: [
-            { required: true, message: '请输入内容', trigger: 'blur' },
-            { type: 'string', max: 300000, message: '内容不能超过300000个字符' },
-          ],
-        }
-        if (this.detail.btn_show === 20) {
-          rules = {
-            ...defRules,
-            btn_title: [
-              { required: true, message: '请输入名称' },
-              { type: 'string', max: 10, message: '不能超出10个字符' },
-            ],
-            btn_url: [
-              { required: true, message: '请输入链接地址' },
-              { type: 'url', message: '链接地址格式有误' },
-              { type: 'string', max: 300, message: '不能超出300个字符' },
-            ],
-          }
-        } else {
-          this.resetField(['btn_title', 'btn_url'])
-          rules = {
-            ...defRules,
-          }
-        }
-
-        return rules
       },
     },
 
@@ -189,21 +174,12 @@
         })
       },
 
-      // 指定字段重置
-      resetField(name = []) {
-        this.$nextTick(() => {
-          if (Object.keys(this.$refs).length) {
-            name.map(val => this.$refs[this.formRef]
-              .fields.find(item => item.prop === val).resetField())
-          }
-        })
-      },
-
       // 重置表单为默认值
       resetFields() {
         this.show = false
         // 赋值默认值
         this.detail = { ...defInfo }
+        this.info = {}
         this.$nextTick(() => {
           this.formLoading = false
           this.$refs[this.formRef].resetFields()
@@ -213,10 +189,10 @@
 
       // 重置表单为初始值
       resetForm() {
-        if (this.type === 'add') {
-          this.$refs[this.formRef].resetFields()
-        } else {
+        if (this.type === 'edit') {
           this.detail = { ...this.info }
+        } else {
+          this.$refs[this.formRef].resetFields()
         }
       },
 

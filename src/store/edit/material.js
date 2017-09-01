@@ -1,44 +1,17 @@
+import Vue from 'vue'
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
-/**
- * @typedef {Object} State
- * @property {string} type - 素材类型
- * @property {boolean} selectStatus - 试图上是否显示选择按钮
- * @property {string} selectFrom - 调用素材框的源头
- * @property {Object} materialExport - 各个素材类型里所选中的素材数据
- * @property {Object} materialData - 素材数据
- */
+const { MATERIAL, OBJECT } = EDIT
 
-const { MATERIAL } = EDIT
-
-const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
-
-// const MATERIAL_DICT = {
-//   panos: { url: '/user/sourcescene' },
-//   objects: { url: '/user/sourcerotate' },
-//   normals: { url: '/user/source' },
-// }
-
-// 导出的数据
-const getMaterialExport = () => ({
-  menu: { title: '', id: 0 }, // 图文素材data(右侧菜单)
-  tour: { url: '', id: 0 }, // 导览图(右侧菜单)
-  wechat: { url: '', id: 0 }, // 普通素材data(微信设置)
-  logos: { url: '', id: 0 }, // LOGO素材(LOGO设置)
-  audio: { title: '', url: '', id: 0 }, // 音频素材(背景音乐)
-  hotspot: { title: '', id: 0 }, // 图文素材data(热点设置)
-  hotspot3d: { title: '', id: 0 }, // 物品3D素材(热点设置)
-  hotspotAudio: { title: '', url: '', id: 0 }, // 音频素材(热点设置)
-})
+// 自定义事件，用于MATERIAL.INVOKE和MATERIAL.SELECT中
+export const customEvent = document.createEvent('Event')
+customEvent.initEvent('selectMaterial', false, true)
 
 export default {
-  /** @type {State} */
   state: {
     type: 'panos',
-    selectStatus: 1,
-    source: '',
-    materialExport: getMaterialExport(),
+    invoked: false,
     materialData: {
       panos: { data: [] },
       logos: { data: [] },
@@ -52,72 +25,187 @@ export default {
       audios: { data: [] },
       others: { data: [] },
     },
+    selectedItem: {},
+    // 物品3D分类
+    objectCates: [],
+    activeObjectCateId: null,
   },
 
   mutations: {
-    [MATERIAL.TAB.SELECT](state, { type, source = '' }) {
+    /**
+     * 改变素材框选中的素材类型
+     */
+    [MATERIAL.CHANGE](state, type) {
       state.type = type
-      state.source = source
     },
 
-    [MATERIAL.INIT.LOAD](state, { type = state.type, data }) {
+    [MATERIAL.INIT](state, { type = state.type, data }) {
       state.materialData[type] = data
     },
 
-    [MATERIAL.ADD](state, result) {
+    [MATERIAL.CREATE](state, result) {
       state.materialData[state.type].data.unshift(result)
     },
 
-    [MATERIAL.SELECT](state, { id = 0, url = '', title = '' }) {
-      const source = state.source
-      const materExport = state.materialExport
-      switch (state.type) {
-        case 'infos':
-          materExport[source] = { id, title }
-          break
-        case 'objects':
-          materExport[source] = { id, title }
-          break
-        default:
-          // 普通以及音频素材
-          materExport[source] = { id, url, title }
-      }
-      state.source = ''
+    [MATERIAL.UPDATE](state, { id, data }) {
+      Vue.set(
+        state.materialData[state.type],
+        'data',
+        state.materialData[state.type].data
+          .map((item) => {
+            if (item.id === id) {
+              return { ...item, ...data }
+            }
+            return item
+          }),
+      )
     },
 
-    [MATERIAL.RESET](state, source) {
-      state.materialExport[source] = {
-        ...getMaterialExport()[source],
-      }
+    [MATERIAL.REMOVE](state, id) {
+      Vue.set(
+        state.materialData[state.type],
+        'data',
+        state.materialData[state.type].data.filter(item => item.id !== id),
+      )
+    },
+
+    [MATERIAL.INVOKE](state, invoked) {
+      state.invoked = invoked
+    },
+
+    /**
+     * 调用素材框后选中某个素材
+     * 选中后派发自定义事件
+     */
+    [MATERIAL.SELECT](state, item) {
+      state.selectedItem = item
+      window.dispatchEvent(customEvent)
+    },
+
+    /** 物品3D分类 */
+    [OBJECT.CATE.INIT](state, cates) {
+      state.objectCates = cates
+      state.activeObjectCateId = cates[0].id
+    },
+
+    [OBJECT.CATE.CREATE](state, cate) {
+      state.objectCates = [...state.objectCates, cate]
+    },
+
+    [OBJECT.CATE.SELECT](state, id) {
+      state.activeObjectCateId = id
+    },
+
+    [OBJECT.CATE.REMOVE](state, id) {
+      state.objectCates = state.objectCates.filter(cate => cate.id !== id)
+    },
+
+    /** 物品3D列表 */
+    // 如果列表中已有10项，向列表添加新项目的同时，应该删除列表最后一项
+    [OBJECT.CREATE](state, object) {
+      const { data } = state.materialData.objects
+      Vue.set(state.materialData.objects, 'data', [
+        object,
+        ...(data.length >= 10 ? data.slice(0, -1) : data),
+      ])
+    },
+
+    [OBJECT.UPDATE](state, update) {
+      const index = state.materialData.objects.data.findIndex(item => item.id === update.id)
+      Vue.set(state.materialData.objects.data, index, {
+        ...state.materialData.objects.data[index],
+        ...update,
+      })
+    },
+
+    [OBJECT.REMOVE](state, id) {
+      const { data } = state.materialData.objects
+      Vue.set(state.materialData.objects, 'data', data.filter(item => item.id !== id))
     },
   },
 
   actions: {
-    /**
-     * 根据传入的type改变选中的素材标签，并派发事件打开素材窗口
-     */
-    [MATERIAL.TAB.SELECT]({ commit }, { type, source }) {
-      commit(MATERIAL.TAB.SELECT, { type, source })
-      commit(EDIT.MODAL.OPEN, 'material')
-    },
-
-    [MATERIAL.INIT.NORMALS]({ commit }, { url, params = '' }) {
+    [MATERIAL.INIT]({ commit }, { url, params = '' }) {
       return Http.get(`${url}${params}`)
         .then(({ result }) => {
-          commit(MATERIAL.INIT.LOAD, { data: result })
-        })
-        .catch(() => {
-          commit(MATERIAL.INIT.LOAD, {
-            data: [{ id: 3, file_path: testData, title: '测试素材' },
-              { id: 4, file_path: testData, title: '测试素材' },
-              { id: 5, file_path: testData, title: '测试素材' },
-            ] })
+          commit(MATERIAL.INIT, { data: result })
         })
     },
 
-    [MATERIAL.ADD]({ commit }, data) {
+    [MATERIAL.CREATE]({ commit }, data) {
       return Http.post('/user/source', data)
-        .then(({ result }) => commit(MATERIAL.ADD, result))
+        .then(({ result }) => commit(MATERIAL.CREATE, result))
+    },
+
+    /**
+     * 如果移动了分类应当删除
+     */
+    [MATERIAL.UPDATE]({ commit }, { id, data, isMove }) {
+      return Http.put(`/user/source/${id}`, data)
+        .then(() => {
+          if (isMove) {
+            commit(MATERIAL.REMOVE, id)
+          } else {
+            commit(MATERIAL.UPDATE, { id, data })
+          }
+        })
+    },
+
+    [MATERIAL.REMOVE]({ commit }, id) {
+      return Http.delete(`/user/source/${id}`)
+        .then(() => commit(MATERIAL.REMOVE, id))
+    },
+
+    /**
+     * 其它模块调用素材框
+     * 把素材框设置为被调用状态（invoked），设置素材框的选中类型，打开素材框
+     * 监听自定义事件，在选中某个素材后返回该素材，并重置上述改动
+     */
+    [MATERIAL.INVOKE]({ commit, state }, type) {
+      commit(MATERIAL.INVOKE, true)
+      commit(MATERIAL.CHANGE, type)
+      commit(EDIT.MODAL.OPEN, 'material')
+
+      return new Promise((resolve) => {
+        window.addEventListener('selectMaterial', () => {
+          resolve(state.selectedItem)
+          commit(MATERIAL.CHANGE, 'panos')
+          commit(MATERIAL.INVOKE, false)
+          commit(EDIT.MODAL.CLOSE, 'material')
+        })
+      })
+    },
+
+    /** 物品3D分类 */
+    [OBJECT.CATE.INIT]({ commit }) {
+      return Http.get('/user/sourcerotatecategory')
+        .then(({ result }) => commit(OBJECT.CATE.INIT, result))
+    },
+
+    [OBJECT.CATE.CREATE]({ commit }, data) {
+      return Http.post('/user/sourcerotatecategory', data)
+        .then(() => commit(OBJECT.CATE.CREATE, data))
+    },
+
+    [OBJECT.CATE.REMOVE]({ commit }, id) {
+      return Http.delete(`/user/sourcerotatecategory/${id}`)
+        .then(() => commit(OBJECT.CATE.REMOVE, id))
+    },
+
+    /** 物品3D列表 */
+    [OBJECT.CREATE]({ commit }, data) {
+      Http.post('/user/sourcerotate', data)
+        .then(() => commit(OBJECT.CREATE, data))
+    },
+
+    [OBJECT.UPDATE]({ commit }, data) {
+      Http.put(`/user/sourcerotate/${data.id}`, data)
+        .then(() => commit(OBJECT.UPDATE, data))
+    },
+
+    [OBJECT.REMOVE]({ commit }, id) {
+      Http.delete(`/user/sourcerotate/${id}`)
+        .then(() => commit(OBJECT.REMOVE, id))
     },
   },
 }

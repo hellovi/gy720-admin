@@ -12,12 +12,17 @@
           v-for="tour in tourlist" :key="tour.id"
         >
           <div class="tour-guidemap__item-control">
-            <!-- 编辑 -->
+            <!-- 编辑导览 -->
             <i
               class="iconfont"
-              @click="activateTourEdition"
+              @click="() => activateTourEdition(tour)"
             >&#xe614;</i>
-            <!-- 删除 -->
+            <!-- 编辑视角 -->
+            <i
+              class="iconfont"
+              @click="() => activateViewEdition(tour)"
+            >&#xe6bc;</i>
+            <!-- 删除导览 -->
             <i
               class="iconfont"
               @click="preDeleteTour(tour.id)"
@@ -30,31 +35,41 @@
         </li>
         <li
           class="tour-guidemap__create"
-          v-if="tourlist.length < 5"
-          @click="activateTourCreation"
+          v-show="tourlist.length < 5"
+          @click="() => activateTourEdition()"
         > + </li>
       </ul>
     </el-dialog>
 
-    <!-- 新增导览 -->
-    <el-dialog
-      title="添加地图" size="small"
-      :visible.sync="createTourModal.active"
-    >
-      <v-tour-creation
-        @submit="createTour"
-        @cancel="deactivateTourCreation"
-      ></v-tour-creation>
-    </el-dialog>
-
     <!-- 编辑导览 -->
     <el-dialog
-      class="tour-edition"
-      title="添加场景视角展示" size="large" top="5%"
-      :close-on-click-modal="false"
-      :visible.sync="editTourModal.active"
+      title="编辑导览图" size="small"
+      :visible.sync="tourEditionModal.active"
+      :before-close="deactivateTourEdition"
     >
-      <v-tour-edition></v-tour-edition>
+      <v-tour-edition
+        :visible="tourEditionModal.active"
+        :type="tourEditionModal.type"
+        :tour-info="tourInfo"
+        @create="tourEditionCreated"
+        @update="tourEditionUpdated"
+        @cancel="deactivateTourEdition"
+      ></v-tour-edition>
+    </el-dialog>
+
+    <!-- 编辑视角 -->
+    <el-dialog
+      class="tour-edition"
+      title="编辑导览图视角" size="large" top="5%"
+      :close-on-click-modal="false"
+      :visible.sync="viewEditionModal.active"
+      :before-close="deactivateViewEdition"
+    >
+      <v-view-edition
+        v-if="viewEditionModal.active"
+        :tour-id="viewEditionModal.tourId"
+        @cancel="deactivateViewEdition"
+      ></v-view-edition>
     </el-dialog>
   </div>
 </template>
@@ -63,23 +78,26 @@
 /**
  * 高级编辑 - 导览图
  *
- * @author hjz
+ * @author huojinzhao
  */
 
+import { EDIT } from '@/store/mutationTypes'
 import modal from '@/views/Make/Edit/mixins/modal'
 import deleteItem from '@/mixins/deleteItem'
-import vTourCreation from './TourCreation'
 import vTourEdition from './TourEdition'
+import vViewEdition from './ViewEdition'
 import Ajax from './modules/Ajax'
 
+const { TOUR } = EDIT
+
 export default {
-  name: 'edit-functions__tour',
+  name: 'edit-functions-tour',
 
   mixins: [modal, deleteItem],
 
   components: {
-    vTourCreation,
     vTourEdition,
+    vViewEdition,
   },
 
   data: () => ({
@@ -87,14 +105,14 @@ export default {
 
     tourInfo: {},
 
-    createTourModal: {
+    tourEditionModal: {
       active: false,
-      confirmLoading: false,
+      type: 'create',
     },
 
-    editTourModal: {
+    viewEditionModal: {
       active: false,
-      confirmLoading: false,
+      tourId: 0,
     },
   }),
 
@@ -103,30 +121,79 @@ export default {
 
     fetchTourlist() {
       Ajax.readTourlist()
-        .then((res) => { this.tourlist = res })
+        .then((res) => {
+          // 组件数据更新
+          this.tourlist = res
+          // store数据更新
+          this.increaseToursAmount(res.length)
+        })
     },
 
     /* ------ application ------ */
 
+    /* --- assitance ---- */
+
+    increaseToursAmount(count) {
+      this.$store.commit(TOUR.INCREASE, count)
+    },
+
+    decreaseToursAmount(count) {
+      this.$store.commit(TOUR.DECREASE, count)
+    },
+
     /* --- control --- */
 
-    deactivateTourCreation() {
-      this.createTourModal.active = false
+    activateTourEdition(tourInfo) {
+      if (tourInfo) {
+        this.tourInfo = tourInfo
+        this.tourEditionModal.type = 'update'
+      }
+      this.tourEditionModal.active = true
+    },
+
+    deactivateTourEdition() {
+      this.tourEditionModal.active = false
+      // 始终以creation为初始状态
+      this.tourInfo = {}
+      this.tourEditionModal.type = 'create'
+    },
+
+    activateViewEdition(tourInfo) {
+      if (tourInfo) {
+        this.viewEditionModal.tourId = tourInfo.id
+      }
+      this.viewEditionModal.active = true
+    },
+
+    deactivateViewEdition() {
+      this.viewEditionModal = {
+        active: false,
+        tourId: 0,
+      }
     },
 
     /* --- creation --- */
 
-    activateTourCreation() {
-      this.createTourModal.active = true
-    },
-
-    createTour(tourInfo) {
+    tourEditionCreated(tourInfo) {
+      // 组件数据更新
       this.tourlist.push(tourInfo)
-      this.deactivateTourCreation()
-      // this.activateTourEdition()
+      this.deactivateTourEdition()
+      this.activateViewEdition(tourInfo)
+      // store计数更新
+      this.increaseToursAmount(1)
     },
 
-    /* --- deletion */
+    /* --- updation --- */
+
+    tourEditionUpdated(tourInfo) {
+      const index = this.tourlist
+        .findIndex(item => item.id === tourInfo.id)
+      if (index > -1) {
+        this.$set(this.tourlist, index, tourInfo)
+      }
+    },
+
+    /* --- deletion --- */
 
     preDeleteTour(tourId) {
       this.onDeleteItem({
@@ -143,17 +210,19 @@ export default {
     },
 
     tourDeletionSucceed(tourId) {
+      // 组件数据更新
       this.tourlist = this.tourlist
         .filter(tour => tour.id !== tourId)
-    },
-
-    activateTourEdition() {
-      this.editTourModal.active = true
+      // store计数更新
+      this.decreaseToursAmount(1)
     },
   },
 
   created() {
+    // Ajax初始化
     Ajax.defaultPanoId = this.$route.query.pano_id
+
+    // 读取导览列表
     this.fetchTourlist()
   },
 }
@@ -221,19 +290,24 @@ export default {
         padding: 2px 5px;
         width: 100%;
         background-color: color(black alpha(30%));
-        text-align: left;
 
         & > i {
           color: white;
-          font-size: 12px;
+          font-size: 14px;
 
           &:hover {
             color: var(--color-warning);
           }
         }
 
-        & i + i {
+        & i:first-of-type {
+          float: left;
+          font-size: 12px;
+        }
+
+        & i:last-of-type {
           float: right;
+          font-size: 12px;
         }
       }
 

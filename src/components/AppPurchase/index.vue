@@ -5,6 +5,7 @@
       size="large"
       :visible="visible"
       @update:visible="val => $emit('update:visible',val)"
+      :before-close="beforeClose"
       class="app-purchase"
     >
       <el-row class="app-purchase__types">
@@ -67,8 +68,11 @@ export default {
       default: 'false',
     },
     panoId: {
-      type: Number,
+      type: [Number, String],
       required: 'true',
+    },
+    beforeClose: {
+      type: Function,
     },
   },
 

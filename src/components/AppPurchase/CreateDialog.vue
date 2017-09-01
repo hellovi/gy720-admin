@@ -113,7 +113,7 @@ export default {
       required: 'true',
     },
     panoId: {
-      type: Number,
+      type: [Number, String],
       default: null,
     },
   },

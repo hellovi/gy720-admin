@@ -20,23 +20,11 @@ export default {
 
     closeModal(name) {
       this.$store.commit(EDIT.MODAL.CLOSE, name)
-    },
 
-    /**
-     * 其他组件调用素材组件
-     * @param {Object} param
-     * @param {MaterialType} param.type -素材类型
-     * @param {InvokeSource} param.source - 调用来源
-     */
-    openMaterModal({ type, source }) {
-      this.$store.dispatch(EDIT.MATERIAL.TAB.SELECT, { type, source })
-    },
-    /**
-     * 其他组件调用素材组件重置方法
-     * @param {InvokeSource} source - 调用来源
-     */
-    resetMaterExport(source) {
-      this.$store.commit(EDIT.MATERIAL.RESET, source)
+      if (name === 'material') {
+        this.$store.commit(EDIT.MATERIAL.CHANGE, 'panos')
+        this.$store.commit(EDIT.MATERIAL.INVOKE, false)
+      }
     },
   },
 }

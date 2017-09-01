@@ -22,7 +22,6 @@
 
     <!--功能层-->
     <edit-functions></edit-functions>
-
   </div>
 </template>
 
@@ -69,6 +68,12 @@ export default {
     EditFunctions,
   },
 
+  data() {
+    return {
+      panoId: null,
+    }
+  },
+
   computed: {
     ...mapState({
       active: state => state.edit.active,
@@ -89,23 +94,24 @@ export default {
       window._krpano = document.getElementById('krpanoSWFObject')
       window.__krpano = new window.krpanoplugin(window._krpano)
 
-      // window.__krpano.hotspots = {}
+      window.__krpano.hotspots = {}
 
       // window._krpano.querySelector('canvas')
     },
   },
 
   created() {
-    const pano_id = this.$route.query.pano_id
-    this.$store.dispatch(EDIT.GET_PANOINFO, pano_id)
+    this.panoId = this.$route.query.pano_id
+
+    this.$store.dispatch(EDIT.GET_PANOINFO, this.panoId)
     // 菜单初始化
-    this.$store.dispatch(EDIT.MENU.INIT, pano_id)
+    this.$store.dispatch(EDIT.MENU.INIT, this.panoId)
     // 获取场景信息
-    this.$store.dispatch(EDIT.SCENE.INIT, this.$route.query.pano_id)
+    this.$store.dispatch(EDIT.SCENE.INIT, this.panoId)
   },
 
   mounted() {
-    this.initPano(this.$route.query.pano_id)
+    this.initPano(this.panoId)
   },
 }
 

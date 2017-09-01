@@ -109,7 +109,7 @@ export default {
     getPanos(page) {
       this.loading = true
       const params = page ? `${this.params}&page=${page}` : this.params
-      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, { url: '/user/sourcescene', params })
+      this.$store.dispatch(EDIT.MATERIAL.INIT, { url: '/user/sourcescene', params })
         .then(() => {
           this.loading = false
         })
@@ -189,8 +189,7 @@ export default {
   }
 
   &__content {
-    min-height: 420px;
-    padding: 20px 0;
+    padding: 20px 0 0;
   }
 }
 
@@ -234,7 +233,6 @@ export default {
 
 .pano-material__item {
   position: relative;
-  height: 120px;
   margin-bottom: 20px;
   cursor: pointer;
   transition: 0.2s;

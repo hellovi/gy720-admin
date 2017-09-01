@@ -1,23 +1,31 @@
 <template>
-   <el-dialog
+  <div>
+    <el-dialog
     title="添加热点"
     :visible="active.hotspots"
     :before-close="() => closeModal('hotspots')"
-    @close="closeModalAfter "
+    @close="closeModalAfter"
     class="edit-functions__hotspots-modal"
-  >
+    >
 
-      <keep-alive>
-        <component :is="currentView"
-          @switchStep="switchStep"
-          :type = "type"
-          :typeFir = "typeFir"
-          :typeSec = "typeSec"
-        >
-        </component>
-      </keep-alive>
+    <keep-alive>
+      <component
+        :is="currentView"
+        @switchStep="switchStep"
+        :type="type"
+        :typeFir="typeFir"
+        :typeSec="typeSec"
+        @open-modal="openModal"
+      >
+      </component>
+    </keep-alive>
 
-  </el-dialog>
+    </el-dialog>
+
+    <!-- 热点图标弹窗 -->
+    <icon-hotspots v-model="modal.icon"></icon-hotspots>
+
+  </div>
 </template>
 
 <script>
@@ -26,19 +34,23 @@
  * @author yj
  * @version 2017-08-14
  */
-
+import { mapState, mapGetters } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
+import hotspotsInit from './utils/hotSpot'
 import modal from '../../../mixins/modal'
 import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
+import IconHotspots from './components/IconHotspots'
 
 export default {
-  name: 'edit-functions__hotspots',
+  name: 'edit-functions-hotspots',
 
   mixins: [modal],
 
   components: {
     AddSpotFir,
     AddSpotSec,
+    IconHotspots,
   },
 
   data() {
@@ -53,10 +65,20 @@ export default {
         { icon: 'icon-shexiang', key: 8, text: '多媒体', label: '多媒体' },
         { icon: 'icon-danxuankuang', key: 7, text: '无' },
       ],
+      modal: {
+        icon: false,
+      },
+      sceneId: 0,
     }
   },
 
   computed: {
+    ...mapState({
+      panoId: state => state.edit.panoInfo.hash_pano_id,
+    }),
+
+    ...mapGetters(['activeScene']),
+
     typeFir() {
       return this.cateType.map(({ icon, key, text }) => ({ icon, key, text }))
     },
@@ -79,11 +101,21 @@ export default {
     closeModalAfter() {
       // 点击上一步，关闭都要重置
       this.currentView = AddSpotFir
+      // 重置选中的热点图标
+      this.$store.commit(EDIT.HOTSPOTS.RESET.ICON)
+    },
+
+    openModal(type) {
+      this.modal[type] = true
     },
   },
 
-  created() {
-
+  mounted() {
+    // 初始化热点相关方法，之后要传入编辑数据
+    hotspotsInit()
+    // this.sceneId = this.activeScene.id
+    // const params = `?pano_id=${this.panoId}&scene_id=${this.sceneId}`
+    // this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, params)
   },
 }
 </script>

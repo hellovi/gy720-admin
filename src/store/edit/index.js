@@ -4,6 +4,8 @@ import material from './material'
 import logo from './logo'
 import author from './author'
 import menu from './menu'
+import tour from './tour'
+import hotspots from './hotspots'
 
 export default {
   state: {
@@ -21,9 +23,10 @@ export default {
       scene: false,
       snapshot: false,
       initialview: false,
-      vipInfo: false,
       restrictView: false,
       object3d: false,
+      imageTextEdit: false,
+      vipInfo: false,
     },
 
     panoInfo: {},
@@ -36,6 +39,8 @@ export default {
     author,
     material,
     menu,
+    tour,
+    hotspots,
   },
 
   actions: {

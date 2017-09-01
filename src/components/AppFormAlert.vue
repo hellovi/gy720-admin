@@ -8,7 +8,7 @@
       :title="title"
       :type="type"
       show-icon>
-      <div v-for="msg in flatContents" v-html="msg"></div>
+      <div v-for="msg in flatContents" class="app-alert__content" v-html="msg"></div>
     </el-alert>
   </div>
 
@@ -74,6 +74,12 @@
 
 <style lang="postcss">
   .app-alert {
-    padding-bottom: 10px;
+    padding-bottom: 22px;
+    .el-alert__content {
+      line-height: 20px;
+    }
+    &__content {
+      font-size: 14px;
+    }
   }
 </style>

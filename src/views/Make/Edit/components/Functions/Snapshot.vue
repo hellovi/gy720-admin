@@ -46,7 +46,7 @@ const CREATE_SNAPSHOT_API = '/make/pubset/photograph'
 // const GET_SNANPSHOT_API = '/make/pubset/downphotograph'
 
 export default {
-  name: 'edit-functions__snapshot',
+  name: 'edit-functions-snapshot',
 
   mixins: [modal, esc],
 
