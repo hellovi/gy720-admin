@@ -122,7 +122,7 @@
 
     computed: {
       selectStatus() {
-        return this.$store.state.edit.material.selectStatus
+        return this.$store.state.edit.material.invoked
       },
       visible() {
         return this.active.imageTextEdit
