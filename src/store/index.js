@@ -7,6 +7,7 @@ import work from './work'
 import message from './message'
 import point from './point'
 import purchase from './purchase'
+import certificate from './certificate'
 import edit from './edit'
 
 Vue.use(Vuex)
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     message,
     point,
     purchase,
+    certificate,
     edit,
   },
 

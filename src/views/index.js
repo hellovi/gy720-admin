@@ -19,8 +19,6 @@ export { default as PurchaseDetail } from './User/Purchase/Detail'
 export { default as Certificate } from './User/Certificate'
 export { default as CertificateResult } from './User/Certificate/Result'
 export { default as CertificateApply } from './User/Certificate/Apply'
-export { default as CertificateApplyPerson } from './User/Certificate/Apply/Person'
-export { default as CertificateApplyCompany } from './User/Certificate/Apply/Company'
 
 // 账号管理
 export { default as Account } from './User/Account'

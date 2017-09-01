@@ -14,16 +14,6 @@ export default {
     {
       path: 'apply',
       component: views.CertificateApply,
-      children: [
-        {
-          path: 'person',
-          component: views.CertificateApplyPerson,
-        },
-        {
-          path: 'company',
-          component: views.CertificateApplyCompany,
-        },
-      ],
     },
   ],
 }

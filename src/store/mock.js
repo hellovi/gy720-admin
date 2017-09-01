@@ -1,6 +1,8 @@
+// 摄影师认证mock
 export default {
 
   // 待审核
+
   // result: {
   //   certificate: {
   //     certificate_type: 10,
@@ -21,6 +23,7 @@ export default {
   // },
 
   // 审核失败
+
   result: {
     certificate: {
       certificate_type: 20,
@@ -41,6 +44,7 @@ export default {
   },
 
   // 审核成功
+
   // result: {
   //   certificate: {
   //     certificate_type: 10,
@@ -62,6 +66,7 @@ export default {
 
 
   // 不满足条件第一次认证
+
   // result: {
   //   certificate: null,
   //   condition: {
@@ -71,5 +76,15 @@ export default {
   //   },
   // },
 
+  // 已满足条件第一次认证
+
+  // result: {
+  //   certificate: null,
+  //   condition: {
+  //     panoramas: true,
+  //     popular: true,
+  //     is_complete: true,
+  //   },
+  // },
 
 }

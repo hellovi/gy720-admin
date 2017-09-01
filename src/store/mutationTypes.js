@@ -72,6 +72,10 @@ export const PURCHASE = {
   },
 }
 
+export const CERTIFICATE = {
+  INIT: 'CERTIFICATE.INIT',
+}
+
 
 // 高级编辑模块 Edit
 export const EDIT = {
