@@ -51,7 +51,7 @@ export default {
     },
     staticUrl: {
       type: String,
-      default: `data/avatar/${yearMonthStr()}/`,
+      default: 'data/avatar/',
     },
     autoStart: {
       type: Boolean,
@@ -224,7 +224,7 @@ export default {
               return `.${arr[arr.length - 1]}`
             }
             const key = `${pre}${getFileSuffix(file.name)}`
-            return `${this.staticUrl}${random}${key}`
+            return `${this.staticUrl}${yearMonthStr()}/${random}${key}`
           },
         },
       }
