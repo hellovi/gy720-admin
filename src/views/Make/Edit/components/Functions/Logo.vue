@@ -86,19 +86,11 @@ export default {
 
   computed: {
     ...mapState({
-      // material: state => state.edit.material.materialExport.logos,
       panoInfo: state => state.edit.panoInfo,
     }),
   },
 
   watch: {
-    // 监听选择情况
-    // material: {
-    //   handler(val) {
-    //     this.setLogo(val)
-    //   },
-    //   deep: true,
-    // },
     // 监听作品信息变化情况
     panoInfo: {
       handler() {
@@ -133,6 +125,7 @@ export default {
     },
 
     closeChangLogo() {
+      this.setLogo()
       this.msgAlert = {}
     },
 
