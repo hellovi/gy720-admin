@@ -2,6 +2,7 @@
   <div class="material-image-text">
     <el-table
       :data="listData.data"
+      height="412"
       style="width:100%"
     >
       <el-table-column
@@ -112,7 +113,7 @@
       listData: {},
       currentEditId: null,
       dialogType: 'add',
-      perPage: 8,
+      perPage: 10,
       preViewId: null,
       preShow: false,
       addRendered: false,
@@ -228,12 +229,8 @@
 
 <style lang="postcss">
   .material-image-text{
-    min-height: 400px;
-    max-height: 500px;
+    height: 485px;
     position: relative;
-    .el-table {
-      min-height: 350px;
-    }
     .el-pagination {
       margin-top: 10px;
     }
