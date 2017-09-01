@@ -122,6 +122,7 @@
                 this.$message.success('验证码发送成功，请查收！')
               })
               .catch((errors) => {
+                this.disabled = false
                 this.errorHandler(errors)
               })
           }
