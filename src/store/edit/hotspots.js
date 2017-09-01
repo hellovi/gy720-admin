@@ -38,5 +38,16 @@ export default {
           commit(HOTSPOTS.INIT.ICON, data)
         })
     },
+
+    [HOTSPOTS.INIT.SPOTS](params) {
+      return Http.get(`/user/scenehotspot${params}`)
+        .then(({ result }) => {
+          result.map((item) => {
+            // eslint-disable-next-line
+            window.__krpano.adddesignhotspot(item)
+            return true
+          })
+        })
+    },
   },
 }

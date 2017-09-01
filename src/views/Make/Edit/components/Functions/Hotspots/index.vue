@@ -4,7 +4,7 @@
     title="添加热点"
     :visible="active.hotspots"
     :before-close="() => closeModal('hotspots')"
-    @close="closeModalAfter "
+    @close="closeModalAfter"
     class="edit-functions__hotspots-modal"
     >
 
@@ -34,7 +34,7 @@
  * @author yj
  * @version 2017-08-14
  */
-// import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import hotspotsInit from './utils/hotSpot'
 import modal from '../../../mixins/modal'
@@ -68,10 +68,17 @@ export default {
       modal: {
         icon: false,
       },
+      sceneId: 0,
     }
   },
 
   computed: {
+    ...mapState({
+      panoId: state => state.edit.panoInfo.hash_pano_id,
+    }),
+
+    ...mapGetters(['activeScene']),
+
     typeFir() {
       return this.cateType.map(({ icon, key, text }) => ({ icon, key, text }))
     },
@@ -103,9 +110,12 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     // 初始化热点相关方法，之后要传入编辑数据
     hotspotsInit()
+    // this.sceneId = this.activeScene.id
+    // const params = `?pano_id=${this.panoId}&scene_id=${this.sceneId}`
+    // this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, params)
   },
 }
 </script>

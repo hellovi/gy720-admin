@@ -1,8 +1,3 @@
-/**
- * 高级编辑 - hotspots
- * @author yj
- * @version 2017-08-14
- */
 /* eslint-disable */
 export default function hotspotsInit(vueData){
     window.krpanoplugin.prototype.adddesignhotspot = function(hotspotdata){
@@ -135,4 +130,53 @@ export default function hotspotsInit(vueData){
        // vueData.editSpot = Number(hot_id)
     };
 
+
+
+    /**
+     * 删除热点
+     */
+   window.krpanoDeleteHotspot = function (hotid) {
+       window.console.log('删除热点')
+       var hot_id = __krpano.hotspots[hotid].hot_id;
+       var scene_id = __krpano.hotspots[hotid].scene_id;
+       var postData = {
+           hot_id : parseInt(hot_id),
+           pano_id: parseInt(vueData.pano_id),
+           scene_id: parseInt(scene_id)
+       };
+      //  ajax.post('/make/hotspot/remove', postData)
+      //    .then((res) => {
+      //      window.console.log(res)
+      //      if ( res.status.code === 1){
+      //        window.__krpano.removehotspot("hotspot_" + hotid);
+      //        window.__krpano.removelayer("hotspot_txt_" + hotid);
+      //        window.__krpano.hotspots[hotid] = null;
+      //      }else{
+      //        window.console.log(res)
+      //      }
+      //    })
+      //    .catch((reason) => {
+      //      //测试删除
+      //      window.__krpano.removehotspot("hotspot_" + hotid);
+      //      window.__krpano.removelayer("hotspot_txt_" + hotid);
+      //      window.__krpano.hotspots[hotid] = null;
+      //    })
+   }
+
+    /**
+     * 移动热点
+     */
+   window.moveHotspot = function (hotid, ath, atv) {
+       window.console.log('移动热点')
+       var hotspot = window.__krpano.hotspots[hotid];
+       if (Math.floor(ath) != Math.floor(hotspot.ath) || Math.floor(atv) != Math.floor(hotspot.atv)) {
+           hotspot.ath = ath;
+           hotspot.atv = atv;
+           hotspot.pano_id = vueData.pano_id;
+          //  ajax.post('/user/?vtour-save_hotspot.htm', hotspot)
+          //    .then((res) => {
+          //      window.console.log(res)
+          //    })
+       }
+   }
 }

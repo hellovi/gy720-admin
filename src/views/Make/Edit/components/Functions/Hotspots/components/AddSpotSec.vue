@@ -48,9 +48,12 @@
  */
 import { mapState } from 'vuex'
 // import { EDIT } from '@/store/mutationTypes'
+import modal from '../../../../mixins/modal'
 
 export default {
   name: 'edit-functions__addSpotSec',
+
+  mixins: [modal],
 
   props: {
     type: {
@@ -142,9 +145,9 @@ export default {
       const data = this.prepareSpotsData()
       this.$http.post('/user/scenehotspot', data)
         .then(({ result }) => {
+          this.closeModal('hotspots')
           this.hotSpots = result
           // 这里接口返回的字段没有相应的图片??
-          this.hotSpots.style = 'hotspotstyle_normal'
           this.hotSpots.url = 'http://img-qiniu.gy720.com//statics/krpano/hoticon/g-3-2.png'
           // eslint-disable-next-line
           const krpanoWin = window.__krpano
