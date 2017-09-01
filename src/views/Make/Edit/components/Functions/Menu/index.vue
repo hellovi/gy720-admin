@@ -276,7 +276,7 @@ export default {
 
     // 打开图文信息
     openImagetext() {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'infos')
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'article')
         .then(({ id, title }) => {
           this.menuInfo.data = `${id}|${title}`
         })

@@ -22,7 +22,7 @@ export default {
       this.$store.commit(EDIT.MODAL.CLOSE, name)
 
       if (name === 'material') {
-        this.$store.commit(EDIT.MATERIAL.CHANGE, 'panos')
+        this.$store.commit(EDIT.MATERIAL.CHANGE, 'scene')
         this.$store.commit(EDIT.MATERIAL.INVOKE, false)
       }
     },

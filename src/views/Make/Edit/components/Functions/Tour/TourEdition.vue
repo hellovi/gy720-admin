@@ -150,7 +150,7 @@ export default {
     /* --- control --- */
 
     onChooseMaterial() {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'tours')
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'map')
         .then((item) => {
           this.resetEditionImage()
           this.editionInfo.image = item.file_path

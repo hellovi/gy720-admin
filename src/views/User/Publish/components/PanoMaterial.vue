@@ -87,7 +87,7 @@ export default {
 
   computed: {
     ...mapState({
-      list: state => state.edit.material.materialData.panos,
+      list: state => state.edit.material.materialData.scene,
     }),
 
     // 计算是否全选

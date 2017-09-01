@@ -155,7 +155,7 @@ export default {
     getMaterials(page = 1) {
       this.loading = true
 
-      const url = this.activeType === 'objects'
+      const url = this.activeType === 'rotate'
         ? '/user/sourcerotate'
         : '/user/source'
       const params = `?tag_id=${this.activeId}&page=${page}`

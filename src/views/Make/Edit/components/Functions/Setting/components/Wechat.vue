@@ -47,7 +47,7 @@ export default {
 
   methods: {
     invokeMaterials() {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'icons')
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'wxicon')
     },
   },
 }

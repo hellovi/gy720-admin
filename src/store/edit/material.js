@@ -10,20 +10,20 @@ customEvent.initEvent('selectMaterial', false, true)
 
 export default {
   state: {
-    type: 'panos',
+    type: 'scene',
     invoked: false,
     materialData: {
-      panos: { data: [] },
-      logos: { data: [] },
-      tours: { data: [] },
-      hotspots: { data: [] },
-      icons: { data: [] },
-      ads: { data: [] },
-      thumbs: { data: [] },
-      infos: { data: [] },
-      objects: { data: [] },
-      audios: { data: [] },
-      others: { data: [] },
+      scene: { data: [] },
+      logo: { data: [] },
+      map: { data: [] },
+      hotspot: { data: [] },
+      wxicon: { data: [] },
+      ad: { data: [] },
+      thumb: { data: [] },
+      article: { data: [] },
+      rotate: { data: [] },
+      audio: { data: [] },
+      other: { data: [] },
     },
     selectedItem: {},
     // 物品3D分类

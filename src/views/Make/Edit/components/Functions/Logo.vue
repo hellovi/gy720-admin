@@ -111,7 +111,7 @@ export default {
   methods: {
     // 选择LOGO图片
     changLogo() {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'logos')
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'logo')
         .then(item => this.setLogo(item))
     },
 

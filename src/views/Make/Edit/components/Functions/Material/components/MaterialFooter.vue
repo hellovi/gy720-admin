@@ -1,11 +1,11 @@
 <template>
   <footer class="material-footer">
-    <span v-if="activeType === 'panos'">
+    <span v-if="activeType === 'scene'">
       <div class="el-button btn-primary" id="normal">上传2:1全景图</div>
       <div class="el-button btn-primary" id="fisheye">上传4张鱼眼图</div>
     </span>
-    <el-button type="primary" v-else-if="activeType === 'infos'" @click="openImageTextAdd">添加图文信息</el-button>
-    <el-button type="primary" v-else-if="activeType === 'objects'" @click="openObjectManage">管理物品3D</el-button>
+    <el-button type="primary" v-else-if="activeType === 'article'" @click="openImageTextAdd">添加图文信息</el-button>
+    <el-button type="primary" v-else-if="activeType === 'rotate'" @click="openObjectManage">管理物品3D</el-button>
 
     <div v-else>
       <div class="material-progress" v-if="percent > 0 && percent < 100">

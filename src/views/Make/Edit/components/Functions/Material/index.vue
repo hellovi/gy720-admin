@@ -68,17 +68,17 @@ export default {
   data() {
     return {
       materials: [
-        { type: 'panos', id: 0, name: '全景图', view: 'pano-material' },
-        { type: 'logos', id: 1, name: 'LOGO' },
-        { type: 'tours', id: 2, name: '平面地图' },
-        { type: 'hotspots', id: 7, name: '热点图标' },
-        { type: 'icons', id: 3, name: '朋友圈小图标' },
-        { type: 'ads', id: 4, name: '天空/地面广告' },
-        { type: 'thumbs', id: 5, name: '场景缩略图' },
-        { type: 'infos', id: 10, name: '图文信息', view: 'image-text' },
-        { type: 'objects', id: 11, name: '物品3D' },
-        { type: 'audios', id: 9, name: '音频' },
-        { type: 'others', id: 6, name: '其他' },
+        { type: 'scene', id: 0, name: '全景图', view: 'pano-material' },
+        { type: 'logo', id: 1, name: 'LOGO' },
+        { type: 'map', id: 2, name: '平面地图' },
+        { type: 'hotspot', id: 7, name: '热点图标' },
+        { type: 'wxicon', id: 3, name: '朋友圈小图标' },
+        { type: 'ad', id: 4, name: '天空/地面广告' },
+        { type: 'thumb', id: 5, name: '场景缩略图' },
+        { type: 'article', id: 10, name: '图文信息', view: 'image-text' },
+        { type: 'rotate', id: 11, name: '物品3D' },
+        { type: 'audio', id: 9, name: '音频' },
+        { type: 'other', id: 6, name: '其他' },
       ],
     }
   },
