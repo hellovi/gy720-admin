@@ -55,7 +55,7 @@
       const areaLoading = {}
       let positionData = {}
 
-      if (isEmpty(this.optionItem)) {
+      if (!isEmpty(this.optionItem)) {
         areaType.forEach((val) => {
           positionData[val] = []
           areaLoading[val] = false
@@ -74,7 +74,7 @@
         areaLoading,
         positionData,
         areaData: strToArr(this.value),
-        autoLoading: isEmpty(this.optionItem),
+        autoLoading: !isEmpty(this.optionItem),
         colSpan: parseInt((24 - this.tree) / this.tree, 10),
       }
     },
