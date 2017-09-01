@@ -1,23 +1,31 @@
 <template>
-   <el-dialog
+  <div>
+    <el-dialog
     title="添加热点"
     :visible="active.hotspots"
     :before-close="() => closeModal('hotspots')"
     @close="closeModalAfter "
     class="edit-functions__hotspots-modal"
-  >
+    >
 
-      <keep-alive>
-        <component :is="currentView"
-          @switchStep="switchStep"
-          :type = "type"
-          :typeFir = "typeFir"
-          :typeSec = "typeSec"
-        >
-        </component>
-      </keep-alive>
+    <keep-alive>
+      <component
+        :is="currentView"
+        @switchStep="switchStep"
+        :type="type"
+        :typeFir="typeFir"
+        :typeSec="typeSec"
+        @open-modal="openModal"
+      >
+      </component>
+    </keep-alive>
 
-  </el-dialog>
+    </el-dialog>
+
+    <!-- 热点图标弹窗 -->
+    <icon-hotspots v-model="modal.icon"></icon-hotspots>
+
+  </div>
 </template>
 
 <script>
@@ -30,6 +38,7 @@
 import modal from '../../../mixins/modal'
 import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
+import IconHotspots from './components/IconHotspots'
 
 export default {
   name: 'edit-functions-hotspots',
@@ -39,6 +48,7 @@ export default {
   components: {
     AddSpotFir,
     AddSpotSec,
+    IconHotspots,
   },
 
   data() {
@@ -53,6 +63,9 @@ export default {
         { icon: 'icon-shexiang', key: 8, text: '多媒体', label: '多媒体' },
         { icon: 'icon-danxuankuang', key: 7, text: '无' },
       ],
+      modal: {
+        icon: false,
+      },
     }
   },
 
@@ -79,6 +92,10 @@ export default {
     closeModalAfter() {
       // 点击上一步，关闭都要重置
       this.currentView = AddSpotFir
+    },
+
+    openModal(type) {
+      this.modal[type] = true
     },
   },
 

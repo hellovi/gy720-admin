@@ -10,7 +10,7 @@
       <!-- <el-form-item label="热点图标" prop="icon.id"
        :rules="[ { required: true, message: '请输入热点名称', trigger: 'blur' }]"> -->
       <el-form-item label="热点图标" prop="icon">
-        <el-button type="primary" size="small">选择</el-button>
+        <el-button type="primary" size="small" @click="openIconModal">选择</el-button>
       </el-form-item>
 
       <el-form-item :label="typeSec" v-if="type === 1" prop="scene">
@@ -32,6 +32,7 @@
       </el-form-item>
 
     </el-form>
+
   </div>
 </template>
 
@@ -88,6 +89,10 @@ export default {
   },
 
   methods: {
+    openIconModal() {
+      this.$emit('open-modal', 'icon')
+    },
+
     switchStep(step) {
       this.$emit('switchStep', step)
     },
