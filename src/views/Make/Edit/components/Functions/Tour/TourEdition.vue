@@ -68,6 +68,7 @@
  * @author huojinzhao
  */
 
+import { EDIT } from '@/store/mutationTypes'
 import modal from '@/views/Make/Edit/mixins/modal'
 import Ajax from './modules/Ajax'
 
@@ -127,15 +128,7 @@ export default {
     errorReasons: null,
   }),
 
-  computed: {
-    tourMaterial() {
-      return this.$store.state.edit.material.materialExport.tour
-    },
-  },
-
   watch: {
-    'tourMaterial.url': 'checkTourMaterial',
-
     visible(val) {
       if (val) this.checkEditionInfo()
     },
@@ -152,20 +145,16 @@ export default {
       }
     },
 
-    checkTourMaterial(val) {
-      if (val.length) {
-        this.resetEditionImage()
-        this.editionInfo.image = val
-      }
-      this.resetMaterExport('tour')
-    },
-
     /* ------ application ------ */
 
     /* --- control --- */
 
     onChooseMaterial() {
-      this.openMaterModal({ type: 'tours', source: 'tour' })
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'tours')
+        .then((item) => {
+          this.resetEditionImage()
+          this.editionInfo.image = item.file_path
+        })
     },
 
     resetEditionImage() {

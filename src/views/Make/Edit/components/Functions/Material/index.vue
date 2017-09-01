@@ -7,6 +7,7 @@
       :close-on-press-escape="false"
       :visible="active.material"
       :before-close="close"
+      top="10%"
     >
       <!-- 分类标签栏 -->
       <ul class="material-tabs clearfix list">
@@ -14,26 +15,24 @@
           v-for="material in materials"
           :key="material.type"
           class="material-tabs__item"
-          :class="{'material-tabs__item--active': material.id === activeMaterial.id}"
+          :class="{'material-tabs__item--active': material.id === activeId}"
           @click="changeType(material.type)"
         >{{ material.name }}</li>
       </ul>
 
       <!-- 素材列表 -->
-      <keep-alive>
-        <div
-          :is="activeMaterial.view || 'material-list'"
-          :key="activeType"
-          class="material-content"
-          :active-type="activeMaterial.type"
-          :active-id="activeMaterial.id"
-        ></div>
-      </keep-alive>
+      <div
+        class="material-content"
+        :is="activeView"
+        :key="activeType"
+        :active-type="activeType"
+        :active-id="activeId"
+      ></div>
 
       <!-- 底部操作栏  -->
       <material-footer
-        :active-type="activeMaterial.type"
-        :active-id="activeMaterial.id"
+        :active-type="activeType"
+        :active-id="activeId"
       ></material-footer>
     </el-dialog>
   </div>
@@ -43,14 +42,16 @@
 /**
  * 高级编辑 - 素材库
  * @author yangjun | luminghuai
- * @version 2017-08-31
+ * @version 2017-09-01
  */
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
-import { MaterialList, MaterialFooter, ImageText } from './components'
+import MaterialList from './components/MaterialList'
+import MaterialFooter from './components/MaterialFooter'
+import ImageText from './components/ImageText'
 
 export default {
   name: 'edit-functions-material',
@@ -67,7 +68,7 @@ export default {
   data() {
     return {
       materials: [
-        { type: 'panos', id: 0, name: '全景图', view: 'PanoMaterial' },
+        { type: 'panos', id: 0, name: '全景图', view: 'pano-material' },
         { type: 'logos', id: 1, name: 'LOGO' },
         { type: 'tours', id: 2, name: '平面地图' },
         { type: 'hotspots', id: 7, name: '热点图标' },
@@ -91,6 +92,14 @@ export default {
     activeMaterial() {
       return this.materials.find(({ type }) => type === this.activeType)
     },
+
+    activeId() {
+      return this.activeMaterial.id
+    },
+
+    activeView() {
+      return (this.activeMaterial.view || 'material-list')
+    },
   },
 
   methods: {
@@ -99,7 +108,7 @@ export default {
     },
 
     changeType(type) {
-      this.$store.commit(EDIT.MATERIAL.TAB.SELECT, { type })
+      this.$store.commit(EDIT.MATERIAL.CHANGE, type)
     },
   },
 }
@@ -109,7 +118,7 @@ export default {
 @import "vars.css";
 
 .material-dialog {
-  width: 1200px;
+  width: 1000px;
 }
 
 .material-tabs {
@@ -117,13 +126,14 @@ export default {
 
   &__item {
     float: left;
-    padding: 0.4em 0.8em;
+    padding: 0.3em 0.7em;
     border-radius: 2px;
     background-color: var(--gray-extra-light);
     cursor: pointer;
+    transition: 0.2s;
 
     & + li {
-      margin-left: 1em;
+      margin-left: 0.8em;
     }
 
     &--active {
@@ -132,7 +142,9 @@ export default {
     }
   }
 }
+
 .material-content {
+  height: 485px;
   padding-top: 10px;
   padding-bottom: 10px;
   border-width: 1px 0;
@@ -142,78 +154,9 @@ export default {
   .el-pagination {
     margin-top: 15px;
   }
-}
 
-/* .edit-functions__material {
-  &__data {
-    min-height: 400px;
-    position: relative;
-
-
-  }
-
-  .el-dialog {
-    position: inherit;
-  }
-
-  &__ul {
-    padding-left: 0px;
-  }
-
-  &__title {
-    float: left;
-    margin-right: 10px;
-
-    & .el-button {
-      width: 90px;
-      margin-bottom: 5px;
-      text-align: center;
-      padding: 6px 5px;
-    }
-  }
-
-  &__button--active {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
+  .pano-material__content {
+    min-height: 365px;
   }
 }
-
-
-.edit-functions__material {
-  &__wrap {
-    .el-card {
-      text-align: center;
-      padding-top: 10px;
-    }
-
-    .el-col {
-      margin-bottom: 10px;
-    }
-
-    .bottom {
-      position: relative;
-
-      & > h6 {
-        font-size: 12px;
-        margin: 10px auto 10px;
-      }
-    }
-  }
-
-  &__image {
-    max-height: 40px;
-  }
-
-  &__upload {
-    margin-top: 20px;
-
-    .el-button {
-      margin-right: 10px;
-    }
-
-    & > span {
-      color: var(--gray);
-    }
-  }
-} */
 </style>

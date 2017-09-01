@@ -235,8 +235,6 @@ export default {
       editionType: state => state.edit.menu.editionType,
       editionInfo: state => state.edit.menu.editionInfo,
       position: state => state.edit.menu.position,
-      // 图文数据
-      imageText: state => state.edit.material.materialExport.menu,
     }),
 
     hasTipsPrivilege() {
@@ -246,8 +244,6 @@ export default {
 
   watch: {
     'active.menu': 'initMenuInfo',
-
-    'imageText.title': 'checkImageText',
   },
 
   filters: {
@@ -280,16 +276,10 @@ export default {
 
     // 打开图文信息
     openImagetext() {
-      this.openMaterModal({ type: 'infos', source: 'menu' })
-    },
-
-    // 确认图文信息
-    checkImageText(value) {
-      if (value.length) {
-        const data = this.imageText
-        this.menuInfo.data = `${data.id}|${data.title}`
-        this.resetMaterExport('menu')
-      }
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'infos')
+        .then(({ id, title }) => {
+          this.menuInfo.data = `${id}|${title}`
+        })
     },
 
     // 购买tips服务

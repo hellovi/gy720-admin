@@ -86,19 +86,19 @@ export default {
 
   computed: {
     ...mapState({
-      material: state => state.edit.material.materialExport.logos,
+      // material: state => state.edit.material.materialExport.logos,
       panoInfo: state => state.edit.panoInfo,
     }),
   },
 
   watch: {
     // 监听选择情况
-    material: {
-      handler(val) {
-        this.setLogo(val)
-      },
-      deep: true,
-    },
+    // material: {
+    //   handler(val) {
+    //     this.setLogo(val)
+    //   },
+    //   deep: true,
+    // },
     // 监听作品信息变化情况
     panoInfo: {
       handler() {
@@ -111,15 +111,13 @@ export default {
   methods: {
     // 选择LOGO图片
     changLogo() {
-      this.openMaterModal({
-        type: 'logos',
-        source: 'logos',
-      })
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'logos')
+        .then(item => this.setLogo(item))
     },
 
-    setLogo(logos = {}) {
-      if (logos.url) {
-        this.logoInfo.logo = logos.url
+    setLogo({ file_path } = {}) {
+      if (file_path) {
+        this.logoInfo.logo = file_path
         this.$nextTick(() => {
           // 校验LOGO字段
           this.$refs.logoForm.validateField('logo')
@@ -135,12 +133,7 @@ export default {
     },
 
     closeChangLogo() {
-      this.resetSelectLogos()
-    },
-
-    resetSelectLogos() {
       this.msgAlert = {}
-      this.resetMaterExport('logos')
     },
 
     // 提交更换LOGO
