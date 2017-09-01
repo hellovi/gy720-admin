@@ -142,4 +142,19 @@ export const EDIT = {
     INCREASE: 'EDIT.TOUR.INCREASE',
     DECREASE: 'EDIT.TOUR.DECREASE',
   },
+
+  // 热点模块
+  HOTSPOTS: {
+    INIT: {
+      ICON: 'EDIT.HOTSPOTS.INIT.ICON',
+      SPOTS: 'EDIT.HOTSPOTS.INIT.SPOTS',
+    },
+    SELECT: {
+      ICON: 'EDIT.HOTSPOTS.SELECT.ICON',
+    },
+    RESET: {
+      ICON: 'EDIT.HOTSPOTS.RESET.ICON',
+    },
+    UPDATE: 'EDIT.HOTSPOTS.UPDATE',
+  },
 }

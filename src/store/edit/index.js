@@ -5,6 +5,7 @@ import logo from './logo'
 import author from './author'
 import menu from './menu'
 import tour from './tour'
+import hotspots from './hotspots'
 
 export default {
   state: {
@@ -38,6 +39,7 @@ export default {
     material,
     menu,
     tour,
+    hotspots,
   },
 
   actions: {
