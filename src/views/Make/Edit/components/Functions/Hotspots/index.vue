@@ -32,7 +32,7 @@ import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
 
 export default {
-  name: 'edit-functions__hotspots',
+  name: 'edit-functions-hotspots',
 
   mixins: [modal],
 

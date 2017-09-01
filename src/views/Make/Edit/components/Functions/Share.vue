@@ -31,7 +31,7 @@ import modal from '../../mixins/modal'
 const PANO_VIEW_STATIC = 'http://www.gy720.com/pano/view'
 
 export default {
-  name: 'edit-functions__share',
+  name: 'edit-functions-share',
 
   mixins: [modal],
 

@@ -155,7 +155,7 @@ import vMenuGps from './MenuGps'
 const { MENU } = EDIT
 
 export default {
-  name: 'edit-functions__menu',
+  name: 'edit-functions-menu',
 
   mixins: [modal],
 

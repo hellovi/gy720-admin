@@ -21,7 +21,7 @@ import modal from '../../mixins/modal'
 import esc from '../../mixins/esc'
 
 export default {
-  name: 'edit-functions__initialview',
+  name: 'edit-functions-initialview',
 
   mixins: [modal, esc],
 

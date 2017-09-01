@@ -1,24 +1,24 @@
 <template>
   <div class="edit-functions">
     <!--功能层-->
-    <functions-logo></functions-logo>
-    <functions-author></functions-author>
-    <functions-setting></functions-setting>
-    <functions-material v-if="active.material"></functions-material>
-    <functions-group></functions-group>
-    <functions-menu></functions-menu>
-    <functions-tour></functions-tour>
-    <functions-hotspots></functions-hotspots>
-    <functions-share :data="pano"></functions-share>
-    <functions-scene></functions-scene>
-    <functions-snapshot></functions-snapshot>
-    <functions-initialview></functions-initialview>
+    <logo></logo>
+    <author></author>
+    <setting></setting>
+    <material v-if="active.material"></material>
+    <group></group>
+    <edit-menu></edit-menu>
+    <tour></tour>
+    <hotspots></hotspots>
+    <share :data="pano"></share>
+    <scene></scene>
+    <snapshot></snapshot>
+    <initialview></initialview>
     <!--vip信息-->
-    <functions-vip-info :data="pano"></functions-vip-info>
+    <vip-info :data="pano"></vip-info>
     <!--限制视角-->
-    <functions-restrict-view v-if="active.restrictView"></functions-restrict-view>
+    <restrict-view v-if="active.restrictView"></restrict-view>
 
-    <functions-object-manager></functions-object-manager>
+    <object-manager></object-manager>
   </div>
 </template>
 
@@ -29,42 +29,42 @@
  */
 import { mapState } from 'vuex'
 
-import FunctionsLogo from './Logo'
-import FunctionsAuthor from './Author'
-import FunctionsSetting from './Setting'
-import FunctionsMaterial from './Material'
-import FunctionsGroup from './Group'
-import FunctionsMenu from './Menu'
-import FunctionsTour from './Tour'
-import FunctionsHotspots from './Hotspots'
-import FunctionsShare from './Share'
-import FunctionsScene from './Scene'
-import FunctionsSnapshot from './Snapshot'
-import FunctionsInitialview from './Initialview'
-import FunctionsVipInfo from './VipInfo'
-import FunctionsRestrictView from './RestrictView'
-import FunctionsObjectManager from './ObjectManager'
+import Logo from './Logo'
+import Author from './Author'
+import Setting from './Setting'
+import Material from './Material'
+import Group from './Group'
+import EditMenu from './Menu'
+import Tour from './Tour'
+import Hotspots from './Hotspots'
+import Share from './Share'
+import Scene from './Scene'
+import Snapshot from './Snapshot'
+import Initialview from './Initialview'
+import VipInfo from './VipInfo'
+import RestrictView from './RestrictView'
+import ObjectManager from './ObjectManager'
 
 
 export default {
   name: 'edit',
 
   components: {
-    FunctionsLogo,
-    FunctionsAuthor,
-    FunctionsSetting,
-    FunctionsMaterial,
-    FunctionsGroup,
-    FunctionsMenu,
-    FunctionsTour,
-    FunctionsHotspots,
-    FunctionsShare,
-    FunctionsScene,
-    FunctionsSnapshot,
-    FunctionsInitialview,
-    FunctionsVipInfo,
-    FunctionsRestrictView,
-    FunctionsObjectManager,
+    Logo,
+    Author,
+    Setting,
+    Material,
+    Group,
+    EditMenu,
+    Tour,
+    Hotspots,
+    Share,
+    Scene,
+    Snapshot,
+    Initialview,
+    VipInfo,
+    RestrictView,
+    ObjectManager,
   },
 
   computed: {

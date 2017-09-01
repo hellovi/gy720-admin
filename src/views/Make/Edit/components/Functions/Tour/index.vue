@@ -91,7 +91,7 @@ import Ajax from './modules/Ajax'
 const { TOUR } = EDIT
 
 export default {
-  name: 'edit-functions__tour',
+  name: 'edit-functions-tour',
 
   mixins: [modal, deleteItem],
 

@@ -58,7 +58,7 @@ import { EDIT } from '@/store/mutationTypes'
 import modal from '../../mixins/modal'
 
 export default {
-  name: 'edit-functions__logo',
+  name: 'edit-functions-logo',
 
   mixins: [modal],
 

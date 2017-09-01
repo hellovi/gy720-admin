@@ -59,7 +59,7 @@ import Draggable from 'vuedraggable'
 import modal from '../../mixins/modal'
 
 export default {
-  name: 'edit-functions__group',
+  name: 'edit-functions-group',
 
   components: {
     Draggable,
