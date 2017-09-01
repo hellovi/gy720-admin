@@ -4,6 +4,7 @@ import material from './material'
 import logo from './logo'
 import author from './author'
 import menu from './menu'
+import tour from './tour'
 
 export default {
   state: {
@@ -36,6 +37,7 @@ export default {
     author,
     material,
     menu,
+    tour,
   },
 
   actions: {

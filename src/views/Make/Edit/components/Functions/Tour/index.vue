@@ -81,11 +81,14 @@
  * @author huojinzhao
  */
 
+import { EDIT } from '@/store/mutationTypes'
 import modal from '@/views/Make/Edit/mixins/modal'
 import deleteItem from '@/mixins/deleteItem'
 import vTourEdition from './TourEdition'
 import vViewEdition from './ViewEdition'
 import Ajax from './modules/Ajax'
+
+const { TOUR } = EDIT
 
 export default {
   name: 'edit-functions__tour',
@@ -118,10 +121,25 @@ export default {
 
     fetchTourlist() {
       Ajax.readTourlist()
-        .then((res) => { this.tourlist = res })
+        .then((res) => {
+          // 组件数据更新
+          this.tourlist = res
+          // store数据更新
+          this.increaseToursAmount(res.length)
+        })
     },
 
     /* ------ application ------ */
+
+    /* --- assitance ---- */
+
+    increaseToursAmount(count) {
+      this.$store.commit(TOUR.INCREASE, count)
+    },
+
+    decreaseToursAmount(count) {
+      this.$store.commit(TOUR.DECREASE, count)
+    },
 
     /* --- control --- */
 
@@ -157,9 +175,12 @@ export default {
     /* --- creation --- */
 
     tourEditionCreated(tourInfo) {
+      // 组件数据更新
       this.tourlist.push(tourInfo)
       this.deactivateTourEdition()
       this.activateViewEdition(tourInfo)
+      // store计数更新
+      this.increaseToursAmount(1)
     },
 
     /* --- updation --- */
@@ -189,8 +210,11 @@ export default {
     },
 
     tourDeletionSucceed(tourId) {
+      // 组件数据更新
       this.tourlist = this.tourlist
         .filter(tour => tour.id !== tourId)
+      // store计数更新
+      this.decreaseToursAmount(1)
     },
   },
 

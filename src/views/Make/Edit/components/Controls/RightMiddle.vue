@@ -1,7 +1,14 @@
 <template>
   <div class="edit-control__right-middle">
-    <div v-if="true" role="button" class="btn-add dash-box"  @click="openModal('tour')">+</div>
-    <i v-else class="edit-control__tour-guide iconfont">&#xe61b;</i>
+    <i v-if="toursAmount"
+      class="edit-control__tour-guide iconfont"
+      @click="openModal('tour')"
+    >&#xe61b;</i>
+    <div v-else
+      role="button"
+      class="btn-add dash-box"
+      @click="openModal('tour')"
+    >+</div>
   </div>
 </template>
 
@@ -11,6 +18,7 @@
  * @author luminghuai
  * @version 2017-08-11
  */
+import { mapState } from 'vuex'
 import modal from '../../mixins/modal'
 
 export default {
@@ -18,6 +26,11 @@ export default {
 
   mixins: [modal],
 
+  computed: {
+    ...mapState({
+      toursAmount: state => state.edit.tour.toursAmount,
+    }),
+  },
 }
 </script>
 
