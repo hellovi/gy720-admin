@@ -7,7 +7,7 @@
     <functions-material v-if="active.material"></functions-material>
     <functions-group></functions-group>
     <functions-menu></functions-menu>
-    <functions-tour v-if="active.tour"></functions-tour>
+    <functions-tour></functions-tour>
     <functions-hotspots></functions-hotspots>
     <functions-share :data="pano"></functions-share>
     <functions-scene></functions-scene>
