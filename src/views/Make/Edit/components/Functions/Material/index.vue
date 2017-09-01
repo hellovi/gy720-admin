@@ -1,6 +1,11 @@
 <template>
   <div class="edit-functions__material">
-    <el-dialog title="素材库" custom-class="material-dialog" :visible="active.material" :before-close="close">
+    <el-dialog
+      title="素材库"
+      custom-class="material-dialog"
+      :visible="active.material"
+      :before-close="close"
+    >
       <!-- 分类标签栏 -->
       <ul class="material-tabs clearfix list">
         <li
@@ -9,7 +14,7 @@
           class="material-tabs__item"
           :class="{'material-tabs__item--active': material.id === activeMaterial.id}"
           @click="changeType(material.type)"
-        >{{ material.label }}</li>
+        >{{ material.name }}</li>
       </ul>
 
       <!-- 素材列表 -->
@@ -23,38 +28,27 @@
         ></div>
       </keep-alive>
 
+      <!-- 底部操作栏  -->
       <material-footer
         :active-type="activeMaterial.type"
         :active-id="activeMaterial.id"
       ></material-footer>
-
     </el-dialog>
-
-    <!-- 管理物品3D -->
-    <manage-object
-      :value="active.object3d"
-      :cate-list="cateList"
-      :obj-list="objList"
-      :current-cate="currentCate"
-      @createCate="onCreateCate"
-      @createWork="onCreateWork"
-      @editWork="onEditWork"
-      @deleteItem="onDelete"
-      @changeCate="onChangeCate"
-    ></manage-object>
   </div>
 </template>
 
 <script>
 /**
  * 高级编辑 - 素材库
- * @version 2017-08-21
+ * @author yangjun | luminghuai
+ * @version 2017-08-31
  */
+
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import modal from '../../../mixins/modal'
-import { MaterialList, MaterialFooter, ImageText, manageObject } from './components'
+import { MaterialList, MaterialFooter, ImageText } from './components'
 
 export default {
   name: 'edit-functions-material',
@@ -66,28 +60,23 @@ export default {
     MaterialList,
     MaterialFooter,
     ImageText,
-    manageObject,
   },
 
   data() {
     return {
       materials: [
-        { type: 'panos', id: 0, label: '全景图', view: 'PanoMaterial' },
-        { type: 'logos', id: 1, label: 'LOGO' },
-        { type: 'tours', id: 2, label: '平面地图' },
-        { type: 'hotspots', id: 7, label: '热点图标' },
-        { type: 'icons', id: 3, label: '朋友圈小图标' },
-        { type: 'ads', id: 4, label: '天空/地面广告' },
-        { type: 'thumbs', id: 5, label: '场景缩略图' },
-        { type: 'infos', id: 10, label: '图文信息', view: 'image-text' },
-        { type: 'objects', id: 11, label: '物品3D' },
-        { type: 'audios', id: 9, label: '音频' },
-        { type: 'others', id: 6, label: '其他' },
+        { type: 'panos', id: 0, name: '全景图', view: 'PanoMaterial' },
+        { type: 'logos', id: 1, name: 'LOGO' },
+        { type: 'tours', id: 2, name: '平面地图' },
+        { type: 'hotspots', id: 7, name: '热点图标' },
+        { type: 'icons', id: 3, name: '朋友圈小图标' },
+        { type: 'ads', id: 4, name: '天空/地面广告' },
+        { type: 'thumbs', id: 5, name: '场景缩略图' },
+        { type: 'infos', id: 10, name: '图文信息', view: 'image-text' },
+        { type: 'objects', id: 11, name: '物品3D' },
+        { type: 'audios', id: 9, name: '音频' },
+        { type: 'others', id: 6, name: '其他' },
       ],
-
-      cateList: [], // 物品3D分类
-      objList: { data: [] },
-      currentCate: 1,
     }
   },
 

@@ -1,24 +1,24 @@
 <template>
   <aside class="object-manage__aside">
-    <el-button type="primary" @click="$emit('open-create-object-dialog')">创建物品3D</el-button>
+    <el-button type="primary" @click="$emit('open-object-dialog')">创建物品3D</el-button>
 
     <a class="hover-primary object-manage__aside__add" @click="openDialog">+创建新分类</a>
 
     <ul class="list">
-      </v-cate-item>
-      <li v-for="cate in cates" :key="cate.id" class="object-cate-item" :class="{active: cate.id === choosedCateId}" @click.stop="onChooseCate">
+      <li
+        v-for="cate in cates"
+        :key="cate.id"
+        class="object-cate-item"
+        :class="{active: cate.id === activeCateId}"
+        @click.stop="selectCate(cate.id)"
+      >
         <i class="iconfont" @click.stop="removeCate(cate.id)">&#xe615;</i>
         {{ cate.name }}
       </li>
     </ul>
 
     <!-- 创建分类弹窗  -->
-    <el-dialog
-      title="创建作品分类"
-      :visible.sync="dialog"
-      :modal="false"
-      size="tiny"
-    >
+    <el-dialog title="创建作品分类" :visible.sync="dialog" :modal="false" size="tiny">
       <el-form :model="form" :rules="rules" ref="form" label-width="95px">
         <el-form-item prop="name" label="分类名称">
           <el-input v-model="form.name"></el-input>
@@ -33,7 +33,7 @@
         <el-button
           type="primary"
           :loading="loading"
-          @click="submit"
+          @click="createCate"
         >提交</el-button>
         <el-button @click="dialog = false">取消</el-button>
       </div>
@@ -43,23 +43,16 @@
 
 <script>
 /**
- * 物品3D - 侧边栏
- * @author yangjun
+ * 管理3D物品 - 侧边栏
+ * @author yangjun | luminghuai
+ * @version 2017-08-31
  */
 
-export default {
-  name: 'manage3d-cate-item',
+import { mapState } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 
-  props: {
-    cates: {
-      type: Array,
-      required: true,
-    },
-    choosedCateId: {
-      type: Number,
-      required: true,
-    },
-  },
+export default {
+  name: 'object-aside',
 
   data() {
     return {
@@ -69,6 +62,7 @@ export default {
         name: '',
         list_order: 255,
       },
+
       rules: {
         name: [
           { required: true, trigger: 'blur', message: '请输入分类名称' },
@@ -78,53 +72,65 @@ export default {
           { type: 'number', required: true, trigger: 'blur', message: '请输入分类排序' },
         ],
       },
+
       loading: false,
     }
   },
 
+  computed: {
+    ...mapState({
+      cates: state => state.edit.material.objectCates,
+      activeCateId: state => state.edit.material.activeObjectCateId,
+    }),
+  },
+
   methods: {
-    onChooseCate() {
-      this.$emit('choose-cate', this.item.id)
+    /**
+     * 打开创建分类弹窗
+     */
+    openDialog() {
+      this.dialog = true
     },
 
+    /**
+     * 选择分类
+     * @param {number} id - 分类id
+     */
+    selectCate(id) {
+      this.$store.commit(EDIT.OBJECT.CATE.SELECT, id)
+    },
+
+    /**
+     * 删除某个分类
+     * @param {number} - 分类id
+     */
     removeCate(id) {
       this.$confirm('确定要删除该项目么？删除后不可以恢复。', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
-        .then(() => this.confirmRemove(id))
-    },
-
-    confirmRemove(id) {
-      // 成功后要删除本地对应数据
-      this.$http.delete(`/user/sourcerotatecategory/${id}`)
+        .catch(() => {})
+        .then(() => this.$store.dispatch(EDIT.OBJECT.CATE.REMOVE, id))
         .then(() => {
           this.$message.success('操作成功')
         })
     },
 
-    openDialog() {
-      this.dialog = true
-    },
-
-    submit() {
+    /**
+     * 创建新的分类
+     */
+    createCate() {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.loading = true
-          // 这里判断是创建还是修改，然后调用相应方法
-          this.createCate()
+          this.$store.dispatch(EDIT.OBJECT.CATE.CREATE, this.form)
+            .then(() => {
+              this.loading = false
+              this.dialog = false
+            })
         }
       })
-    },
-
-    createCate() {
-      this.$http.post('/user/sourcerotatecategory', this.form)
-        .then(() => {
-          this.loading = false
-          this.dialog = false
-          this.$emit('add-cate', this.form)
-        })
     },
   },
 }

@@ -109,7 +109,7 @@ export default {
     getPanos(page) {
       this.loading = true
       const params = page ? `${this.params}&page=${page}` : this.params
-      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, { url: '/user/sourcescene', params })
+      this.$store.dispatch(EDIT.MATERIAL.INIT, { url: '/user/sourcescene', params })
         .then(() => {
           this.loading = false
         })

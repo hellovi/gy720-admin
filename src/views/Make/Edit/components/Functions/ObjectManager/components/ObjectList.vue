@@ -16,7 +16,14 @@
       </li>
     </ul>
 
-    <el-dialog title="创建物品3D" :visible="dialog" :modal="false" size="tiny" @before-close="$emit('close')">
+    <!-- 创建物品3D弹窗 objectDialog -->
+    <el-dialog
+      title="创建物品3D"
+      :visible="dialog"
+      :modal="false"
+      size="tiny"
+      :before-close="close"
+    >
       <el-form :model="form" :rules="rules" ref="form" label-width="95px">
         <el-form-item prop="title" label="项目名称">
           <el-input v-model="form.title"></el-input>
@@ -48,7 +55,7 @@
           :loading="loading"
           @click="submit"
         >提交</el-button>
-        <el-button @click="$emit('close')">取消</el-button>
+        <el-button @click="close">取消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -56,19 +63,26 @@
 
 <script>
 /**
- * 物品3D-物品
- *
- * @author yj
+ * 管理3D物品 - 列表
+ * @author yangjun | luminghuai
+ * @version 2017-08-31
  */
 
+import { mapState } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
+
+const defaultForm = {
+  id: 0,
+  title: '',
+  list_order: 1,
+  source_rotate_category_id: 1,
+  remark: '',
+}
+
 export default {
-  name: 'manage3d-obj-item',
+  name: 'object-list',
 
   props: {
-    cates: {
-      type: Array,
-      required: true,
-    },
     dialog: {
       type: Boolean,
       required: true,
@@ -77,15 +91,8 @@ export default {
 
   data() {
     return {
-      list: { data: [] },
+      form: { ...defaultForm },
 
-      form: {
-        id: 0,
-        title: '',
-        list_order: 1,
-        source_rotate_category_id: 1,
-        remark: '',
-      },
       rules: {
         title: [
           { required: true, trigger: 'blur', message: '物品名称不能为空' },
@@ -103,69 +110,126 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      cates: state => state.edit.material.objectCates,
+      activeCateId: state => state.edit.material.activeObjectCateId,
+      list: state => state.edit.material.materialData.objects,
+    }),
+  },
+
+  watch: {
+    dialog(val) {
+      if (!val) {
+        this.form = { ...defaultForm }
+      }
+    },
+    /**
+     * 分类更改时，应根据分类重新获取列表
+     */
+    activeCateId(val) {
+      this.getList(val)
+    },
+  },
+
   methods: {
-    updateObject(id) {
-      this.form = this.list.data.find(item => item.id === id)
-      this.$emit('open-create-object-dialog')
+    /**
+     * 获取物品3D列表
+     * @param {number} cateId - 分类id
+     * @param {number} page - 页数
+     */
+    getList(cateId = 1, page = 1) {
+      this.loading = true
+      this.$store.dispatch(EDIT.MATERIAL.INIT, {
+        url: '/user/sourcerotate',
+        params: `?source_rotate_category_id=${cateId}&page=${page}`,
+      })
+        .then(() => {
+          this.loading = false
+        })
     },
 
+    /**
+     * 询问是否删除
+     */
     removeObject(id) {
       this.$confirm('确定要删除该项目么？删除后不可以恢复。', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       })
-        .then(() => this.confirmRemove(id))
+        .then(() => this.remove(id))
     },
 
-    confirmRemove(id) {
-      // 成功后要删除本地对应数据
-      this.$http.delete(`/user/sourcerotate/${id}`)
+    /**
+     * 删除某项物品3D
+     * @param {number} id - 删除项的id
+     */
+    remove(id) {
+      this.$store.dispatch(EDIT.OBJECT.REMOVE, id)
         .then(() => {
           this.$message.success('操作成功')
         })
     },
 
+    /**
+     * 打开修改窗口，填充修改项的数据
+     */
+    updateObject(id) {
+      this.form = this.list.data.find(item => item.id === id)
+      this.$emit('open-object-dialog')
+    },
+
+    /**
+     * 验证表单，在通过后提交
+     * 如果this.form中存在id，调用修改接口，否则调用创建接口
+     */
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.loading = true
-          // 这里判断是创建还是修改，然后调用相应方法
+
           if (this.form.id) {
-            this.update(this.form.id)
+            this.update()
           } else {
-            this.createObject()
+            this.create()
           }
         }
       })
     },
 
-    update(id) {
-      this.$http.put(`/user/sourcerotate/${id}`, this.form)
+    /**
+     * 修改某项物品3D
+     */
+    update() {
+      this.$store.dispatch(EDIT.OBJECT.UPDATE, this.form)
         .then(() => {
-          // 更新本地的数据
+          this.$message.success('操作成功')
+          this.$emit('close-object-dialog')
         })
     },
 
-    createObject() {
-      this.$http.post('/user/sourcerotate', this.form)
+    /**
+     * 创建新的物品3D
+     */
+    create() {
+      this.$store.dispatch(EDIT.OBJECT.CREATE, this.form)
         .then(() => {
-          this.list = {
-            ...this.list,
-            // 如果本来的项目是10项，应该删掉最后一项
-            data: [this.form, ...this.list.data],
-          }
+          this.$message.success('操作成功')
+          this.$emit('close-object-dialog')
         })
+    },
+
+    /**
+     * 关闭创建窗口
+     */
+    close() {
+      this.$emit('close-object-dialog')
     },
   },
 
   created() {
-    this.$http.get('/user/sourcerotate')
-      .then(({ result }) => {
-        this.loading = false
-        this.$emit('close-create-object-dialog')
-        this.list = result
-      })
+    this.getList()
   },
 }
 </script>

@@ -106,7 +106,7 @@ export default {
       const params = `?tag_id=${this.activeId}&page=${page}`
 
       // 这里需要做接口错误处理
-      this.$store.dispatch(EDIT.MATERIAL.INIT.NORMALS, { url, params })
+      this.$store.dispatch(EDIT.MATERIAL.INIT, { url, params })
         .then(() => {
           this.loading = false
         })

@@ -71,6 +71,7 @@ export default {
   methods: {
     openObjectManage() {
       this.openModal('object3d')
+      this.$store.dispatch(EDIT.OBJECT.CATE.INIT)
     },
 
     filesAdded(up, files) {

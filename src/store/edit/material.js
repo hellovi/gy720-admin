@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
@@ -10,15 +11,7 @@ import { EDIT } from '../mutationTypes'
  * @property {Object} materialData - 素材数据
  */
 
-const { MATERIAL } = EDIT
-
-const testData = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=188704068,3401140839&fm=26&gp=0.jpg'
-
-// const MATERIAL_DICT = {
-//   panos: { url: '/user/sourcescene' },
-//   objects: { url: '/user/sourcerotate' },
-//   normals: { url: '/user/source' },
-// }
+const { MATERIAL, OBJECT } = EDIT
 
 // 导出的数据
 const getMaterialExport = () => ({
@@ -52,6 +45,9 @@ export default {
       audios: { data: [] },
       others: { data: [] },
     },
+    // 物品3D分类
+    objectCates: [],
+    activeObjectCateId: null,
   },
 
   mutations: {
@@ -60,7 +56,7 @@ export default {
       state.source = source
     },
 
-    [MATERIAL.INIT.LOAD](state, { type = state.type, data }) {
+    [MATERIAL.INIT](state, { type = state.type, data }) {
       state.materialData[type] = data
     },
 
@@ -90,6 +86,47 @@ export default {
         ...getMaterialExport()[source],
       }
     },
+
+    /** 物品3D分类 */
+    [OBJECT.CATE.INIT](state, cates) {
+      state.objectCates = cates
+      state.activeObjectCateId = cates[0].id
+    },
+
+    [OBJECT.CATE.CREATE](state, cate) {
+      state.objectCates = [...state.objectCates, cate]
+    },
+
+    [OBJECT.CATE.SELECT](state, id) {
+      state.activeObjectCateId = id
+    },
+
+    [OBJECT.CATE.REMOVE](state, id) {
+      state.objectCates = state.objectCates.filter(cate => cate.id !== id)
+    },
+
+    /** 物品3D */
+    // 如果列表中已有10项，向列表添加新项目的同时，应该删除列表最后一项
+    [OBJECT.CREATE](state, object) {
+      const { data } = state.materialData.objects
+      Vue.set(state.materialData.objects, 'data', [
+        object,
+        ...(data.length >= 10 ? data.slice(0, -1) : data),
+      ])
+    },
+
+    [OBJECT.UPDATE](state, update) {
+      const index = state.materialData.objects.data.findIndex(item => item.id === update.id)
+      Vue.set(state.materialData.objects.data, index, {
+        ...state.materialData.objects.data[index],
+        ...update,
+      })
+    },
+
+    [OBJECT.REMOVE](state, id) {
+      const { data } = state.materialData.objects
+      Vue.set(state.materialData.objects, 'data', data.filter(item => item.id !== id))
+    },
   },
 
   actions: {
@@ -101,23 +138,48 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
     },
 
-    [MATERIAL.INIT.NORMALS]({ commit }, { url, params = '' }) {
+    [MATERIAL.INIT]({ commit }, { url, params = '' }) {
       return Http.get(`${url}${params}`)
         .then(({ result }) => {
-          commit(MATERIAL.INIT.LOAD, { data: result })
-        })
-        .catch(() => {
-          commit(MATERIAL.INIT.LOAD, {
-            data: [{ id: 3, file_path: testData, title: '测试素材' },
-              { id: 4, file_path: testData, title: '测试素材' },
-              { id: 5, file_path: testData, title: '测试素材' },
-            ] })
+          commit(MATERIAL.INIT, { data: result })
         })
     },
 
     [MATERIAL.ADD]({ commit }, data) {
       return Http.post('/user/source', data)
         .then(({ result }) => commit(MATERIAL.ADD, result))
+    },
+
+    /** 物品3D分类 */
+    [OBJECT.CATE.INIT]({ commit }) {
+      return Http.get('/user/sourcerotatecategory')
+        .then(({ result }) => commit(OBJECT.CATE.INIT, result))
+    },
+
+    [OBJECT.CATE.CREATE]({ commit }, data) {
+      return Http.post('/user/sourcerotatecategory', data)
+        .then(() => commit(OBJECT.CATE.CREATE, data))
+    },
+
+    [OBJECT.CATE.REMOVE]({ commit }, id) {
+      return Http.delete(`/user/sourcerotatecategory/${id}`)
+        .then(() => commit(OBJECT.CATE.REMOVE, id))
+    },
+
+    /** 物品3D */
+    [OBJECT.CREATE]({ commit }, data) {
+      Http.post('/user/sourcerotate', data)
+        .then(() => commit(OBJECT.CREATE, data))
+    },
+
+    [OBJECT.UPDATE]({ commit }, data) {
+      Http.put(`/user/sourcerotate/${data.id}`, data)
+        .then(() => commit(OBJECT.UPDATE, data))
+    },
+
+    [OBJECT.REMOVE]({ commit }, id) {
+      Http.delete(`/user/sourcerotate/${id}`)
+        .then(() => commit(OBJECT.REMOVE, id))
     },
   },
 }

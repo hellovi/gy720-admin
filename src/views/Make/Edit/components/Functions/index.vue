@@ -17,6 +17,8 @@
     <functions-vip-info :data="pano"></functions-vip-info>
     <!--限制视角-->
     <functions-restrict-view v-if="active.restrictView"></functions-restrict-view>
+
+    <functions-object-manager></functions-object-manager>
   </div>
 </template>
 
@@ -41,6 +43,7 @@ import FunctionsSnapshot from './Snapshot'
 import FunctionsInitialview from './Initialview'
 import FunctionsVipInfo from './VipInfo'
 import FunctionsRestrictView from './RestrictView'
+import FunctionsObjectManager from './ObjectManager'
 
 
 export default {
@@ -61,6 +64,7 @@ export default {
     FunctionsInitialview,
     FunctionsVipInfo,
     FunctionsRestrictView,
+    FunctionsObjectManager,
   },
 
   computed: {
