@@ -37,13 +37,14 @@
  * @version 2017-08-11
  */
 
+
 export default {
   name: 'certifate-result',
 
   props: {
     certInfo: {
       type: Object,
-      required: 'true',
+      required: true,
     },
   },
 
