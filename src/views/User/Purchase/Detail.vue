@@ -4,7 +4,7 @@
       <thead>
         <tr>
           <th>订单编号</th>
-          <th>{{order.order_sn}}</th>
+          <th>{{order.number}}</th>
         </tr>
       </thead>
       <tbody>
@@ -14,32 +14,55 @@
         </tr>
         <tr>
           <td>订单金额：</td>
-          <td class="text-danger">￥{{order.order_amount}} 元</td>
+          <td><span class="text-danger">￥{{order.money}}</span> 元</td>
+        </tr>
+        <tr>
+          <td>支付方式：</td>
+          <td>{{channel_type}}</td>
         </tr>
         <tr>
           <td>订单状态：</td>
           <td>
-            {{paystatus}}
-            <el-button type="primary" size="small" @click="dialog.confirm = true">去付款</el-button>
+            {{order.order_status_name}}
           </td>
         </tr>
         <tr>
           <td>订单商品：</td>
           <td>
-            {{order.goods_name}} x {{order.goods_num}}
-            <span class="text-danger">￥{{order.order_amount}} 元 </span>
+            {{order.name}}
+          </td>
+        </tr>
+        <tr>
+          <td class="bill"><p>发票信息：</p></td>
+          <td>
+            <p>公司抬头：{{order.company}}</p>
+            <p>邮寄地址：{{order.address}}</p>
+            <p>联&nbsp;&nbsp;系&nbsp;&nbsp;人：{{order.contact}}</p>
+            <p>电话号码：{{order.mobile}}</p>
           </td>
         </tr>
       </tbody>
     </table>
 
+    <div class="">
+      <el-button
+        type="primary"
+        v-if="isPayOk"
+      >去付款</el-button>
+      <el-button
+        type="primary"
+        v-if="isPayOk"
+        @click="dialog.confirm = true"
+      >取消订单</el-button>
+    </div>
+
     <!-- 确认订单组件 -->
-    <confirm-dialog
+    <!-- <confirm-dialog
       :visible="dialog.confirm"
       @close="dialog.confirm = false"
       :orderSn="order.order_sn"
       :price="order.order_amount"
-    ></confirm-dialog>
+    ></confirm-dialog> -->
 
   </div>
 </template>
@@ -52,9 +75,13 @@
  * @version 2017-08-10
  */
 import { ConfirmDialog } from '@/components'
+import { deleteItem } from '@/mixins'
+import { PURCHASE } from '@/store/mutationTypes'
 
 export default {
   name: 'purchase-detail',
+
+  mixins: [deleteItem],
 
   components: {
     ConfirmDialog,
@@ -63,13 +90,16 @@ export default {
   data() {
     return {
       order: {
+        number: '',
         created_at: '',
-        goods_name: '',
-        goods_num: null,
-        order_amount: '',
-        order_sn: null,
-        pay_type: '',
-        status: '',
+        money: '',
+        channel_type: '',
+        order_status_name: null,
+        name: '',
+        company: null,
+        address: '',
+        contact: '',
+        mobile: '',
       },
 
       dialog: {
@@ -79,36 +109,57 @@ export default {
   },
 
   computed: {
-    paystatus() {
-      switch (this.order.status) {
-        case '10':
-          return '待支付'
-        case '20':
-          return '已支付'
-        case '30':
-          return '已取消'
-        case '90':
-          return '已删除'
+
+    isPayOk() {
+      return this.order.order_status === 20
+    },
+
+    channel_type() {
+      switch (this.order.channel_type) {
+        case 10:
+          return '支付宝支付'
+        case 20:
+          return '微信支付'
         default:
-          return ''
+          return '未付款'
       }
     },
   },
 
   methods: {
+    beforeOrderDelete(id) {
+      this.onDeleteItem({
+        title: '删除订单',
+        message: '此操作将永久删除该订单, 是否继续?',
+        itemId: id,
+        ajax: this.orderDelete,
+        success: this.orderDeleteSuccess,
+      })
+    },
+
+    orderDelete(id) {
+      return this.$store.dispatch(PURCHASE.ORDERS.DELETE, id)
+    },
+
+    orderDeleteSuccess() {
+      this.$message({
+        message: '该订单删除成功',
+        type: 'warning',
+      })
+    },
+
   },
 
   beforeRouteEnter(t, f, n) {
     n((vm) => {
       const ordersn = t.params.ordersn
-      vm.$http.get(`/user/pay/ordershow?orderSn=${ordersn}`)
+      vm.$http.get(`/user/order/${ordersn}`)
         .then((res) => {
           // eslint-disable-next-line
-          vm.order = res.result.order
+          vm.order = res.result
         })
     })
   },
-
 
 }
 </script>
@@ -126,6 +177,10 @@ export default {
 
   .el-button {
     margin-left: 10px;
+  }
+
+  .bill {
+    vertical-align: top;
   }
 }
 </style>

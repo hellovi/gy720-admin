@@ -3,19 +3,29 @@ import { PURCHASE } from './mutationTypes'
 
 export default {
   state: {
-    orders: { data: [] },
+    list: { data: [] },
   },
 
   mutations: {
-    [PURCHASE.ORDERS.INIT](state, orders) {
-      state.orders = orders
+    [PURCHASE.ORDERS.INIT](state, list) {
+      state.list = list
+    },
+
+    [PURCHASE.ORDERS.DELETE](state, id) {
+      state.list.data = state.list.data
+        .filter(item => item.hash_order_id !== id)
     },
   },
 
   actions: {
     [PURCHASE.ORDERS.INIT]({ commit }, page = 1) {
-      return Http.get(`/user/pay/orderlists?current_page=${page}`)
-        .then(({ result }) => commit(PURCHASE.ORDERS.INIT, result.lists))
+      return Http.get(`/user/order?current_page=${page}`)
+        .then(({ result }) => commit(PURCHASE.ORDERS.INIT, result))
+    },
+
+    [PURCHASE.ORDERS.DELETE]({ commit }, id) {
+      return Http.delete(`/user/order/${id}`)
+        .then(() => commit(PURCHASE.ORDERS.DELETE, id))
     },
   },
 }

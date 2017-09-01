@@ -69,6 +69,7 @@ export const POINT = {
 export const PURCHASE = {
   ORDERS: {
     INIT: 'PURCHASE.ORDERS.INIT',
+    DELETE: 'PURCHASE.ORDERS.DELETE',
   },
 }
 

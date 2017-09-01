@@ -12,15 +12,33 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="order in list.data" :key="order.order_sn">
-          <td>{{ order.order_sn }}</td>
-          <td>{{ order.goods_name }} x 1 <span class="text-danger">{{ order.order_amount }}</span></td>
-          <td><span class="text-danger">￥{{ order.order_amount }}</span></td>
-          <td>{{ paystatus(order.status) }}</td>
+        <tr v-for="order in list.data" :key="order.hash_order_id">
+          <td>{{ order.number }}</td>
+          <td>{{ order.name }}</td>
+          <td><span class="text-danger">￥{{ order.money }}</span></td>
+          <td>{{ order.order_status_name }}</td>
           <td>{{ order.created_at }}</td>
           <td>
-            <el-button type="primary" size="small" v-if="order.status === '20'" class="purchase-orders__btn">查看</el-button>
-            <el-button type="primary" size="small" v-else-if="order.status === '10'" @click="goToPay(order.order_sn)" >去付款</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="order.order_status === 10"
+              @click="goToPay(order.hash_order_id)"
+            >去付款</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-else
+              class="purchase-orders__btn"
+              @click="goToPay(order.hash_order_id)"
+            >查看</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="order.order_status === 10"
+              class="purchase-orders__btn"
+              @click="beforeOrderDelete(order.hash_order_id)"
+            >取消</el-button>
           </td>
         </tr>
       </tbody>
@@ -50,17 +68,17 @@
  */
 
 import { mapState } from 'vuex'
-import { list } from '@/mixins'
+import { list, deleteItem } from '@/mixins'
 import { PURCHASE } from '@/store/mutationTypes'
 
 export default {
   name: 'purchase-orders',
 
-  mixins: [list],
+  mixins: [list, deleteItem],
 
   computed: {
     ...mapState({
-      list: state => state.purchase.orders,
+      list: state => state.purchase.list,
     }),
   },
 
@@ -69,23 +87,29 @@ export default {
       return this.$store.dispatch(PURCHASE.ORDERS.INIT, route.query.page)
     },
 
-    paystatus(statusCode) {
-      switch (statusCode) {
-        case '10':
-          return '待支付'
-        case '20':
-          return '已支付'
-        case '30':
-          return '已取消'
-        case '90':
-          return '已删除'
-        default:
-          return ''
-      }
-    },
-
     goToPay(orderSn) {
       this.$router.push(`/user-client/purchase/orders/${orderSn}`)
+    },
+
+    beforeOrderDelete(id) {
+      this.onDeleteItem({
+        title: '删除订单',
+        message: '此操作将永久删除该订单, 是否继续?',
+        itemId: id,
+        ajax: this.orderDelete,
+        success: this.orderDeleteSuccess,
+      })
+    },
+
+    orderDelete(id) {
+      return this.$store.dispatch(PURCHASE.ORDERS.DELETE, id)
+    },
+
+    orderDeleteSuccess() {
+      this.$message({
+        message: '该订单删除成功',
+        type: 'warning',
+      })
     },
   },
 
