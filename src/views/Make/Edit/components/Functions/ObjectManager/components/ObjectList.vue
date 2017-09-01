@@ -114,7 +114,7 @@ export default {
     ...mapState({
       cates: state => state.edit.material.objectCates,
       activeCateId: state => state.edit.material.activeObjectCateId,
-      list: state => state.edit.material.materialData.objects,
+      list: state => state.edit.material.materialData.rotate,
     }),
   },
 
