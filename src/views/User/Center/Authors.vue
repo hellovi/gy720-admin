@@ -43,7 +43,9 @@
       <v-author-item
         class="center-authors__item"
         v-for="(item, index) in authorsInfo.data"
-        :key="item.user_id"  :author="item" :index="index"
+        :key="item.user_id"
+        :author="item"
+        :index="index"
         @togglefollow="onToggleFollow"
       >
       </v-author-item>
@@ -67,7 +69,7 @@ import { getRouteType, getAuthorsInfo } from './modules/utils'
 import vAuthorItem from './components/AuthorItem'
 
 export default {
-  name: 'center-Authors',
+  name: 'center-authors',
 
   components: {
     vAuthorItem,

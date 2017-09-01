@@ -6,8 +6,8 @@
  * @param {String} title - 删除弹框的标题
  * @param {String|render} message - 删除弹窗的警告内容提示
  * @param {int} itemId - 删除目标的id
- * @param {Function} ajax - 执行删除事务请求的方法，各自组件中维护
- * @param {Function} success - 删除成功的回调，各自组件中维护
+ * @callback ajax - 执行删除事务请求的方法
+ * @callback success - 删除成功的回调，接受目标id为参数
  */
 
 /* eslint-disable no-underscore-dangle, no-param-reassign */
