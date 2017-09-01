@@ -15,6 +15,7 @@
         v-model="fileSrc"
         ref="fileUpload"
         :accept="acceptMimeTypes"
+        :static-url="uploadPath"
         :auto-start="false"
         @files-added="filesAdded"
         @upload-progress="uploadProgress"
@@ -38,6 +39,7 @@
  * @version 2017-09-01
  */
 
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import upload from '@/views/User/Publish/mixins/upload'
 import modal from '../../../../mixins/modal'
@@ -78,6 +80,15 @@ export default {
       percent: 0,
       acceptMimeTypes: 'jpg,jpeg,png,gif,mp3',
     }
+  },
+
+  computed: {
+    ...mapState({
+      userId: state => state.edit.panoInfo.hash_user_id,
+    }),
+    uploadPath() {
+      return `data/source/${this.activeType}/${this.userId}/`
+    },
   },
 
   methods: {
