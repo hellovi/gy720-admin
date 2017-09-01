@@ -94,7 +94,7 @@ export default {
       window._krpano = document.getElementById('krpanoSWFObject')
       window.__krpano = new window.krpanoplugin(window._krpano)
 
-      // window.__krpano.hotspots = {}
+      window.__krpano.hotspots = {}
 
       // window._krpano.querySelector('canvas')
     },

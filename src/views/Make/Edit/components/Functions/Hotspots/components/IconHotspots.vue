@@ -31,6 +31,8 @@
  * 热点图标模块
  * @module ./IconHotspots
 */
+import { mapState } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 
 export default {
   props: {
@@ -39,17 +41,24 @@ export default {
       required: true,
     },
   },
+
   data() {
     return {
-      icons: [],
       loading: false,
       activeId: 0,
       activeInfo: {},
     }
   },
+
+  computed: {
+    ...mapState({
+      icons: state => state.edit.hotspots.icons,
+    }),
+  },
+
   methods: {
     submitIcon() {
-      this.$emit('submitIcon', this.activeInfo)
+      this.$store.commit(EDIT.HOTSPOTS.SELECT.ICON, this.activeInfo)
       this.activeInfo = {}
       this.$emit('input', false)
     },
@@ -62,17 +71,8 @@ export default {
 
   created() {
     this.loading = true
-    this.$http.get('/user/scenehotspot/icons')
-      .then(({ result }) => {
-        this.loading = false
-        result.map((items) => {
-          items.list.map((item) => {
-            this.icons.push(item)
-            return true
-          })
-          return true
-        })
-      })
+    this.$store.dispatch(EDIT.HOTSPOTS.INIT.ICON)
+      .then(this.loading = false)
   },
 }
 </script>

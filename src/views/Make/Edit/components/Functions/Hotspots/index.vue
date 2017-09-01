@@ -34,7 +34,9 @@
  * @author yj
  * @version 2017-08-14
  */
-
+// import { mapState } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
+import hotspotsInit from './utils/hotSpot'
 import modal from '../../../mixins/modal'
 import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
@@ -92,6 +94,8 @@ export default {
     closeModalAfter() {
       // 点击上一步，关闭都要重置
       this.currentView = AddSpotFir
+      // 重置选中的热点图标
+      this.$store.commit(EDIT.HOTSPOTS.RESET.ICON)
     },
 
     openModal(type) {
@@ -100,7 +104,8 @@ export default {
   },
 
   created() {
-
+    // 初始化热点相关方法，之后要传入编辑数据
+    hotspotsInit()
   },
 }
 </script>
