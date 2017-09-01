@@ -17,7 +17,7 @@
       ></el-table-column>
       <el-table-column
         label="操作"
-        width="250"
+        width="280"
         align="center"
       >
         <template scope="scope">
@@ -52,19 +52,17 @@
       v-if="listData.total"
     >
     </el-pagination>
-    <el-row class="material-image-text__tools">
-      <el-button type="primary" @click="addImageText">添加图文信息</el-button>
-    </el-row>
     <!--添加|修改窗口-->
     <el-dialog
-      :visible.sync="visible"
+      :visible.sync="active.imageTextEdit"
       :modal="false"
       top="2%"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      style="position: fixed"
       >
       <image-text-dialog
-        :visible="visible"
+        :visible="active.imageTextEdit"
         :id="currentEditId"
         :type="dialogType"
         @close="dialogClose"
@@ -98,9 +96,12 @@
    */
 
   import { EDIT } from '@/store/mutationTypes'
+  import modal from '../../../../../mixins/modal'
 
   export default {
     name: 'image-text',
+
+    mixins: [modal],
 
     components: {
       ImageTextDialog: () => import('./ImageTextDialog'),
@@ -110,8 +111,7 @@
     data: () => ({
       listData: {},
       currentEditId: null,
-      visible: false,
-      dialogType: null,
+      dialogType: 'add',
       perPage: 8,
       preViewId: null,
       preShow: false,
@@ -122,6 +122,9 @@
     computed: {
       selectStatus() {
         return this.$store.state.edit.material.selectStatus
+      },
+      visible() {
+        return this.active.imageTextEdit
       },
     },
 
@@ -167,12 +170,14 @@
 
       // 打开新增|修改窗口
       openDialog(type = 'add') {
-        this.visible = true
+        this.openModal('imageTextEdit')
         this.dialogType = type
       },
 
       // 关闭修改窗口回调
       dialogClose() {
+        this.dialogType = 'add'
+        this.closeModal('imageTextEdit')
         this.currentEditId = null
       },
 
@@ -225,7 +230,6 @@
   .material-image-text{
     min-height: 400px;
     max-height: 500px;
-    padding-bottom: 36px;
     position: relative;
     .el-table {
       min-height: 350px;
@@ -233,9 +237,8 @@
     .el-pagination {
       margin-top: 10px;
     }
-    &__tools {
-      position: absolute;
-      bottom: 0;
+    .el-dialog {
+      position: inherit;
     }
   }
 </style>

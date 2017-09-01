@@ -25,7 +25,8 @@ export default {
       initialview: false,
       restrictView: false,
       object3d: false,
-      vipInfo: false, // vip购买窗口
+      imageTextEdit: false,
+      vipInfo: false,
     },
 
     panoInfo: {},

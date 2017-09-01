@@ -3,6 +3,8 @@
     <el-dialog
       title="素材库"
       custom-class="material-dialog"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       :visible="active.material"
       :before-close="close"
     >

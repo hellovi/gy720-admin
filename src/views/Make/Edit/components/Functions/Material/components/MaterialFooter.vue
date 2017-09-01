@@ -1,6 +1,6 @@
 <template>
   <footer class="material-footer">
-    <el-button type="primary" v-if="activeType === 'infos'">添加图文信息</el-button>
+    <el-button type="primary" v-if="activeType === 'infos'" @click="openImageTextAdd">添加图文信息</el-button>
 
     <el-button type="primary" v-else-if="activeType === 'objects'" @click="openObjectManage">管理物品3D</el-button>
 
@@ -72,6 +72,10 @@ export default {
     openObjectManage() {
       this.openModal('object3d')
       this.$store.dispatch(EDIT.OBJECT.CATE.INIT)
+    },
+
+    openImageTextAdd() {
+      this.openModal('imageTextEdit')
     },
 
     filesAdded(up, files) {
