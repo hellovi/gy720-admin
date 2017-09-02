@@ -1,24 +1,26 @@
 /* eslint-disable */
-export default function hotspotsInit(vueData){
+import { Http } from '@/utils'
+export default function hotspotsInit(that){
     window.krpanoplugin.prototype.adddesignhotspot = function(hotspotdata){
-      this.hotspots[hotspotdata.hot_id] = hotspotdata;
-     	var hotspotName = "hotspot_" + hotspotdata.hot_id;
-     	var hotspotbgName = "hotspotbg_" + hotspotdata.hot_id;
-     	var hotspoticonName = "hotspotbgicon_" + hotspotdata.hot_id;
-     	var hotspotManageBg = "hotspotmanagebg_" + hotspotdata.hot_id;
-     	var hotspotManageEdit = "hotspotmanageedit_" + hotspotdata.hot_id;
-     	var hotspotManagedelete = "hotspotManagedelete_" + hotspotdata.hot_id;
-     	var textName = "hotspot_txt_" + hotspotdata.hot_id;
-     	var ondown = "spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery); sub(drag_adjustx, mouse.stagex, hotspotcenterx); sub(drag_adjusty, mouse.stagey, hotspotcentery); asyncloop(pressed, sub(dx, mouse.stagex, drag_adjustx); sub(dy, mouse.stagey, drag_adjusty); screentosphere(dx, dy, ath, atv);, js(window.moveHotspot("+hotspotdata.hot_id+",get(ath),get(atv)));); ";
-     	var onclick = "js(!window.krpanoEditHotspot || window.krpanoEditHotspot(" + hotspotdata.hot_id + "));";
-     	var ondelete = "js(!window.krpanoDeleteHotspot || window.krpanoDeleteHotspot(" + hotspotdata.hot_id + "));";
-     	var onover = "stopdelayedcall("+hotspotdata.hot_id+");set(layer[" + hotspotManageBg + "].visible, true);";
-     	var onout = "delayedcall("+hotspotdata.hot_id+",0.5,set(layer[" + hotspotManageBg + "].visible, false););";
+      this.hotspots[hotspotdata.id] = hotspotdata;
+      // var copy = JSON.parse(JSON.stringify(hotspotdata))
+     	var hotspotName = "hotspot_" + hotspotdata.id;
+     	var hotspotbgName = "hotspotbg_" + hotspotdata.id;
+     	var hotspoticonName = "hotspotbgicon_" + hotspotdata.id;
+     	var hotspotManageBg = "hotspotmanagebg_" + hotspotdata.id;
+     	var hotspotManageEdit = "hotspotmanageedit_" + hotspotdata.id;
+     	var hotspotManagedelete = "hotspotManagedelete_" + hotspotdata.id;
+     	var textName = "hotspot_txt_" + hotspotdata.id;
+     	var ondown = "spheretoscreen(ath, atv, hotspotcenterx, hotspotcentery); sub(drag_adjustx, mouse.stagex, hotspotcenterx); sub(drag_adjusty, mouse.stagey, hotspotcentery); asyncloop(pressed, sub(dx, mouse.stagex, drag_adjustx); sub(dy, mouse.stagey, drag_adjusty); screentosphere(dx, dy, ath, atv);, js(window.moveHotspot("+hotspotdata.id+",get(ath),get(atv)));); ";
+     	var onclick = "js(!window.krpanoEditHotspot || window.krpanoEditHotspot(" + hotspotdata.id + "));";
+     	var ondelete = "js(!window.krpanoDeleteHotspot || window.krpanoDeleteHotspot(" + hotspotdata.id + "," + hotspotdata.scene_id + "," + hotspotdata.pano_id + "));";
+     	var onover = "stopdelayedcall("+hotspotdata.id+");set(layer[" + hotspotManageBg + "].visible, true);";
+     	var onout = "delayedcall("+hotspotdata.id+",0.5,set(layer[" + hotspotManageBg + "].visible, false););";
       var hotspotManageBgY = 0;
       var _url = hotspotdata.icon_id === '0' ? hotspotdata.diy_src : hotspotdata.url;
 
    	  var hotspot = this.addhotspot(hotspotName, {
-   	    id: hotspotdata.hot_id,
+   	    id: hotspotdata.id,
    	    type: "image",
    	    url: _url,
    	    keep: "true",
@@ -77,7 +79,7 @@ export default function hotspotsInit(vueData){
    	    bgalpha: '0.5',
    	    visible: false,
    	    keep: true,
-   	    onover: 'stopdelayedcall(' + hotspotdata.hot_id + ')',
+   	    onover: 'stopdelayedcall(' + hotspotdata.id + ')',
    	    onout: onout
    	});
        //- 编辑按钮
@@ -104,7 +106,7 @@ export default function hotspotsInit(vueData){
    	    keep: true
    	});
 
-   	var hotspotManageTriangle = "hotspotmanagetriangle_" + hotspotdata.hot_id;
+   	var hotspotManageTriangle = "hotspotmanagetriangle_" + hotspotdata.id;
        //- 小三角
    	this.addlayer(hotspotManageTriangle, {
    	    parent: hotspotManageBg,
@@ -124,10 +126,14 @@ export default function hotspotsInit(vueData){
    /**
    * 编辑热点
    */
-    window.krpanoEditHotspot = function (hot_id) {
-       // window.console.log('编辑热点')
-       // 编辑热点逻辑在热点主组件
-       // vueData.editSpot = Number(hot_id)
+    window.krpanoEditHotspot = function (id) {
+      window.console.log('编辑热点')
+      console.log(that)
+      console.log(id)
+      that.title = '编辑'
+      that.openModal('hotspots')
+      // 取数据
+      that.switchStep(2, 7)
     };
 
 
@@ -135,32 +141,14 @@ export default function hotspotsInit(vueData){
     /**
      * 删除热点
      */
-   window.krpanoDeleteHotspot = function (hotid) {
-       window.console.log('删除热点')
-       var hot_id = __krpano.hotspots[hotid].hot_id;
-       var scene_id = __krpano.hotspots[hotid].scene_id;
-       var postData = {
-           hot_id : parseInt(hot_id),
-           pano_id: parseInt(vueData.pano_id),
-           scene_id: parseInt(scene_id)
-       };
-      //  ajax.post('/make/hotspot/remove', postData)
-      //    .then((res) => {
-      //      window.console.log(res)
-      //      if ( res.status.code === 1){
-      //        window.__krpano.removehotspot("hotspot_" + hotid);
-      //        window.__krpano.removelayer("hotspot_txt_" + hotid);
-      //        window.__krpano.hotspots[hotid] = null;
-      //      }else{
-      //        window.console.log(res)
-      //      }
-      //    })
-      //    .catch((reason) => {
-      //      //测试删除
-      //      window.__krpano.removehotspot("hotspot_" + hotid);
-      //      window.__krpano.removelayer("hotspot_txt_" + hotid);
-      //      window.__krpano.hotspots[hotid] = null;
-      //    })
+   window.krpanoDeleteHotspot = function (id, scene_id, pano_id) {
+      const param = `?pano_id=${pano_id}&scene_id=${scene_id}`
+      Http.delete(`/user/scenehotspot/${id}${param}`)
+        .then(() => {
+          window.__krpano.removehotspot("hotspot_" + id);
+          window.__krpano.removelayer("hotspot_txt_" + id);
+          window.__krpano.hotspots[id] = null;
+        })
    }
 
     /**
