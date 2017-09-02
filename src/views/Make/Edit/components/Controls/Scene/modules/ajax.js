@@ -7,6 +7,7 @@
 import Http from '@/utils/http'
 
 const SCENE_API = '/user/scene'
+const SORT_SCEME_API = '/user/scene/sort'
 
 export default class Ajax {
   /* ------ Initialization ------ */
@@ -77,6 +78,22 @@ export default class Ajax {
   static removeScene(sceneId) {
     return Http.delete(
       this.setPanoQuery(this.setSceneParam(sceneId)),
+    )
+  }
+
+  /**
+   * @desc    更新场景排序
+   *
+   * @method  POST
+   * @param   {Object}      orderInfo
+   * @param   {Array}       orderInfo.sort
+   *
+   * @return  void
+   */
+  static replaceScenesOrder(orderInfo) {
+    Http.post(
+      this.setPanoQuery(SORT_SCEME_API),
+      orderInfo,
     )
   }
 }

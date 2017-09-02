@@ -7,7 +7,10 @@
         @click="scrollToLeft"
       >&#xe651;</div>
       <!-- 中间：场景列表 -->
-      <draggable :list="scenes">
+      <draggable
+        :list="scenelist"
+        @end="resortScenes"
+      >
         <transition-group
           class="list clearfix"
           tag="ul" ref="list" style="left: 0px;"
@@ -258,6 +261,14 @@ export default {
         this.$set(this.scenelist, index, sceneInfo)
       }
       this.closeSceneConfig()
+    },
+
+    /* order */
+
+    resortScenes() {
+      const ids = this.scenelist
+        .map(({ id }) => ({ id }))
+      Ajax.replaceScenesOrder({ sort: ids })
     },
   },
 
