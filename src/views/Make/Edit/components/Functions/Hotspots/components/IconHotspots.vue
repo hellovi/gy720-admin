@@ -1,29 +1,23 @@
 <template>
-    <el-dialog
-      title="热点图标库"
-      :visible="value"
-      size="large"
-      :modal="false"
-      :before-close="() => this.$emit('input', false)"
-    >
-      <div class="hotspots-icon__lists" v-loading="loading">
-        <dl class="hotspots-icon__item clearfix">
-          <dt>系统图标</dt>
-          <dd
-            v-for="icon in icons"
-            :key="icon.icon_id"
-            :class="{icon_active: activeId === icon.icon_id }"
-            @click="selectIcon(icon)"
-          >
-            <img :src="$url.host(icon.thumb)"/>
-          </dd>
-        </dl>
-      </div>
+  <div>
+    <div class="hotspots-icon__lists" v-loading="loading">
+      <dl class="hotspots-icon__item clearfix">
+      <dt>系统图标</dt>
+      <dd
+      v-for="icon in icons"
+      :key="icon.icon_id"
+      :class="{icon_active: activeId === icon.icon_id }"
+      @click="selectIcon(icon)"
+      >
+        <img :src="$url.host(icon.thumb)"/>
+      </dd>
+      </dl>
+    </div>
 
-      <el-button class="hotspots-icon__btn" type="primary" @click="submitIcon">确认</el-button>
+    <el-button class="hotspots-icon__btn" type="primary" @click="submitIcon">确认</el-button>
 
-    </el-dialog>
   </div>
+
 </template>
 
 <script>
@@ -35,10 +29,11 @@ import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 
 export default {
+
   props: {
     value: {
       type: Boolean,
-      required: true,
+      require: true,
     },
   },
 
@@ -72,7 +67,7 @@ export default {
   created() {
     this.loading = true
     this.$store.dispatch(EDIT.HOTSPOTS.INIT.ICON)
-      .then(this.loading = false)
+      .then(() => { this.loading = false })
   },
 }
 </script>

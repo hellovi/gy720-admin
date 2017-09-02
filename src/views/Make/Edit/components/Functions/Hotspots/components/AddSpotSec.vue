@@ -135,7 +135,8 @@ export default {
         icon_id: this.activeIcon.icon_id,
         type_id: this.type, // 热点类型
         v: this.form.url, // 为超链接和多媒体时必填?
-        // data_id: 19, //type_id为1,5,6时必填
+        // data_id: 19, //type_id为1,5,6时必填 //全部写在data_id里面
+        // 1，5，6，8 时，data_id字段为它们对应的ID；当热点类型为：3时，data_id 为链接地址
         // diy_src: '', //自定义热点图标url
       }
       return postSpotsData
@@ -147,12 +148,19 @@ export default {
         .then(({ result }) => {
           this.closeModal('hotspots')
           this.hotSpots = result
+
           // 这里接口返回的字段没有相应的图片??
-          this.hotSpots.url = 'http://img-qiniu.gy720.com//statics/krpano/hoticon/g-3-2.png'
+          // this.hotSpots.url = 'http://img-qiniu.gy720.com//statics/krpano/hoticon/g-3-2.png'
+          // 图片比例的问题（线上图片好了就可以用了）
+          // this.hotSpots.scale = '0.5'
+
           // eslint-disable-next-line
           const krpanoWin = window.__krpano
           krpanoWin.removehotspot(`hotspot_${this.hotSpots.id}`)
           krpanoWin.hotspots[this.hotSpots.id] = null
+          // 接口格式有变
+          // this.hotSpots.hot_id = this.hotSpots.id
+          this.hotSpots.pano_id = this.panoId
           krpanoWin.adddesignhotspot(this.hotSpots)
         })
     },
@@ -164,8 +172,6 @@ export default {
         } else {
           // console.log('error submit!!')
         }
-        // ????????
-        return true
       })
     },
 
@@ -189,8 +195,6 @@ export default {
 
   /*调整对齐，这个要看下有没有更好的方法可以float，基线对齐*/
   .el-form-item__content {
-    font-size: 0;
-
     & .el-button,
     & img {
       vertical-align: middle;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    title="添加热点"
+    :title="`${title}热点`"
     :visible="active.hotspots"
     :before-close="() => closeModal('hotspots')"
     @close="closeModalAfter"
@@ -15,7 +15,7 @@
         :type="type"
         :typeFir="typeFir"
         :typeSec="typeSec"
-        @open-modal="openModal"
+        @open-modal="openModalInner"
       >
       </component>
     </keep-alive>
@@ -23,7 +23,14 @@
     </el-dialog>
 
     <!-- 热点图标弹窗 -->
-    <icon-hotspots v-model="modal.icon"></icon-hotspots>
+    <el-dialog
+      title="热点图标库"
+      :visible.sync="modal.icon"
+      size="large"
+      :modal="false"
+    >
+      <icon-hotspots v-model="modal.icon"></icon-hotspots>
+    </el-dialog>
 
   </div>
 </template>
@@ -69,6 +76,7 @@ export default {
         icon: false,
       },
       sceneId: 0,
+      title: '添加',
     }
   },
 
@@ -105,14 +113,14 @@ export default {
       this.$store.commit(EDIT.HOTSPOTS.RESET.ICON)
     },
 
-    openModal(type) {
+    openModalInner(type) {
       this.modal[type] = true
     },
   },
 
   mounted() {
     // 初始化热点相关方法，之后要传入编辑数据
-    hotspotsInit()
+    hotspotsInit(this)
     // this.sceneId = this.activeScene.id
     // const params = `?pano_id=${this.panoId}&scene_id=${this.sceneId}`
     // this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, params)
