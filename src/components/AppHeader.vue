@@ -24,7 +24,7 @@
       <el-button class="app-header__button" type="primary" size="small" @click="$router.push('/user-client/publish')">发布</el-button>
 
       <div class="app-header__portal">
-        <router-link class="app-header__user" to="/">
+        <router-link class="app-header__user" to="/user-client">
           <img class="app-header__avatar" :src="$url.static(userInfo.avatar)" :alt="userInfo.nickname">
           <span class="app-header__name">{{ userInfo.nickname }}</span>
         </router-link>
