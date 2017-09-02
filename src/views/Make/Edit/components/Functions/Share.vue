@@ -5,7 +5,9 @@
     @close="closeModal"
   >
     <div class="qrcode">
-      <img class="qrcode-img" :src="data.qrcode">
+      <img
+        class="qrcode-img"
+        :src="$url.static(data.qrcode)">
       <p class="qrcode-title">微信“扫一扫”分享</p>
     </div>
     <div class="address">
