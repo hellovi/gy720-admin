@@ -168,10 +168,6 @@ export default {
       this.dialog.images = true
     },
   },
-
-  created() {
-    this.getList()
-  },
 }
 </script>
 
