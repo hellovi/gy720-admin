@@ -153,11 +153,6 @@
           })
       },
 
-      // 添加列表数据
-      addImageText() {
-        this.openDialog('add')
-      },
-
       // 编辑列表数据
       editInfo(data) {
         this.currentEditId = data.row.id
