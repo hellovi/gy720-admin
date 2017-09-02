@@ -3,7 +3,7 @@
     <section>
       <h3>
         <span>补天图片</span>
-        <span>免费版功能，遮盖场景天花板、广告宣传等用途</span>
+        <em>（免费版功能，遮盖场景天花板、广告宣传等用途）</em>
       </h3>
       <el-button
         type="primary"
@@ -19,7 +19,7 @@
     <section class="clearfix">
       <h3>
         <span>补地图片</span>
-        <span>免费版功能，遮盖场景天花板、广告宣传等用途</span>
+        <em>（免费版功能，遮盖场景天花板、广告宣传等用途）</em>
       </h3>
       <el-button
         type="primary"
@@ -73,7 +73,7 @@ export default {
 
     & > h3 {
 
-      & span+span {
+      & em {
         margin-left: 10px;
         font-size: 12px;
         font-weight: normal;
