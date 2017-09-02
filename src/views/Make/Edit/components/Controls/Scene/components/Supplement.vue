@@ -48,7 +48,7 @@
  */
 
 export default {
-  name: 'edit-scene-setting-music',
+  name: 'edit-scene-setting-supplement',
 }
 </script>
 

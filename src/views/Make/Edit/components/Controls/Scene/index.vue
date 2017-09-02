@@ -1,52 +1,95 @@
 <template>
   <div class="edit-control__scene">
     <div class="edit-scene clearfix">
-      <div class="edit-scene__left-arrow iconfont" @click="scrollToLeft">&#xe651;</div>
-
+      <!-- 左侧：滚动 -->
+      <div
+        class="edit-scene__left-arrow iconfont"
+        @click="scrollToLeft"
+      >&#xe651;</div>
+      <!-- 中间：场景列表 -->
       <draggable :list="scenes">
-        <transition-group tag="ul" class="list clearfix" ref="list" style="left: 0px;">
+        <transition-group
+          class="list clearfix"
+          tag="ul" ref="list" style="left: 0px;"
+        >
+          <!-- 场景项 -->
           <li
-            v-for="scene in scenes"
-            :key="scene.id"
             class="edit-scene__item"
             :class="{'edit-scene__item--active': scene.active}"
+            v-for="scene in scenelist" :key="scene.id"
           >
-            <div class="edit-scene__item__wrapper" @click="selectScene(scene.id)">
-              <img class="edit-scene__item__image" src="http://www.gy720.com/data/pano/3510/9647/34192/200_34eaf9e175468.jpg" :alt="scene.name">
+            <div
+              class="edit-scene__item__wrapper"
+              @click="selectScene(scene.id)"
+            >
+              <img
+                class="edit-scene__item__image"
+                :src="$url.static(scene.thumb)"
+                :alt="scene.name"
+              >
               <span class="edit-scene__item__title">{{ scene.name }}</span>
             </div>
-            <edit-tools dir="top" @onEdit="openModal('scene')"></edit-tools>
+            <!-- 设置、删除icon -->
+            <edit-tools
+              dir="top"
+              @delete="preDeleteScene(scene.id)"
+              @edit="openSceneConfig(scene)"
+            ></edit-tools>
           </li>
         </transition-group>
       </draggable>
-
-      <div class="edit-scene__right-arrow iconfont" @click="scrollToRight">&#xe7a2;</div>
+      <!-- 右侧：滚动 -->
+      <div
+        class="edit-scene__right-arrow iconfont"
+        @click="scrollToRight"
+      >&#xe7a2;</div>
     </div>
-
+    <!-- 右侧：添加场景 -->
     <div class="edit-scene-upload tip tip--top" data-tip="上传场景">
       <div role="button" class="btn-add dash-box">+</div>
     </div>
 
     <!-- 场景设置弹框 -->
-    <el-dialog :visible.sync="edit" title="场景设置" size="large">
+    <el-dialog
+      :visible.sync="configModal.active"
+      title="场景设置"
+      size="large"
+    >
+      <!-- 标签切换 -->
       <nav class="edit-setting__nav">
         <ul class="list clearfix">
           <li
-            v-for="(tab, index) in tabs"
-            :key="tab"
-            :class="{active: activeTab === index}"
-            @click="activeTab = index"
+            :class="{
+              active: configModal.tabType === index
+            }"
+            v-for="(tab, index) in tabs" :key="tab"
+            @click="configModal.tabType = index"
           >{{ tab }}</li>
         </ul>
       </nav>
+      <!-- 表单主体 -->
       <el-form class="edit-setting__form">
-        <basic v-show="activeTab === 0"></basic>
-        <special-effect v-show="activeTab === 1"></special-effect>
-        <music v-show="activeTab === 2"></music>
-        <minor v-show="activeTab === 3"></minor>
+        <app-form-alert :contents="errorReasons"></app-form-alert>
+        <v-basic
+          v-show="configModal.tabType === 0"
+          :data="sceneInfo"
+        ></v-basic>
+        <v-special-effect
+          v-show="configModal.tabType === 1"
+        ></v-special-effect>
+        <v-supplement
+          v-show="configModal.tabType === 2"
+        ></v-supplement>
+        <v-narrate
+          v-show="configModal.tabType === 3"
+        ></v-narrate>
       </el-form>
+      <!-- 控制按钮 -->
       <div slot="footer" class="edit-setting__footer">
-        <el-button type="primary">确定</el-button>
+        <el-button
+          type="primary"
+          @click="editConfig"
+        >确定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -54,33 +97,34 @@
 
 <script>
 /**
- * 高级编辑 - 场景
- * @author luminghuai
- * @version 2017-08-30
- * @description 场景设置弹框共用Setting模块的样式
+ * @desc 高级编辑 - 场景设置，弹框共用Setting模块的样式
+ *
+ * @author luminghuai | huojinzhao
  */
 
 import Draggable from 'vuedraggable'
 import { EDIT } from '@/store/mutationTypes'
+import deleteItem from '@/mixins/deleteItem'
+import Ajax from './modules/ajax'
 import modal from '../../../mixins/modal'
 import EditTools from '../EditTools'
-import Basic from './components/Basic'
-import SpecialEffect from './components/SpecialEffect'
-import Music from './components/Music'
-import Minor from './components/Minor'
+import vBasic from './components/Basic'
+import vSpecialEffect from './components/SpecialEffect'
+import vSupplement from './components/Supplement'
+import vNarrate from './components/Narrate'
 
 export default {
   name: 'edit-scene',
 
-  mixins: [modal],
+  mixins: [modal, deleteItem],
 
   components: {
     Draggable,
     EditTools,
-    Basic,
-    SpecialEffect,
-    Music,
-    Minor,
+    vBasic,
+    vSpecialEffect,
+    vSupplement,
+    vNarrate,
   },
 
   props: {
@@ -90,18 +134,43 @@ export default {
     },
   },
 
-  data() {
-    return {
-      edit: false,
-      tabs: ['基本信息', '场景特效', '背景音乐', '功能微调'],
-      activeTab: 0,
-    }
-  },
+  data: () => ({
+    scenelist: [],
+
+    tabs: ['基本信息', '场景特效', '补天补地', '语音解说'],
+
+    sceneInfo: {},
+
+    configModal: {
+      active: false,
+      tabType: 0,
+    },
+
+    errorReasons: {},
+  }),
 
   methods: {
-    selectScene(id) {
-      this.$store.commit(EDIT.SCENE.UPDATE, { id, update: { active: true } })
+    /* ----- Initialization ------ */
+
+    fetchScenelist() {
+      Ajax.readScenelist()
+        .then((res) => { this.scenelist = res })
     },
+
+
+    selectScene(sceneId) {
+      this.$store.commit(
+        EDIT.SCENE.UPDATE,
+        {
+          id: sceneId,
+          update: { active: true },
+        },
+      )
+    },
+
+    /* ------ Assitance ------ */
+
+    /* scene scroll */
 
     // 125是每个场景图的宽度 + 5px margin
     scrollToLeft() {
@@ -128,6 +197,70 @@ export default {
         $list.style.left = `${left - 125}px`
       }
     },
+
+    /* config */
+
+    openSceneConfig(scene) {
+      this.sceneInfo = { ...scene }
+      this.configModal.active = true
+    },
+
+    closeSceneConfig() {
+      this.configModal.active = false
+    },
+
+    /* ------ Application ------ */
+
+    /* deletion */
+
+    preDeleteScene(sceneId) {
+      this.onDeleteItem({
+        title: '删除场景',
+        message: '此操作将永久删除该分类，是否继续？',
+        itemId: sceneId,
+        ajax: this.deleteScene,
+        success: this.sceneDeletionSucceed,
+      })
+    },
+
+    deleteScene(sceneId) {
+      return Ajax.removeScene(sceneId)
+    },
+
+    sceneDeletionSucceed(sceneId) {
+      this.scenelist = this.scenelist
+        .filter(scene => scene.id !== sceneId)
+    },
+
+    /* edition */
+
+    editConfig() {
+      Ajax.replaceScene(this.sceneInfo)
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '设置成功',
+          })
+          this.editConfigSucceed(this.sceneInfo)
+        })
+        .catch((errors) => {
+          this.errorReasons = errors
+        })
+    },
+
+    editConfigSucceed(sceneInfo) {
+      const index = this.scenelist
+        .findIndex(scene => scene.id === sceneInfo.id)
+      if (index > -1) {
+        this.$set(this.scenelist, index, sceneInfo)
+      }
+      this.closeSceneConfig()
+    },
+  },
+
+  created() {
+    Ajax.defaultPanoId = this.$route.query.pano_id
+    this.fetchScenelist()
   },
 }
 </script>

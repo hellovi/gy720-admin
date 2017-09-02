@@ -45,7 +45,11 @@
 const AppFileUpload = () => import('@/components/AppFileUpload')
 
 export default {
-  name: 'edit-scene-setting-minor',
+  name: 'edit-scene-setting-narrate',
+
+  data: () => ({
+    src: '',
+  }),
 
   components: {
     AppFileUpload,
