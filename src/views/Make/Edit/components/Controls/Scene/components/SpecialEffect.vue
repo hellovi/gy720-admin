@@ -47,8 +47,8 @@
 <script>
 /**
  * 场景设置 - 场景特效
- * @author luminghuai
- * @version 2017-08-30
+ *
+ * @author luminghuai | huojinzhao
  */
 
 export default {

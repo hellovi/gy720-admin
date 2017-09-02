@@ -1,35 +1,56 @@
 <template>
-  <div>
+  <div class="edit-functions__scene-narrate">
     <section>
-      <h4>播放设置</h4>
-      <el-form-item label="电脑版语音解说默认开启">
-        <el-switch on-text="开启" off-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="手机版语音解说默认开启">
-        <el-switch on-text="开启" off-text="关闭"></el-switch>
-      </el-form-item>
+      <h3>
+        <span>选择语音解说</span>
+        <em class="narrate__note">（文件大小不超过15M，支持格式：MP3）</em>
+      </h3>
+      <el-button
+        type="primary" size="small"
+        @click="openMaterialAudio"
+      >选择语音素材</el-button>
+      <span
+        class="narrate__sound-title"
+      >
+        {{data.commentate_sound_title}}
+      </span>
     </section>
 
     <section>
-      <h4>选择语音解说</h4>
-
-      <app-file-upload
-        v-model="src"
-        cropper
-        accept="jpg,jpeg,png"
-        class="user-avatar__file"
-      >
-        <el-button type="primary" size="small">选择</el-button>
-        <slot name="right">文件大小不超过15M，支持格式：MP3</slot>
-      </app-file-upload>
-      <el-form-item label="应用到其它场景" label-width="8em">
-        <el-checkbox-group>
-          <el-checkbox label="当前场景组" name="type"></el-checkbox>
-          <el-checkbox label="所有场景" name="type"></el-checkbox>
-        </el-checkbox-group>
+      <h3>播放设置</h3>
+      <el-form-item label="电脑版语音解说默认开启">
+        <el-switch
+          v-model="data.pc_commentate"
+          on-text="开"
+          :on-value="20"
+          off-text="关"
+          :off-value="10"
+        >
+        </el-switch>
       </el-form-item>
-      <el-form-item label="播放状态" label-width="8em">
-        <el-checkbox label="播放时关闭背景音乐" ></el-checkbox>
+      <el-form-item label="手机版语音解说默认开启">
+        <el-switch
+          v-model="data.mobile_commentate"
+          on-text="开"
+          :on-value="20"
+          off-text="关"
+          :off-value="10"
+        >
+        </el-switch>
+      </el-form-item>
+      <el-form-item label="播放解说时打开背景音乐">
+        <el-switch
+          v-model="data.bg_music"
+          on-text="是"
+          :on-value="20"
+          off-text="否"
+          :off-value="10"
+        >
+        </el-switch>
+      </el-form-item>
+      <el-form-item label="应用到其它场景" label-width="8em">
+        <el-button type="ghost">当前场景组</el-button>
+        <el-button type="ghost">所有场景</el-button>
       </el-form-item>
     </section>
   </div>
@@ -38,22 +59,53 @@
 <script>
 /**
  * 场景设置 - 功能微调
- * @author luminghuai
- * @version 2017-08-30
+ *
+ * @author luminghuai | huojinzhao
  */
 
-const AppFileUpload = () => import('@/components/AppFileUpload')
+import { EDIT } from '@/store/mutationTypes'
 
 export default {
   name: 'edit-scene-setting-narrate',
 
-  data: () => ({
-    src: '',
-  }),
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
 
-  components: {
-    AppFileUpload,
+  methods: {
+    openMaterialAudio() {
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'audio')
+        .then(({ id, title }) => {
+          this.data.commentate_sound = id
+          this.data.commentate_sound_title = title
+        })
+    },
   },
 }
 </script>
 
+<style lang="postcss">
+@import "vars.css";
+
+.edit-functions__scene-narrate {
+
+  & .narrate {
+
+    &__note {
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--gray);
+    }
+
+    &__sound {
+
+      &-title {
+        margin-left: 30px;
+      }
+    }
+  }
+}
+</style>
