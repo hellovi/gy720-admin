@@ -1,54 +1,94 @@
 <template>
-  <div>
-    <section class="clearfix">
-      <div class="float-left">
-        <div class="setting-img">
-          <h5 class="setting-img__title">补天图片</h5>
-          <img class="setting-img__img" src="#" alt="补天图片">
-        </div>
-      </div>
-      <div class="float-left">
-        <el-button type="primary">选择图片</el-button>
-        <el-form-item label="应用到其它场景" label-width="8em">
-          <el-checkbox-group>
-            <el-checkbox label="当前场景组" name="type"></el-checkbox>
-            <el-checkbox label="所有场景" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <div class="edit-setting__tip">免费版功能，遮盖场景天花板、广告宣传等用途</div>
-      </div>
+  <div class="edit-functions__scene-supplement">
+    <section>
+      <h3>
+        <span>补天图片</span>
+        <span>免费版功能，遮盖场景天花板、广告宣传等用途</span>
+      </h3>
+      <el-button
+        type="primary"
+        @click="openMaterialAd('top_ad_img')"
+      >选择图片</el-button>
+      <el-form-item label="应用到其它场景" label-width="8em">
+        <el-button type="ghost">当前场景组</el-button>
+        <el-button type="ghost">所有场景</el-button type=host"g">
+      </el-form-item>
+      <img :src="$url.static(data.top_ad_img)">
     </section>
 
     <section class="clearfix">
-      <div class="float-left">
-        <div class="setting-img">
-          <h5 class="setting-img__title">补地图片</h5>
-          <img class="setting-img__img" src="#" alt="补地图片">
-        </div>
-      </div>
-      <div class="float-left">
-        <el-button type="primary">选择图片</el-button>
-        <el-form-item label="应用到其它场景" label-width="8em">
-          <el-checkbox-group>
-            <el-checkbox label="当前场景组" name="type"></el-checkbox>
-            <el-checkbox label="所有场景" name="type"></el-checkbox>
-          </el-checkbox-group>
-        </el-form-item>
-        <div class="edit-setting__tip">免费版功能，遮盖场景天花板、广告宣传等用途</div>
-      </div>
+      <h3>
+        <span>补地图片</span>
+        <span>免费版功能，遮盖场景天花板、广告宣传等用途</span>
+      </h3>
+      <el-button
+        type="primary"
+        @click="openMaterialAd('bottom_ad_img')"
+      >选择图片</el-button>
+      <el-form-item label="应用到其它场景" label-width="8em">
+        <el-button type="ghost">当前场景组</el-button>
+        <el-button type="ghost">所有场景</el-button>
+      </el-form-item>
+      <img :src="$url.static(data.bottom_ad_img)">
     </section>
   </div>
 </template>
 
 <script>
 /**
- * 场景设置 - 背景音乐
- * @author luminghuai
- * @version 2017-08-30
+ * 场景设置 - 补天补地
+ *
+ * @author luminghuai | huojinzhao
  */
+
+import { EDIT } from '@/store/mutationTypes'
 
 export default {
   name: 'edit-scene-setting-supplement',
+
+  props: {
+    data: {
+      type: Object,
+      required: true,
+    },
+  },
+
+  methods: {
+    openMaterialAd(type) {
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'ad')
+        .then(({ file_path }) => {
+          this.data[type] = file_path
+        })
+    },
+  },
 }
 </script>
 
+<style lang="postcss">
+@import 'vars.css';
+
+.edit-functions__scene-supplement {
+
+  & > section {
+
+    & > h3 {
+
+      & span+span {
+        margin-left: 10px;
+        font-size: 12px;
+        font-weight: normal;
+        color: var(--gray);
+      }
+    }
+
+    & > .el-button {
+      float: left;
+      margin-right: 50px;
+    }
+
+    & > img {
+      height: 150px;
+    }
+  }
+}
+</style>

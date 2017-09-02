@@ -80,9 +80,11 @@
         ></v-special-effect>
         <v-supplement
           v-show="configModal.tabType === 2"
+          :data="sceneInfo"
         ></v-supplement>
         <v-narrate
           v-show="configModal.tabType === 3"
+          :data="sceneInfo"
         ></v-narrate>
       </el-form>
       <!-- 控制按钮 -->
