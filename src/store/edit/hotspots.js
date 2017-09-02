@@ -7,6 +7,7 @@ export default {
   state: {
     icons: [],
     activeIcon: {},
+    spotsList: [],
   },
 
   mutations: {
@@ -21,32 +22,31 @@ export default {
     [HOTSPOTS.RESET.ICON](state) {
       state.activeIcon = {}
     },
+
+    [HOTSPOTS.INIT.SPOTS](state, data) {
+      state.spotsList = data
+    },
   },
 
   actions: {
     [HOTSPOTS.INIT.ICON]({ commit }) {
       return Http.get('/user/scenehotspot/icons')
         .then(({ result }) => {
-          const data = []
-          result.map((items) => {
-            items.list.map((item) => {
-              data.push(item)
-              return true
-            })
-            return true
-          })
+          // eslint-disable-next-line
+          const data = result.reduce((all, { list }) => [...all, ...list], [])
           commit(HOTSPOTS.INIT.ICON, data)
         })
     },
 
-    [HOTSPOTS.INIT.SPOTS](params) {
+    [HOTSPOTS.INIT.SPOTS]({ commit }, { params, pano_id }) {
       return Http.get(`/user/scenehotspot${params}`)
         .then(({ result }) => {
-          result.map((item) => {
+          result.forEach((item) => {
+            item.pano_id = pano_id
             // eslint-disable-next-line
             window.__krpano.adddesignhotspot(item)
-            return true
           })
+          commit(HOTSPOTS.INIT.SPOTS, result)
         })
     },
   },
