@@ -136,6 +136,12 @@ export default {
           FilesAdded: (up, files) => {
             files.forEach((file) => {
               this.getPreview(file, (dataUrl) => {
+                // 卢 2017-09-02
+                this.$emit('file-preview', {
+                  ...file,
+                  preview: dataUrl,
+                })
+
                 this.previemImg = dataUrl
                 this.cropShow = true
               })
@@ -230,6 +236,7 @@ export default {
       }
 
       this.uploader = window.Qiniu.uploader({ ...options, ...this.config })
+      this.$emit('init', this.uploader)
     },
 
     /**
