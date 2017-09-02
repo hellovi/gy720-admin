@@ -45,13 +45,20 @@ export default {
 
   actions: {
     [EDIT.GET_PANOINFO]({ commit }, pano_id) {
-      Http.get(`/user/pubset/get?pano_id=${pano_id}`)
+      return Http.get(`/user/pubset/get?pano_id=${pano_id}`)
         .then(({ result }) => commit(EDIT.GET_PANOINFO, result))
     },
 
+    /**
+     * 获取场景信息
+     * 返回当前选中场景（加载完默认为第一项）的id，以便调用热点接口时能确保拿到此id
+     */
     [EDIT.SCENE.INIT]({ commit }, pano_id) {
-      Http.get(`/user/scene?pano_id=${pano_id}`)
-        .then(({ result }) => commit(EDIT.SCENE.INIT, result))
+      return Http.get(`/user/scene?pano_id=${pano_id}`)
+        .then(({ result }) => {
+          commit(EDIT.SCENE.INIT, result)
+          return result[0].id
+        })
     },
   },
 

@@ -102,12 +102,19 @@ export default {
 
   created() {
     this.panoId = this.$route.query.pano_id
-
+    // 获取作品信息
     this.$store.dispatch(EDIT.GET_PANOINFO, this.panoId)
+
     // 菜单初始化
     this.$store.dispatch(EDIT.MENU.INIT, this.panoId)
+
     // 获取场景信息
     this.$store.dispatch(EDIT.SCENE.INIT, this.panoId)
+      .then((sceneId) => {
+        // 加载当前场景热点
+        const params = `?pano_id=${this.panoId}&scene_id=${sceneId}`
+        this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { params, pano_id: this.panoId })
+      })
   },
 
   mounted() {
