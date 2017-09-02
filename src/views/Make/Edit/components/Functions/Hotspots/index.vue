@@ -8,17 +8,16 @@
     class="edit-functions__hotspots-modal"
     >
 
-    <keep-alive>
       <component
         :is="currentView"
-        @switchStep="switchStep"
+        @switch-step="switchStep"
         :type="type"
-        :typeFir="typeFir"
-        :typeSec="typeSec"
+        :type-fir="typeFir"
+        :type-sec="typeSec"
+        :edit-info="editInfo"
         @open-modal="openModalInner"
       >
       </component>
-    </keep-alive>
 
     </el-dialog>
 
@@ -77,12 +76,14 @@ export default {
       },
       sceneId: 0,
       title: '添加',
+      editInfo: {},
     }
   },
 
   computed: {
     ...mapState({
       panoId: state => state.edit.panoInfo.hash_pano_id,
+      spotsList: state => state.edit.hotspots.spotsList,
     }),
 
     ...mapGetters(['activeScene']),

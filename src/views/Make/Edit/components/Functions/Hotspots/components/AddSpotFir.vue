@@ -45,7 +45,7 @@ export default {
 
   methods: {
     switchStep(step, type) {
-      this.$emit('switchStep', step, type)
+      this.$emit('switch-step', step, type)
     },
   },
 }

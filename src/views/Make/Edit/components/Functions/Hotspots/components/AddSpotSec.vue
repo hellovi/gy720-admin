@@ -3,8 +3,8 @@
 
     <el-form ref="spotForm" :rules="rules" :model="form" label-width="80px">
       <!--名称图标固定显示-->
-      <el-form-item label="热点名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入热点名称"></el-input>
+      <el-form-item label="热点名称" prop="hot_name">
+        <el-input v-model="form.hot_name" placeholder="请输入热点名称"></el-input>
       </el-form-item>
 
       <!-- <el-form-item label="热点图标" prop="icon.id"
@@ -47,7 +47,7 @@
  * @version 2017-08-14
  */
 import { mapState } from 'vuex'
-// import { EDIT } from '@/store/mutationTypes'
+import { EDIT } from '@/store/mutationTypes'
 import modal from '../../../../mixins/modal'
 
 export default {
@@ -64,19 +64,22 @@ export default {
       type: String,
       required: true,
     },
+    editInfo: {
+      type: Object,
+    },
   },
 
   data() {
     return {
       form: {
-        name: '',
+        hot_name: '',
         url: '',
-        icon: { id: '', name: '', url: '' },
-        scene: {},
+        // icon: { id: '', name: '', url: '' },
+        // scene: {},
       },
 
       rules: {
-        name: [
+        hot_name: [
           { required: true, message: '请输入热点名称', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
         ],
@@ -89,9 +92,9 @@ export default {
         //     },
         //   },
         // ],
-        scene: [
-          { type: 'object', required: true, message: '请选择链接场景', trigger: 'blur' },
-        ],
+        // scene: [
+        //   { type: 'object', required: true, message: '请选择链接场景', trigger: 'blur' },
+        // ],
       },
 
       hotSpots: {},
@@ -103,6 +106,10 @@ export default {
       activeIcon: state => state.edit.hotspots.activeIcon,
       panoId: state => state.edit.panoInfo.hash_pano_id,
     }),
+
+    editStatus() {
+      return Object.keys(this.editInfo).length > 0
+    },
   },
 
   methods: {
@@ -111,7 +118,7 @@ export default {
     },
 
     switchStep(step) {
-      this.$emit('switchStep', step)
+      this.$emit('switch-step', step)
     },
 
     prepareSpotsData() {
@@ -129,7 +136,7 @@ export default {
       const postSpotsData = {
         pano_id: this.panoId,
         scene_id: this.$store.getters.activeScene.id,
-        hot_name: this.form.name,
+        hot_name: this.form.hot_name,
         ath: sphereY,
         atv: sphereX,
         icon_id: this.activeIcon.icon_id,
@@ -144,8 +151,12 @@ export default {
 
     submitHotSpots() {
       const data = this.prepareSpotsData()
-      this.$http.post('/user/scenehotspot', data)
-        .then(({ result }) => {
+      const request = !this.editStatus ? EDIT.HOTSPOTS.CREATE : EDIT.HOTSPOTS.UPDATE
+      const params = !this.editStatus ?
+        data : { id: this.editInfo.id, data: { ...this.editInfo, ...data } }
+      this.$store.dispatch(request, params)
+        .then((result) => {
+          this.resetForm('spotForm')
           this.closeModal('hotspots')
           this.hotSpots = result
 
@@ -161,7 +172,12 @@ export default {
           // 接口格式有变
           // this.hotSpots.hot_id = this.hotSpots.id
           this.hotSpots.pano_id = this.panoId
-          krpanoWin.adddesignhotspot(this.hotSpots)
+          if (!this.editStatus) {
+            krpanoWin.adddesignhotspot(this.hotSpots)
+          } else {
+            params.data.url = params.data.icon_thumb
+            krpanoWin.adddesignhotspot({ id: this.editInfo.id, ...params.data })
+          }
         })
     },
 
@@ -178,6 +194,13 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
+  },
+
+  created() {
+    if (this.editStatus) {
+      // 编辑状态
+      this.form = this.editInfo
+    }
   },
 }
 </script>

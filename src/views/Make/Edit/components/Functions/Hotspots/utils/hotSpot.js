@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { Http } from '@/utils'
+import { EDIT } from '@/store/mutationTypes'
 export default function hotspotsInit(that){
     window.krpanoplugin.prototype.adddesignhotspot = function(hotspotdata){
       this.hotspots[hotspotdata.id] = hotspotdata;
@@ -117,7 +118,7 @@ export default function hotspotsInit(that){
    	    y: "5",
    	    scale: "0.5",
    	    keep: true
-   	});
+     });
        __krpano.call( "hotspot[" + hotspotName + "].loadstyle(" + hotspotdata.style + ")" );
    	return this;
    };
@@ -127,13 +128,14 @@ export default function hotspotsInit(that){
    * 编辑热点
    */
     window.krpanoEditHotspot = function (id) {
-      window.console.log('编辑热点')
-      console.log(that)
-      console.log(id)
       that.title = '编辑'
+      that.editInfo = that.spotsList.find((spot) => spot.id == id)
+      const info = that.editInfo
+      // 热点图标赋值 ???? // 这里还是得区分有无c-
+      const activeIcon = { icon_id: info.icon_id, thumb: info.icon_thumb, y: info.y }
+      that.$store.commit(EDIT.HOTSPOTS.SELECT.ICON, activeIcon)
       that.openModal('hotspots')
-      // 取数据
-      that.switchStep(2, 7)
+      that.switchStep(2, info.type_id)
     };
 
 
@@ -143,11 +145,12 @@ export default function hotspotsInit(that){
      */
    window.krpanoDeleteHotspot = function (id, scene_id, pano_id) {
       const param = `?pano_id=${pano_id}&scene_id=${scene_id}`
-      Http.delete(`/user/scenehotspot/${id}${param}`)
+      that.$store.dispatch(EDIT.HOTSPOTS.REMOVE, {id, param})
         .then(() => {
-          window.__krpano.removehotspot("hotspot_" + id);
-          window.__krpano.removelayer("hotspot_txt_" + id);
-          window.__krpano.hotspots[id] = null;
+          window.__krpano.removehotspot(`hotspot_${id}`)
+          window.__krpano.removelayer(`hotspot_txt_${id}`)
+          window.__krpano.hotspots[id] = null
+          that.$message.success('删除成功')
         })
    }
 
