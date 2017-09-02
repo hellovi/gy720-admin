@@ -94,7 +94,7 @@ export default {
   methods: {
     openObjectManage() {
       this.openModal('object3d')
-      this.$store.dispatch(EDIT.OBJECT.CATE.INIT)
+      this.$store.dispatch(EDIT.ROTATE.CATE.INIT)
     },
 
     openImageTextAdd() {

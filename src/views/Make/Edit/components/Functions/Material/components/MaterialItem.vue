@@ -3,7 +3,8 @@
     class="material-item"
     :class="{selectable: invoked}"
   >
-    <div class="material-item__tools">
+    <!-- 非物品3D时才显示工具按钮 -->
+    <div class="material-item__tools" v-if="!isRotate">
       <i
         role="button"
         class="iconfont hover-warning"
@@ -17,9 +18,13 @@
     </div>
 
     <div v-if="isAudio" class="material-item__play" @click="$emit('play', item)"></div>
+    <img v-else-if="isRotate" :src="item.thumb || 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
     <img v-else :src="$url.static(item.file_path)" :alt="item.title" />
 
-    <figcaption class="ellipsis" :title="item.title">{{ item.title }}</figcaption>
+    <figcaption class="ellipsis" :title="item.title">
+      <span v-if="isRotate"><a class="hover-primary" href="#">预览</a></span>
+      <span v-else>{{ item.title }}</span>
+    </figcaption>
   </figure>
 </template>
 
@@ -50,6 +55,10 @@ export default {
 
     isAudio() {
       return this.item.file_ext === 'mp3'
+    },
+
+    isRotate() {
+      return this.item.source_rotate_category_id != null
     },
   },
 

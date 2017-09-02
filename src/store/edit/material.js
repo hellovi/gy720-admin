@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
-const { MATERIAL, OBJECT } = EDIT
+const { MATERIAL, ROTATE } = EDIT
 
 // 自定义事件，用于MATERIAL.INVOKE和MATERIAL.SELECT中
 export const customEvent = document.createEvent('Event')
@@ -27,8 +27,8 @@ export default {
     },
     selectedItem: {},
     // 物品3D分类
-    objectCates: [],
-    activeObjectCateId: null,
+    rotateCates: [],
+    activeRotateCateId: null,
   },
 
   mutations: {
@@ -83,44 +83,53 @@ export default {
     },
 
     /** 物品3D分类 */
-    [OBJECT.CATE.INIT](state, cates) {
-      state.objectCates = cates
-      state.activeObjectCateId = cates[0].id
+    [ROTATE.CATE.INIT](state, cates) {
+      state.rotateCates = cates
+      state.activeRotateCateId = cates[0].id
     },
 
-    [OBJECT.CATE.CREATE](state, cate) {
-      state.objectCates = [...state.objectCates, cate]
+    [ROTATE.CATE.SELECT](state, id) {
+      state.activeRotateCateId = id
     },
 
-    [OBJECT.CATE.SELECT](state, id) {
-      state.activeObjectCateId = id
+    [ROTATE.CATE.CREATE](state, cate) {
+      state.rotateCates = [...state.rotateCates, cate]
     },
 
-    [OBJECT.CATE.REMOVE](state, id) {
-      state.objectCates = state.objectCates.filter(cate => cate.id !== id)
+    [ROTATE.CATE.UPDATE](state, update) {
+      state.rotateCates = state.rotateCates.map((cate) => {
+        if (cate.id === update.id) {
+          return { ...cate, ...update }
+        }
+        return cate
+      })
+    },
+
+    [ROTATE.CATE.REMOVE](state, id) {
+      state.rotateCates = state.rotateCates.filter(cate => cate.id !== id)
     },
 
     /** 物品3D列表 */
     // 如果列表中已有10项，向列表添加新项目的同时，应该删除列表最后一项
-    [OBJECT.CREATE](state, object) {
-      const { data } = state.materialData.objects
-      Vue.set(state.materialData.objects, 'data', [
+    [ROTATE.CREATE](state, object) {
+      const { data } = state.materialData.rotate
+      Vue.set(state.materialData.rotate, 'data', [
         object,
         ...(data.length >= 10 ? data.slice(0, -1) : data),
       ])
     },
 
-    [OBJECT.UPDATE](state, update) {
-      const index = state.materialData.objects.data.findIndex(item => item.id === update.id)
-      Vue.set(state.materialData.objects.data, index, {
-        ...state.materialData.objects.data[index],
+    [ROTATE.UPDATE](state, update) {
+      const index = state.materialData.rotate.data.findIndex(item => item.id === update.id)
+      Vue.set(state.materialData.rotate.data, index, {
+        ...state.materialData.rotate.data[index],
         ...update,
       })
     },
 
-    [OBJECT.REMOVE](state, id) {
-      const { data } = state.materialData.objects
-      Vue.set(state.materialData.objects, 'data', data.filter(item => item.id !== id))
+    [ROTATE.REMOVE](state, id) {
+      const { data } = state.materialData.rotate
+      Vue.set(state.materialData.rotate, 'data', data.filter(item => item.id !== id))
     },
   },
 
@@ -177,35 +186,40 @@ export default {
     },
 
     /** 物品3D分类 */
-    [OBJECT.CATE.INIT]({ commit }) {
+    [ROTATE.CATE.INIT]({ commit }) {
       return Http.get('/user/sourcerotatecategory')
-        .then(({ result }) => commit(OBJECT.CATE.INIT, result))
+        .then(({ result }) => commit(ROTATE.CATE.INIT, result))
     },
 
-    [OBJECT.CATE.CREATE]({ commit }, data) {
+    [ROTATE.CATE.CREATE]({ commit }, data) {
       return Http.post('/user/sourcerotatecategory', data)
-        .then(() => commit(OBJECT.CATE.CREATE, data))
+        .then(({ result }) => commit(ROTATE.CATE.CREATE, result))
     },
 
-    [OBJECT.CATE.REMOVE]({ commit }, id) {
+    [ROTATE.CATE.UPDATE]({ commit }, data) {
+      return Http.put(`/user/sourcerotatecategory/${data.id}`, data)
+        .then(() => commit(ROTATE.CATE.UPDATE, data))
+    },
+
+    [ROTATE.CATE.REMOVE]({ commit }, id) {
       return Http.delete(`/user/sourcerotatecategory/${id}`)
-        .then(() => commit(OBJECT.CATE.REMOVE, id))
+        .then(() => commit(ROTATE.CATE.REMOVE, id))
     },
 
     /** 物品3D列表 */
-    [OBJECT.CREATE]({ commit }, data) {
+    [ROTATE.CREATE]({ commit }, data) {
       Http.post('/user/sourcerotate', data)
-        .then(() => commit(OBJECT.CREATE, data))
+        .then(({ result }) => commit(ROTATE.CREATE, result))
     },
 
-    [OBJECT.UPDATE]({ commit }, data) {
+    [ROTATE.UPDATE]({ commit }, data) {
       Http.put(`/user/sourcerotate/${data.id}`, data)
-        .then(() => commit(OBJECT.UPDATE, data))
+        .then(() => commit(ROTATE.UPDATE, data))
     },
 
-    [OBJECT.REMOVE]({ commit }, id) {
+    [ROTATE.REMOVE]({ commit }, id) {
       Http.delete(`/user/sourcerotate/${id}`)
-        .then(() => commit(OBJECT.REMOVE, id))
+        .then(() => commit(ROTATE.REMOVE, id))
     },
   },
 }

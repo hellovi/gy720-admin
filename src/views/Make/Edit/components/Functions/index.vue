@@ -18,7 +18,7 @@
     <!--限制视角-->
     <restrict-view v-if="active.restrictView"></restrict-view>
 
-    <object-manager></object-manager>
+    <rotate-manager></rotate-manager>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ import Snapshot from './Snapshot'
 import Initialview from './Initialview'
 import VipInfo from './VipInfo'
 import RestrictView from './RestrictView'
-import ObjectManager from './ObjectManager'
+import RotateManager from './RotateManager'
 
 
 export default {
@@ -64,7 +64,7 @@ export default {
     Initialview,
     VipInfo,
     RestrictView,
-    ObjectManager,
+    RotateManager,
   },
 
   computed: {
