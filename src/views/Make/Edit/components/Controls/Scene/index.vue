@@ -76,6 +76,7 @@
         ></v-basic>
         <v-special-effect
           v-show="configModal.tabType === 1"
+          :data="sceneInfo"
         ></v-special-effect>
         <v-supplement
           v-show="configModal.tabType === 2"
