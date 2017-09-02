@@ -59,7 +59,7 @@ export default {
     },
     accept: {
       type: String,
-      default: 'gif',
+      default: 'jpg, jpeg, gif, png',
     },
     size: {
       type: String,
