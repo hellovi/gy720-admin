@@ -1,5 +1,10 @@
 <template>
-  <el-dialog title="group" :visible.sync="active.group" custom-class="group-dialog">
+  <el-dialog
+    title="group"
+    :visible.sync="active.group"
+    @open="openScene"
+    custom-class="group-dialog"
+  >
     <header class="group-dialog__header clearfix">
       <div class="group-dialog__header__tip clearfix">
       <h5>温馨提示:</h5>
@@ -13,37 +18,49 @@
       <el-button type="primary" size="small" @click="createNewGroup">添加场景分组</el-button>
     </header>
 
-    <draggable v-model="names">
+    <draggable v-model="groupsList" :options="{group:'list'}" @sort="groupsSort">
       <transition-group tag="ul" class="group-list list">
-        <li v-for="name in names" :key="name">
+        <li v-for="list in groupsList" :key="list.id">
           <div class="scene-group">
             <div class="scene-group__title clearfix">
-              <h4>{{ name }}</h4>
-              <i role="button" class="iconfont" @click="removeGroup">&#xe615;</i>
+              <h4>{{ list.title }}</h4>
+              <div class="scene-group__title__edit">
+                <i role="button" class="iconfont" @click="createNewGroup(list)">&#xe608;</i>
+                <i role="button" class="iconfont" @click="removeGroup(list)">&#xe615;</i>
+              </div>
             </div>
-            <draggable :list="groups[name]">
+            <draggable :list="list.scenes" v-if="list.scenes.length">
               <transition-group tag="ul" class="list">
-                <li v-for="scene in groups[name]" :key="scene.name" class="scene-group__item clearfix">
-                  <img :src="scene.src" alt="">
+                <li v-for="scene in list.scenes" :key="scene.id" class="scene-group__item clearfix">
+                  <img :src="$url.static(scene.thumb)" :alt="scene.name">
                   <span class="scene-group__item__name">{{ scene.name }}</span>
+                  <span class="scene-group__item__edit">
+                    <i role="button" class="iconfont" @click="removeGroup(list)">&#xe615;</i>
+                  </span>
                 </li>
               </transition-group>
             </draggable>
-            <el-button size="small" class="scene-group__add" @click="showScenes = true">+</el-button>
+            <el-button size="small" class="scene-group__add" @click="showScenesBox(list)">+</el-button>
           </div>
         </li>
       </transition-group>
     </draggable>
 
-    <el-dialog title="132412" :visible.sync="showScenes" size="large" :modal="false">
+    <el-dialog
+      title="选择场景"
+      :visible.sync="showScenes"
+      size="large"
+      @open="getNotGroups"
+      @close="closeSelectScenes"
+      :modal="false">
       <ul class="work-scenes list clearfix">
-        <li v-for="i in 10" :key="i">
-          <img src="http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg" alt="">
-          <span>4</span>
+        <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
+          <img :src="$url.static(list.thumb)" :alt="list.name">
+          <span>{{ list.name }}</span>
         </li>
       </ul>
       <div class="work-scenes__confirm">
-        <el-button type="primary" size="">确定</el-button>
+        <el-button type="primary" @click="addScenes">确定</el-button>
       </div>
     </el-dialog>
   </el-dialog>
@@ -55,6 +72,7 @@
  * @version 2017-08-14
  */
 
+import { mapState } from 'vuex'
 import Draggable from 'vuedraggable'
 import modal from '../../mixins/modal'
 
@@ -70,54 +88,190 @@ export default {
   data() {
     return {
       showScenes: false,
-      names: ['a', 'b', 'c', 'd', 'e'],
-      groups: {
-        a: [
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '0', group: 'a' },
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '1', group: 'a' },
-        ],
-        b: [
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '3', group: 'b' },
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '4', group: 'b' },
-        ],
-        c: [
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '5', group: 'c' },
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '6', group: 'c' },
-        ],
-        d: [
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '7', group: 'd' },
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '8', group: 'd' },
-        ],
-        e: [
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '7', group: 'e' },
-          { src: 'http://www.gy720.com/data/pano/984/3440/11026/200_26478d4be10cf.jpg', name: '8', group: 'e' },
-        ],
-      },
+      groupsList: [],
+      notGroupsList: [],
+      currentGroupsId: null,
+      selectSceneIds: [],
     }
   },
 
+  computed: {
+    ...mapState({
+      panoInfo: state => state.edit.panoInfo,
+    }),
+  },
+
   methods: {
-    createNewGroup() {
-      this.$prompt('请输入分组名', '添加场景分组', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        // inputPattern:,
-        inputErrorMessage: '邮箱格式不正确',
+    // 打开场景
+    openScene() {
+      this.getGroupsList()
+    },
+
+    // 获取未分组的场景列表
+    getNotGroups() {
+      this.$http.get(`/user/scenegroupdata/scenes?pano_id=${this.panoInfo.hash_pano_id}`)
+        .then((res) => {
+          this.notGroupsList = [...res.result]
+        })
+        .catch(({ status }) => {
+          this.$notify.error(status.reason)
+        })
+    },
+
+    // 获取场景分组列表
+    getGroupsList() {
+      this.$http.get(`/user/scenegroup?pano_id=${this.panoInfo.hash_pano_id}`)
+        .then((res) => {
+          this.groupsList = [...res.result]
+        })
+        .catch(({ status }) => {
+          this.$notify.error(status.reason)
+        })
+    },
+
+    // 打开选择场景
+    showScenesBox({ id }) {
+      this.showScenes = true
+      this.currentGroupsId = id
+    },
+
+    // 选择场景添加
+    selectScenes(item) {
+      const isExist = this.selectSceneIds.filter(val => val.id === item.id).length
+      if (isExist) {
+        // 存在则删除选中数据
+        this.selectSceneIds = this.selectSceneIds.filter(val => val.id !== item.id)
+      } else {
+        // 不存在则添加选中数据
+        this.selectSceneIds.push(item)
+      }
+    },
+
+    // 判断是否选中
+    checkedScene({ id }) {
+      return this.selectSceneIds.filter(item => item.id === id).length
+    },
+
+    // 提交添加场景到分组
+    addScenes() {
+      if (this.selectSceneIds.length) {
+        this.$http.post('/user/scenegroupdata/store', {
+          pano_id: `${this.panoInfo.hash_pano_id}`,
+          scene_group_id: this.currentGroupsId,
+          scene_ids: this.selectSceneIds.map(({ id }) => id),
+        })
+          .then(() => {
+            this.$message.success('添加场景成功!')
+            this.showScenes = false
+          })
+      } else {
+        this.$notify.error('请输入场景')
+      }
+    },
+
+    // 关闭场景窗口清空选择场景数据
+    closeSelectScenes() {
+      this.groupsList = this.groupsList.map((item) => {
+        const scenes = [...item.scenes.concat(this.selectSceneIds)]
+        if (item.id === this.currentGroupsId) {
+          this.currentGroupsId = null
+          this.selectSceneIds = []
+          return {
+            ...item,
+            scenes,
+          }
+        }
+        return item
       })
     },
 
-    removeGroup() {
+    // 修改分组名称
+    editGroupsTitle(title, id) {
+      if (title) {
+        this.$http.put(`/user/scenegroup/${id}?pano_id=${this.panoInfo.hash_pano_id}`, { title })
+          .then(() => {
+            // 修改列表名称
+            this.groupsList.find(item => item.id === id).title = title
+            this.$message.success('分组名称修改成功!')
+          })
+          .catch(({ status }) => {
+            this.$notify.error(status.reason)
+          })
+      }
+    },
+
+    // 添加 | 编辑 分组
+    createNewGroup({ title = null, id = '' }) {
+      const inputValidator = val => !!val
+
+      if (title || this.groupsList.length < 5) {
+        this.$prompt('请输入分组名', '添加场景分组', {
+          inputValue: title,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValidator,
+          inputErrorMessage: '分组名不能为空',
+        }).then(({ value }) => {
+          if (id) {
+            this.editGroupsTitle(value, id)
+          } else {
+            // 限制最多5个分组
+            this.$http.post(`/user/scenegroup?pano_id=${this.panoInfo.hash_pano_id}`, { title: value })
+              .then(({ result }) => {
+                // 添加成功新增列表数组
+                this.groupsList.push({
+                  id: result.id,
+                  title: result.title,
+                  list_order: 255,
+                  scenes: [],
+                })
+                this.$message.success('添加场景分组成功!')
+              })
+              .catch(({ status }) => {
+                this.$notify.error(status.reason)
+              })
+          }
+        })
+      } else {
+        this.$notify.error('场景分组最多不能超出5个')
+      }
+    },
+
+    // 删除分组
+    removeGroup({ id }) {
       this.$confirm('确定要删除该分组吗?', '删除确认', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!',
-        })
+        this.$http.delete(`/user/scenegroup/${id}?pano_id=${this.panoInfo.hash_pano_id}`)
+          .then(() => {
+            // 过滤出删除之外的数据
+            this.groupsList = this.groupsList.filter(item => item.id !== id)
+            this.$message.success('删除成功!')
+          })
+          .catch(({ status }) => {
+            this.$notify.error(`${status.reason}`)
+          })
       })
     },
+
+    // 分组排序
+    groupsSort() {
+      const sort = this.groupsList.map(({ id }) => {
+        const data = { id }
+        return data
+      })
+      this.$http.post(`/user/scenegroup/sort?pano_id=${this.panoInfo.hash_pano_id}`, { sort })
+        .then(() => {
+          this.$message.success('排序成功!')
+        })
+        .catch(({ status }) => {
+          this.$notify.errors(status.reason)
+        })
+    },
+
+
   },
 }
 </script>
@@ -175,9 +329,11 @@ export default {
   & > li {
     float: left;
     transition: 0.3s;
-
+    width: 20%;
     & + li {
-      margin-left: 20px;
+      .scene-group {
+        margin-left: 20px;
+      }
     }
   }
 }
@@ -198,13 +354,17 @@ export default {
       margin: 0;
       font-weight: normal;
     }
-
-    & > .iconfont {
+    &__edit{
       float: right;
-      cursor: pointer;
+      .iconfont {
+        cursor: pointer;
 
-      &:hover {
-        color: var(--color-warning);
+        &:hover {
+          color: var(--color-warning);
+        }
+        + .iconfont {
+          margin-left: 6px;
+        }
       }
     }
 
@@ -214,10 +374,10 @@ export default {
   }
 
   &__item {
-    width: 182px;
     border: 1px solid var(--border-color);
     margin: 6px 0 0;
     transition: 0.3s;
+    cursor: pointer;
 
     & > img {
       float: left;
@@ -231,6 +391,22 @@ export default {
       height: 30px;
       line-height: 30px;
       text-align: center;
+    }
+    &__edit {
+      display: none;
+      line-height: 30px;
+      .iconfont {
+        cursor: pointer;
+
+        &:hover {
+          color: var(--color-warning);
+        }
+      }
+    }
+    &:hover {
+      .scene-group__item__edit {
+        display: inline-block;
+      }
     }
   }
 
@@ -251,6 +427,11 @@ export default {
     margin: 5px;
     font-size: 12px;
     text-align: center;
+    cursor: pointer;
+
+    &.active {
+      border-color: var(--color-info);
+    }
 
     & > img {
       display: block;
