@@ -17,22 +17,26 @@
           alt="activeIcon.icon_id"/>
       </el-form-item>
 
-      <el-form-item :label="typeSec" v-if="type === 1" prop="scene">
+      <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="scene">
         <el-button type="primary" size="small">选择</el-button>
         <!--下面区域-->
       </el-form-item>
 
-      <el-form-item :label="typeSec" v-if="type === 3" prop="data_id">
+      <el-form-item :label="secInfo" v-if="type === typeConfig.LINK" prop="data_id">
         <el-input v-model="form.data_id" placeholder="http://"></el-input>
       </el-form-item>
 
-      <el-form-item :label="typeSec" v-if="[6, 5, 8].indexOf(type) >= 0">
+      <!-- <el-form-item :label="secInfo" v-if="[6, 5, 8].indexOf(type) >= 0">
+         -->
+      <el-form-item :label="secInfo"
+        v-if="[typeConfig.ARTICLE,typeConfig.ROTATE,typeConfig.AUDIO].includes(type)"
+      >
         <el-button type="primary" size="small" @click="selectMater(type)">选择</el-button>
         <span class="addspots-sec__title">{{this.form.title}}</span>
       </el-form-item>
 
       <el-form-item>
-        <el-button  @click="switchStep(1)">上一步</el-button>
+        <el-button  @click="switchStep">上一步</el-button>
         <el-button type="primary" @click="submitForm('spotForm')">确定</el-button>
       </el-form-item>
 
@@ -45,7 +49,7 @@
 /**
  * 高级编辑 - hotspots
  * @author yj
- * @version 2017-08-14
+ * @version 2017-09-01
  */
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
@@ -59,10 +63,14 @@ export default {
   props: {
     type: {
       type: Number,
-      default: 1,
+      required: true,
     },
-    typeSec: {
+    secInfo: {
       type: String,
+      required: true,
+    },
+    typeConfig: {
+      type: Object,
       required: true,
     },
     editInfo: {
@@ -110,6 +118,12 @@ export default {
     editStatus() {
       return Object.keys(this.editInfo).length > 0
     },
+
+    // 'form.title': {
+    //   get() {
+    //     return this.editInfo.edit_title
+    //   },
+    // },
   },
 
   methods: {
@@ -117,8 +131,8 @@ export default {
       this.$emit('open-modal', 'icon')
     },
 
-    switchStep(step) {
-      this.$emit('switch-step', step)
+    switchStep() {
+      this.$emit('switch-step', 1)
     },
 
     selectMater(type) {
@@ -129,17 +143,19 @@ export default {
           })
       }
       switch (type) {
-        case 6:
+        case this.typeConfig.ARTICLE:
           // 图文信息
           invokeMater('article')
           break
-        case 8:
+        case this.typeConfig.AUDIO:
           // 音频素材
           invokeMater('audio')
           break
-        default:
+        case this.typeConfig.ROTATE:
           // 物品3D
           invokeMater('rotate')
+          break
+        default:
           break
       }
     },
@@ -217,10 +233,12 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     if (this.editStatus) {
       // 编辑状态
-      this.form = this.editInfo
+      // resetFields是重置到created时的状态
+      const { edit_title, hot_name, data_id } = this.editInfo
+      this.form = { hot_name, data_id, title: edit_title }
     }
   },
 }

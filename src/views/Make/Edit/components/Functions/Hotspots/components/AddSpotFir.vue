@@ -3,12 +3,12 @@
     <el-row :gutter="20">
 
       <el-col :span="8"
-        v-for="item in typeFir"
+        v-for="item in firInfo"
         :key="item.key"
         class="edit-functions__item"
       >
         <div class="edit-functions__item__inner"
-             @click="switchStep(2, item.key)">
+             @click="switchStep(item.key)">
           <i :class="[item.icon,'iconfont']"></i>
           <span>{{item.text}}</span>
         </div>
@@ -31,21 +31,15 @@ export default {
   name: 'edit-functions__addSpotFir',
 
   props: {
-    typeFir: {
+    firInfo: {
       type: Array,
       required: true,
     },
   },
 
-  data() {
-    return {
-
-    }
-  },
-
   methods: {
-    switchStep(step, type) {
-      this.$emit('switch-step', step, type)
+    switchStep(type) {
+      this.$emit('switch-step', 2, type)
     },
   },
 }
