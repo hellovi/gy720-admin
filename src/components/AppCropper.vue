@@ -94,12 +94,11 @@ export default {
      * 确认剪裁
      */
     confirm() {
-      this.$emit('crop', this.cropInfo)
       // 生成裁剪后的图片
       const srcUrl = this.cropper.getCroppedCanvas({
         fillColor: '#fff',
       }).toDataURL('image/jpeg')
-      this.$emit('update:src', srcUrl)
+      this.$emit('crop', { ...this.cropInfo, preview: srcUrl })
       this.close()
     },
 

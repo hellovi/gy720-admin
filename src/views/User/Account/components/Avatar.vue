@@ -5,7 +5,7 @@
       cropper
       accept="jpg,jpeg,png"
       size="1mb"
-      @preview="getPreview"
+      @crop-success="getPreview"
       @before-upload="beforeUpload"
       @upload-progress="uploadProgress"
       @upload-complete="uploadComplete"
@@ -95,8 +95,8 @@
       },
 
       // 获取预览图
-      getPreview(src) {
-        this.uploadSrc = src
+      getPreview({ preview }) {
+        this.uploadSrc = preview
       },
     },
   }

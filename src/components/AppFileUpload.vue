@@ -10,7 +10,7 @@
     <slot name="progress"></slot>
     <app-cropper
       v-if="cropper && cropShow"
-      :src.sync="previemImg"
+      :src="previemImg"
       :visible.sync="cropShow"
       :container-id="config.container"
       @crop="crop"
@@ -93,12 +93,6 @@ export default {
         return false
       }
       return this.autoStart
-    },
-  },
-
-  watch: {
-    previemImg(val) {
-      this.$emit('preview', val)
     },
   },
 
@@ -246,9 +240,8 @@ export default {
       this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
       if (this.autoStart) {
         this.uploader.start()
-      } else {
-        this.$emit('crop-success', data, this.uploader)
       }
+      this.$emit('crop-success', data, this.uploader)
     },
 
     /**
@@ -284,7 +277,6 @@ export default {
 
     /**
      * 请求uptoken
-     * 这个请求是同步的，有问题，需要和良珊沟通
      */
     ajaxUptoken() {
       let uptoken = ''
