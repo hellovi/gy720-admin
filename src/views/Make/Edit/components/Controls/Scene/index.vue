@@ -155,14 +155,20 @@ export default {
     errorReasons: {},
   }),
 
+  watch: {
+    '$store.state.edit.scenes.length': 'getScenelist',
+  },
+
   methods: {
     /* ----- Initialization ------ */
 
-    fetchScenelist() {
-      Ajax.readScenelist()
-        .then((res) => { this.scenelist = res })
+    getScenelist(length) {
+      if (length) {
+        this.scenelist = [
+          ...this.$store.state.edit.scenes,
+        ]
+      }
     },
-
 
     selectScene(sceneId) {
       this.$store.commit(
@@ -170,6 +176,13 @@ export default {
         {
           id: sceneId,
           update: { active: true },
+        },
+      )
+      this.$store.dispatch(
+        EDIT.HOTSPOTS.INIT.SPOTS,
+        {
+          pano_id: Ajax.defaultPanoId,
+          scene_id: sceneId,
         },
       )
     },
@@ -274,7 +287,6 @@ export default {
 
   created() {
     Ajax.defaultPanoId = this.$route.query.pano_id
-    this.fetchScenelist()
   },
 }
 </script>
