@@ -6,6 +6,7 @@ export default class Url {
     Vue.prototype.$url = {
       static: this.static,
       host: this.host,
+      staticHotSpots: this.staticHotSpots,
     }
   }
 
@@ -15,5 +16,9 @@ export default class Url {
 
   static host(pathname) {
     return `https://l.gy720.com/${pathname}`
+  }
+
+  static staticHotSpots(pathname) {
+    return `https://l.gy720.com/assets/3.0.1/lib/krpano/hoticon/${pathname}`
   }
 }

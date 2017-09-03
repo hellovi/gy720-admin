@@ -175,7 +175,7 @@ export default {
           if (!this.editStatus) {
             krpanoWin.adddesignhotspot(this.hotSpots)
           } else {
-            params.data.url = params.data.icon_thumb
+            params.data.url = this.$url.staticHotSpots(`${params.data.icon_id}.png`)
             krpanoWin.adddesignhotspot({ id: this.editInfo.id, ...params.data })
           }
         })

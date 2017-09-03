@@ -144,8 +144,7 @@ export default function hotspotsInit(that){
      * 删除热点
      */
    window.krpanoDeleteHotspot = function (id, scene_id, pano_id) {
-      const param = `?pano_id=${pano_id}&scene_id=${scene_id}`
-      that.$store.dispatch(EDIT.HOTSPOTS.REMOVE, {id, param})
+      that.$store.dispatch(EDIT.HOTSPOTS.REMOVE, {id, scene_id, pano_id})
         .then(() => {
           window.__krpano.removehotspot(`hotspot_${id}`)
           window.__krpano.removelayer(`hotspot_txt_${id}`)

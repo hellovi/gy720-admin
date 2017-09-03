@@ -112,8 +112,7 @@ export default {
     this.$store.dispatch(EDIT.SCENE.INIT, this.panoId)
       .then((sceneId) => {
         // 加载当前场景热点
-        const params = `?pano_id=${this.panoId}&scene_id=${sceneId}`
-        this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { params, pano_id: this.panoId })
+        this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: this.panoId })
       })
   },
 

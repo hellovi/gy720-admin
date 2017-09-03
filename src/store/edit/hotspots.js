@@ -53,7 +53,8 @@ export default {
         })
     },
 
-    [HOTSPOTS.INIT.SPOTS]({ commit }, { params, pano_id }) {
+    [HOTSPOTS.INIT.SPOTS]({ commit }, { scene_id, pano_id }) {
+      const params = `?pano_id=${pano_id}&scene_id=${scene_id}`
       return Http.get(`/user/scenehotspot${params}`)
         .then(({ result }) => {
           result.forEach((item) => {
@@ -81,7 +82,8 @@ export default {
         })
     },
 
-    [HOTSPOTS.REMOVE]({ commit }, { id, param }) {
+    [HOTSPOTS.REMOVE]({ commit }, { id, scene_id, pano_id }) {
+      const param = `?pano_id=${pano_id}&scene_id=${scene_id}`
       return Http.delete(`/user/scenehotspot/${id}${param}`)
         .then(() => {
           commit(HOTSPOTS.REMOVE, id)
