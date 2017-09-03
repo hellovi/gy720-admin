@@ -21,6 +21,8 @@
    * @version 2017/08/29
    */
 
+  import { errorHandler } from '@/utils'
+
   export default {
     name: 'app-form-alert',
 
@@ -45,28 +47,7 @@
 
     computed: {
       flatContents() {
-        return Object.keys(this.contents).length ? this.errorHandler(this.contents) : []
-      },
-    },
-
-    methods: {
-      // 错误信息处理
-      errorHandler({ errors, status, message }) {
-        if (errors) {
-          return Object.values(errors).reduce((result, item) => result.concat(item), [])
-        } else if (status) {
-          const isObj = data => Object.prototype.toString.call(data) === '[object Object]'
-          let errorArr = []
-          if (isObj(status.reason)) {
-            errorArr = Object.values(status.reason).reduce((result, item) => result.concat(item), [])
-          } else {
-            errorArr.push(status.reason)
-          }
-          return errorArr
-        } else if (message) {
-          return [message]
-        }
-        return ['服务端错误，请联系网站管理员或稍后重试']
+        return Object.keys(this.contents).length ? errorHandler(this.contents) : []
       },
     },
   }
