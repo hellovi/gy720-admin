@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="group"
+    title="场景分组"
     :visible.sync="active.group"
     @open="openScene"
     custom-class="group-dialog"
@@ -29,13 +29,13 @@
                 <i role="button" class="iconfont" @click="removeGroup(list)">&#xe615;</i>
               </div>
             </div>
-            <draggable :list="list.scenes" v-if="list.scenes.length">
+            <draggable :list="list.scenes" v-if="list.scenes.length" @sort="sceneSort(list.id)">
               <transition-group tag="ul" class="list">
                 <li v-for="scene in list.scenes" :key="scene.id" class="scene-group__item clearfix">
                   <img :src="$url.static(scene.thumb)" :alt="scene.name">
                   <span class="scene-group__item__name">{{ scene.name }}</span>
                   <span class="scene-group__item__edit">
-                    <i role="button" class="iconfont" @click="removeGroup(list)">&#xe615;</i>
+                    <i role="button" class="iconfont" @click="removeScene(list.id, scene)">&#xe615;</i>
                   </span>
                 </li>
               </transition-group>
@@ -69,11 +69,13 @@
 <script>
 /**
  * 高级编辑 - 场景
- * @version 2017-08-14
+ * @author luminghuai | chenliangshan
+ * @version 2017-09-03
  */
 
 import { mapState } from 'vuex'
 import Draggable from 'vuedraggable'
+import { errorHandler } from '@/utils'
 import modal from '../../mixins/modal'
 
 export default {
@@ -113,8 +115,8 @@ export default {
         .then((res) => {
           this.notGroupsList = [...res.result]
         })
-        .catch(({ status }) => {
-          this.$notify.error(status.reason)
+        .catch((errors) => {
+          this.errorHandler(errors)
         })
     },
 
@@ -124,8 +126,8 @@ export default {
         .then((res) => {
           this.groupsList = [...res.result]
         })
-        .catch(({ status }) => {
-          this.$notify.error(status.reason)
+        .catch((errors) => {
+          this.errorHandler(errors)
         })
     },
 
@@ -165,7 +167,7 @@ export default {
             this.showScenes = false
           })
       } else {
-        this.$notify.error('请输入场景')
+        this.errorHandler('请选择场景')
       }
     },
 
@@ -194,8 +196,8 @@ export default {
             this.groupsList.find(item => item.id === id).title = title
             this.$message.success('分组名称修改成功!')
           })
-          .catch(({ status }) => {
-            this.$notify.error(status.reason)
+          .catch((errors) => {
+            this.errorHandler(errors)
           })
       }
     },
@@ -227,13 +229,13 @@ export default {
                 })
                 this.$message.success('添加场景分组成功!')
               })
-              .catch(({ status }) => {
-                this.$notify.error(status.reason)
+              .catch((errors) => {
+                this.errorHandler(errors)
               })
           }
         })
       } else {
-        this.$notify.error('场景分组最多不能超出5个')
+        this.errorHandler('场景分组最多不能超出5个')
       }
     },
 
@@ -250,8 +252,8 @@ export default {
             this.groupsList = this.groupsList.filter(item => item.id !== id)
             this.$message.success('删除成功!')
           })
-          .catch(({ status }) => {
-            this.$notify.error(`${status.reason}`)
+          .catch((errors) => {
+            this.errorHandler(errors)
           })
       })
     },
@@ -266,12 +268,71 @@ export default {
         .then(() => {
           this.$message.success('排序成功!')
         })
-        .catch(({ status }) => {
-          this.$notify.errors(status.reason)
+        .catch((errors) => {
+          this.errorHandler(errors)
         })
     },
 
+    // 删除场景
+    removeScene(pid, { id }) {
+      this.$http.post('/user/scenegroupdata/delete', {
+        pano_id: `${this.panoInfo.hash_pano_id}`,
+        scene_group_id: `${pid}`,
+        scene_id: `${id}`,
+      })
+        .then(() => {
+          // 过滤出删除之外的数据
+          this.groupsList = this.groupsList.map((item) => {
+            if (item.id === pid) {
+              const scenes = item.scenes.filter(scene => scene.id !== id)
+              return {
+                ...item,
+                scenes,
+              }
+            }
+            return item
+          })
+          this.$message.success('删除成功!')
+        })
+        .catch((errors) => {
+          this.errorHandler(errors)
+        })
+    },
 
+    // 场景排序
+    sceneSort(pid) {
+      const currentGroup = this.groupsList.find(({ id }) => id === pid)
+      const sort = currentGroup.scenes.map(({ id }) => {
+        const data = { id }
+        return data
+      })
+      this.$http.post('/user/scenegroupdata/sort', {
+        pano_id: `${this.panoInfo.hash_pano_id}`,
+        scene_group_id: `${pid}`,
+        sort,
+      })
+        .then(() => {
+          this.$message.success('排序成功!')
+        })
+        .catch((errors) => {
+          this.errorHandler(errors)
+        })
+    },
+
+    // 报错处理
+    errorHandler(errors) {
+      const error = errorHandler(errors)
+      const h = this.$createElement
+      this.$notify.error({
+        duration: error.length * 1500,
+        message: h('div',
+          {
+            class: 'group-errors',
+          },
+          error.map(val => h('p', val)),
+        ),
+      })
+    },
   },
 }
 </script>
@@ -282,7 +343,12 @@ export default {
 :root {
   --dialog-width: 1100px;
 }
-
+.group-errors {
+  p {
+    margin: 4px 0;
+    padding: 0;
+  }
+}
 .group-dialog {
   width: var(--dialog-width);
   height: 60%;
