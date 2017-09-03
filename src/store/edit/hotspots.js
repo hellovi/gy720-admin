@@ -25,8 +25,8 @@ export default {
     },
 
     [HOTSPOTS.INIT.SPOTS](state, data) {
-      // state.spotsList = data ？？？
-      state.spotsList = [...data]
+      state.spotsList = data
+      // state.spotsList = [...data]
     },
 
     [HOTSPOTS.CREATE](state, data) {
@@ -69,6 +69,7 @@ export default {
     [HOTSPOTS.CREATE]({ commit }, data) {
       return Http.post('/user/scenehotspot', data)
         .then(({ result }) => {
+          result.edit_title = data.edit_title
           commit(HOTSPOTS.CREATE, result)
           return result
         })

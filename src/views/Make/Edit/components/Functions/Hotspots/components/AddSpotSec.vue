@@ -22,12 +22,13 @@
         <!--下面区域-->
       </el-form-item>
 
-      <el-form-item :label="typeSec" v-if="type === 3">
-        <el-input v-model="form.url" placeholder="http://"></el-input>
+      <el-form-item :label="typeSec" v-if="type === 3" prop="data_id">
+        <el-input v-model="form.data_id" placeholder="http://"></el-input>
       </el-form-item>
 
       <el-form-item :label="typeSec" v-if="[6, 5, 8].indexOf(type) >= 0">
-        <el-button type="primary" size="small">选择</el-button>
+        <el-button type="primary" size="small" @click="selectMater(type)">选择</el-button>
+        <span class="addspots-sec__title">{{this.form.title}}</span>
       </el-form-item>
 
       <el-form-item>
@@ -73,9 +74,8 @@ export default {
     return {
       form: {
         hot_name: '',
-        url: '',
-        // icon: { id: '', name: '', url: '' },
-        // scene: {},
+        data_id: '',
+        title: '',
       },
 
       rules: {
@@ -121,6 +121,29 @@ export default {
       this.$emit('switch-step', step)
     },
 
+    selectMater(type) {
+      const invokeMater = (kind) => {
+        this.$store.dispatch(EDIT.MATERIAL.INVOKE, kind)
+          .then(({ id, title }) => {
+            this.form = { ...this.form, data_id: `${id}`, title }
+          })
+      }
+      switch (type) {
+        case 6:
+          // 图文信息
+          invokeMater('article')
+          break
+        case 8:
+          // 音频素材
+          invokeMater('audio')
+          break
+        default:
+          // 物品3D
+          invokeMater('rotate')
+          break
+      }
+    },
+
     prepareSpotsData() {
       // eslint-disable-next-line
       const krpanoWin = window.__krpano
@@ -132,7 +155,6 @@ export default {
       krpanoWin.call('screentosphere(atx, aty, ath, atv)')
       const sphereX = krpanoWin.get('ath')
       const sphereY = krpanoWin.get('atv')
-      // edit 需要 hot_id
       const postSpotsData = {
         pano_id: this.panoId,
         scene_id: this.$store.getters.activeScene.id,
@@ -141,9 +163,8 @@ export default {
         atv: sphereX,
         icon_id: this.activeIcon.icon_id,
         type_id: this.type, // 热点类型
-        v: this.form.url, // 为超链接和多媒体时必填?
-        // data_id: 19, //type_id为1,5,6时必填 //全部写在data_id里面
-        // 1，5，6，8 时，data_id字段为它们对应的ID；当热点类型为：3时，data_id 为链接地址
+        data_id: this.form.data_id,
+        edit_title: this.form.title, // 编辑时所用到的title
         // diy_src: '', //自定义热点图标url
       }
       return postSpotsData
@@ -214,6 +235,10 @@ export default {
     height: 30px;
     margin-left: 10px;
     background-color: rgb(99, 99, 99);
+  }
+
+  &__title {
+    margin-left: 10px;
   }
 
   /*调整对齐，这个要看下有没有更好的方法可以float，基线对齐*/

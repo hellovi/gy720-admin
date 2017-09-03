@@ -112,6 +112,8 @@ export default {
       this.currentView = AddSpotFir
       // 重置选中的热点图标
       this.$store.commit(EDIT.HOTSPOTS.RESET.ICON)
+      this.editInfo = {}
+      this.title = '添加'
     },
 
     openModalInner(type) {
