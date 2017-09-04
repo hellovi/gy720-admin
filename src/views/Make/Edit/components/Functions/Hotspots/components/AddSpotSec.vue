@@ -31,8 +31,6 @@
         <el-input v-model="form.data_id" placeholder="http://"></el-input>
       </el-form-item>
 
-      <!-- <el-form-item :label="secInfo" v-if="[6, 5, 8].indexOf(type) >= 0">
-         -->
       <el-form-item :label="secInfo"
         v-if="[typeConfig.ARTICLE,typeConfig.ROTATE,typeConfig.AUDIO].includes(type)"
       >
@@ -221,7 +219,6 @@ export default {
         icon_id: this.activeIcon.icon_id,
         type_id: this.type, // 热点类型
         data_id: this.form.data_id,
-        edit_title: this.form.title, // 编辑时所用到的title
         // diy_src: '', //自定义热点图标url
       }
       return postSpotsData
@@ -278,8 +275,8 @@ export default {
     if (this.editStatus) {
       // 编辑状态
       // resetFields是重置到created时的状态
-      const { edit_title, hot_name, data_id } = this.editInfo
-      this.form = { hot_name, data_id, title: edit_title }
+      const { data_title, hot_name, data_id } = this.editInfo
+      this.form = { hot_name, data_id, title: data_title }
     }
   },
 }

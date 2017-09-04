@@ -94,7 +94,7 @@ export default {
       window._krpano = document.getElementById('krpanoSWFObject')
       window.__krpano = new window.krpanoplugin(window._krpano)
 
-      window.__krpano.hotspots = {}
+      // window.__krpano.hotspots = {}
 
       // window._krpano.querySelector('canvas')
     },
@@ -112,6 +112,7 @@ export default {
     this.$store.dispatch(EDIT.SCENE.INIT, this.panoId)
       .then((sceneId) => {
         // 加载当前场景热点
+        window.__krpano.hotspots = {}
         this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: this.panoId })
       })
   },

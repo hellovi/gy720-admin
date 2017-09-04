@@ -157,16 +157,17 @@ export default function hotspotsInit(that){
      * 移动热点
      */
    window.moveHotspot = function (hotid, ath, atv) {
-       window.console.log('移动热点')
-       var hotspot = window.__krpano.hotspots[hotid];
-       if (Math.floor(ath) != Math.floor(hotspot.ath) || Math.floor(atv) != Math.floor(hotspot.atv)) {
-           hotspot.ath = ath;
-           hotspot.atv = atv;
-           hotspot.pano_id = vueData.pano_id;
-          //  ajax.post('/user/?vtour-save_hotspot.htm', hotspot)
-          //    .then((res) => {
-          //      window.console.log(res)
-          //    })
-       }
+      var hotspot = window.__krpano.hotspots[hotid];
+      hotspot.ath = ath;
+      hotspot.atv = atv;
+      that.$store.dispatch(EDIT.HOTSPOTS.UPDATE, {id: hotid, data: hotspot})
+        .then(() => {
+          that.$message.success('移动成功')
+        })
+      //  if (Math.floor(ath) != Math.floor(hotspot.ath) || Math.floor(atv) != Math.floor(hotspot.atv)) {
+      //      hotspot.ath = ath;
+      //      hotspot.atv = atv;
+      //      hotspot.pano_id = vueData.pano_id;
+      //  }
    }
 }
