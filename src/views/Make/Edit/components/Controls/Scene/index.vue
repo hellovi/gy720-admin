@@ -17,8 +17,10 @@
         >
           <!-- 场景项 -->
           <li
-            class="edit-scene__item"
-            :class="{'edit-scene__item--active': scene.active}"
+            :class="{
+              'edit-scene__item': true,
+              'edit-scene__item--active': scene.id === activeSceneId
+            }"
             v-for="scene in scenelist" :key="scene.id"
           >
             <div
@@ -155,6 +157,12 @@ export default {
     errorReasons: {},
   }),
 
+  computed: {
+    activeSceneId() {
+      return this.$store.getters.activeScene.id
+    },
+  },
+
   watch: {
     '$store.state.edit.scenes.length': 'getScenelist',
   },
@@ -170,7 +178,20 @@ export default {
       }
     },
 
+    switchKrpanoScene(sceneId) {
+      // eslint-disable-next-line
+      const krpano = window.__krpano
+      krpano.call(`ac_gotoscene(${sceneId})`)
+      // - 清空所有热点
+      Object.keys(krpano.hotspots)
+        .forEach((hotid) => {
+          krpano.removehotspot(`hotspot_${hotid}`)
+          krpano.removelayer(`hotspot_txt_${hotid}`)
+        })
+    },
+
     selectScene(sceneId) {
+      // 更新场景激活信息
       this.$store.commit(
         EDIT.SCENE.UPDATE,
         {
@@ -178,6 +199,9 @@ export default {
           update: { active: true },
         },
       )
+      // 切换krpano场景
+      this.switchKrpanoScene(sceneId)
+      // 加载热点
       this.$store.dispatch(
         EDIT.HOTSPOTS.INIT.SPOTS,
         {
