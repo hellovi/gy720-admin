@@ -7,10 +7,22 @@
     <app-empty-body
       v-if="panosInfo.data.length === 0"
     >
-      您暂时还没有收藏作品哦！<br/>快去
-      <a href="/pano">
-        720°全景
-      </a>页看看吧...
+      <template v-if="routeType === 'recent'">
+        您暂时还没有作品哦！<br/>快去
+        <el-button
+          type="text" size="large"
+          @click="publishPano"
+        >
+          发布
+        </el-button>
+        吧...
+      </template>
+      <template v-if="routeType === 'collections'">
+        您暂时还没有收藏作品哦！<br/>快去
+        <a href="/pano">
+          720°全景
+        </a>页看看吧...
+      </template>
     </app-empty-body>
 
     <!-- 作品列表 -->

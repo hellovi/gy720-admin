@@ -7,10 +7,7 @@
       v-if="routeType === 'follows' && authorsInfo.data.length === 0"
     >
       您暂时还没关注摄影师喔！
-      <br>
-      快去
-      <a :href="authorsLink" class="link">关注摄影师</a>
-      吧 ...
+      <br>快去<a href="/author">摄影师</a>页面看看吧 ...
     </app-empty-body>
 
     <!-- 缺省信息（粉丝） -->
@@ -18,8 +15,7 @@
       v-if="routeType === 'fans' && authorsInfo.data.length === 0"
     >
       您暂时还没有粉丝喔！
-      <br>
-      快去
+      <br>快去
       <router-link to="/user-client/publish" class="link">
         发布
       </router-link>
@@ -72,12 +68,6 @@ export default {
     loadingInstance: null,
     observerInstance: null,
   }),
-
-  computed: {
-    authorsLink() {
-      // 后端地址还没有确定
-    },
-  },
 
   methods: {
     /* ------ Initialization ------ */
