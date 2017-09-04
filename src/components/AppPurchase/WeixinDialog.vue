@@ -1,50 +1,60 @@
 <template>
   <el-dialog
     title="确认购买"
-    size="small"
-    class="weixin-dialog"
     :visible="visible"
     @update:visible="val => $emit('update:visible',val)"
+    @open="getQrcode"
   >
-    <el-row>
-      <el-col :span="10" class="text-center">
-        <img class="weixin-dialog__qrcode" :src="qrCode" alt="微信扫一扫">
-      </el-col>
-      <el-col :span="14">
-        <p>支付金额：
-          <strong>￥{{ price }}</strong>
-        </p>
-        <p>请使用
-          <span class="text-primary">微信扫一扫</span>，轻松完成支付！</p>
-      </el-col>
-    </el-row>
+    <div class="weixin-dialog">
+      <el-row>
+        <el-col :span="10" class="text-center">
+          <div class="weixin-dialog__qrcode">
+            <canvas ref="canvas"></canvas>
+          </div>
+        </el-col>
+        <el-col :span="14">
+          <p>支付金额：
+            <strong>￥{{ money }}</strong>
+          </p>
+          <p>请使用
+            <span class="text-primary">微信扫一扫</span>，轻松完成支付！</p>
+        </el-col>
+      </el-row>
 
-    <div class="text-center">
-      <el-button type="primary" @click="weixinFinish" >完成支付</el-button>
+      <div class="text-center">
+        <el-button type="primary" @click="weixinFinish" >完成支付</el-button>
+      </div>
     </div>
   </el-dialog>
 </template>
 
 <script>
+import QRCode from 'qrcode'
+import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
+  name: 'app-purchase-wexin-slot',
 
   props: {
     visible: {
       type: Boolean,
       default: 'false',
     },
-    qrCode: {
-      type: String,
-      default: 'http://apiv4.720yun.com/member/my/order/wxpay/56w3ljr7q0r35ogt4zl27w9q1e28o40y',
+    isYearVip: {
+      type: Boolean,
+      default: 'true',
     },
-    price: {
+    url: {
       type: String,
-      required: 'true',
+      required: true,
     },
-    orderSn: {
+    money: {
+      type: [Number, String],
+      required: true,
+    },
+    hashOrderId: {
       type: String,
-      required: 'true',
+      required: true,
     },
   },
 
@@ -52,11 +62,39 @@ export default {
     // 支付完成
     weixinFinish() {
       const nw = window.open()
-      nw.location.href = `/user-client/purchase/orders/${this.orderSn}`
+      nw.location.href = `/user-client/purchase/orders/${this.hashOrderId}`
       this.$emit('update:visible', false)
       // 在此要更新该作品的VIP状态或者用户信息的年会员状态
+      if (this.isYearVip) {
+        this.$store.dispatch(GLOBAL.USER.INIT)
+      } else {
+        this.$emit('panoBuyOk')
+      }
+    },
+
+    // getQrcode(url) {
+    //   console.log(url)
+    //   QRCode.toCanvas(this.$refs.canvas, url, () => {})
+    // },
+
+    getQrcode() {
+      this.$nextTick(() => {
+        QRCode.toCanvas(this.$refs.canvas, this.url, () => {})
+      })
     },
   },
+
+  // watch: {
+  //   url(val) {
+  //     this.$nextTick(() => {
+  //       this.getQrcode(val)
+  //     })
+  //   },
+  // },
+
+  // mounted() {
+  //   this.getQrcode(this.url)
+  // },
 
 }
 </script>

@@ -61,13 +61,14 @@
     </el-row>
 
     <create-dialog
-      :goodsId='9'
+      :order-type="10"
       :visible.sync="visible"
     ></create-dialog>
 
     <app-purchase
-      :panoId='142'
+      :panorama-id='6'
       :visible.sync="visible2"
+      @panoBuyOk="ok"
     ></app-purchase>
 
   </div>
@@ -107,7 +108,9 @@ export default {
   },
 
   methods: {
-
+    ok() {
+      this.$message('单作品购买成功')
+    },
   },
 
 }

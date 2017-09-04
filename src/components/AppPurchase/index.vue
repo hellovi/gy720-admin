@@ -5,7 +5,6 @@
       size="large"
       :visible="visible"
       @update:visible="val => $emit('update:visible',val)"
-      :before-close="beforeClose"
       class="app-purchase"
     >
       <el-row class="app-purchase__types">
@@ -39,15 +38,16 @@
 
     <!-- 购买年会员 -->
     <create-dialog
-      :goodsId="9"
+      :order-type="10"
       :visible.sync="dialog.vip"
     ></create-dialog>
 
     <!-- 购买单作品 -->
     <create-dialog
-      :panoId="panoId"
-      :goodsId="10"
+      :order-type="20"
       :visible.sync="dialog.pano"
+      :panorama-id="panoramaId"
+      @panoBuyOk="panoBuyOk"
     ></create-dialog>
 
   </div>
@@ -57,6 +57,7 @@
 import CreateDialog from './CreateDialog'
 
 export default {
+  name: 'app-purchase',
 
   components: {
     CreateDialog,
@@ -67,12 +68,9 @@ export default {
       type: Boolean,
       default: 'false',
     },
-    panoId: {
+    panoramaId: {
       type: [Number, String],
       required: 'true',
-    },
-    beforeClose: {
-      type: Function,
     },
   },
 
@@ -89,12 +87,15 @@ export default {
 
   methods: {
     openDialogVip() {
-      this.dialog.vip = true
       this.$emit('update:visible', false)
+      this.dialog.vip = true
     },
     openDialogPano() {
-      this.dialog.pano = true
       this.$emit('update:visible', false)
+      this.dialog.pano = true
+    },
+    panoBuyOk() {
+      this.$emit('panoBuyOk')
     },
   },
 
