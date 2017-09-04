@@ -53,7 +53,7 @@
       <el-button type="primary" @click="nextStep">下一步</el-button>
     </div>
     <div class="material-panos__submit--material" v-else-if="invoked">
-      <el-button type="primary" @click="nextStepMaterial">选择全景图</el-button>
+      <el-button type="primary" @click="nextStepMaterial" :loading="btnLoading">选择全景图</el-button>
     </div>
 
   </div>
@@ -86,6 +86,7 @@ export default {
       checked: [], // 存放选中项的id
       keyword: '',
       loading: false,
+      btnLoading: false,
     }
   },
 
@@ -157,6 +158,7 @@ export default {
     },
 
     nextStepMaterial() {
+      this.btnLoading = true
       this.$emit('check-panos', this.checkedPanos)
       this.checked = []
     },

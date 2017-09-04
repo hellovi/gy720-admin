@@ -113,8 +113,11 @@ export default {
       this.$store.commit(EDIT.MATERIAL.CHANGE, type)
     },
 
-    checkPanos(panos) {
-      this.$store.commit(EDIT.MATERIAL.SELECT, panos)
+    checkPanos({ id, name, thumb }) {
+      this.$http.post('/user/scene', { source_scene_id: id, name, thumb })
+        .then(({ result }) => {
+          this.$store.commit(EDIT.MATERIAL.SELECT, result)
+        })
     },
   },
 }
