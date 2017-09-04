@@ -48,6 +48,13 @@
       </transition-group>
     </draggable>
 
+    <app-empty-body
+      width="560px"
+      v-if="!groupsList.length && groupsListLoad"
+    >
+      您还没有设置场景分组，<br/>多个场景建议您设置分组哦！
+    </app-empty-body>
+
     <el-dialog
       title="选择场景"
       :visible.sync="showScenes"
@@ -102,6 +109,7 @@ export default {
       currentGroupsId: null,
       selectSceneIds: [],
       addScenesLoading: false,
+      groupsListLoad: false,
     }
   },
 
@@ -133,6 +141,7 @@ export default {
       this.$http.get(`/user/scenegroup?pano_id=${this.panoInfo.hash_pano_id}`)
         .then((res) => {
           this.groupsList = [...res.result]
+          this.groupsListLoad = true
         })
         .catch((errors) => {
           this.errorHandler(errors)
@@ -462,16 +471,19 @@ export default {
     margin: 6px 0 0;
     transition: 0.3s;
     cursor: pointer;
+    position: relative;
+    padding-left: 60px;
 
     & > img {
-      float: left;
       width: 60px;
       height: 30px;
+      position: absolute;
+      left: 0;
     }
 
     &__name {
       float: left;
-      width: 120px;
+      width: 100%;
       height: 30px;
       line-height: 30px;
       text-align: center;
@@ -479,6 +491,8 @@ export default {
     &__edit {
       display: none;
       line-height: 30px;
+      position: absolute;
+      right: 3px;
       .iconfont {
         cursor: pointer;
 

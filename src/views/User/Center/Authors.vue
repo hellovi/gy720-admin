@@ -3,38 +3,28 @@
 
     <template v-if="authorsInfo">
      <!-- 缺省信息（关注）  -->
-    <div class="empty-wrap"
-      v-if="routeType === 'follows'
-        && authorsInfo.data.length === 0"
+    <app-empty-body
+      v-if="routeType === 'follows' && authorsInfo.data.length === 0"
     >
-      <div class="empty">
-        <div>
-          您暂时还没关注摄影师喔！
-          <br>
-          快去
-          <a :href="authorsLink" class="link">关注摄影师</a>
-          吧 ...
-        </div>
-      </div>
-    </div>
+      您暂时还没关注摄影师喔！
+      <br>
+      快去
+      <a :href="authorsLink" class="link">关注摄影师</a>
+      吧 ...
+    </app-empty-body>
 
     <!-- 缺省信息（粉丝） -->
-    <div class="empty-wrap"
-      v-if="routeType === 'fans'
-        && authorsInfo.data.length === 0"
+    <app-empty-body
+      v-if="routeType === 'fans' && authorsInfo.data.length === 0"
     >
-      <div class="empty">
-        <div>
-          您暂时还没有粉丝喔！
-          <br>
-          快去
-          <router-link to="/user-client/publish" class="link">
-            发布
-          </router-link>
-          作品吧 ...
-        </div>
-      </div>
-    </div>
+      您暂时还没有粉丝喔！
+      <br>
+      快去
+      <router-link to="/user-client/publish" class="link">
+        发布
+      </router-link>
+      作品吧 ...
+    </app-empty-body>
 
     <!-- 摄影师列表 -->
     <div class="center-authors__list clearfix"
@@ -195,7 +185,6 @@ export default {
 @import 'vars.css';
 
 .center-authors {
-
   &__item {
     float: left;
     margin-right: 20px;

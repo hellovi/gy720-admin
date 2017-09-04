@@ -30,6 +30,7 @@ Vue
 
 Vue.component(components.AppTab.name, components.AppTab)
 Vue.component(components.AppFormAlert.name, components.AppFormAlert)
+Vue.component(components.AppEmptyBody.name, components.AppEmptyBody)
 
 /* eslint-disable no-new */
 new Vue({

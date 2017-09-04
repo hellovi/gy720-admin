@@ -4,23 +4,14 @@
     v-if="panosInfo"
   >
     <!-- 缺省信息 -->
-    <div
-      class="empty-wrap"
+    <app-empty-body
       v-if="panosInfo.data.length === 0"
     >
-      <div class="empty">
-        <div>
-          您暂时还没有作品哦！快去
-          <el-button
-            type="text" size="large"
-            @click="publishPano"
-          >
-            发布
-          </el-button>
-          吧...
-        </div>
-      </div>
-    </div>
+      您暂时还没有收藏作品哦！<br/>快去
+      <a href="/pano">
+        720°全景
+      </a>页看看吧...
+    </app-empty-body>
 
     <!-- 作品列表 -->
     <div
@@ -100,8 +91,8 @@ export default {
 </script>
 
 <style>
+@import 'vars.css';
 .center-panos {
-
   &__item {
     float: left;
     width: 23.0769%;
