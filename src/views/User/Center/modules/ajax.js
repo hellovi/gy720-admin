@@ -6,8 +6,6 @@
 
 import { Http, Url } from '@/utils'
 
-const DEFAULT_INFO_PERPAGE = 8
-
 const RECENTWORKS_URL = '/user/pano'
 const COLLECTIONS_URL = '/user/collection'
 const FANS_URL = '/user/fans'
@@ -18,7 +16,7 @@ const TOGGLE_COLLECTION_URL = '/user/collect'
 class Ajax {
   // static properties
 
-  static defaultPerpage = DEFAULT_INFO_PERPAGE
+  static defaultPerpage
 
   // 公共方法
 

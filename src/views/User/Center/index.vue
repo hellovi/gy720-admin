@@ -48,7 +48,7 @@ export default {
     }
   },
 
-  beforeCreate() {
+  beforeRouteEnter(to, from, next) {
     // 为懒加载服务，根据屏幕设置请求个数，保证出现滚动条
     const screenH = window.screen.height
     // 考虑滚轴缩小屏幕情况
@@ -57,6 +57,7 @@ export default {
     let paginate = 8
     if (Math.max(screenH, windowH) > 2000) paginate = 16
     Ajax.defaultPerpage = paginate
+    next()
   },
 }
 </script>

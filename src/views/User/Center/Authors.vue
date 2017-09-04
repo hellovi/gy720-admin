@@ -90,6 +90,8 @@ export default {
   },
 
   methods: {
+    /* ------ Initialization ------ */
+
     /* 懒加载初始化 */
 
     onIntersectionObserve() {
@@ -102,7 +104,47 @@ export default {
       this.observerInstance.observe(this.$refs.loading)
     },
 
+    /* ------ Application ------ */
+
     /* 懒加载 */
+
+    beforeLazyload(entries) {
+      if (
+        this.authorsInfo
+        && entries[0].isIntersecting
+      ) {
+        this.onLazyload()
+      }
+    },
+
+    onLazyload() {
+      // 判断是否有懒加载进行中
+      if (this.loadlocked) return
+      // 判断是否满足分页请求条件
+      const currentPage = this.authorsInfo.current_page
+      const lastPage = this.authorsInfo.last_page
+      const reqBool = currentPage < lastPage
+
+      if (reqBool) this.lazyload()
+    },
+
+    lazyload() {
+      // 显示加载状态
+      this.preLoading()
+      // 锁住懒加载
+      this.loadlocked = true
+      // 请求分页数据
+      getAuthorsInfo(this.$route, this.authorsInfo.current_page + 1)
+        .then(({ data, ...args }) => {
+          const newData = [...this.authorsInfo.data, ...data]
+          this.authorsInfo = { ...args, data: newData }
+          // 加载成功后
+          // 关闭loading动画
+          this.offLoading()
+          // 打开懒加载
+          this.loadlocked = false
+        })
+    },
 
     preLoading() {
       const options = {
@@ -113,41 +155,8 @@ export default {
       this.loadingInstance = Loading.service(options)
     },
 
-    lazyload() {
-      // 判断是否有懒加载进行中
-      if (this.loadlocked) return
-      // 显示加载状态
-      this.preLoading()
-      // 锁住懒加载
-      this.loadlocked = true
-      // 请求分页数据
-      getAuthorsInfo(this.$route, this.authorsInfo.current_page + 1)
-        .then(({ data, ...args }) => {
-          const newData = { ...this.authorInfo.data, ...data }
-          this.authorInfo = { ...args, data: newData }
-          // 加载成功后，打开懒加载
-          this.offLoading()
-          this.loadlocked = false
-        })
-    },
-
-    beforeLazyload(entries) {
-      if (this.authorsInfo && entries[0].isIntersecting) {
-        this.onLazyload()
-      }
-    },
-
     offLoading() {
       this.loadingInstance.close()
-    },
-
-    onLazyload() {
-      const currentPage = this.authorsInfo.current_page
-      const lastPage = this.authorsInfo.last_page
-      // 是否满足分页请求条件
-      const reqBool = currentPage < lastPage
-
-      if (reqBool) this.lazyload()
     },
 
     /* 关注/取消关注 */
