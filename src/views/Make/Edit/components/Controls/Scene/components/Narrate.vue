@@ -48,10 +48,16 @@
         >
         </el-switch>
       </el-form-item>
-      <el-form-item label="应用到其它场景" label-width="8em">
-        <el-button type="ghost">当前场景组</el-button>
-        <el-button type="ghost">所有场景</el-button>
-      </el-form-item>
+      <!-- 公共设置 -->
+      <v-public-config
+        :data="data"
+        :types="[
+          'pc_commentate',
+          'mobile_commentate',
+          'bg_music',
+          'commentate_sound',
+        ]"
+      ></v-public-config>
     </section>
   </div>
 </template>
@@ -64,9 +70,14 @@
  */
 
 import { EDIT } from '@/store/mutationTypes'
+import vPublicConfig from './PublicConfig'
 
 export default {
   name: 'edit-scene-setting-narrate',
+
+  components: {
+    vPublicConfig,
+  },
 
   props: {
     data: {

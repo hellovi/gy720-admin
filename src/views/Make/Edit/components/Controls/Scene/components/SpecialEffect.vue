@@ -14,10 +14,11 @@
         >
         </el-switch>
       </el-form-item>
-      <el-form-item label="应用到其它场景">
-        <el-button type="ghost">当前场景组</el-button>
-        <el-button type="ghost">所有场景</el-button>
-      </el-form-item>
+      <!-- 公共设置 -->
+      <v-public-config
+        :data="data"
+        :types="['sunshine']"
+      ></v-public-config>
     </section>
     <section>
       <h3>设置画面特效</h3>
@@ -36,10 +37,11 @@
           <span>{{ effect.text }}</span>
         </label>
       </el-form-item>
-      <el-form-item label="应用到其它场景">
-        <el-button type="ghost">当前场景组</el-button>
-        <el-button type="ghost">所有场景</el-button>
-      </el-form-item>
+      <!-- 公共设置 -->
+      <v-public-config
+        :data="data"
+        :types="['scene_effect']"
+      ></v-public-config>
     </section>
   </div>
 </template>
@@ -51,8 +53,14 @@
  * @author luminghuai | huojinzhao
  */
 
+import vPublicConfig from './PublicConfig'
+
 export default {
   name: 'edit-scene-setting-effect',
+
+  components: {
+    vPublicConfig,
+  },
 
   props: {
     data: {

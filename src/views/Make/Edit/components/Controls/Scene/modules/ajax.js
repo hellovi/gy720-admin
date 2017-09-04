@@ -8,6 +8,7 @@ import Http from '@/utils/http'
 
 const SCENE_API = '/user/scene'
 const SORT_SCEME_API = '/user/scene/sort'
+const CONFIG_PUBLIC_API = '/user/scene/batchupdate'
 
 export default class Ajax {
   /* ------ Initialization ------ */
@@ -64,6 +65,22 @@ export default class Ajax {
     return Http.put(
       this.setPanoQuery(this.setSceneParam(sceneInfo.id)),
       sceneInfo,
+    )
+  }
+
+  /**
+   * @desc    分组和所有场景设置
+   *
+   * @method  POST
+   * @param   {Object}      configs
+   * @param   {number}      [groupId]
+   *
+   * @return  {Promise}     dataless
+   */
+  static patchPublicConfig(configs) {
+    return Http.post(
+      this.setPanoQuery(CONFIG_PUBLIC_API),
+      configs,
     )
   }
 

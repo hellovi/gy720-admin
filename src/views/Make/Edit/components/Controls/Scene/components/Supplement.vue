@@ -9,10 +9,11 @@
         type="primary"
         @click="openMaterialAd('top_ad_img')"
       >选择图片</el-button>
-      <el-form-item label="应用到其它场景" label-width="8em">
-        <el-button type="ghost">当前场景组</el-button>
-        <el-button type="ghost">所有场景</el-button type=host"g">
-      </el-form-item>
+      <!-- 公共设置 -->
+      <v-public-config
+        :data="data"
+        :types="['top_ad_img']"
+      ></v-public-config>
       <img :src="$url.static(data.top_ad_img)">
     </section>
 
@@ -25,10 +26,11 @@
         type="primary"
         @click="openMaterialAd('bottom_ad_img')"
       >选择图片</el-button>
-      <el-form-item label="应用到其它场景" label-width="8em">
-        <el-button type="ghost">当前场景组</el-button>
-        <el-button type="ghost">所有场景</el-button>
-      </el-form-item>
+      <!-- 公共设置 -->
+      <v-public-config
+        :data="data"
+        :types="['bottom_ad_img']"
+      ></v-public-config>
       <img :src="$url.static(data.bottom_ad_img)">
     </section>
   </div>
@@ -42,9 +44,14 @@
  */
 
 import { EDIT } from '@/store/mutationTypes'
+import vPublicConfig from './PublicConfig'
 
 export default {
   name: 'edit-scene-setting-supplement',
+
+  components: {
+    vPublicConfig,
+  },
 
   props: {
     data: {
