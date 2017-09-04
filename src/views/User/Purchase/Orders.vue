@@ -52,6 +52,7 @@
       v-if="list.data.length"
       layout="prev, pager, next"
       :total="list.total"
+      :page-size="15"
       :current-page="list.current_page"
       @current-change="pageChange"
     ></el-pagination>

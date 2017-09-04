@@ -32,27 +32,25 @@
             {{order.name}}
           </td>
         </tr>
-        <tr>
-          <td class="bill"><p>发票信息：</p></td>
+        <tr v-if="isYearVip">
+          <td class="purchase-detail__bill"><p>发票信息：</p></td>
           <td>
-            <p>公司抬头：{{order.company}}</p>
-            <p>邮寄地址：{{order.address}}</p>
-            <p>联&nbsp;&nbsp;系&nbsp;&nbsp;人：{{order.contact}}</p>
-            <p>电话号码：{{order.mobile}}</p>
+            <p>公司抬头：{{ order.company }}</p>
+            <p>邮寄地址：{{ order.address }}</p>
+            <p>联&nbsp;&nbsp;系&nbsp;&nbsp;人：{{ order.contact }}</p>
+            <p>电话号码：{{order.mobile }}</p>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div class="">
+    <div v-if="isWaitPay" class="purchase-detail__button">
       <el-button
         type="primary"
-        v-if="isPayOk"
       >去付款</el-button>
       <el-button
         type="primary"
-        v-if="isPayOk"
-        @click="dialog.confirm = true"
+        @click="beforeOrderDelete(order.hash_order_id)"
       >取消订单</el-button>
     </div>
 
@@ -109,12 +107,15 @@ export default {
   },
 
   computed: {
-
-    isPayOk() {
-      return this.order.order_status === 20
+    isYearVip() { // 是否是年会员
+      return true
     },
 
-    channel_type() {
+    isWaitPay() { // 是否完成订单
+      return this.order.order_status === 10
+    },
+
+    channel_type() { // 支付类型
       switch (this.order.channel_type) {
         case 10:
           return '支付宝支付'
@@ -146,6 +147,7 @@ export default {
         message: '该订单删除成功',
         type: 'warning',
       })
+      this.$router.push('/user-client/purchase/orders')
     },
 
   },
@@ -175,12 +177,16 @@ export default {
     width: 130px;
   }
 
-  .el-button {
-    margin-left: 10px;
+  &__bill {
+    vertical-align: top;
   }
 
-  .bill {
-    vertical-align: top;
+  p {
+      margin:20px 0;
+    }
+
+  &__button {
+    margin-top: 20px;
   }
 }
 </style>
