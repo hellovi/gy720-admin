@@ -1,10 +1,10 @@
 <template>
-  <div class="user-center-account">
+  <main class="user-center-account">
     <app-tab :data="tabData"></app-tab>
     <div class="user-center-account__content">
       <router-view></router-view>
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -41,7 +41,6 @@
 
   .user-center-account {
     &__content {
-      min-height: var(--app-main-content-min-height);
       padding: 45px 20px;
       background-color: #fff;
      }
