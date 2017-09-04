@@ -14,7 +14,7 @@
 /**
  * 高级编辑 - 相机视角
  *
- * @author hjz
+ * @author huojinzhao
  * @param {String} confirmButtonText - 确定操作的按钮名称
  */
 

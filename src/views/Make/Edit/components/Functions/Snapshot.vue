@@ -25,7 +25,6 @@
       <a class="el-button el-button--primary"
         :href="snapshotDownloadURL"
         slot="footer"
-        :download="`虚拟拍照 - ${Date.now()}`"
       >保存到本地</a>
     </el-dialog>
   </div>
@@ -42,8 +41,8 @@ import vCamera from './components/Camera'
 import modal from '../../mixins/modal'
 import esc from '../../mixins/esc'
 
-const CREATE_SNAPSHOT_API = '/make/pubset/photograph'
-// const GET_SNANPSHOT_API = '/make/pubset/downphotograph'
+const CREATE_SNAPSHOT_API = '/user/pubset/virtualphoto'
+const DOWNLOAD_SNAPSHOT_API = '/user/pubset/downvirtual'
 
 export default {
   name: 'edit-functions-snapshot',
@@ -65,7 +64,7 @@ export default {
 
   computed: {
     ...mapState({
-      pano: state => state.edit.panoinfo,
+      pano: state => state.edit.panoInfo,
     }),
   },
 
@@ -90,14 +89,24 @@ export default {
       const canvas = window._krpano.querySelector('canvas')
       this.snapshotResultURL = canvas.toDataURL('image/jpeg')
       this.$http.post(CREATE_SNAPSHOT_API, {
-        pano_id: this.pano.id,
+        pano_id: this.pano.hash_pano_id,
         data: this.snapshotResultURL,
       })
         .then((res) => {
-          this.snapshotDownloadURL = res.result.src
+          /* eslint-disable prefer-template */
+          const url = DOWNLOAD_SNAPSHOT_API
+            + `?img_path=${res.result.img_path}`
+          /* eslint-enable */
+          this.snapshotDownloadURL = url
           this.$nextTick(() => {
-            this.onCloseCamera()
+            this.close()
             this.openSnapshotResultModal()
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'error',
+            message: '拍照出现错误',
           })
         })
     },
