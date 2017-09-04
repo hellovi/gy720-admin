@@ -88,6 +88,7 @@ export default {
     ...mapState({
       active: state => state.edit.active,
       activeType: state => state.edit.material.type,
+      panoId: state => state.edit.panoInfo.hash_pano_id,
       // invoked: state => state.edit.material.invoked,
     }),
 
@@ -113,8 +114,12 @@ export default {
       this.$store.commit(EDIT.MATERIAL.CHANGE, type)
     },
 
-    checkPanos({ id, name, thumb }) {
-      this.$http.post('/user/scene', { source_scene_id: id, name, thumb })
+    checkPanos(panos) {
+      const data = panos.map(({ id, ...args }) => ({
+        source_scene_id: id,
+        ...args,
+      }))
+      this.$http.post(`/user/scene?pano_id=${this.panoId}`, { scenes: data })
         .then(({ result }) => {
           this.$store.commit(EDIT.MATERIAL.SELECT, result)
         })
