@@ -78,7 +78,7 @@ export default {
     },
 
     panoPath() {
-      return this.$url.host(`/pano/view/${this.pano.hash_pano_id}`)
+      return this.$url.host(`pano/view/${this.pano.hash_pano_id}`)
     },
   },
 

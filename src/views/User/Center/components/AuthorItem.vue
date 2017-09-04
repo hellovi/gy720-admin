@@ -135,7 +135,7 @@ export default {
 
   methods: {
     panoPath(hash_pano_id) {
-      return this.$url.host(`/pano/view/${hash_pano_id}`)
+      return this.$url.host(`pano/view/${hash_pano_id}`)
     },
 
     onToggleFollow() {
