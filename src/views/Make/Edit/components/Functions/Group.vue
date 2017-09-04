@@ -2,6 +2,8 @@
   <el-dialog
     title="场景分组"
     :visible.sync="active.group"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
     @open="openScene"
     custom-class="group-dialog"
   >
@@ -49,18 +51,23 @@
     <el-dialog
       title="选择场景"
       :visible.sync="showScenes"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       size="large"
       @open="getNotGroups"
       @close="closeSelectScenes"
       :modal="false">
-      <ul class="work-scenes list clearfix">
+      <ul class="work-scenes list clearfix" v-if="notGroupsList.length">
         <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
           <img :src="$url.static(list.thumb)" :alt="list.name">
           <span>{{ list.name }}</span>
         </li>
       </ul>
+      <div v-else>
+        暂无未分组的场景
+      </div>
       <div class="work-scenes__confirm">
-        <el-button type="primary" @click="addScenes">确定</el-button>
+        <el-button type="primary" :loading="addScenesLoading" :disabled="!selectSceneIds.length" @click="addScenes">确定</el-button>
       </div>
     </el-dialog>
   </el-dialog>
@@ -94,6 +101,7 @@ export default {
       notGroupsList: [],
       currentGroupsId: null,
       selectSceneIds: [],
+      addScenesLoading: false,
     }
   },
 
@@ -157,6 +165,7 @@ export default {
     // 提交添加场景到分组
     addScenes() {
       if (this.selectSceneIds.length) {
+        this.addScenesLoading = true
         this.$http.post('/user/scenegroupdata/store', {
           pano_id: `${this.panoInfo.hash_pano_id}`,
           scene_group_id: this.currentGroupsId,
@@ -165,6 +174,7 @@ export default {
           .then(() => {
             this.$message.success('添加场景成功!')
             this.showScenes = false
+            this.addScenesLoading = false
           })
       } else {
         this.errorHandler('请选择场景')
@@ -205,9 +215,17 @@ export default {
     // 添加 | 编辑 分组
     createNewGroup({ title = null, id = '' }) {
       const inputValidator = val => !!val
+      let dialogTitle = '添加场景分组'
 
+      if (id) {
+        dialogTitle = '编辑场景分组'
+      }
+
+      // 限制最多5个分组
       if (title || this.groupsList.length < 5) {
-        this.$prompt('请输入分组名', '添加场景分组', {
+        this.$prompt('请输入分组名', dialogTitle, {
+          closeOnPressEscape: false,
+          closeOnClickModal: false,
           inputValue: title,
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -217,7 +235,6 @@ export default {
           if (id) {
             this.editGroupsTitle(value, id)
           } else {
-            // 限制最多5个分组
             this.$http.post(`/user/scenegroup?pano_id=${this.panoInfo.hash_pano_id}`, { title: value })
               .then(({ result }) => {
                 // 添加成功新增列表数组
@@ -242,6 +259,7 @@ export default {
     // 删除分组
     removeGroup({ id }) {
       this.$confirm('确定要删除该分组吗?', '删除确认', {
+        closeOnClickModal: false,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
@@ -324,7 +342,7 @@ export default {
       const error = errorHandler(errors)
       const h = this.$createElement
       this.$notify.error({
-        duration: error.length * 1500,
+        duration: error.length * 2000,
         message: h('div',
           {
             class: 'group-errors',
