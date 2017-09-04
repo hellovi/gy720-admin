@@ -94,7 +94,7 @@
     <!-- 升级商业版 / 购买服务弹窗 -->
     <app-purchase
       :visible.sync="upgradedWorkModal.tag"
-      :pano-id="upgradedWorkInfo.id"
+      :panorama-id="upgradedWorkInfo.id"
     ></app-purchase>
 
     <!-- 分页 -->

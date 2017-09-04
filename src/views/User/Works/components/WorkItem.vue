@@ -62,7 +62,7 @@
     <!-- 作品操作 -->
     <div class="workitem__biz">
       <el-button
-        v-if="item.is_vip"
+        v-if="!item.is_vip"
         type="text"
         @click="onUpgrade"
       >
