@@ -51,7 +51,11 @@
     </div>
     <!-- 右侧：添加场景 -->
     <div class="edit-scene-upload tip tip--top" data-tip="上传场景">
-      <div role="button" class="btn-add dash-box">+</div>
+      <div
+        class="btn-add dash-box"
+        role="button"
+        @click="openSceneCreation"
+      >+</div>
     </div>
 
     <!-- 场景设置弹框 -->
@@ -182,7 +186,7 @@ export default {
       // eslint-disable-next-line
       const krpano = window.__krpano
       krpano.call(`ac_gotoscene(${sceneId})`)
-      // - 清空所有热点
+      // 清空所有热点
       Object.keys(krpano.hotspots)
         .forEach((hotid) => {
           krpano.removehotspot(`hotspot_${hotid}`)
@@ -190,8 +194,8 @@ export default {
         })
     },
 
-    selectScene(sceneId) {
-      // 更新场景激活信息
+    // 更新场景激活信息
+    activateScene(sceneId) {
       this.$store.commit(
         EDIT.SCENE.UPDATE,
         {
@@ -199,6 +203,10 @@ export default {
           update: { active: true },
         },
       )
+    },
+
+    selectScene(sceneId) {
+      this.activateScene(sceneId)
       // 切换krpano场景
       this.switchKrpanoScene(sceneId)
       // 加载热点
@@ -253,6 +261,19 @@ export default {
     },
 
     /* ------ Application ------ */
+
+    /* creation */
+
+    openSceneCreation() {
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'scene')
+      // 后端无法返回完整信息，只能重新请求场景列表
+      // .then((res) => {
+      //   this.scenelist = [...this.scenelist, ...res]
+      // })
+        .then(() => {
+          document.location.reload()
+        })
+    },
 
     /* deletion */
 
