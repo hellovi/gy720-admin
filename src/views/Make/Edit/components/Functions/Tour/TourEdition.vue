@@ -125,7 +125,7 @@ export default {
       ],
     },
 
-    errorReasons: null,
+    errorReasons: {},
   }),
 
   watch: {
