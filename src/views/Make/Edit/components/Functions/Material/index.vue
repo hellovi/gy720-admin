@@ -27,6 +27,7 @@
         :key="activeType"
         :active-type="activeType"
         :active-id="activeId"
+        @check-panos="checkPanos"
       ></div>
 
       <!-- 底部操作栏  -->
@@ -87,6 +88,7 @@ export default {
     ...mapState({
       active: state => state.edit.active,
       activeType: state => state.edit.material.type,
+      // invoked: state => state.edit.material.invoked,
     }),
 
     activeMaterial() {
@@ -109,6 +111,10 @@ export default {
 
     changeType(type) {
       this.$store.commit(EDIT.MATERIAL.CHANGE, type)
+    },
+
+    checkPanos(panos) {
+      this.$store.commit(EDIT.MATERIAL.SELECT, panos)
     },
   },
 }

@@ -52,6 +52,10 @@
     <div class="material-panos__submit" v-if="next">
       <el-button type="primary" @click="nextStep">下一步</el-button>
     </div>
+    <div class="material-panos__submit--material" v-else-if="invoked">
+      <el-button type="primary" @click="nextStepMaterial">选择全景图</el-button>
+    </div>
+
   </div>
 </template>
 
@@ -88,6 +92,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.edit.material.materialData.scene,
+      invoked: state => state.edit.material.invoked,
     }),
 
     // 计算是否全选
@@ -148,6 +153,11 @@ export default {
 
     nextStep() {
       this.$emit('select-panos', this.checkedPanos)
+      this.checked = []
+    },
+
+    nextStepMaterial() {
+      this.$emit('check-panos', this.checkedPanos)
       this.checked = []
     },
   },
@@ -263,6 +273,13 @@ export default {
     color: #fff;
     font-weight: normal;
     line-height: 22px;
+  }
+}
+
+.material-panos__submit {
+  &--material {
+    width: 80px;
+    margin: 10px auto 0;
   }
 }
 </style>
