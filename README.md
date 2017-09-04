@@ -71,7 +71,7 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
   - 分享二维码隐藏
   - 右侧/底部菜单 (霍，已完成，可测试)
   - 导览图（霍，已完成，可测试）
-  - 热点添加(杨，静态完成，对接接口预估1.5天)
+  - 热点添加(杨，已完成)
   - 场景的添加(杨，与素材库一起完成)
   - 场景的编辑(杨)
     - 基本信息(杨)

@@ -18,8 +18,13 @@
       </el-form-item>
 
       <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="scene">
-        <el-button type="primary" size="small">选择</el-button>
+        <el-button type="primary" size="small" @click="modal.sceneLink = true">选择</el-button>
         <!--下面区域-->
+        <div v-show="scenesLink.status" class="addspots-sec__scenes-link">
+          <img :src="$url.host(activeScene.thumb)" alt=""/>
+          <i class="iconfont">&#xe60d;</i>
+          <img :src="$url.host(scenesLink.thumb)" alt=""/>
+        </div>
       </el-form-item>
 
       <el-form-item :label="secInfo" v-if="type === typeConfig.LINK" prop="data_id">
@@ -42,6 +47,17 @@
 
     </el-form>
 
+     <!--场景链接弹窗-->
+    <el-dialog
+      title="选择漫游场景"
+      custom-class="hotspot-scene-dialog"
+      :modal="false"
+      :visible.sync="modal.sceneLink"
+      top="0%"
+    >
+      <scene-link @scene-link="sceneLink"></scene-link>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -51,14 +67,19 @@
  * @author yj
  * @version 2017-09-01
  */
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import modal from '../../../../mixins/modal'
+import SceneLink from './SceneLink'
 
 export default {
   name: 'edit-functions__addSpotSec',
 
   mixins: [modal],
+
+  components: {
+    SceneLink,
+  },
 
   props: {
     type: {
@@ -106,6 +127,15 @@ export default {
       },
 
       hotSpots: {},
+
+      modal: {
+        sceneLink: false,
+      },
+
+      scenesLink: {
+        status: false,
+        thumb: '',
+      },
     }
   },
 
@@ -113,11 +143,15 @@ export default {
     ...mapState({
       activeIcon: state => state.edit.hotspots.activeIcon,
       panoId: state => state.edit.panoInfo.hash_pano_id,
+      scenes: state => state.edit.scenes,
     }),
+
+    ...mapGetters(['activeScene']),
 
     editStatus() {
       return Object.keys(this.editInfo).length > 0
     },
+
 
     // 'form.title': {
     //   get() {
@@ -158,6 +192,13 @@ export default {
         default:
           break
       }
+    },
+
+    sceneLink(id, thumb) {
+      this.modal.sceneLink = false
+      this.scenesLink.thumb = thumb
+      this.scenesLink.status = true
+      this.form.data_id = `${id}`
     },
 
     prepareSpotsData() {
@@ -266,6 +307,26 @@ export default {
       vertical-align: middle;
     }
   }
+
+  &__scenes-link {
+    margin-top: 20px;
+
+    & > i {
+      color: rgb(150, 150, 150);
+      font-size: 60px;
+    }
+
+    & > img {
+      width : 145px;
+      height: auto;
+    }
+  }
+}
+
+/*覆盖弹窗嵌套样式*/
+.hotspot-scene-dialog {
+  width: 1000px !important;
+  position: fixed;
 }
 
 </style>
