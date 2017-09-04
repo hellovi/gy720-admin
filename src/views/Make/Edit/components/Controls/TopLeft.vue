@@ -171,7 +171,7 @@ export default {
 
   &__image {
     display: block;
-    height: 30px;
+    max-width: 200px;
   }
 }
 
