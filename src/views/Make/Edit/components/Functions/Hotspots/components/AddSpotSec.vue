@@ -9,7 +9,7 @@
 
       <!-- <el-form-item label="热点图标" prop="icon.id"
        :rules="[ { required: true, message: '请输入热点名称', trigger: 'blur' }]"> -->
-      <el-form-item label="热点图标" prop="icon">
+      <el-form-item label="热点图标" prop="icon_info">
         <el-button type="primary" size="small" @click="openIconModal">选择</el-button>
         <img v-if = "activeIcon.thumb"
           class="addspots-sec__icon"
@@ -17,7 +17,7 @@
           alt="activeIcon.icon_id"/>
       </el-form-item>
 
-      <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="scene">
+      <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="data_id">
         <el-button type="primary" size="small" @click="modal.sceneLink = true">选择</el-button>
         <!--下面区域-->
         <div v-show="scenesLink.status" class="addspots-sec__scenes-link">
@@ -31,7 +31,7 @@
         <el-input v-model="form.data_id" placeholder="http://"></el-input>
       </el-form-item>
 
-      <el-form-item :label="secInfo"
+      <el-form-item :label="secInfo" prop="data_id"
         v-if="[typeConfig.ARTICLE,typeConfig.ROTATE,typeConfig.AUDIO].includes(type)"
       >
         <el-button type="primary" size="small" @click="selectMater(type)">选择</el-button>
@@ -103,6 +103,7 @@ export default {
         hot_name: '',
         data_id: '',
         title: '',
+        icon_info: { thumb: '', id: '' },
       },
 
       rules: {
@@ -110,18 +111,18 @@ export default {
           { required: true, message: '请输入热点名称', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
         ],
-        // icon: [
-        //   {
-        //     type: 'object',
-        //     required: true,
-        //     fields: {
-        //       id: { required: true, message: '请选择热点图标', trigger: 'blur' },
-        //     },
-        //   },
-        // ],
-        // scene: [
-        //   { type: 'object', required: true, message: '请选择链接场景', trigger: 'blur' },
-        // ],
+        data_id: [
+          { required: true, message: this.preDataRule(), trigger: 'blur' },
+        ],
+        icon_info: [
+          {
+            type: 'object',
+            required: true,
+            fields: {
+              id: { required: true, message: '请选择热点图标', trigger: 'blur' },
+            },
+          },
+        ],
       },
 
       hotSpots: {},
@@ -149,13 +150,15 @@ export default {
     editStatus() {
       return Object.keys(this.editInfo).length > 0
     },
+  },
 
-
-    // 'form.title': {
-    //   get() {
-    //     return this.editInfo.edit_title
-    //   },
-    // },
+  watch: {
+    activeIcon: {
+      handler(val) {
+        this.form.icon_info.id = val.icon_id
+      },
+      deep: true,
+    },
   },
 
   methods: {
@@ -197,6 +200,17 @@ export default {
       this.scenesLink.thumb = thumb
       this.scenesLink.status = true
       this.form.data_id = `${id}`
+    },
+
+    preDataRule() {
+      switch (this.type) {
+        case this.typeConfig.LINK:
+          return '请填写链接地址'
+        case this.typeConfig.SCENE:
+          return '请选择链接场景'
+        default:
+          return '请选择所需素材'
+      }
     },
 
     prepareSpotsData() {
