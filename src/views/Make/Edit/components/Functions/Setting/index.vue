@@ -119,7 +119,10 @@ export default {
     },
 
     submit() {
-      this.$http.post('/user/pubset/update', this.form)
+      const id = this.panoInfo.hash_pano_id
+      this.$http.post(`/user/pubset/update?pano_id=${id}`,
+        this.form,
+      )
         .then(() => {
           this.$message.success('操作成功')
           this.closeModal('setting')
