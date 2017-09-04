@@ -19,7 +19,7 @@ export default {
 
   actions: {
     [PURCHASE.ORDERS.INIT]({ commit }, page = 1) {
-      return Http.get(`/user/order?current_page=${page}`)
+      return Http.get(`/user/order?page=${page}`)
         .then(({ result }) => commit(PURCHASE.ORDERS.INIT, result))
     },
 
