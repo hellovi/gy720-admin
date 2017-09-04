@@ -55,7 +55,9 @@
 
 <style lang="postcss">
   .app-alert {
-    padding-bottom: 22px;
+    .el-alert {
+      margin-bottom: 22px;
+    }
     .el-alert__content {
       line-height: 20px;
     }
