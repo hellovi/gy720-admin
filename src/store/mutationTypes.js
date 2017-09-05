@@ -130,6 +130,7 @@ export const EDIT = {
   SCENE: {
     INIT: 'EDIT.SCENE.INIT',
     UPDATE: 'EDIT.SCENE.UPDATE',
+    DELETE: 'EDIT.SCENE.DELETE',
   },
 
   // 菜单管理

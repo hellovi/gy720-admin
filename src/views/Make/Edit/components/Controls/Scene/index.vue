@@ -63,6 +63,7 @@
       :visible.sync="configModal.active"
       title="场景设置"
       size="large"
+      :before-close="closeSceneConfig"
     >
       <!-- 标签切换 -->
       <nav class="edit-setting__nav">
@@ -115,6 +116,7 @@
  */
 
 import Draggable from 'vuedraggable'
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import deleteItem from '@/mixins/deleteItem'
 import Ajax from './modules/ajax'
@@ -147,7 +149,7 @@ export default {
   },
 
   data: () => ({
-    scenelist: [],
+    // scenelist: [],
 
     tabs: ['基本信息', '场景特效', '补天补地', '语音解说'],
 
@@ -165,22 +167,13 @@ export default {
     activeSceneId() {
       return this.$store.getters.activeScene.id
     },
-  },
-
-  watch: {
-    '$store.state.edit.scenes.length': 'getScenelist',
+    ...mapState({
+      scenelist: state => state.edit.scenes,
+    }),
   },
 
   methods: {
     /* ----- Initialization ------ */
-
-    getScenelist(length) {
-      if (length) {
-        this.scenelist = [
-          ...this.$store.state.edit.scenes,
-        ]
-      }
-    },
 
     switchKrpanoScene(sceneId) {
       // eslint-disable-next-line
@@ -221,7 +214,7 @@ export default {
 
     /* ------ Assitance ------ */
 
-    /* scene scroll */
+    /* --- scroll ---- */
 
     // 125是每个场景图的宽度 + 5px margin
     scrollToLeft() {
@@ -249,7 +242,7 @@ export default {
       }
     },
 
-    /* config */
+    /* --- config --- */
 
     openSceneConfig(scene) {
       this.sceneInfo = { ...scene }
@@ -258,33 +251,37 @@ export default {
 
     closeSceneConfig() {
       this.configModal.active = false
+      this.errorReasons = {}
     },
 
     /* ------ Application ------ */
 
-    /* creation */
+    /* --- creation --- */
 
     openSceneCreation() {
       this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'scene')
-      // 后端无法返回完整信息，只能重新请求场景列表
-      // .then((res) => {
-      //   this.scenelist = [...this.scenelist, ...res]
-      // })
         .then(() => {
           document.location.reload()
         })
     },
 
-    /* deletion */
+    /* --- deletion --- */
 
     preDeleteScene(sceneId) {
-      this.onDeleteItem({
-        title: '删除场景',
-        message: '此操作将永久删除该分类，是否继续？',
-        itemId: sceneId,
-        ajax: this.deleteScene,
-        success: this.sceneDeletionSucceed,
-      })
+      if (sceneId === this.activeSceneId) {
+        this.$message({
+          type: 'error',
+          message: '当前选中场景不能删除',
+        })
+      } else {
+        this.onDeleteItem({
+          title: '删除场景',
+          message: '此操作将永久删除该分类，是否继续？',
+          itemId: sceneId,
+          ajax: this.deleteScene,
+          success: this.sceneDeletionSucceed,
+        })
+      }
     },
 
     deleteScene(sceneId) {
@@ -292,11 +289,10 @@ export default {
     },
 
     sceneDeletionSucceed(sceneId) {
-      this.scenelist = this.scenelist
-        .filter(scene => scene.id !== sceneId)
+      this.$store.commit(EDIT.SCENE.DELETE, sceneId)
     },
 
-    /* edition */
+    /* --- edition --- */
 
     editConfig() {
       Ajax.replaceScene(this.sceneInfo)
@@ -313,15 +309,12 @@ export default {
     },
 
     editConfigSucceed(sceneInfo) {
-      const index = this.scenelist
-        .findIndex(scene => scene.id === sceneInfo.id)
-      if (index > -1) {
-        this.$set(this.scenelist, index, sceneInfo)
-      }
+      const { id, ...update } = sceneInfo
+      this.$store.commit(EDIT.SCENE.UPDATE, { id, update })
       this.closeSceneConfig()
     },
 
-    /* order */
+    /* --- order --- */
 
     resortScenes() {
       const ids = this.scenelist

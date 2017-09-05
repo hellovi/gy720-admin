@@ -90,7 +90,7 @@ export default {
      * 更新某一个场景的信息
      * 若更新的属性是active，则必须把其它场景的active重置为false
      * @param {Object} state
-     * @param {{ id: string, update: Object }} data
+     * @param {{ id: number, update: Object }} data
      */
     [EDIT.SCENE.UPDATE](state, { id, update }) {
       state.scenes = state.scenes.map((scene) => {
@@ -102,6 +102,11 @@ export default {
         }
         return scene
       })
+    },
+
+    [EDIT.SCENE.DELETE](state, id) {
+      state.scenes = state.scenes
+        .filter(scene => scene.id !== id)
     },
   },
 
