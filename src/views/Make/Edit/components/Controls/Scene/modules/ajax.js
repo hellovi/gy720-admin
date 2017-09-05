@@ -7,7 +7,7 @@
 import Http from '@/utils/http'
 
 const SCENE_API = '/user/scene'
-const SORT_SCEME_API = '/user/scene/sort'
+const SORT_SCENE_API = '/user/scene/sort'
 const CONFIG_PUBLIC_API = '/user/scene/batchupdate'
 
 export default class Ajax {
@@ -109,7 +109,7 @@ export default class Ajax {
    */
   static replaceScenesOrder(orderInfo) {
     Http.post(
-      this.setPanoQuery(SORT_SCEME_API),
+      this.setPanoQuery(SORT_SCENE_API),
       orderInfo,
     )
   }
