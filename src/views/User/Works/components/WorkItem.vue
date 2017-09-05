@@ -11,7 +11,7 @@
     <!-- 作品封面 -->
     <a class="workitem__avatar"
       :href="workPanoPath"
-      :title="item.pano_name"
+      :title="item.name"
     >
       <img class="workitem__avatar-img has-shadow"
         :src="workAvatarPath"
@@ -36,7 +36,7 @@
           :href="workPanoPath"
           title="预览作品"
         >
-          {{item.pano_name}}
+          {{item.name}}
         </a>
       </div>
       <!-- 第二行  -->
