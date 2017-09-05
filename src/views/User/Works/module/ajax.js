@@ -15,7 +15,7 @@ const WORKS_API = '/user/pano'
 const PUT_WORKS_CATE_API = '/user/pano/category'
 
 class Ajax {
-  // static properties
+  // 初始化常量
 
   static defaultCateId = DEFAULT_CATE_ID
 
@@ -25,7 +25,7 @@ class Ajax {
    * 请求分类列表信息
    *
    * @method GET
-   * @return {Promise/Array} data - 分类列表
+   * @return {Promise}      type: Array   - 分类列表
    */
   static getCatelist() {
     return Http.get(CATE_API)
@@ -35,9 +35,9 @@ class Ajax {
   /**
    * 新增作品分类
    *
-   * @method POST
-   * @param {String} cateName - 新增分类的名称
-   * @return {Promise/int} data - 新增分类id
+   * @method  POST
+   * @param   {String}      cateInfo      - 新增分类信息
+   * @return  {Promise}     type: number  - 新增分类id
    */
   static createCate(cateInfo) {
     return Http.post(CATE_API, cateInfo)
@@ -47,9 +47,9 @@ class Ajax {
   /**
    * 删除作品分类
    *
-   * @method DELETE
-   * @param {Number} cateId
-   * @return {Promise} data - needless
+   * @method  DELETE
+   * @param   {Number}      cateId
+   * @return  {Promise}     dataless
    */
   static deleteCate(cateId) {
     return Http.delete(`${CATE_API}/${cateId}`)
@@ -60,9 +60,9 @@ class Ajax {
   /**
    * 请求作品列表数据
    *
-   * @method GET
-   * @param {Object} query - 当前路由query对象
-   * @return {Promise/Array} data - 作品分页列表详细信息
+   * @method  GET
+   * @param   {Object}        query       - 当前路由query对象
+   * @return  {Promise}       type: Array - 作品分页列表详细信息
    */
   static getWorklist(
     {
@@ -84,10 +84,10 @@ class Ajax {
   /**
    * 移动作品到其他分类
    *
-   * @method PUT
-   * @param {int} cateId - 目标分类id
-   * @param {Array} workIds - 需要移动作品们的id
-   * @return {Promise} data - needless
+   * @method  PUT
+   * @param   {number}      cateId  - 目标分类id
+   * @param   {number[]}    workIds - 需要移动作品们的id
+   * @return  {Promise}     dataless
    */
   static updateWorksCate(cateId, workIds) {
     return Http.put(PUT_WORKS_CATE_API, {
@@ -99,9 +99,9 @@ class Ajax {
   /**
    * 删除作品
    *
-   * @method DELETE
-   * @param {int} workId - 需要删除的作品id
-   * @return {Promise} data - needless
+   * @method  DELETE
+   * @param   {number}      workId  - 需要删除的作品id
+   * @return  {Promise}     dataless
    */
   static deleteWork(workId) {
     return Http.delete(`${WORKS_API}/${workId}`)
