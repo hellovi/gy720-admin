@@ -8,13 +8,16 @@
     <el-button type="primary" v-else-if="activeType === 'rotate'" @click="openObjectManage">管理物品3D</el-button>
 
     <div v-else>
-      <div class="material-progress" v-if="percent > 0 && percent < 100">
-        <el-progress :percentage="percent"></el-progress>
+      <div class="material-progress" v-if="currentFile && currentFile.percent > 0 && currentFile.percent < 100">
+        <el-progress :percentage="currentFile.percent"></el-progress>
       </div>
+      <!-- 使用key以保证每次素材类型改变后，都会重新生成一个上传实例 ，以便应用新的accpet、size等限制 -->
       <app-file-upload
-        v-model="fileSrc"
+        :key="this.activeType"
         ref="fileUpload"
-        :accept="acceptMimeTypes"
+        multiple
+        :accept="limit.mimeTypes"
+        :size="limit.size"
         :static-url="uploadPath"
         :auto-start="false"
         @files-added="filesAdded"
@@ -23,10 +26,10 @@
       >
         <el-button type="primary">上传新素材</el-button>
       </app-file-upload>
-      <span v-if="filename">{{ filename }}</span>
+      <span v-if="currentFile">{{ currentFile.name }}</span>
       <ul v-else class="material-footer__desc list">
-        <li>支持的文件格式：{{ acceptMimeTypes }}</li>
-        <li>文件大小：15M以内</li>
+        <li>支持的文件格式：{{ limit.mimeTypes }}</li>
+        <li>文件大小：{{ limit.size }}以内</li>
       </ul>
     </div>
   </footer>
@@ -43,15 +46,9 @@ import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import upload from '@/views/User/Publish/mixins/upload'
 import modal from '../../../../mixins/modal'
+import uploadLimits from './uploadLimits'
 
 const AppFileUpload = () => import('@/components/AppFileUpload')
-
-const requiredRatios = {
-  hotspots: [1],
-  icons: [1],
-  ads: [1],
-  thumbs: [1],
-}
 
 export default {
   name: 'edit-material-footer',
@@ -75,10 +72,8 @@ export default {
 
   data() {
     return {
-      fileSrc: '',
-      filename: '',
-      percent: 0,
-      acceptMimeTypes: 'jpg,jpeg,png,gif,mp3',
+      uploader: null,
+      files: [], // 上传队列
     }
   },
 
@@ -86,8 +81,18 @@ export default {
     ...mapState({
       userId: state => state.edit.panoInfo.hash_user_id,
     }),
+
+    limit() {
+      return uploadLimits[this.activeType]
+    },
+
     uploadPath() {
       return `data/source/${this.activeType}/${this.userId}/`
+    },
+
+    // 当前上传队列的第一个文件
+    currentFile() {
+      return this.files[0]
     },
   },
 
@@ -101,42 +106,75 @@ export default {
       this.openModal('imageTextEdit')
     },
 
-    filesAdded(up, files) {
-      this.filename = files[0].name
-      const image = new Image()
-      image.style.display = 'none'
-      image.addEventListener('load', () => {
-        const ratios = requiredRatios[this.activeType]
-        const { width, height } = image
-        const currentRatio = width / height
-        const isValidRatio = !ratios || ratios.some(ratio => currentRatio === ratio)
+    isFileValid({ ratio, dimension, dimensionTip }, image) {
+      const { width, height } = image
+      const currentRatio = width / height
+      const [w, h] = ratio
 
-        if (isValidRatio) {
-          this.percent = 1
-          up.start()
+      if (!dimension(width, height)) {
+        this.files.pop()
+        this.$message.error(dimensionTip)
+        return false
+      } else if (currentRatio !== w / h) {
+        this.$message.error(`图片比例必须为${w}:${h}`)
+        this.files.pop()
+        return false
+      }
+
+      return true
+    },
+
+    /**
+     * 添加文件
+     * 对于每个添加的文件，往上传队列中push一个对应的对象
+     * 如果是图片，要做额外的比例检查，检查不通过移除该文件
+     */
+    filesAdded(up, files) {
+      files.forEach(({ id, name, type }) => {
+        const file = {
+          id,
+          name,
+          percent: 0,
+        }
+        this.files.push(file)
+
+        if (type.includes('image/')) {
+          const image = new Image()
+          image.style.display = 'none'
+          image.addEventListener('load', () => {
+            const isValid = this.isFileValid(this.limit, image)
+            if (isValid) {
+              file.percent = 1
+              up.start()
+            }
+          })
+          image.src = URL.createObjectURL(files[0].getNative())
         } else {
-          this.$message.error(`图片比例必须为${ratios[0]}`)
+          file.percent = 1
+          up.start()
         }
       })
-      image.src = URL.createObjectURL(files[0].getNative())
     },
 
-    uploadProgress(up, file) {
-      this.percent = file.percent
+    uploadProgress(up, { id, percent }) {
+      this.files.find(file => file.id === id).percent = percent
     },
 
+    /**
+     * 上传成功后，从上传队列里移除对应的对象
+     */
     fileUploaded(up, file, res) {
       const { key } = JSON.parse(res.response)
 
       const data = {
-        title: this.filename,
+        title: this.files[0].name,
         tag_id: this.activeId,
         qiniu_key: key,
         file_size: file.size,
       }
+      this.files.shift()
 
       this.$store.dispatch(EDIT.MATERIAL.CREATE, data)
-        .then(() => { this.filename = '' })
     },
 
     // 要处理上传错误的情况
@@ -162,6 +200,7 @@ export default {
 
     & > li {
       display: inline-block;
+      margin-right: 1em;
     }
   }
 }
