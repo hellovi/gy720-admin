@@ -4,15 +4,17 @@
       <!-- 作品封面 -->
       <div class="setting-img">
         <h5 class="setting-img__title">作品封面</h5>
-        <img class="setting-img__img" :src="`${form.thumb}?imageView2/2/w/120`" alt="作品封面">
+        <img class="setting-img__img" :src="avatarPreview || $url.static(form.thumb)" alt="作品封面">
         <div class="setting-img__button">
           <app-file-upload
-            v-model="form.thumb"
+            v-model="avatar"
             cropper
-            accept="jpg,jpeg,png"
             class="user-avatar__file"
+            @crop-success="cropSuccess"
+            @before-upload="loading = true"
+            @file-uploaded="avatarUploaded"
           >
-            <el-button type="primary" size="small">更换</el-button>
+            <el-button type="primary" size="small" :loading="loading">更换</el-button>
           </app-file-upload>
         </div>
       </div>
@@ -20,10 +22,15 @@
       <!-- 开场提示 -->
       <div class="setting-img">
         <h5 class="setting-img__title edit-setting__vip">开场提示</h5>
-        <img class="setting-img__img" :src="require('@/assets/help.png')" alt="开场提示">
+        <img
+          class="setting-img__img"
+          :src="form.start_img ? $url.static(form.start_img) : require('@/assets/help.png')"
+          alt="开场提示"
+        >
         <div class="setting-img__desc">商业功能，可自定义更换图片，支持JPG、PNG格式上传</div>
         <div class="setting-img__button">
           <el-button type="primary" size="small" @click="selectStartImg">选择</el-button>
+          <el-button v-show="form.start_img" type="danger" size="small" @click="removeStartImg">删除</el-button>
         </div>
       </div>
     </el-col>
@@ -74,6 +81,14 @@
 </template>
 
 <script>
+/**
+ * 高级编辑 - 设置 - 基本
+ * @author luminghuai
+ * @version 2017-09-05
+ */
+
+import { EDIT } from '@/store/mutationTypes'
+
 const AppFileUpload = () => import('@/components/AppFileUpload')
 
 export default {
@@ -94,11 +109,56 @@ export default {
     },
   },
 
+  data() {
+    return {
+      avatar: '',
+      avatarPreview: '',
+      loading: false,
+    }
+  },
+
   methods: {
+    cropSuccess({ preview }) {
+      this.avatarPreview = preview
+    },
+
+    /**
+     * 更换封面
+     * 封面上传成功后，应把新的地址更新到总表单（this.form）上
+     */
+    avatarUploaded() {
+      this.$http.put('/user/pano/thumb', {
+        id: this.$route.query.pano_id,
+        thumb: this.avatar,
+        old_thumb: this.form.thumb,
+      })
+        .then(() => {
+          this.form.thumb = this.avatar
+          this.$message.success('操作成功')
+        })
+        .catch(({ status: { reason } }) => this.$message.error(reason))
+        .then(() => {
+          this.avatarPreview = null
+          this.loading = false
+        })
+    },
+
+    /**
+     * 选择开场提示
+     */
     selectStartImg() {
       if (!this.isVip) {
         this.$emit('focus-on-vip-field')
+      } else {
+        this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'other')
+          .then(({ file_path }) => {
+            this.form.start_img = file_path
+          })
       }
+    },
+
+    removeStartImg() {
+      this.form.start_img = null
     },
   },
 }

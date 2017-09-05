@@ -3,13 +3,23 @@
     <el-col :span="8">
       <div class="setting-img">
         <h5 class="setting-img__title">朋友圈小图标</h5>
-        <img class="setting-img__img" :src="require('@/assets/wx_friend_icon.jpg')" alt="朋友圈小图标">
+        <img
+          class="setting-img__img"
+          :src="form.wx_friend_icon ? $url.static(form.wx_friend_icon) : require('@/assets/wx_friend_icon.jpg')"
+          alt="朋友圈小图标"
+        >
         <div class="setting-img__button">
           <el-button
             type="primary"
             size="small"
-            @click="invokeMaterials"
+            @click="selectIcon"
           >选择</el-button>
+          <el-button
+            v-show="form.wx_friend_icon"
+            type="danger"
+            size="small"
+            @click="removeIcon"
+          >删除</el-button>
         </div>
       </div>
     </el-col>
@@ -33,6 +43,12 @@
 </template>
 
 <script>
+/**
+ * 高级编辑 - 设置 - 微信
+ * @author luminghuai
+ * @version 2017-09-05
+ */
+
 import { EDIT } from '@/store/mutationTypes'
 
 export default {
@@ -46,8 +62,15 @@ export default {
   },
 
   methods: {
-    invokeMaterials() {
+    selectIcon() {
       this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'wxicon')
+        .then(({ file_path }) => {
+          this.form.wx_friend_icon = file_path
+        })
+    },
+
+    removeIcon() {
+      this.form.wx_friend_icon = null
     },
   },
 }

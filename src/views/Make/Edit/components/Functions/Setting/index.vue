@@ -27,8 +27,10 @@
 <script>
 /**
  * 高级编辑 - 设置
- * @version 2017-08-25
+ * @author luminghuai
+ * @version 2017-09-05
  */
+
 import { mapState, mapGetters } from 'vuex'
 import errorHandle from '@/mixins/errorHandle'
 import modal from '../../../mixins/modal'
@@ -58,6 +60,7 @@ export default {
         // 基本信息
         name: '',
         thumb: '',
+        start_img: null,
         privacy: 1, // 1公开,2加密
         password: '',
         is_show: 10, // 10是,20否
@@ -70,8 +73,8 @@ export default {
         // 背景音乐
         pc_bg_music: 1,
         mobile_bg_music: 1,
-        bg_music_src: '',
-        bg_music_name: null, // 用处不明？？
+        bg_music_src: null,
+        bg_music_name: '',
         // 功能微调
         init_scene_anime: 1,
         scene_change_type: 0,
@@ -127,7 +130,13 @@ export default {
           this.$message.success('操作成功')
           this.closeModal('setting')
         })
-        .catch(({ status: { reason } }) => this.showError(reason))
+        .catch(({ status: { reason } }) => {
+          if (typeof reason === 'string') {
+            this.$message.error(reason)
+          } else {
+            this.showError(reason)
+          }
+        })
     },
   },
 }
