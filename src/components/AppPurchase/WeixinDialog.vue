@@ -56,26 +56,32 @@ export default {
       type: String,
       required: true,
     },
+    currentWindowOpen: {
+      type: Boolean,
+      default: 'false',
+    },
   },
 
   methods: {
+    windowOpen(url) { // 新窗口打开链接
+      if (this.currentWindowOpen) {
+        this.$router.push(url)
+      } else {
+        const nw = window.open()
+        nw.location.href = url
+      }
+    },
     // 支付完成
     weixinFinish() {
-      const nw = window.open()
-      nw.location.href = `/user-client/purchase/orders/${this.hashOrderId}`
-      this.$emit('update:visible', false)
       // 在此要更新该作品的VIP状态或者用户信息的年会员状态
       if (this.isYearVip) {
         this.$store.dispatch(GLOBAL.USER.INIT)
       } else {
-        this.$emit('panoBuyOk')
+        this.$emit('panoBuySuccess')
       }
+      this.windowOpen(`/user-client/purchase/orders/${this.hashOrderId}`)
+      this.$emit('update:visible', false)
     },
-
-    // getQrcode(url) {
-    //   console.log(url)
-    //   QRCode.toCanvas(this.$refs.canvas, url, () => {})
-    // },
 
     getQrcode() {
       this.$nextTick(() => {
@@ -83,18 +89,6 @@ export default {
       })
     },
   },
-
-  // watch: {
-  //   url(val) {
-  //     this.$nextTick(() => {
-  //       this.getQrcode(val)
-  //     })
-  //   },
-  // },
-
-  // mounted() {
-  //   this.getQrcode(this.url)
-  // },
 
 }
 </script>

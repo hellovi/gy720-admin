@@ -33,23 +33,9 @@
       :hash-order-id="hashOrderId"
       :money="money"
       :url="url"
-      @panoBuyOk="panoBuyOk"
+      @panoBuySuccess="panoBuySuccess"
+      :current-window-open="currentWindowOpen"
     ></weixin-dialog>
-
-    <!-- <el-dialog
-      title="确认购买"
-      size="small"
-      :visible.sync="dialog.weixin"
-    >
-      <weixin-slot
-        :is-year-vip="isYearVip"
-        :hash-order-id="hashOrderId"
-        :money="money"
-        :url="url"
-        @close='dialog.weixin = false'
-        @panoBuyOk="panoBuyOk"
-      ></weixin-slot>
-    </el-dialog> -->
 
   </div>
 </template>
@@ -70,27 +56,27 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: 'false',
+      default: false,
     },
     isYearVip: {
       type: Boolean,
-      default: 'true',
+      default: true,
     },
     hashOrderId: {
       type: String,
-      required: 'true',
+      required: true,
     },
     number: {
       type: String,
-      required: 'true',
+      required: true,
     },
     money: {
       type: [Number, String],
-      required: 'true',
+      required: true,
     },
-    panoramaId: {
-      type: [Number, String],
-      default: null,
+    currentWindowOpen: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -152,15 +138,20 @@ export default {
           if (this.isYearVip) {
             this.$store.dispatch(GLOBAL.USER.INIT)
           } else {
-            this.panoBuyOk()
+            this.panoBuySuccess()
           }
-          this.windowOpen(`/user-client/purchase/orders/${this.hashOrderId}`)
+          // 支付完成跳转
+          if (this.currentWindowOpen) {
+            this.$router.push(`/user-client/purchase/orders/${this.hashOrderId}`)
+          } else {
+            this.windowOpen(`/user-client/purchase/orders/${this.hashOrderId}`)
+          }
         },
       })
     },
 
-    panoBuyOk() {
-      this.$emit('panoBuyOk')
+    panoBuySuccess() {
+      this.$emit('panoBuySuccess')
     },
 
   },

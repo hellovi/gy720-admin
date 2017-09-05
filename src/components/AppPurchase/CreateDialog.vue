@@ -74,8 +74,8 @@
       :hash-order-id="hashOrderId"
       :number="number"
       :money="money"
-      :panorama-id="panoramaId"
-      @panoBuyOk="panoBuyOk"
+      @panoBuySuccess="panoBuySuccess"
+      :current-window-open="currentWindowOpen"
     ></confirm-dialog>
 
   </div>
@@ -87,8 +87,9 @@
  *
  * @author zhoumenglin
  * @param {Boolean} visible.sync - 控制组件显示
+ * @param {Number|String} panoramaId - 作品id
  * @param {Number} orderType - 购买种类 10：年会员 20：单作品
- * @param {Number,String} panoramaId - 作品id，非必填
+ * @callback panoBuySuccess - 购买单作品完成的回调
  */
 
 import AppFormAlert from '@/components/AppFormAlert'
@@ -105,15 +106,19 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: 'false',
+      default: false,
     },
     orderType: {
       type: Number,
-      required: 'true',
+      required: true,
     },
     panoramaId: {
       type: [Number, String],
       default: null,
+    },
+    currentWindowOpen: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -131,10 +136,6 @@ export default {
       },
 
       hasCoupon: false, // 是否有优惠券
-
-      dialog: {
-        confirm: false,
-      },
 
       rules: { // 表单验证规则
         coupon_code: [
@@ -161,6 +162,10 @@ export default {
 
       formAlert: {}, // 接口返回错误信息
       formLoading: false, // 提交按钮loading
+
+      dialog: { // 确认订单弹窗控制
+        confirm: false,
+      },
     }
   },
 
@@ -254,8 +259,8 @@ export default {
       })
     },
 
-    panoBuyOk() {
-      this.$emit('panoBuyOk')
+    panoBuySuccess() {
+      this.$emit('panoBuySuccess')
     },
 
   },

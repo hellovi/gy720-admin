@@ -40,20 +40,33 @@
     <create-dialog
       :order-type="10"
       :visible.sync="dialog.vip"
+      :currentWindowOpen="currentWindowOpen"
     ></create-dialog>
 
     <!-- 购买单作品 -->
     <create-dialog
       :order-type="20"
       :visible.sync="dialog.pano"
+      :current-window-open="currentWindowOpen"
       :panorama-id="panoramaId"
-      @panoBuyOk="panoBuyOk"
+      @panoBuySuccess="panoBuySuccess"
     ></create-dialog>
 
   </div>
 </template>
 
 <script>
+/**
+ * @description 公共购买服务组件
+ *
+ * @author zml
+ *
+ * @param {Boolean} visible.sync - 控制组件显示
+ * @param {Number|String} panoramaId - 作品id
+ * @param {Boolean} currentWindowOpen - 在当前页面打开订单详情，默认新页面打开
+ * @callback panoBuySuccess - 购买单作品完成的回调
+ */
+
 import CreateDialog from './CreateDialog'
 
 export default {
@@ -66,17 +79,21 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: 'false',
+      default: false,
     },
     panoramaId: {
       type: [Number, String],
-      required: 'true',
+      required: true,
+    },
+    currentWindowOpen: {
+      type: Boolean,
+      default: false,
     },
   },
 
   data() {
     return {
-      buylist: ['自定义场景', '隐藏作品信息', '是否显示人气和点赞', '隐私加密', '隐藏LOGO', '是否开启说一说', '自定义LOGO', '加载文字提示', '滚动文字广告', '数据统计功能', '右侧自定义菜单'],
+      buylist: ['自定义场景', '隐藏作品信息', '是否显示人气和点赞', '隐私加密', '隐藏LOGO', '自定义LOGO', '加载文字提示', '滚动文字广告', '右侧自定义菜单', '离线下载'],
 
       dialog: {
         vip: false,
@@ -94,8 +111,8 @@ export default {
       this.$emit('update:visible', false)
       this.dialog.pano = true
     },
-    panoBuyOk() {
-      this.$emit('panoBuyOk')
+    panoBuySuccess() {
+      this.$emit('panoBuySuccess')
     },
   },
 
