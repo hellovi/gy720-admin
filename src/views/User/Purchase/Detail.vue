@@ -32,7 +32,7 @@
             {{order.name}}
           </td>
         </tr>
-        <tr v-if="isYearVip">
+        <tr v-if="isYearVip && hasInvoice">
           <td class="purchase-detail__bill"><p>发票信息：</p></td>
           <td>
             <p>公司抬头：{{ order.company }}</p>
@@ -47,6 +47,7 @@
     <div v-if="isWaitPay" class="purchase-detail__button">
       <el-button
         type="primary"
+        @click="dialog.confirm = true"
       >去付款</el-button>
       <el-button
         type="primary"
@@ -54,13 +55,15 @@
       >取消订单</el-button>
     </div>
 
-    <!-- 确认订单组件 -->
-    <!-- <confirm-dialog
-      :visible="dialog.confirm"
-      @close="dialog.confirm = false"
-      :orderSn="order.order_sn"
-      :price="order.order_amount"
-    ></confirm-dialog> -->
+     <!-- 确认订单组件 -->
+    <confirm-dialog
+      :visible.sync="dialog.confirm"
+      :is-year-vip="isYearVip"
+      :hash-order-id="order.hash_order_id"
+      :number="order.number"
+      :money="order.money"
+      :current-window-open='true'
+    ></confirm-dialog>
 
   </div>
 </template>
@@ -88,16 +91,18 @@ export default {
   data() {
     return {
       order: {
+        hash_order_id: '',
         number: '',
         created_at: '',
         money: '',
-        channel_type: '',
+        channel_type: null,
         order_status_name: null,
         name: '',
         company: null,
         address: '',
         contact: '',
         mobile: '',
+        order_type: null,
       },
 
       dialog: {
@@ -108,7 +113,7 @@ export default {
 
   computed: {
     isYearVip() { // 是否是年会员
-      return true
+      return this.order.order_type === 10
     },
 
     isWaitPay() { // 是否完成订单
@@ -124,6 +129,10 @@ export default {
         default:
           return '未付款'
       }
+    },
+
+    hasInvoice() {
+      return !!this.order.company
     },
   },
 
