@@ -43,7 +43,7 @@
  */
 import { mapState, mapGetters } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import hotspotsInit from './utils/hotSpot'
+import hotspot from './mixins/hotspot'
 import modal from '../../../mixins/modal'
 import AddSpotFir from './components/AddSpotFir'
 import AddSpotSec from './components/AddSpotSec'
@@ -61,7 +61,7 @@ const TYPECONFIG = {
 export default {
   name: 'edit-functions-hotspots',
 
-  mixins: [modal],
+  mixins: [modal, hotspot],
 
   components: {
     AddSpotFir,
@@ -129,10 +129,6 @@ export default {
     openModalInner(type) {
       this.modal[type] = true
     },
-  },
-
-  mounted() {
-    hotspotsInit(this)
   },
 }
 </script>
