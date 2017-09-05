@@ -11,7 +11,7 @@
           >{{ tab }}</li>
         </ul>
       </nav>
-      <el-form class="edit-setting__form">
+      <el-form class="edit-setting__form" :model="form" :rules="rules" ref="form">
         <basic v-show="activeTab === 0" :form="form" :isVip="isVip" @focus-on-vip-field="focusOnVipField"></basic>
         <wechat v-show="activeTab === 1" :form="form"></wechat>
         <music v-show="activeTab === 2" :form="form"></music>
@@ -80,7 +80,7 @@ export default {
         scene_change_type: 0,
         auto_scene_time: 60,
         auto_rotate_speed: 3,
-        loading_text: 'GY720.COM...',
+        loading_text: '',
 
         show_scene_thumb: 1,
         auto_rotate: 1,
@@ -89,6 +89,22 @@ export default {
         auto_mobile_gyro: 1,
         show_hit_like: 1,
         show_comment: 1,
+      },
+
+      rules: {
+        name: [
+          { required: true, trigger: 'blur', message: '作品名称不能为空' },
+        ],
+        password: [
+          {
+            validator: (rule, value, callback) => {
+              if (this.form.privacy === 2 && !value) {
+                callback(new Error('作品密码不能为空'))
+              }
+              callback()
+            },
+          },
+        ],
       },
     }
   },
@@ -122,21 +138,23 @@ export default {
     },
 
     submit() {
-      const id = this.panoInfo.hash_pano_id
-      this.$http.post(`/user/pubset/update?pano_id=${id}`,
-        this.form,
-      )
-        .then(() => {
-          this.$message.success('操作成功')
-          this.closeModal('setting')
-        })
-        .catch(({ status: { reason } }) => {
-          if (typeof reason === 'string') {
-            this.$message.error(reason)
-          } else {
-            this.showError(reason)
-          }
-        })
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          const id = this.panoInfo.hash_pano_id
+          this.$http.post(`/user/pubset/update?pano_id=${id}`, this.form)
+            .then(() => {
+              this.$message.success('操作成功')
+              this.closeModal('setting')
+            })
+            .catch(({ status: { reason } }) => {
+              if (typeof reason === 'string') {
+                this.$message.error(reason)
+              } else {
+                this.showError(reason)
+              }
+            })
+        }
+      })
     },
   },
 }

@@ -50,6 +50,7 @@
             class="edit-setting__vip"
             :readonly="!isVip"
             v-model="form.loading_text"
+            placeholder="GY720.COM..."
             @focus="$emit('focus-on-vip-field')"
           ></el-input>
           <div class="edit-setting__tip">商业版功能，作者可自定义加载时显示的文字内容</div>

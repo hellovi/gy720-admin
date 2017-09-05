@@ -37,25 +37,25 @@
 
     <!-- 其它字段 -->
     <el-col :span="14" :offset="2">
-      <el-form-item label="作品名称" label-width="5em">
+      <el-form-item label="作品名称" label-width="6em" prop="name">
         <el-input placeholder="作品名称" v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="密码访问" label-width="5em">
+      <el-form-item label="密码访问" label-width="6em">
         <el-select v-model="form.privacy">
           <el-option label="公开" :value="1"></el-option>
           <el-option label="加密" :value="2"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="作品密码" label-width="5em" v-show="form.privacy === 2">
+      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 2" prop="password">
         <el-input placeholder="作品密码（1~8个字符）" v-model="form.password"></el-input>
       </el-form-item>
-      <el-form-item label="是否发布" label-width="5em">
+      <el-form-item label="是否发布" label-width="6em">
         <el-select v-model="form.is_show">
           <el-option label="公开" :value="10"></el-option>
           <el-option label="隐私" :value="20"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="作品简介" label-width="5em">
+      <el-form-item label="作品简介" label-width="6em">
         <el-input
           type="textarea"
           :rows="3"
@@ -64,7 +64,7 @@
         ></el-input>
         <div class="edit-setting__tip">免费版功能，可对整个全景作品添加介绍信息，非单个场景的简介</div>
       </el-form-item>
-      <el-form-item label="滚动文字" label-width="5em">
+      <el-form-item label="滚动文字" label-width="6em">
         <el-input
           class="edit-setting__vip"
           type="textarea"
