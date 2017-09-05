@@ -27,6 +27,10 @@
       size="tiny" title="创建作品分类"
       @close="onCloseCreateCateModal"
     >
+      <!-- 错误回显 -->
+      <app-form-alert
+        :contents="createCateModal.errorReasons"
+      ></app-form-alert>
       <el-form
         :model="createCateInfo"
         ref="createCateInfo"
@@ -85,6 +89,7 @@ export default {
     createCateModal: {
       tag: false,
       confirmLoading: false,
+      errorReasons: {},
     },
 
     createCateInfo: {
@@ -148,7 +153,7 @@ export default {
           this.$message({ type: 'success', message: '分类创建成功' })
         })
         .catch((err) => {
-          this.$message({ type: 'error', message: err.message })
+          this.createCateModal.errorReasons = err
         })
         .finally(() => {
           this.resetCreateCateModal()

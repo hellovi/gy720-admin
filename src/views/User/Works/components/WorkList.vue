@@ -283,10 +283,13 @@ export default {
           })
         })
         .catch((err) => {
-          this.$message({
-            type: 'error',
-            message: err.message,
-          })
+          const reason = err.status.reason
+          const message = typeof reason === 'string'
+            && reason.length > 0
+            ? reason
+            : '操作失败'
+
+          this.$message({ type: 'error', message })
         })
         .finally(() => {
           this.resetTransferWorksModal()
