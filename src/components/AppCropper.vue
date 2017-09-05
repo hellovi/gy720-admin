@@ -1,13 +1,13 @@
 <template>
-  <el-dialog :title="title" :visible="visible" :before-close="close">
-    <div class="app-cropper-img">
+  <div class="app-cropper-wrap">
+    <div class="app-cropper-img" :style="{width: cropWidth, height: cropHeight}">
       <img :src="src" alt="图像" ref="preview">
     </div>
     <div class="app-cropper-btns">
       <label role="button" class="el-button el-button--info" :for="inputId">换一张</label>
       <el-button type="success" @click="confirm">上传所选区域</el-button>
     </div>
-  </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -24,14 +24,6 @@ export default {
   name: 'app-cropper',
 
   props: {
-    visible: {
-      type: Boolean,
-      default: false,
-    },
-    title: {
-      type: String,
-      default: '上传图片',
-    },
     src: {
       type: String,
       default: '',
@@ -43,6 +35,14 @@ export default {
     aspectRatio: {
       type: Number,
       default: 1,
+    },
+    cropWidth: {
+      type: String,
+      default: '100%',
+    },
+    cropHeight: {
+      type: String,
+      default: '350px',
     },
     options: {
       type: Object,
@@ -101,10 +101,6 @@ export default {
       this.$emit('crop', { ...this.cropInfo, preview: srcUrl })
       this.close()
     },
-
-    close() {
-      this.$emit('update:visible', false)
-    },
   },
 
   // 根据传入的containerId获取上传控件的id，供“换一张”按钮使用
@@ -124,7 +120,8 @@ export default {
 
 <style lang="postcss">
 .app-cropper-img {
-  max-height: 350px;
+  width: 100%;
+  height: 350px;
 }
 
 .app-cropper-btns {

@@ -8,13 +8,23 @@
     </div>
     <slot name="right"></slot>
     <slot name="progress"></slot>
-    <app-cropper
-      v-if="cropper && cropShow"
-      :src="previemImg"
+    <el-dialog
+      v-if="cropper"
+      :title="cropTitle"
       :visible.sync="cropShow"
-      :container-id="config.container"
-      @crop="crop"
-    ></app-cropper>
+      :size="$attrs['dialog-size']"
+      :close-on-click-modal="$attrs['close-on-click-modal']"
+      :close-on-press-escape="$attrs['close-on-press-escape']"
+      :modal="$attrs.modal"
+    >
+      <app-cropper
+        :src="previemImg"
+        :crop-width="$attrs['crop-width']"
+        :crop-height="$attrs['crop-height']"
+        :container-id="config.container"
+        @crop="crop"
+      ></app-cropper>
+    </el-dialog>
   </div>
 </template>
 
@@ -68,6 +78,10 @@ export default {
     cropper: {
       type: Boolean,
       default: false,
+    },
+    cropTitle: {
+      type: String,
+      default: '裁剪图片',
     },
   },
 

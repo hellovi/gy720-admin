@@ -5,6 +5,8 @@
       cropper
       accept="jpg,jpeg,png"
       size="1mb"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       @crop-success="getPreview"
       @before-upload="beforeUpload"
       @upload-progress="uploadProgress"
