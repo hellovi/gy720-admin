@@ -3,7 +3,7 @@
     <table class="app-table">
       <thead>
         <tr>
-          <th>订单号</th>
+          <th>优惠券码</th>
           <th>兑换礼品名称</th>
           <th>申请时间</th>
           <th>兑换数量</th>
