@@ -41,7 +41,7 @@
     </div>
     <div>
       <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
-      <el-button size="small" @click="goTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
+      <el-button size="small" @click="locationTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
       <el-button size="small" @click="goTo('/user-client/purchase')">续费</el-button>
     </div>
   </div>
@@ -64,6 +64,9 @@ export default {
   methods: {
     goTo(url) {
       this.$router.push(url)
+    },
+    locationTo(url) {
+      window.location.href = url
     },
   },
 }
