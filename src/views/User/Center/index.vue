@@ -66,6 +66,6 @@ export default {
 @import 'vars.css';
 .center {
   background-color: var(--app-bg);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 </style>
