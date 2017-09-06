@@ -142,7 +142,7 @@ export default {
     ...mapState({
       activeIcon: state => state.edit.hotspots.activeIcon,
       panoId: state => state.edit.panoInfo.hash_pano_id,
-      scenes: state => state.edit.scenes,
+      scenes: state => state.edit.scene.list,
     }),
 
     ...mapGetters(['activeScene']),

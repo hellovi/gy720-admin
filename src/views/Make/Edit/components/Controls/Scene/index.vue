@@ -168,7 +168,7 @@ export default {
       return this.$store.getters.activeScene.id
     },
     ...mapState({
-      scenelist: state => state.edit.scenes,
+      scenelist: state => state.edit.scene.list,
     }),
   },
 

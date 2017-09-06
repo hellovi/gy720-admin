@@ -77,7 +77,7 @@ export default {
   computed: {
     ...mapState({
       active: state => state.edit.active,
-      scenes: state => state.edit.scenes,
+      scenes: state => state.edit.scene.list,
     }),
   },
 

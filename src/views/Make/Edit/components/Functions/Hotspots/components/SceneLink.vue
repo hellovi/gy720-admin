@@ -29,7 +29,7 @@ export default {
 
   computed: {
     ...mapState({
-      scenes: state => state.edit.scenes,
+      scenes: state => state.edit.scene.list,
     }),
 
     list() {
