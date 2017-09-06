@@ -1,6 +1,7 @@
 @import "./reset.css";
 @import "./utils.css";
 @import "./table.css";
+@import "./edit.css";
 
 html {
   box-sizing: border-box;
