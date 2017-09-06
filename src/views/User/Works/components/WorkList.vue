@@ -95,6 +95,7 @@
     <app-purchase
       :visible.sync="upgradedWorkModal.tag"
       :panorama-id="upgradedWorkInfo.id"
+      @panoBuySuccess="panoBuySuccess"
     ></app-purchase>
 
     <!-- 分页 -->
@@ -207,6 +208,12 @@ export default {
   },
 
   methods: {
+    /* 单作品购买成功回调方法 */
+
+    panoBuySuccess() {
+
+    },
+
     /* 所有单作品状态控制 */
 
     initializeCheckedWorks() {
