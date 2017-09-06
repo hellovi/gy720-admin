@@ -1,9 +1,9 @@
 <template>
-  <vip-info
+  <app-purchase
     :visible.sync="active.vipInfo"
     :panorama-id="panoId"
     @panoBuySuccess="panoBuySuccess"
-  ></vip-info>
+  ></app-purchase>
 </template>
 
 <script>
@@ -14,7 +14,7 @@
  */
 
 import { EDIT } from '@/store/mutationTypes'
-import VipInfo from '@/components/AppPurchase'
+import AppPurchase from '@/components/AppPurchase'
 import modal from '../../mixins/modal'
 
 export default {
@@ -22,7 +22,7 @@ export default {
 
   mixins: [modal],
 
-  components: { VipInfo },
+  components: { AppPurchase },
 
   data() {
     return {
@@ -39,7 +39,7 @@ export default {
   },
 
   methods: {
-    panoBuySuccess() {
+    panoBuySuccess() { // 单作品购买成功后更新panoinfo
       this.$store.dispatch(EDIT.GET_PANOINFO, this.panoId)
     },
   },
