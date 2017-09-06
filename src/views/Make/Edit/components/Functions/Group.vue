@@ -253,7 +253,7 @@ export default {
                   list_order: 255,
                   scenes: [],
                 })
-                this.$message.success('添加场景分组成功!')
+                this.$message.success(`${dialogTitle}成功!`)
               })
               .catch((errors) => {
                 this.errorHandler(errors)
