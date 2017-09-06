@@ -1,22 +1,35 @@
 <template>
-  <div>
-    <el-row class="pano-material">
+  <div class="pano-material">
+    <el-row>
       <el-col class="pano-material__left" :span="3">
         <dl class="pano-material__menu">
           <dt>全景相册</dt>
-          <dd
-            v-for="cate in cates"
-            :key="cate.id"
-            :class="{active: cate.id === currentCateId}"
-            @click="selectCate(cate.id)"
-          >{{ cate.name }}</dd>
+          <a class="hover-primary pano-material__menu-add" @click="createCate">+创建新分类</a>
+          <el-tooltip
+            v-for="(cate, index) in cates"
+            :key="index"
+            placement="right"
+            popper-class="edit-tip"
+            :disabled="index <= 0"
+          >
+            <dd
+              :class="{active: cate.id === currentCateId}"
+              @click="selectCate(cate.id)"
+            >
+                {{ cate.name }}
+            </dd>
+            <template slot="content">
+              <i role="button" class="iconfont pano-material__menu-edit" @click.stop="createCate(cate)">&#xe608;</i>
+              <i role="button" class="iconfont pano-material__menu-remove" @click.stop="removeCate(cate)">&#xe615;</i>
+            </template>
+          </el-tooltip>
         </dl>
       </el-col>
 
       <el-col class="pano-material__right" :span="21" v-loading="loading">
         <el-row class="pano-material__header">
           <el-col :span="4">
-            <el-checkbox :value="allChecked" @change="selectAllPanos">全选</el-checkbox>
+            <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
           <el-col class="text-right" :span="14">
             <div class="pano-material__header__count">
@@ -30,52 +43,77 @@
 
         <div class="pano-material__content">
           <el-row :gutter="20">
-            <el-col v-for="pano in list.data" :key="pano.id" class="pano-material__item" :span="6" @click.native="selectPano(pano.id)">
-              <el-checkbox :value="checked.includes(pano.id)" @change="selectPano(pano.id, $event.target.checked)"></el-checkbox>
-              <img :src="$url.host(pano.preview_image)" :alt="pano.name">
-              <h4>{{ pano.name }}</h4>
+            <el-col
+              class="pano-material__item"
+              v-for="pano in sceneList.data"
+              :key="pano.id"
+              :span="6"
+              @click.native="selectPano(pano)"
+              :class="{disabled: disabledId.includes(pano.id)}"
+            >
+              <publish-item :file="pano">
+                <el-checkbox
+                  slot="checkbox"
+                  :disabled="disabledId.includes(pano.id)"
+                  :value="disabledId.includes(pano.id) || checked.includes(pano.id)"
+                  @change="selectPano(pano, $event.target.checked)"
+                >
+                </el-checkbox>
+                <img
+                  slot="preview"
+                  :src="pano.vtour === undefined || pano.vtour ? $url.host(pano.preview_image) : pano.preview"
+                  :alt="pano.name">
+                <template slot="tools">
+                  <i role="button" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
+                  <i role="button" class="iconfont hover-warning" @click.stop="removeScene(pano)">&#xe615;</i>
+                </template>
+              </publish-item>
             </el-col>
           </el-row>
         </div>
+
+        <el-pagination
+          v-if="sceneList.last_page > 1"
+          :page-size="sceneList.per_page"
+          :total="sceneList.total"
+          :current-page="sceneList.current_page"
+          @current-change="pageChange"
+          layout="prev, pager, next"
+        ></el-pagination>
       </el-col>
     </el-row>
 
-    <el-pagination
-      v-if="list.last_page > 1"
-      :page-size="list.per_page"
-      :total="list.total"
-      :current-page="list.current_page"
-      @current-change="pageChange"
-      layout="prev, pager, next"
-    ></el-pagination>
-
-    <div class="material-panos__submit" v-if="next">
-      <el-button type="primary" @click="nextStep">下一步</el-button>
-    </div>
-    <div class="material-panos__submit--material" v-else-if="invoked">
-      <el-button type="primary" @click="nextStepMaterial" :loading="btnLoading">选择全景图</el-button>
-    </div>
-
+    <slot name="footer" v-if="invoked" :checked="checkedPanos"></slot>
   </div>
 </template>
 
 <script>
 /**
  * 场景素材列表
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-08-23
  */
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
+import errorHandle from '@/mixins/errorHandle'
+import PublishItem from './PublishItem'
 
 export default {
   name: 'pano-material',
 
+  mixins: [errorHandle],
+
+  components: { PublishItem },
+
   props: {
-    next: {
-      type: Boolean,
-      default: false,
+    selected: {
+      type: Array,
+      default: () => [],
+    },
+    addFiles: {
+      type: Array,
+      default: () => [],
     },
   },
 
@@ -86,7 +124,6 @@ export default {
       checked: [], // 存放选中项的id
       keyword: '',
       loading: false,
-      btnLoading: false,
     }
   },
 
@@ -96,18 +133,34 @@ export default {
       invoked: state => state.edit.material.invoked,
     }),
 
+    // 过滤不可选择的全景图
+    disabledId() {
+      if (this.invoked) {
+        return this.selected.map(item => item.source_scene_id)
+      }
+      return []
+    },
+
     // 计算是否全选
     allChecked() {
-      return this.checked.length && this.checked.length === this.list.data.length
+      return this.checked.length && this.checked.length === this.sceneList.data.length
     },
 
     // 计算选中的场景素材
     checkedPanos() {
-      return this.list.data.filter(item => this.checked.includes(item.id))
+      return this.sceneList.data.filter(item => this.checked.includes(item.id))
     },
 
     params() {
-      return `?source_scene_category_id=${this.currentCateId}`
+      return `?source_scene_category_id=${this.currentCateId}&per_page=12`
+    },
+
+    // 添加新增上传图片
+    sceneList() {
+      const data = this.addFiles.concat(this.list.data)
+      const len = this.addFiles.length
+      const list = { ...this.list, data: data.slice(0, data.length - len) }
+      return { ...list }
     },
   },
 
@@ -136,11 +189,13 @@ export default {
       this.getPanos(page)
     },
 
-    selectPano(id, checked) {
-      if (checked || this.checked.includes(id)) {
-        this.checked = this.checked.filter(item => item !== id)
-      } else {
-        this.checked.push(id)
+    selectPano({ id, vtour }, checked) {
+      if (!this.disabledId.includes(id) && (vtour === undefined || vtour)) {
+        if (checked || this.checked.includes(id)) {
+          this.checked = this.checked.filter(item => item !== id)
+        } else {
+          this.checked.push(id)
+        }
       }
     },
 
@@ -148,19 +203,113 @@ export default {
       if (this.allChecked) {
         this.checked = []
       } else {
-        this.checked = this.list.data.map(item => item.id)
+        this.checked = this.sceneList.data.map(item => item.id)
       }
     },
 
-    nextStep() {
-      this.$emit('select-panos', this.checkedPanos)
-      this.checked = []
+    // 编辑场景素材名称
+    editScene({ id, name }) {
+      const inputValidator = val => !!val
+      const dialogTitle = '编辑全景图'
+
+      this.$prompt('请输入全景图名称', dialogTitle, {
+        closeOnPressEscape: false,
+        closeOnClickModal: false,
+        inputValue: name,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator,
+        inputErrorMessage: '全景图名称不能为空',
+      }).then(({ value }) => {
+        this.$http.put(`/user/sourcescene/${id}`, { id, name: value })
+          .then(() => {
+            this.$message.success('编辑成功!')
+            // 更新列表信息
+            this.getPanos(this.sceneList.current_page)
+          })
+          .catch((errors) => {
+            this.errorHandler(errors)
+          })
+      })
     },
 
-    nextStepMaterial() {
-      this.btnLoading = true
-      this.$emit('check-panos', this.checkedPanos)
-      this.checked = []
+    // 移除场景素材图
+    removeScene({ id }) {
+      this.$confirm('确认删除该素材？', '提示', { type: 'warning' })
+        .then(() => {
+          this.$http.delete(`/user/sourcescene/${id}`)
+            .then(() => {
+              this.$message.success('删除成功!')
+
+              // 重新请求当前列表
+              let page = this.sceneList.current_page
+              if (this.sceneList.data.length <= 1) {
+                page -= 1
+              }
+              this.getPanos(page)
+            })
+            .catch((errors) => {
+              this.errorHandler(errors)
+            })
+        })
+    },
+
+    createCate({ name = null, id = '' }) {
+      const inputValidator = val => !!val
+      let dialogTitle = '创建新分类'
+      let type = 'post'
+
+      if (id) {
+        dialogTitle = '编辑分类'
+        type = 'put'
+      }
+      this.$prompt('请输入分类名', dialogTitle, {
+        closeOnPressEscape: false,
+        closeOnClickModal: false,
+        inputValue: name,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValidator,
+        inputErrorMessage: '分类名不能为空',
+      }).then(({ value }) => {
+        this.$http[type](`/user/sourcescenecategory/${id}`, { name: value })
+          .then(({ result: { deleted_at, created_at, updated_at, ...other } }) => {
+            if (id) {
+              // 编辑列表内容
+              this.cates = this.cates.map((item) => {
+                let data = { ...item }
+                if (item.id === id) {
+                  data = { ...item, name: value }
+                }
+                return data
+              })
+            } else {
+              // 添加成功新增列表数组
+              this.cates.push({ ...other })
+            }
+
+            this.$message.success(`${dialogTitle}成功!`)
+          })
+          .catch((errors) => {
+            this.errorHandler(errors)
+          })
+      })
+    },
+
+    // 删除场景素材分类
+    removeCate({ id }) {
+      this.$confirm('确认删除该分类？', '提示', { type: 'warning' })
+        .then(() => {
+          this.$http.delete(`/user/sourcescenecategory/${id}`)
+            .then(() => {
+              // 删除成功过滤列表数组
+              this.cates = this.cates.filter(item => item.id !== id)
+              this.$message.success('删除成功!')
+            })
+            .catch((errors) => {
+              this.errorHandler(errors)
+            })
+        })
     },
   },
 
@@ -184,6 +333,12 @@ export default {
 
 .pano-material {
   border-bottom: var(--border);
+  position: relative;
+
+  .el-pagination {
+    margin-top: 0;
+    padding-bottom: 20px;
+  }
 
   &__right {
     padding: 0 20px;
@@ -202,12 +357,32 @@ export default {
 
   &__content {
     padding: 20px 0 0;
+    .disabled {
+      cursor: not-allowed;
+    }
   }
 }
 
 .pano-material__menu {
   margin: 0;
   text-align: right;
+
+  &-add {
+    display: block;
+    margin-top: 20px;
+    position: relative;
+    height: 40px;
+    padding: 0 10px 0 20px;
+    border-bottom: 1px solid #eee;
+    line-height: 39px;
+    text-align: right;
+    cursor: pointer;
+  }
+
+  &-edit, &-remove {
+    color: var(--color-warning);
+    cursor: pointer;
+  }
 
   & > dt,
   & > dd {
@@ -245,7 +420,7 @@ export default {
 
 .pano-material__item {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   cursor: pointer;
   transition: 0.2s;
 
@@ -255,8 +430,8 @@ export default {
 
   .el-checkbox {
     position: absolute;
-    top: 5px;
-    left: 15px;
+    top: 6px;
+    left: 10px;
   }
 
   & > img {
@@ -279,9 +454,10 @@ export default {
 }
 
 .material-panos__submit {
-  &--material {
-    width: 80px;
-    margin: 10px auto 0;
+  &--select {
+    position: absolute;
+    right: 0;
+    bottom: -56px;
   }
 }
 </style>

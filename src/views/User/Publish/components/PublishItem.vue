@@ -1,6 +1,10 @@
 <template>
-  <div class="publish-item" :class="{'has-layer': !file.vtour}">
-    <img v-if="file.preview" :src="file.preview" :alt="file.name">
+  <div class="publish-item" :class="{'has-layer': file.vtour !== undefined && !file.vtour}">
+    <slot name="checkbox"></slot>
+
+    <slot name="preview">
+      <img v-if="file.preview" :src="file.preview" :alt="file.name">
+    </slot>
 
     <el-progress
       :text-inside="true"
@@ -13,10 +17,16 @@
       {{ file.message }}
     </div>
 
-    <div class="publish-item__footer">
-      {{ file.name }}
-      <i v-if="file.vtour" role="button" class="iconfont" @click="$emit('remove-pano', file.id)">&#xe615;</i>
-    </div>
+    <el-row class="publish-item__footer">
+      <el-col :span="19">
+        <span class="ellipsis">{{ file.name }}</span>
+      </el-col>
+      <el-col :span="5" class="publish-item__footer-tools">
+        <slot name="tools">
+          <i v-if="file.vtour" role="button" class="iconfont" @click="$emit('remove-pano', file.id)">&#xe615;</i>
+        </slot>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -50,9 +60,10 @@ export default {
 </script>
 
 <style lang="postcss">
+@import "vars.css";
 .publish-item {
   position: relative;
-  margin-top: 10px;
+  margin-bottom: 10px;
   background-color: #bfbfbf;
   background-origin: content-box;
   overflow: hidden;
@@ -67,7 +78,7 @@ export default {
     content: "";
     position: absolute;
     top: 0;
-    z-index: 1;
+    z-index: 10;
     left: 0;
     width: 100%;
     height: 100%;
@@ -87,7 +98,7 @@ export default {
     position: absolute;
     top: 50%;
     left: 0;
-    z-index: 2;
+    z-index: 12;
     width: 100%;
     transform: translateY(-50%);
 
@@ -100,7 +111,7 @@ export default {
     position: absolute;
     top: 50%;
     left: 0;
-    z-index: 2;
+    z-index: 12;
     transform: translateY(-50%);
     width: 100%;
     font-size: 14px;
@@ -115,14 +126,25 @@ export default {
     width: 100%;
     height: 24px;
     padding: 0 0.3em;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     color: #fff;
     font-size: 12px;
     line-height: 24px;
 
-    & > .iconfont {
-      float: right;
-      cursor: pointer;
+    &-tools{
+      display: none;
+      text-align: right;
+      .iconfont {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &:hover {
+    .publish-item__footer {
+      &-tools {
+        display: block;
+      }
     }
   }
 }

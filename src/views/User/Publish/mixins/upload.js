@@ -65,10 +65,17 @@ export default {
       const prop = findBySceneId ? 'source_scene_id' : 'id'
       const index = this.files
         .findIndex(file => file[prop] === id)
-
+      let file = { ...this.files[index], ...update }
+      if (findBySceneId) {
+        file = {
+          ...file,
+          update_id: this.files[index].id,
+          id: this.files[index].source_scene_id,
+        }
+      }
       this.files = [
         ...this.files.slice(0, index),
-        { ...this.files[index], ...update },
+        { ...file },
         ...this.files.slice(index + 1),
       ]
     },
@@ -155,6 +162,7 @@ export default {
                 source_scene_id,
                 message: '正在排队中...',
                 preview: this.$url.host(preview_image),
+                preview_image,
                 thumb,
               })
             }
@@ -226,6 +234,7 @@ export default {
                   source_scene_id,
                   message: '正在排队中...',
                   preview: this.$url.host(preview_image),
+                  preview_image,
                   thumb,
                 })
               }
@@ -247,8 +256,8 @@ export default {
         if (source_scene_ids.length) {
           this.$http.post('/user/sourcescene/vtourprocess', { source_scene_ids })
             .then(({ result }) => {
-              result.forEach(({ id, vtour_status, message }) => {
-                this.updateFile(id, {
+              result.forEach(({ id, upload_id, vtour_status, message }) => {
+                this.updateFile(id || upload_id, {
                   message,
                   vtour: vtour_status === 30,
                 }, true)

@@ -54,7 +54,13 @@
 
     <!-- 素材库弹出  -->
     <el-dialog title="素材库" :visible.sync="active.material" custom-class="material-panos">
-      <pano-material :next="true" @select-panos="selectPanos"></pano-material>
+      <pano-material ref="panoMaterial" :selected="files">
+        <template slot="footer" scope="scope">
+          <div class="material-panos__submit--select">
+            <el-button type="primary" @click="selectPanos(scope.checked)">下一步</el-button>
+          </div>
+        </template>
+      </pano-material>
     </el-dialog>
   </div>
 </template>
@@ -68,7 +74,7 @@
  */
 
 
-import { WORK } from '@/store/mutationTypes'
+import { WORK, EDIT } from '@/store/mutationTypes'
 import errorHandle from '@/mixins/errorHandle'
 import upload from './mixins/upload'
 import MainForm from './components/MainForm'
@@ -124,6 +130,9 @@ export default {
         this.form = { ...this.form, pano_category_id: '' }
       }
     },
+    'active.material': function activeMaterial(val) {
+      this.$store.commit(EDIT.MATERIAL.INVOKE, val)
+    },
   },
 
   methods: {
@@ -141,7 +150,7 @@ export default {
     selectPanos(panos) {
       this.active.material = false
       const files = panos
-        // 过滤掉已选中过的，避免场景重复
+      // 过滤掉已选中过的，避免场景重复
         .filter(pano => !this.files.some(file => file.id === pano.id))
         // 和上传得来的场景统一字段
         .map(pano => ({
@@ -151,6 +160,8 @@ export default {
           vtour: true,
         }))
       this.files = [...this.files, ...files]
+      // 重置子组件选中数据
+      this.$refs.panoMaterial.checked = []
     },
 
     /**
@@ -295,14 +306,13 @@ export default {
 
 .material-panos {
   width: 1190px;
-
-  .material-panos__submit {
-    margin-top: 30px;
-    text-align: center;
-
+  &__submit--select {
     .el-button {
       width: 8em;
     }
+  }
+  .el-dialog__body {
+    padding-bottom: 60px;
   }
 }
 </style>

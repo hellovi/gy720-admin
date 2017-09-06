@@ -27,13 +27,25 @@
         :key="activeType"
         :active-type="activeType"
         :active-id="activeId"
-        @check-panos="checkPanos"
-      ></div>
+        :selected="activeMaterial.selected"
+        :add-files="files"
+        ref="materialPage"
+      >
+        <template slot="footer" scope="scope">
+          <div
+            v-if="activeType === 'scene'"
+            class="material-panos__submit--select"
+          >
+            <el-button type="primary" @click="checkPanos(scope.checked)" :loading="selectLoading">选择全景图</el-button>
+          </div>
+        </template>
+      </div>
 
       <!-- 底部操作栏  -->
       <material-footer
         :active-type="activeType"
         :active-id="activeId"
+        @file-upload="fileUpload"
       ></material-footer>
     </el-dialog>
   </div>
@@ -49,6 +61,7 @@
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
+import errorHandle from '@/mixins/errorHandle'
 import modal from '../../../mixins/modal'
 import MaterialList from './components/MaterialList'
 import MaterialFooter from './components/MaterialFooter'
@@ -57,7 +70,7 @@ import ImageText from './components/ImageText'
 export default {
   name: 'edit-functions-material',
 
-  mixins: [modal],
+  mixins: [errorHandle, modal],
 
   components: {
     PanoMaterial,
@@ -81,6 +94,8 @@ export default {
         { type: 'audio', id: 9, name: '音频' },
         { type: 'other', id: 6, name: '其他' },
       ],
+      selectLoading: false,
+      files: [],
     }
   },
 
@@ -89,11 +104,20 @@ export default {
       active: state => state.edit.active,
       activeType: state => state.edit.material.type,
       panoId: state => state.edit.panoInfo.hash_pano_id,
-      // invoked: state => state.edit.material.invoked,
+      invoked: state => state.edit.material.invoked,
     }),
 
     activeMaterial() {
-      return this.materials.find(({ type }) => type === this.activeType)
+      const activeMaterial = this.materials.find(({ type }) => type === this.activeType)
+      // 场景选择-全景图时
+      if (this.activeType === 'scene' && this.invoked) {
+        // 添加已选过的数据selected
+        return {
+          ...activeMaterial,
+          selected: this.$store.state.edit.scenes,
+        }
+      }
+      return activeMaterial
     },
 
     activeId() {
@@ -115,14 +139,32 @@ export default {
     },
 
     checkPanos(panos) {
+      this.selectLoading = true
+
       const data = panos.map(({ id, ...args }) => ({
         source_scene_id: id,
         ...args,
       }))
+
+      // 提交选中全景图片到后端
       this.$http.post(`/user/scene?pano_id=${this.panoId}`, { scenes: data })
         .then(({ result }) => {
           this.$store.commit(EDIT.MATERIAL.SELECT, result)
+          // 重置子组件选中数据
+          this.$refs.materialPage.checked = []
         })
+        .catch(({ status: { reason } }) => {
+          this.showError(reason)
+        })
+        .then(() => {
+          this.selectLoading = false
+        })
+    },
+
+    fileUpload(files) {
+      this.files = files.map(({
+        source_scene_id, upload_id, ...other }) =>
+        ({ ...other }))
     },
   },
 }

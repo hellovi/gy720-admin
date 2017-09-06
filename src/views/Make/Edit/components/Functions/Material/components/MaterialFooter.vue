@@ -96,6 +96,16 @@ export default {
     },
   },
 
+  watch: {
+    files: {
+      handler(val) {
+        // 全景图上传
+        this.$emit('file-upload', val)
+      },
+      deep: true,
+    },
+  },
+
   methods: {
     openObjectManage() {
       this.openModal('object3d')
