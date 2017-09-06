@@ -50,13 +50,7 @@
       </el-form-item>
       <!-- 公共设置 -->
       <v-public-config
-        :data="data"
-        :types="[
-          'pc_commentate',
-          'mobile_commentate',
-          'bg_music',
-          'commentate_sound',
-        ]"
+        v-model="public.narrate"
       ></v-public-config>
     </section>
   </div>
@@ -81,6 +75,10 @@ export default {
 
   props: {
     data: {
+      type: Object,
+      required: true,
+    },
+    public: {
       type: Object,
       required: true,
     },

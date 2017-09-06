@@ -1,13 +1,21 @@
 <template>
-  <el-form-item label="应用到其它场景" label-width="8em">
+  <el-form-item
+    class="edit-functions__scene-setting"
+    label="设置生效范围"
+    label-width="7em"
+  >
     <el-button
+      :class="value?'':'active'"
       type="ghost"
-      @click="() => configGroup(true)"
-    >当前场景组</el-button>
+      size="small"
+      @click="$emit('input', false)"
+    >当前场景</el-button>
     <el-button
+      :class="value?'active':''"
       type="ghost"
-      @click="() => configGroup()"
-    >所有场景</el-button>
+      size="small"
+      @click="preChooseAll"
+    >当前作品</el-button>
   </el-form-item>
 </template>
 
@@ -18,51 +26,46 @@
  * @author  huojinzhao
  */
 
-import Ajax from '../modules/ajax'
-
 export default {
   name: 'edit-scene-setting-public-config',
 
   props: {
-    data: {
-      type: Object,
-      required: true,
-    },
-
-    types: {
-      type: Array,
+    value: {
+      type: Boolean,
       required: true,
     },
   },
 
   methods: {
-    configGroup(oneGroup) {
-      const info = {}
-      const types = [...this.types]
-      if (oneGroup) {
-        types.push('scene_group_id')
-      }
-      types.forEach((type) => {
-        info[type] = this.data[type]
+    preChooseAll() {
+      this.$msgbox({
+        title: '设置当前作品',
+        message: '此操作会覆盖所有场景设置，是否继续？',
+        showCancelButton: true,
+        type: 'warning',
+        beforeClose: this.chooseAll,
       })
-      Ajax.patchPublicConfig(info)
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '设置成功',
-          })
-        })
-        .catch(() => {
-          this.$message({
-            type: 'error',
-            message: '设置失败',
-          })
-        })
+    },
+
+    chooseAll(action, instance, done) {
+      if (action === 'confirm') {
+        this.$emit('input', true)
+      }
+      done()
     },
   },
 }
 </script>
 
 <style lang="postcss">
+@import 'vars.css';
 
+.edit-functions__scene-setting {
+
+  & .el-button.active {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+  }
+}
 </style>

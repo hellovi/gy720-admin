@@ -11,8 +11,7 @@
       >选择图片</el-button>
       <!-- 公共设置 -->
       <v-public-config
-        :data="data"
-        :types="['top_ad_img']"
+        v-model="public.sky"
       ></v-public-config>
       <img :src="$url.static(data.top_ad_img)">
     </section>
@@ -28,8 +27,7 @@
       >选择图片</el-button>
       <!-- 公共设置 -->
       <v-public-config
-        :data="data"
-        :types="['bottom_ad_img']"
+        v-model="public.ground"
       ></v-public-config>
       <img :src="$url.static(data.bottom_ad_img)">
     </section>
@@ -55,6 +53,10 @@ export default {
 
   props: {
     data: {
+      type: Object,
+      required: true,
+    },
+    public: {
       type: Object,
       required: true,
     },

@@ -1,26 +1,6 @@
 <template>
   <div class="edit-functions__scene-effect">
     <section>
-      <el-form-item
-        class="effect__sunlight"
-        label="设置太阳光"
-      >
-        <el-switch
-          v-model="data.sunshine"
-          on-text="开"
-          :on-value="20"
-          off-text="关"
-          :off-value="10"
-        >
-        </el-switch>
-      </el-form-item>
-      <!-- 公共设置 -->
-      <v-public-config
-        :data="data"
-        :types="['sunshine']"
-      ></v-public-config>
-    </section>
-    <section>
       <h3>设置画面特效</h3>
       <el-form-item>
         <label
@@ -39,8 +19,7 @@
       </el-form-item>
       <!-- 公共设置 -->
       <v-public-config
-        :data="data"
-        :types="['scene_effect']"
+        v-model="public.effect"
       ></v-public-config>
     </section>
   </div>
@@ -64,6 +43,10 @@ export default {
 
   props: {
     data: {
+      type: Object,
+      required: true,
+    },
+    public: {
       type: Object,
       required: true,
     },

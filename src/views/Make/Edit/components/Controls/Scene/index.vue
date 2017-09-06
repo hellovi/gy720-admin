@@ -83,24 +83,29 @@
         <v-basic
           v-show="configModal.tabType === 0"
           :data="sceneInfo"
+          :public="publicInfo"
         ></v-basic>
         <v-special-effect
           v-show="configModal.tabType === 1"
           :data="sceneInfo"
+          :public="publicInfo"
         ></v-special-effect>
         <v-supplement
           v-show="configModal.tabType === 2"
           :data="sceneInfo"
+          :public="publicInfo"
         ></v-supplement>
         <v-narrate
           v-show="configModal.tabType === 3"
           :data="sceneInfo"
+          :public="publicInfo"
         ></v-narrate>
       </el-form>
       <!-- 控制按钮 -->
       <div slot="footer" class="edit-setting__footer">
         <el-button
           type="primary"
+          :loading="configModal.confirmLoading"
           @click="editConfig"
         >确定</el-button>
       </div>
@@ -149,14 +154,15 @@ export default {
   },
 
   data: () => ({
-    // scenelist: [],
-
     tabs: ['基本信息', '场景特效', '补天补地', '语音解说'],
 
     sceneInfo: {},
 
+    publicInfo: {},
+
     configModal: {
       active: false,
+      confirmLoading: false,
       tabType: 0,
     },
 
@@ -169,6 +175,7 @@ export default {
     },
     ...mapState({
       scenelist: state => state.edit.scene.list,
+      public: state => state.edit.scene.public,
     }),
   },
 
@@ -246,11 +253,16 @@ export default {
 
     openSceneConfig(scene) {
       this.sceneInfo = { ...scene }
+      this.publicInfo = { ...this.public }
       this.configModal.active = true
     },
 
     closeSceneConfig() {
-      this.configModal.active = false
+      this.configModal = {
+        active: false,
+        confirmLoading: false,
+        tabType: 0,
+      }
       this.errorReasons = {}
     },
 
@@ -295,23 +307,30 @@ export default {
     /* --- edition --- */
 
     editConfig() {
-      Ajax.replaceScene(this.sceneInfo)
-        .then(() => {
-          this.$message({
-            type: 'success',
-            message: '设置成功',
-          })
-          this.editConfigSucceed(this.sceneInfo)
-        })
+      this.configModal.confirmLoading = true
+      Ajax.replaceScene({
+        ...this.sceneInfo,
+        ...this.publicInfo,
+      })
+        .then(() => this.editConfigSucceed())
         .catch((errors) => {
+          this.configModal.confirmLoading = false
           this.errorReasons = errors
         })
     },
 
-    editConfigSucceed(sceneInfo) {
-      const { id, ...update } = sceneInfo
-      this.$store.commit(EDIT.SCENE.UPDATE, { id, update })
+    editConfigSucceed() {
+      // 重新请求列表
+      Ajax.readScenelist()
+        // 更新store和公共设置状态
+        .then(list => this.$store.dispatch(EDIT.SCENE.UPDATE_LIST, list))
+      // 关闭编辑
       this.closeSceneConfig()
+      // 结果提示
+      this.$message({
+        type: 'success',
+        message: '设置成功',
+      })
     },
 
     /* --- order --- */
