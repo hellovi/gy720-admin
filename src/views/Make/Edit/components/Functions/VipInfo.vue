@@ -1,8 +1,8 @@
 <template>
   <vip-info
     :visible.sync="active.vipInfo"
-    :pano-id="panoId"
-    :before-close="close"
+    :panorama-id="panoId"
+    @panoBuySuccess="panoBuySuccess"
   ></vip-info>
 </template>
 
@@ -13,6 +13,7 @@
  * @version 2017/08/21
  */
 
+import { EDIT } from '@/store/mutationTypes'
 import VipInfo from '@/components/AppPurchase'
 import modal from '../../mixins/modal'
 
@@ -29,9 +30,17 @@ export default {
     }
   },
 
+  watch: {
+    'active.vipInfo': function vipInfo(val) {
+      if (!val) {
+        this.closeModal('vipInfo')
+      }
+    },
+  },
+
   methods: {
-    close() {
-      this.closeModal('vipInfo')
+    panoBuySuccess() {
+      this.$store.dispatch(EDIT.GET_PANOINFO, this.panoId)
     },
   },
 

@@ -67,7 +67,7 @@
     ></create-dialog>
 
     <app-purchase
-      :panorama-id='6'
+      :panorama-id='9'
       :visible.sync="visible2"
       @panoBuySuccess="ok"
     ></app-purchase>
