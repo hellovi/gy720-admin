@@ -103,7 +103,7 @@ export default {
   created() {
     this.panoId = this.$route.query.pano_id
     // 获取作品信息
-    this.$store.dispatch(EDIT.GET_PANOINFO, this.panoId)
+    this.$store.dispatch(EDIT.PANO.INIT, this.panoId)
 
     // 菜单初始化
     this.$store.dispatch(EDIT.MENU.INIT, this.panoId)

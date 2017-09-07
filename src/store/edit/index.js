@@ -44,9 +44,9 @@ export default {
   },
 
   actions: {
-    [EDIT.GET_PANOINFO]({ commit }, pano_id) {
+    [EDIT.PANO.INIT]({ commit }, pano_id) {
       return Http.get(`/user/pubset/get?pano_id=${pano_id}`)
-        .then(({ result }) => commit(EDIT.GET_PANOINFO, result))
+        .then(({ result }) => commit(EDIT.PANO.INIT, result))
     },
   },
 
@@ -59,8 +59,15 @@ export default {
       state.active[name] = false
     },
 
-    [EDIT.GET_PANOINFO](state, panoInfo) {
+    [EDIT.PANO.INIT](state, panoInfo) {
       state.panoInfo = panoInfo
+    },
+
+    [EDIT.PANO.UPDATE](state, update) {
+      state.panoInfo = {
+        ...state.panoInfo,
+        ...update,
+      }
     },
   },
 

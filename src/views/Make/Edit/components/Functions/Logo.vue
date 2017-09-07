@@ -140,8 +140,7 @@ export default {
               this.$message.success('Logo更换成功!')
 
               // 更新store panoInfo
-              this.$store.commit(EDIT.GET_PANOINFO, {
-                ...this.panoInfo,
+              this.$store.commit(EDIT.PANO.UPDATE, {
                 logo,
                 logo_url,
                 hash_pano_id: pano_id,

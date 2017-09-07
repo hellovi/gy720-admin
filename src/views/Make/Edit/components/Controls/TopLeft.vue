@@ -94,7 +94,7 @@ export default {
               this.$message.success('Logo删除成功!')
 
               // 更新store panoInfo
-              this.updatePanoInfo({ logo: null })
+              this.$store.commit(EDIT.PANO.UPDATE, { logo: null })
 
               this.closeModal('logo')
             })
@@ -116,7 +116,7 @@ export default {
           .then(() => {
             this.$message.success('设置成功')
             // 更新store panoInfo
-            this.updatePanoInfo({ show_nickname })
+            this.$store.commit(EDIT.PANO.UPDATE, { show_nickname })
           })
           .catch((res) => {
             this.$notify.error(res.status.reason)
@@ -131,14 +131,6 @@ export default {
         return false
       }
       return true
-    },
-
-    // 更新store panoInfo
-    updatePanoInfo(updateInfo = {}) {
-      this.$store.commit(EDIT.GET_PANOINFO, {
-        ...this.panoInfo,
-        ...updateInfo,
-      })
     },
   },
 }

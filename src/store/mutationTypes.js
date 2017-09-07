@@ -80,7 +80,10 @@ export const CERTIFICATE = {
 
 // 高级编辑模块 Edit
 export const EDIT = {
-  GET_PANOINFO: 'EDIT.GET_PANOINFO',
+  PANO: {
+    INIT: 'EDIT.PANO.INIT',
+    UPDATE: 'EDIT.PANO.UPDATE',
+  },
 
   // Functions组件控制
   MODAL: {
