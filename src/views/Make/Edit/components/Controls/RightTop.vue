@@ -2,7 +2,7 @@
   <div class="edit-control__right-top">
     <div class="edit-qr-code">
       <img :class="{'ui-hidden': showQrcode === 10}" :src="$url.static(panoInfo.qrcode)" alt="作品二维码">
-      <div class="ui-swither" @click.stop>
+      <div class="ui-swither ui-swither--left" @click.stop>
         <el-switch
           v-model="showQrcode"
           on-text="显示" off-text="隐藏"
@@ -14,7 +14,7 @@
 
     <div class="edit-likes">
       <span :class="{'ui-hidden': showLike === 10}">人气：123</span>
-      <div class="ui-swither" @click.stop>
+      <div class="ui-swither ui-swither--left" @click.stop>
         <el-switch
           v-model="showLike"
           on-text="显示" off-text="隐藏"

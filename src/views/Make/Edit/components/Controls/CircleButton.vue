@@ -6,7 +6,7 @@
     @click="$emit('click')"
   >
     {{ label }}
-    <div class="ui-swither" @click.stop>
+    <div class="ui-swither ui-swither--top" @click.stop>
       <el-switch
         :value="value"
         on-text="显示"
@@ -87,19 +87,18 @@ export default {
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  bottom: 100%;
-  left: 50%;
   z-index: 10;
-  transform: translate(-50%, 20%);
   padding: 2px 0;
   border-radius: 12px;
-  margin-bottom: 10px;
   background-color: #fff;
   transition: 0.2s;
 
   :hover > & {
     visibility: visible;
     opacity: 1;
+  }
+
+  :hover > &--top {
     transform: translate(-50%, 0);
   }
 
@@ -110,21 +109,57 @@ export default {
   &::before {
     content: "";
     position: absolute;
-    top: 100%;
-    left: 0%;
-    width: 100%;
-    height: 20px;
   }
 
   &::after {
     content: "";
     position: absolute;
-    top: 100%;
-    left: 50%;
-    border-width: 8px 6px 0;
-    border-color: #fff transparent transparent;
     border-style: solid;
-    margin-left: -5px;
+  }
+
+  &--top {
+    left: 50%;
+    bottom: 100%;
+    transform: translate(-50%, 20%);
+    margin-bottom: 10px;
+
+    &::before {
+      top: 100%;
+      left: 0%;
+      width: 100%;
+      height: 20px;
+    }
+
+    &::after {
+      top: 100%;
+      left: 50%;
+      border-width: 8px 6px 0;
+      border-color: #fff transparent transparent;
+      margin-left: -6px;
+    }
+  }
+
+  &--left {
+    top: 50%;
+    left: 0%;
+    transform: translate(-100%, -50%);
+    margin-left: -10px;
+
+    &::before {
+      top: 0%;
+      left: 100%;
+      width: 20px;
+      height: 100%;
+    }
+
+    &::after {
+      top: 50%;
+      left: 100%;
+      border-width: 6px 0 6px 8px;
+      border-color: transparent transparent transparent #fff;
+      margin-top: -6px;
+      margin-left: -1px;
+    }
   }
 }
 
