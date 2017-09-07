@@ -3,8 +3,6 @@
     title="Logo编辑"
     :visible.sync="active.logo"
     size="small"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
     @close="closeChangLogo"
   >
     <app-form-alert
