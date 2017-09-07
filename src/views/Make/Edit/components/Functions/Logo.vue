@@ -165,8 +165,8 @@ export default {
   height: 60px;
   img {
     background: rgba(150, 150, 150, 0.5);
-    width: 235px;
-    height: 60px;
+    width: 163px;
+    height: 62px;
     overflow: hidden;
   }
   &__shade {
@@ -175,8 +175,8 @@ export default {
     top: 0;
     left: 0;
     z-index: 2;
-    width: 235px;
-    height: 60px;
+    width: 163px;
+    height: 62px;
     background-color: rgba(0, 0, 0, 0.4);
     cursor: pointer;
     border: 1px dashed #f0f0f0;
