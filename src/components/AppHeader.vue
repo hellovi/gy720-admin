@@ -16,8 +16,10 @@
 
     <div class="app-header__func">
       <div class="header-search">
-        <input class="header-search__input" type="search" placeholder="搜索全景">
-        <i class="header-search__icon iconfont">&#xe600;</i>
+        <form action="/search">
+          <input class="header-search__input" name="keyword" type="search" placeholder="搜索全景">
+          <i class="header-search__icon iconfont">&#xe600;</i>
+        </form>
       </div>
 
       <el-button class="app-header__button btn-primary" size="small" @click="checkin">签到</el-button>
@@ -201,6 +203,11 @@ export default {
   display: inline-block;
   height: var(--search-height);
   margin-top: calc((var(--header-height) - var(--search-height)) / 2);
+
+  & form {
+    position: relative;
+    height: 100%;
+  }
 
   &__input {
     position: relative;
