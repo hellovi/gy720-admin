@@ -12,6 +12,9 @@
     <el-button class="tip tip--bottom" data-tip="场景分组" type="primary" @click="openModal('group')">
       <i class="iconfont">&#xe647;</i>
     </el-button>
+    <el-button class="tip tip--bottom" data-tip="虚拟拍照" type="primary" @click="openSnapshot">
+      <i class="iconfont" style="transform: scale(0.8)">&#xe69c;</i>
+    </el-button>
   </div>
 </template>
 
@@ -38,6 +41,11 @@ export default {
     openInitialviewView() {
       this.closeModal('control')
       this.openModal('initialview')
+    },
+
+    openSnapshot() {
+      this.closeModal('control')
+      this.openModal('snapshot')
     },
   },
 }
