@@ -150,8 +150,6 @@ export default {
     selectPanos(panos) {
       this.active.material = false
       const files = panos
-      // 过滤掉已选中过的，避免场景重复
-        .filter(pano => !this.files.some(file => file.id === pano.id))
         // 和上传得来的场景统一字段
         .map(pano => ({
           ...pano,
