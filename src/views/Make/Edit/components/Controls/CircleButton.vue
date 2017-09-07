@@ -2,7 +2,7 @@
   <span
     role="button"
     class="btn-circle"
-    :class="{'btn-circle--hidden': condition && !value, [`icon-${icon}`]: true}"
+    :class="{'btn-circle--hidden': isHidden, [`icon-${icon}`]: true}"
     @click="$emit('click')"
   >
     {{ label }}
@@ -11,7 +11,9 @@
         :value="value"
         on-text="显示"
         off-text="隐藏"
-        @change="switchStatus"
+        :on-value="20"
+        :off-value="10"
+        @change="change"
       ></el-switch>
     </div>
   </span>
@@ -23,7 +25,7 @@ export default {
 
   props: {
     value: {
-      type: Boolean,
+      type: Number,
     },
     icon: {
       type: String,
@@ -33,16 +35,18 @@ export default {
       type: String,
       required: true,
     },
-    condition: {
-      type: Boolean,
-      default: true,
+  },
+
+  computed: {
+    isHidden() {
+      return this.value === 10
     },
   },
 
   methods: {
-    switchStatus(val) {
+    change(val) {
       this.$emit('input', val)
-      this.$emit('switch', val)
+      this.$emit('ui-switch', val)
     },
   },
 }
@@ -122,5 +126,9 @@ export default {
     border-style: solid;
     margin-left: -5px;
   }
+}
+
+.ui-hidden {
+  opacity: 0.5;
 }
 </style>
