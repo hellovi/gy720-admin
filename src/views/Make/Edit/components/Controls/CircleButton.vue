@@ -98,10 +98,6 @@ export default {
     opacity: 1;
   }
 
-  :hover > &--top {
-    transform: translate(-50%, 0);
-  }
-
   .el-switch {
     transform: scale(0.8);
   }
@@ -139,10 +135,14 @@ export default {
     }
   }
 
+  :hover > &--top {
+    transform: translate(-50%, 0);
+  }
+
   &--left {
     top: 50%;
     left: 0%;
-    transform: translate(-100%, -50%);
+    transform: translate(-80%, -50%);
     margin-left: -10px;
 
     &::before {
@@ -160,6 +160,10 @@ export default {
       margin-top: -6px;
       margin-left: -1px;
     }
+  }
+
+  :hover > &--left {
+    transform: translate(-100%, -50%);
   }
 }
 
