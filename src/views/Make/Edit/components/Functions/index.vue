@@ -19,6 +19,8 @@
     <restrict-view v-if="active.restrictView"></restrict-view>
 
     <rotate-manager></rotate-manager>
+
+    <edit-summary></edit-summary>
   </div>
 </template>
 
@@ -44,7 +46,7 @@ import Initialview from './Initialview'
 import VipInfo from './VipInfo'
 import RestrictView from './RestrictView'
 import RotateManager from './RotateManager'
-
+import EditSummary from './Summary'
 
 export default {
   name: 'edit',
@@ -65,6 +67,7 @@ export default {
     VipInfo,
     RestrictView,
     RotateManager,
+    EditSummary,
   },
 
   computed: {

@@ -1,14 +1,11 @@
 <template>
   <div role="button" class="edit-control__bottom-left">
-    <div class="btn-circle">
-      <i class="iconfont" style="line-height: 40px;">&#xe626;</i>
-      <span>场景</span>
-    </div>
+    </span>
+    <span role="button" class="btn-circle icon-items">场景</span>
 
-    <div role="button" class="btn-circle" @click="openModal('share')">
-      <i class="iconfont" style="line-height: 32px;">&#xe635;</i>
-      <span>分享</span>
-    </div>
+    <circle-button label="分享" icon="share" v-model="showShare" @ui-switch="uiSwitch"></circle-button>
+
+    <span role="button" class="btn-circle icon-items" :class="{'ui-hidden': !showRemark}" @click="openModal('summary')">简介</span>
 
     <div class="edit-control__bottom-menu-wrapper">
       <draggable element="span"
@@ -49,10 +46,13 @@
  * @author luminghuai | huojinzhao
  */
 
+import { mapState } from 'vuex'
 import Draggable from 'vuedraggable'
+import { EDIT } from '@/store/mutationTypes'
 import modal from '../../mixins/modal'
 import menu from './mixins/menu'
 import EditTools from './EditTools'
+import CircleButton from './CircleButton'
 
 export default {
   name: 'edit-bottom-left',
@@ -62,6 +62,36 @@ export default {
   components: {
     Draggable,
     EditTools,
+    CircleButton,
+  },
+
+  computed: {
+    ...mapState({
+      panoInfo: state => state.edit.panoInfo,
+    }),
+
+    showShare: {
+      get() {
+        return this.panoInfo.show_share
+      },
+      set(show_share) {
+        this.$store.commit(EDIT.PANO.UPDATE, { show_share })
+      },
+    },
+
+    showRemark() {
+      return this.panoInfo.show_remark === 20
+    },
+  },
+
+  methods: {
+    uiSwitch(show_share) {
+      const id = this.panoInfo.hash_pano_id
+      this.$http.post(`/user/pubset/update?pano_id=${id}`, {
+        show_share,
+      })
+        .then(() => this.$message.success('操作成功'))
+    },
   },
 
   created() {
