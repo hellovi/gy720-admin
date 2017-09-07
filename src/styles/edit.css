@@ -124,8 +124,10 @@
       white-space: pre-wrap;
     }
 
-    .el-input__inner,
-    .el-textarea__inner {
+
+    .el-select[readonly] .el-input__inner,
+    .el-input > .el-input__inner[readonly]:first-child,
+    .el-textarea__inner[readonly] {
       border-color: #d1dbe5;
       background-color: #eef1f6;
       color: #bbb;
