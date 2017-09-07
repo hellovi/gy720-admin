@@ -114,7 +114,7 @@ export default {
         // 添加已选过的数据selected
         return {
           ...activeMaterial,
-          selected: this.$store.state.edit.scenes,
+          selected: this.$store.state.edit.scene.list,
         }
       }
       return activeMaterial
