@@ -20,7 +20,7 @@
         <i class="header-search__icon iconfont">&#xe600;</i>
       </div>
 
-      <el-button class="app-header__button btn-primary" size="small">签到</el-button>
+      <el-button class="app-header__button btn-primary" size="small" @click="checkin">签到</el-button>
       <el-button class="app-header__button" type="primary" size="small" @click="$router.push('/user-client/publish')">发布</el-button>
 
       <div class="app-header__portal">
@@ -49,6 +49,16 @@ export default {
 
   computed: {
     ...mapState(['userInfo']),
+  },
+
+  methods: {
+    checkin() {
+      this.$http.get('/user/integral/complete/3')
+        .then(() => {
+          this.$message('签到成功！ 积分+5，经验+5')
+        })
+        .catch(() => this.$message.error('您今天已经签到成功，请明天再试'))
+    },
   },
 }
 </script>
