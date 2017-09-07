@@ -11,12 +11,14 @@
           >{{ tab }}</li>
         </ul>
       </nav>
+
       <el-form class="edit-setting__form" :model="form" :rules="rules" ref="form">
         <basic v-show="activeTab === 0" :form="form" :isVip="isVip" @focus-on-vip-field="focusOnVipField"></basic>
         <wechat v-show="activeTab === 1" :form="form"></wechat>
         <music v-show="activeTab === 2" :form="form"></music>
         <misc v-show="activeTab === 3" :form="form" :isVip="isVip" @focus-on-vip-field="focusOnVipField"></misc>
       </el-form>
+
       <div slot="footer" class="edit-setting__footer">
         <el-button type="primary" @click="submit">确定</el-button>
       </div>
@@ -61,18 +63,18 @@ export default {
         name: '',
         thumb: '',
         start_img: null,
-        privacy: 1, // 1公开,2加密
+        privacy: 10, // 1公开,2加密
         password: '',
-        is_show: 10, // 10是,20否
-        pano_remark: '',
+        is_show: 20,
+        loading_text: '',
         scroll_text: '',
         // 微信设置
         wx_share_title: '',
         wx_share_remark: '',
         wx_friend_icon: null,
         // 背景音乐
-        pc_bg_music: 1,
-        mobile_bg_music: 1,
+        pc_bg_music: 10,
+        mobile_bg_music: 10,
         bg_music_src: null,
         bg_music_name: '',
         // 功能微调
@@ -80,15 +82,12 @@ export default {
         scene_change_type: 0,
         auto_scene_time: 60,
         auto_rotate_speed: 3,
-        loading_text: '',
 
-        show_scene_thumb: 1,
-        auto_rotate: 1,
-        pc_auto_scene: 0,
-        mobile_auto_scene: 0,
-        auto_mobile_gyro: 1,
-        show_hit_like: 1,
-        show_comment: 1,
+        show_scene_thumb: 20,
+        auto_rotate: 20,
+        pc_auto_scene: 10,
+        mobile_auto_scene: 10,
+        auto_mobile_gyro: 20,
       },
 
       rules: {
@@ -110,10 +109,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['isVip']),
     ...mapState({
       panoInfo: state => state.edit.panoInfo,
     }),
-    ...mapGetters(['isVip']),
   },
 
   watch: {
@@ -165,16 +164,7 @@ export default {
 
 .edit-setting {
   .el-dialog__body {
-    height: 620px;
-  }
-
-  &__footer {
-    text-align: center;
-
-    .el-button {
-      width: 12em;
-      height: 36px;
-    }
+    height: 580px;
   }
 
   &__nav {
@@ -201,79 +191,12 @@ export default {
     padding: 20px 50px;
   }
 
-  &__vip {
-    position: relative;
-
-    &::before {
-      content: "VIP";
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      margin-right: -30px;
-      color: #ffc000;
-      font-size: 12px;
-      font-style: italic;
-    }
-
-    .el-input__inner,
-    .el-textarea__inner {
-      border-color: #d1dbe5;
-      background-color: #eef1f6;
-      color: #bbb;
-    }
-  }
-
-  &__tip {
-    margin-top: 6px;
-    color: var(--gray);
-    font-size: 12px;
-    line-height: 1.4;
-
-    .el-form-item + & {
-      margin-top: -20px;
-    }
-  }
-}
-
-:root {
-  --image-width: 120px;
-}
-
-.setting-img {
-  &__title {
-    position: relative;
-    float: left;
-    margin: 0 0 15px;
-    color: var(--gray);
-    font-size: 14px;
-    font-weight: normal;
-  }
-
-  &__img {
-    clear: both;
-    display: block;
-    width: var(--image-width);
-    height: var(--image-width);
-  }
-
-  &__button {
-    width: var(--image-width);
-    margin-top: 10px;
+  &__footer {
     text-align: center;
-  }
 
-  &__desc {
-    width: calc(var(--image-width) + 40px);
-    margin-top: 10px;
-    margin-left: -20px;
-    color: var(--gray);
-    font-size: 12px;
-    text-align: center;
-  }
-
-  & + .setting-img {
-    margin-top: 30px;
+    .el-button {
+      width: 12em;
+    }
   }
 }
 </style>

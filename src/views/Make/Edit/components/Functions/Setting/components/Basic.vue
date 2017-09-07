@@ -1,10 +1,11 @@
 <template>
   <el-row class="edit-setting-basic">
     <el-col :span="8">
-      <!-- 作品封面 -->
       <div class="setting-img">
-        <h5 class="setting-img__title">作品封面</h5>
-        <img class="setting-img__img" :src="avatarPreview || $url.static(form.thumb)" alt="作品封面">
+        <h5 class="setting-img__title tip-wrapper">作品封面
+          <span class="tip-mark" data-tip="作品在列表页面展示时显示的封面">?</span>
+        </h5>
+        <img class="setting-img__img" :src="avatarSrc" alt="作品封面">
         <div class="setting-img__button">
           <app-file-upload
             v-model="avatar"
@@ -13,68 +14,68 @@
             @crop-success="cropSuccess"
             @before-upload="loading = true"
             @file-uploaded="avatarUploaded"
-          >
-            <el-button type="primary" size="small" :loading="loading">更换</el-button>
-          </app-file-upload>
+          ><el-button type="primary" size="small" :loading="loading">更换</el-button></app-file-upload>
         </div>
       </div>
 
-      <!-- 开场提示 -->
       <div class="setting-img">
-        <h5 class="setting-img__title edit-setting__vip">开场提示</h5>
-        <img
-          class="setting-img__img"
-          :src="form.start_img ? $url.static(form.start_img) : require('@/assets/help.png')"
-          alt="开场提示"
-        >
-        <div class="setting-img__desc">商业功能，可自定义更换图片，支持JPG、PNG格式上传</div>
+        <h5 class="setting-img__title tip-wrapper tip-wrapper--vip">开场提示
+          <span class="tip-mark" data-tip="作品加载首个场景时显示的开场图">?</span>
+        </h5>
+        <img class="setting-img__img" :src="startImgSrc" alt="开场提示图片">
         <div class="setting-img__button">
-          <el-button type="primary" size="small" @click="selectStartImg">选择</el-button>
+          <el-button type="primary" size="small" @click="selectStartImg">更换</el-button>
           <el-button v-show="form.start_img" type="danger" size="small" @click="removeStartImg">删除</el-button>
         </div>
       </div>
     </el-col>
 
-    <!-- 其它字段 -->
-    <el-col :span="14" :offset="2">
+    <el-col :span="15" :offset="1">
       <el-form-item label="作品名称" label-width="6em" prop="name">
-        <el-input placeholder="作品名称" v-model="form.name"></el-input>
+        <el-input placeholder="请输入作品名称" v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="密码访问" label-width="6em">
-        <el-select v-model="form.privacy">
-          <el-option label="公开" :value="1"></el-option>
-          <el-option label="加密" :value="2"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 2" prop="password">
-        <el-input placeholder="作品密码（1~8个字符）" v-model="form.password"></el-input>
-      </el-form-item>
-      <el-form-item label="是否发布" label-width="6em">
-        <el-select v-model="form.is_show">
+
+      <el-form-item class="tip-wrapper tip-wrapper--vip" label="密码访问" label-width="6em">
+        <el-select v-model="form.privacy" :readonly="!isVip" @change="privacyChange">
           <el-option label="公开" :value="10"></el-option>
-          <el-option label="隐私" :value="20"></el-option>
+          <el-option label="加密" :value="20"></el-option>
         </el-select>
+        <span class="tip-mark" data-tip="设置为加密并输入作品密码后，他人需输入密码才能查看该作品">?</span>
       </el-form-item>
-      <el-form-item label="作品简介" label-width="6em">
-        <el-input
-          type="textarea"
-          :rows="3"
-          placeholder="作品简介（1000个字符以内）"
-          v-model="form.pano_remark"
-        ></el-input>
-        <div class="edit-setting__tip">免费版功能，可对整个全景作品添加介绍信息，非单个场景的简介</div>
+
+      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 2" prop="password">
+        <el-input placeholder="请输入作品密码" v-model="form.password"></el-input>
       </el-form-item>
-      <el-form-item label="滚动文字" label-width="6em">
+
+      <el-form-item class="tip-wrapper" label="是否发布" label-width="6em">
+        <el-select v-model="form.is_show">
+          <el-option label="公开" :value="20"></el-option>
+          <el-option label="隐私" :value="10"></el-option>
+        </el-select>
+        <span class="tip-mark" data-tip="设置为否，该作品将不会再官网的公共展示页面（首页推荐、720°全景列表等）中显示">?</span>
+      </el-form-item>
+
+      <el-form-item class="tip-wrapper tip-wrapper--vip" label="加载提示" label-width="6em">
         <el-input
-          class="edit-setting__vip"
-          type="textarea"
-          :rows="3"
-          placeholder="滚动文字（500个字符以内）"
           :readonly="!isVip"
+          v-model="form.loading_text"
+          placeholder="GY720.COM..."
           @focus="$emit('focus-on-vip-field')"
-          v-model="form.scroll_text"
         ></el-input>
-        <div class="edit-setting__tip">商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现</div>
+        <span class="tip-mark" data-tip="切换场景显示的Loading提示文字">?</span>
+      </el-form-item>
+
+      <el-form-item class="tip-wrapper tip-wrapper--vip" label="滚动文字" label-width="6em">
+        <el-input
+          v-model="form.scroll_text"
+          :readonly="!isVip"
+          type="textarea"
+          :rows="6"
+          :maxlength="500"
+          placeholder="请输入滚动文字（500个字符以内）"
+          @focus="$emit('focus-on-vip-field')"
+        ></el-input>
+        <span class="tip-mark" data-tip="商业版功能，可自定义添加文字，文字将在界面顶部从右向左轮播出现">?</span>
       </el-form-item>
     </el-col>
   </el-row>
@@ -88,6 +89,7 @@
  */
 
 import { EDIT } from '@/store/mutationTypes'
+import defaultStartImg from '@/assets/help.png'
 
 const AppFileUpload = () => import('@/components/AppFileUpload')
 
@@ -115,6 +117,17 @@ export default {
       avatarPreview: '',
       loading: false,
     }
+  },
+
+  computed: {
+    avatarSrc() {
+      return this.avatarPreview || this.$url.static(this.form.thumb)
+    },
+
+    startImgSrc() {
+      const { start_img } = this.form
+      return start_img ? this.$url.static(start_img) : defaultStartImg
+    },
   },
 
   methods: {
@@ -159,6 +172,16 @@ export default {
 
     removeStartImg() {
       this.form.start_img = null
+    },
+
+    /**
+     * 非会员选择加密时，重置为公开，并弹出购买弹窗
+     */
+    privacyChange(val) {
+      if (!this.isVip && val === 20) {
+        this.form.privacy = 10
+        this.$emit('focus-on-vip-field')
+      }
     },
   },
 }
