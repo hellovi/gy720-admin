@@ -3,7 +3,7 @@
     </span>
     <span role="button" class="btn-circle icon-items">场景</span>
 
-    <circle-button label="分享" icon="share" v-model="showShare" @ui-switch="uiSwitch"></circle-button>
+    <circle-button label="分享" icon="share" v-model="showShare" @ui-switch="uiSwitch" @click="openModal('share')"></circle-button>
 
     <span role="button" class="btn-circle icon-items" :class="{'ui-hidden': !showRemark}" @click="openModal('summary')">简介</span>
 
