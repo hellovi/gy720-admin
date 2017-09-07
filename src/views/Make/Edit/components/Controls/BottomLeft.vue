@@ -14,7 +14,7 @@
 
     <span
       role="button"
-      class="btn-circle btn-circle--pointer icon-items"
+      class="btn-circle btn-circle--pointer icon-info"
       :class="{'ui-hidden': !showRemark}"
       @click="openModal('summary')"
     >简介</span>
