@@ -4,7 +4,7 @@
       <el-col class="pano-material__left" :span="3">
         <dl class="pano-material__menu">
           <dt>全景相册</dt>
-          <a class="hover-primary pano-material__menu-add" @click="createCate">+创建新分类</a>
+          <a class="hover-primary pano-material__menu-add" @click="createCate">+创建新相册</a>
           <el-tooltip
             v-for="(cate, index) in cates"
             :key="index"
@@ -28,16 +28,30 @@
 
       <el-col class="pano-material__right" :span="21" v-loading="loading">
         <el-row class="pano-material__header">
-          <el-col :span="4">
+          <el-col :span="2">
             <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
-          <el-col class="text-right" :span="14">
+          <el-col :span="4">
+            <el-button v-show="checked.length" type="text" @click="moveToCate">移动到其他相册</el-button>
+            <span v-show="!checked.length">&nbsp;</span>
+          </el-col>
+          <el-col :span="4">
+            <el-button v-show="checked.length" type="text" @click="removeChecked">删除选中的素材</el-button>
+            <span v-show="!checked.length">&nbsp;</span>
+          </el-col>
+          <el-col class="text-right" :span="8">
             <div class="pano-material__header__count">
               已选择<span class="text-primary">{{ checked.length }}</span>个场景
             </div>
           </el-col>
           <el-col :span="6">
-            <el-input size="small" placeholder="请输入场景名称" icon="search" v-model="keyword"></el-input>
+            <el-input
+              size="small"
+              placeholder="请输入场景名称"
+              icon="search"
+              v-model="keyword"
+              :on-icon-click="searchPanos"
+            ></el-input>
           </el-col>
         </el-row>
 
@@ -84,6 +98,32 @@
     </el-row>
 
     <slot name="footer" v-if="invoked" :checked="checkedPanos"></slot>
+
+    <!--移动到其他相册弹窗-->
+    <el-dialog
+      :visible.sync="moveDialog"
+      title="移动到其他相册"
+      size="tiny"
+      :modal="false"
+      :close-on-click-modal="false"
+      custom-class="pano-material__move"
+    >
+      <el-form label-width="110px">
+        <el-form-item label="移动到">
+          <el-select v-model="selectCateId">
+            <el-option
+              v-for="list in cates"
+              :key="list.id"
+              :label="list.name"
+              :value="list.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="moveCateSub">确认</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -119,11 +159,13 @@ export default {
 
   data() {
     return {
-      cates: [], // 场景素材分类
-      currentCateId: 1, // 当权选中的分类
+      cates: [], // 场景素材相册
+      currentCateId: 1, // 当权选中的相册
       checked: [], // 存放选中项的id
       keyword: '',
       loading: false,
+      moveDialog: false,
+      selectCateId: null,
     }
   },
 
@@ -152,7 +194,7 @@ export default {
     },
 
     params() {
-      return `?source_scene_category_id=${this.currentCateId}&per_page=12`
+      return `?source_scene_category_id=${this.currentCateId}&per_page=12&name=${this.keyword}`
     },
 
     // 添加新增上传图片
@@ -165,17 +207,26 @@ export default {
   },
 
   methods: {
-    getPanos(page) {
-      this.loading = true
-      const params = page ? `${this.params}&page=${page}` : this.params
+    getFetchPanos(params) {
       this.$store.dispatch(EDIT.MATERIAL.INIT, { url: '/user/sourcescene', params })
         .then(() => {
           this.loading = false
         })
     },
 
+    getPanos(page) {
+      this.loading = true
+      const params = page ? `${this.params}&page=${page}` : this.params
+      this.getFetchPanos(params)
+    },
+
+    // 搜索素材
+    searchPanos() {
+      this.getPanos()
+    },
+
     /**
-     * 选择不同的分类后，重新获取列表并清空选中项
+     * 选择不同的相册后，重新获取列表并清空选中项
      */
     selectCate(id) {
       if (id !== this.currentCateId) {
@@ -240,13 +291,7 @@ export default {
           this.$http.delete(`/user/sourcescene/${id}`)
             .then(() => {
               this.$message.success('删除成功!')
-
-              // 重新请求当前列表
-              let page = this.sceneList.current_page
-              if (this.sceneList.data.length <= 1) {
-                page -= 1
-              }
-              this.getPanos(page)
+              this.resetGetPanos(1)
             })
             .catch((errors) => {
               this.errorHandler(errors)
@@ -256,21 +301,21 @@ export default {
 
     createCate({ name = null, id = '' }) {
       const inputValidator = val => !!val
-      let dialogTitle = '创建新分类'
+      let dialogTitle = '创建新相册'
       let type = 'post'
 
       if (id) {
-        dialogTitle = '编辑分类'
+        dialogTitle = '编辑相册'
         type = 'put'
       }
-      this.$prompt('请输入分类名', dialogTitle, {
+      this.$prompt('请输入相册名', dialogTitle, {
         closeOnPressEscape: false,
         closeOnClickModal: false,
         inputValue: name,
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputValidator,
-        inputErrorMessage: '分类名不能为空',
+        inputErrorMessage: '相册名不能为空',
       }).then(({ value }) => {
         this.$http[type](`/user/sourcescenecategory/${id}`, { name: value })
           .then(({ result: { deleted_at, created_at, updated_at, ...other } }) => {
@@ -296,9 +341,9 @@ export default {
       })
     },
 
-    // 删除场景素材分类
+    // 删除场景素材相册
     removeCate({ id }) {
-      this.$confirm('确认删除该分类？', '提示', { type: 'warning' })
+      this.$confirm('确认删除该相册？', '提示', { type: 'warning' })
         .then(() => {
           this.$http.delete(`/user/sourcescenecategory/${id}`)
             .then(() => {
@@ -310,6 +355,69 @@ export default {
               this.errorHandler(errors)
             })
         })
+    },
+
+    // 打开移动到其他相册窗口
+    moveToCate() {
+      if (this.checked.length) {
+        this.selectCateId = this.currentCateId
+        this.moveDialog = true
+      } else {
+        this.errorHandler('请先选择要移动的素材!')
+      }
+    },
+
+    // 移动到其他相册
+    moveCateSub() {
+      if (this.selectCateId !== this.currentCateId) {
+        this.$http.put('/user/sourcescene/updatecategory', {
+          ids: this.checked,
+          source_scene_category_id: this.selectCateId,
+        })
+          .then(() => {
+            this.$message.success('移动成功!')
+            this.currentCateId = this.selectCateId
+            this.moveDialog = false
+            this.checked = []
+            this.getPanos()
+          })
+          .catch((errors) => {
+            this.errorHandler(errors)
+          })
+      } else {
+        this.errorHandler('请选择其他相册!')
+      }
+    },
+
+    // 批量删除选中的素材
+    removeChecked() {
+      if (this.checked.length) {
+        this.$confirm(`确认删除所选 ${this.checked.length} 张素材？`, '提示', { type: 'warning' })
+          .then(() => {
+            this.$http.post('/user/sourcescene/batchdelete', {
+              ids: this.checked,
+            })
+              .then(() => {
+                this.$message.success('删除成功!')
+                this.resetGetPanos(this.checked.length)
+                this.checked = []
+              })
+              .catch((errors) => {
+                this.errorHandler(errors)
+              })
+          })
+      } else {
+        this.errorHandler('请先选择要删除的素材!')
+      }
+    },
+
+    // 重新请求当前列表
+    resetGetPanos(len) {
+      let page = this.sceneList.current_page
+      if (this.sceneList.data.length <= len) {
+        page -= 1
+      }
+      this.getPanos(page)
     },
   },
 
@@ -353,12 +461,25 @@ export default {
     &__count {
       margin-right: 1em;
     }
+    .el-button {
+      padding: 8px 0;
+    }
   }
 
   &__content {
     padding: 20px 0 0;
     .disabled {
       cursor: not-allowed;
+    }
+  }
+  &__move {
+    .el-form-item {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    .el-button {
+      min-width: 80px;
     }
   }
 }

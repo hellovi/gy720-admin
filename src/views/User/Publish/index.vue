@@ -311,7 +311,7 @@ export default {
       width: 8em;
     }
   }
-  .el-dialog__body {
+  > .el-dialog__body {
     padding-bottom: 60px;
   }
 }

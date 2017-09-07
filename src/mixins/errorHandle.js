@@ -22,7 +22,7 @@ export default {
       this.$notify.error({
         duration: error.length * 2000,
         message: h('ol',
-          error.map(val => h('p', val)),
+          error.map(val => h('li', val)),
         ),
       })
     },
