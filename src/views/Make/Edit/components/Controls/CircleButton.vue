@@ -2,7 +2,7 @@
   <span
     role="button"
     class="btn-circle"
-    :class="{'btn-circle--hidden': isHidden, [`icon-${icon}`]: true}"
+    :class="{'btn-circle--pointer': pointer, 'btn-circle--hidden': isHidden, [`icon-${icon}`]: true}"
     @click="$emit('click')"
   >
     {{ label }}
@@ -35,6 +35,10 @@ export default {
       type: String,
       required: true,
     },
+    pointer: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
@@ -58,7 +62,10 @@ export default {
   display: inline-block;
   font-size: 11px;
   text-align: center;
-  cursor: pointer;
+
+  &--pointer {
+    cursor: pointer;
+  }
 
   &--hidden {
     &::before {

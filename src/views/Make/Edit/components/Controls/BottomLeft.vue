@@ -1,11 +1,23 @@
 <template>
   <div role="button" class="edit-control__bottom-left">
     </span>
-    <span role="button" class="btn-circle icon-items">场景</span>
+    <span role="button" class="btn-circle btn-circle--pointer icon-items">场景</span>
 
-    <circle-button label="分享" icon="share" v-model="showShare" @ui-switch="uiSwitch" @click="openModal('share')"></circle-button>
+    <circle-button
+      label="分享"
+      icon="share"
+      pointer
+      v-model="showShare"
+      @ui-switch="uiSwitch"
+      @click="openModal('share')"
+    ></circle-button>
 
-    <span role="button" class="btn-circle icon-items" :class="{'ui-hidden': !showRemark}" @click="openModal('summary')">简介</span>
+    <span
+      role="button"
+      class="btn-circle btn-circle--pointer icon-items"
+      :class="{'ui-hidden': !showRemark}"
+      @click="openModal('summary')"
+    >简介</span>
 
     <div class="edit-control__bottom-menu-wrapper">
       <draggable element="span"
