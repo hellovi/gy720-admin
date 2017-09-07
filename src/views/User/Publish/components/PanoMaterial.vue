@@ -75,7 +75,7 @@
                 </el-checkbox>
                 <img
                   slot="preview"
-                  :src="pano.vtour === undefined || pano.vtour ? $url.host(pano.preview_image) : pano.preview"
+                  :src="pano.vtour === undefined || pano.vtour ? `${$url.static(pano.preview_image)}?imageView/2/w/250` : pano.preview"
                   :alt="pano.name">
                 <template slot="tools">
                   <i role="button" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
