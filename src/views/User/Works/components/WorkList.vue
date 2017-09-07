@@ -211,7 +211,10 @@ export default {
     /* 单作品购买成功回调方法 */
 
     panoBuySuccess() {
-
+      const id = this.upgradedWorkInfo.id
+      const target = this.worklist.data
+        .find(work => work.id === id)
+      if (target) target.is_vip = true
     },
 
     /* 所有单作品状态控制 */
