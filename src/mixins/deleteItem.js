@@ -67,7 +67,7 @@ export default {
 
           this.$message({ type: 'error', message })
         })
-        .finally(() => {
+        .then(() => {
           instance.confirmButtonLoading = false
           done()
         })
