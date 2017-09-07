@@ -120,6 +120,10 @@ export default {
   mounted() {
     this.initPano(this.panoId)
   },
+
+  beforeDestroy() {
+    this.$store.commit(EDIT.SCENE.INIT, [])
+  },
 }
 
 </script>

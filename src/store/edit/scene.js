@@ -50,7 +50,7 @@ export default {
      */
     [SCENE.INIT](state, scenes) {
       state.list = [
-        { ...scenes[0], active: true },
+        ...(scenes[0] ? [{ ...scenes[0], active: true }] : []),
         ...scenes.slice(1),
       ]
     },
