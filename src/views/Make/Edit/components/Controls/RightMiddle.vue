@@ -49,4 +49,10 @@ export default {
   text-align: center;
   cursor: pointer;
 }
+
+@media screen and (max-height: 700px) {
+  .edit-control__right-middle {
+    top: 60%;
+  }
+}
 </style>

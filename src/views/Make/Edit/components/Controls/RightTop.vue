@@ -127,7 +127,7 @@ export default {
 <style lang="postcss">
 .edit-control__right-top {
   position: absolute;
-  top: 60px;
+  top: 10px;
   right: 10px;
 }
 
@@ -158,6 +158,17 @@ export default {
     &:hover > .edit-tools {
       visibility: visible;
     }
+  }
+}
+
+@media screen and (max-height: 760px) {
+  .edit-qr-code,
+  .edit-likes {
+    margin-bottom: 10px;
+  }
+
+  .edit-control__right-menu > li {
+    margin-top: 10px;
   }
 }
 </style>

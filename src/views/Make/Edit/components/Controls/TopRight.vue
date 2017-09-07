@@ -13,7 +13,7 @@
         >{{ view.name }}</li>
       </ul>
     </div>
-    <el-button type="primary">皮肤</el-button>
+    <!-- <el-button type="primary">皮肤</el-button> -->
   </div>
 </template>
 
@@ -67,7 +67,7 @@ export default {
 .edit-control__views {
   position: relative;
   display: inline-block;
-  margin: 0 var(--margin);
+  margin-left: var(--margin);
   font-size: 14px;
 
   & > .list {
@@ -114,7 +114,7 @@ export default {
 .edit-control__top-right {
   position: absolute;
   top: 10px;
-  right: 10px;
+  right: 110px;
 
   .el-button {
     width: 80px;
