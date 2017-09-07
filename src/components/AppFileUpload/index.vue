@@ -38,6 +38,9 @@
 import 'qiniu-js'
 import yearMonthStr from '@/utils/yearMonthStr'
 
+// 上传错误信息提示-自定义
+import customMessage from './customMessage'
+
 const AppCropper = () => import('@/components/AppCropper')
 const domain = 'http://l-statics.gy720.com/'
 
@@ -209,8 +212,7 @@ export default {
            * 上传出错时,处理相关的事情
            */
           Error: (up, err, errTip) => {
-            // 这里的错误信息需要处理成中文
-            this.$message.error(err.message)
+            this.$message.error(customMessage({ up, err, errTip }))
             this.$emit('error', up, err, errTip)
           },
 
