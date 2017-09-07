@@ -75,7 +75,7 @@ export default {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    margin-bottom: 3px;
+    margin-bottom: 5px;
     background-color: #fff;
     color: #636363;
     font: 20px "iconfont";

@@ -1,62 +1,12 @@
 <template>
   <div class="edit-control__scene">
-    <div class="edit-scene clearfix">
-      <!-- 左侧：滚动 -->
-      <div
-        class="edit-scene__left-arrow iconfont"
-        @click="scrollToLeft"
-      >&#xe651;</div>
-      <!-- 中间：场景列表 -->
-      <draggable
-        :list="scenelist"
-        @end="resortScenes"
-      >
-        <transition-group
-          class="list clearfix"
-          tag="ul" ref="list" style="left: 0px;"
-        >
-          <!-- 场景项 -->
-          <li
-            :class="{
-              'edit-scene__item': true,
-              'edit-scene__item--active': scene.id === activeSceneId
-            }"
-            v-for="scene in scenelist" :key="scene.id"
-          >
-            <div
-              class="edit-scene__item__wrapper"
-              @click="selectScene(scene.id)"
-            >
-              <img
-                class="edit-scene__item__image"
-                :src="$url.static(scene.thumb)"
-                :alt="scene.name"
-              >
-              <span class="edit-scene__item__title">{{ scene.name }}</span>
-            </div>
-            <!-- 设置、删除icon -->
-            <edit-tools
-              dir="top"
-              @delete="preDeleteScene(scene.id)"
-              @edit="openSceneConfig(scene)"
-            ></edit-tools>
-          </li>
-        </transition-group>
-      </draggable>
-      <!-- 右侧：滚动 -->
-      <div
-        class="edit-scene__right-arrow iconfont"
-        @click="scrollToRight"
-      >&#xe7a2;</div>
-    </div>
-    <!-- 右侧：添加场景 -->
-    <div class="edit-scene-upload tip tip--top" data-tip="上传场景">
-      <div
-        class="btn-add dash-box"
-        role="button"
-        @click="openSceneCreation"
-      >+</div>
-    </div>
+    <scene-list
+      :scene-list="scenelist"
+      @select="selectScene"
+      @delete="preDeleteScene"
+      @edit="openSceneConfig"
+      @drag-end="resortScenes"
+    ></scene-list>
 
     <!-- 场景设置弹框 -->
     <el-dialog
@@ -120,13 +70,13 @@
  * @author luminghuai | huojinzhao
  */
 
-import Draggable from 'vuedraggable'
+
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import deleteItem from '@/mixins/deleteItem'
 import Ajax from './modules/ajax'
 import modal from '../../../mixins/modal'
-import EditTools from '../EditTools'
+import SceneList from './components/SceneList'
 import vBasic from './components/Basic'
 import vSpecialEffect from './components/SpecialEffect'
 import vSupplement from './components/Supplement'
@@ -138,8 +88,7 @@ export default {
   mixins: [modal, deleteItem],
 
   components: {
-    Draggable,
-    EditTools,
+    SceneList,
     vBasic,
     vSpecialEffect,
     vSupplement,
@@ -221,34 +170,6 @@ export default {
 
     /* ------ Assitance ------ */
 
-    /* --- scroll ---- */
-
-    // 125是每个场景图的宽度 + 5px margin
-    scrollToLeft() {
-      const $list = this.$refs.list
-      const left = parseInt($list.style.left, 10)
-
-      if (Math.abs(left) <= 125) {
-        $list.style.left = '0px'
-      } else {
-        $list.style.left = `${left + 125}px`
-      }
-    },
-
-    scrollToRight() {
-      const $list = this.$refs.list
-
-      const { innerWidth } = window
-      const scrollWidth = $list.scrollWidth
-      const left = parseInt($list.style.left, 10)
-
-      if ((scrollWidth + left) - 120 < innerWidth) {
-        $list.style.left = `${-(scrollWidth - innerWidth) - 120}px`
-      } else {
-        $list.style.left = `${left - 125}px`
-      }
-    },
-
     /* --- config --- */
 
     openSceneConfig(scene) {
@@ -267,15 +188,6 @@ export default {
     },
 
     /* ------ Application ------ */
-
-    /* --- creation --- */
-
-    openSceneCreation() {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'scene')
-        .then(() => {
-          document.location.reload()
-        })
-    },
 
     /* --- deletion --- */
 
@@ -339,6 +251,9 @@ export default {
       const ids = this.scenelist
         .map(({ id }) => ({ id }))
       Ajax.replaceScenesOrder({ sort: ids })
+        .then(() => {
+          this.$message.success('操作成功')
+        })
     },
   },
 
@@ -349,118 +264,11 @@ export default {
 </script>
 
 <style lang="postcss">
-:root {
-  --scene-size: 60px;
-}
-
 .edit-control__scene {
   position: absolute;
-  bottom: 80px;
+  bottom: 110px;
   left: 0;
   width: 100%;
   height: 70px;
-  padding-right: 120px;
-
-
-  & .edit-scene-upload {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 2;
-    background-color: rgba(0, 0, 0, 0.7);
-
-    & > .dash-box {
-      width: 106px;
-      height: 56px;
-      margin: 7px;
-      border-width: 2px;
-      font-size: 36px;
-      line-height: 45px;
-    }
-  }
-}
-
-.edit-scene {
-  position: relative;
-  padding: 5px 0;
-  background-color: rgba(0, 0, 0, 0.4);
-
-  &__left-arrow,
-  &__right-arrow {
-    position: absolute;
-    top: 0;
-    z-index: 5;
-    width: 30px;
-    height: 70px;
-    font-size: 22px;
-    text-align: center;
-    line-height: 70px;
-    cursor: pointer;
-    transition: 1s;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-  }
-
-  &__left-arrow {
-    left: 0;
-  }
-
-  &__right-arrow {
-    right: 0;
-  }
-
-  .list {
-    position: relative;
-    height: var(--scene-size);
-    padding: 0 5px;
-    text-align: center;
-    white-space: nowrap;
-    transition: 1s;
-  }
-
-  &__item {
-    position: relative;
-    display: inline-block;
-    width: var(--scene-size);
-    height: var(--scene-size);
-    cursor: pointer;
-    transition: transform 1s;
-
-    &:hover > .edit-tools {
-      visibility: visible;
-    }
-
-    &--active {
-     box-shadow: 0 0 0 2px #ffc000;
-    }
-
-    & + li {
-      margin-left: 5px;
-    }
-
-    &__wrapper {
-      position: relative;
-      z-index: 10;
-    }
-
-    &__image {
-      display: block;
-      width: var(--scene-size);
-      height: var(--scene-size);
-    }
-
-    &__title {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      font-size: 12px;
-      text-align: center;
-      line-height: 22px;
-    }
-  }
 }
 </style>

@@ -38,7 +38,7 @@ export default {
 .edit-control__hotspot {
   position: absolute;
   left: 50%;
-  bottom: 170px;
+  bottom: 200px;
   transform: translate(-50%);
 }
 

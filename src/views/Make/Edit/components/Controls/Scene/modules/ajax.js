@@ -108,7 +108,7 @@ export default class Ajax {
    * @return  void
    */
   static replaceScenesOrder(orderInfo) {
-    Http.post(
+    return Http.post(
       this.setPanoQuery(SORT_SCENE_API),
       orderInfo,
     )
