@@ -20,7 +20,7 @@
       <ul class="cert-apply__term list clearfix">
         <li>
           <i class="iconfont">&#xe684;</i>
-          <p>10个以上精品</p>
+          <p>10个以上作品</p>
           <el-button v-if="certInfo.condition.panoramas" type="primary" size="small" disabled>已符合</el-button>
           <el-button v-else type="primary" size="small">努力中</el-button>
         </li>
@@ -55,7 +55,23 @@
         <el-form-item label="身份证号：" prop="number">
           <el-input v-model="formPerson.number" placeholder="请输入身份证号"></el-input>
         </el-form-item>
-        <el-form-item label="身份证扫描件："></el-form-item>
+        <el-form-item label="身份证扫描件：" prop="front" required>
+
+          <cert-upload
+            :width="156"
+            :scale="1.56"
+            background="front.jpg"
+            v-model="formPerson.front"
+          ></cert-upload>
+
+          <cert-upload
+            :width="156"
+            :scale="1.56"
+            background="back.jpg"
+            v-model="formPerson.back"
+          ></cert-upload>
+
+        </el-form-item>
         <el-form-item class="accept-item" prop="accept">
           <el-checkbox
             :true-label="1"
@@ -83,7 +99,14 @@
         <el-form-item label="营业执照号：" prop="number">
           <el-input v-model="formCompany.number" placeholder="请输入营业执照号"></el-input>
         </el-form-item>
-        <el-form-item label="营业执照扫描件:"></el-form-item>
+        <el-form-item label="营业执照扫描件:" prop="front">
+          <cert-upload
+            :width="210"
+            :scale="0.7"
+            background="license.jpg"
+            v-model="formCompany.front"
+          ></cert-upload>
+        </el-form-item>
         <el-form-item class="accept-item" prop="accept">
           <el-checkbox
             :true-label="1"
@@ -114,12 +137,14 @@
 
 import { CERTIFICATE } from '@/store/mutationTypes'
 import AppFormAlert from '@/components/AppFormAlert'
+import CertUpload from './components/CertUpload'
 
 export default {
   name: 'certifate-apply',
 
   components: {
     AppFormAlert,
+    CertUpload,
   },
 
   props: {
@@ -147,15 +172,15 @@ export default {
       formPerson: { // 个人认证表单
         name: '',
         number: '',
-        front: 'p1.jpg',
-        back: 'p2.jpg',
+        front: '',
+        back: '',
         accept: 0,
       },
 
       formCompany: { // 企业认证表单
         name: '',
         number: '',
-        front: 'c1.jpg',
+        front: '',
         accept: 0,
       },
 
@@ -170,6 +195,9 @@ export default {
         accept: [
           { validator: this.acceptCheck, trigger: 'blur' },
         ],
+        front: [
+          { validator: this.personImgCheck, trigger: 'blur' },
+        ],
       },
 
       rulesCompany: { // 企业认证表单验证规则
@@ -181,6 +209,9 @@ export default {
         ],
         accept: [
           { validator: this.acceptCheck, trigger: 'blur' },
+        ],
+        front: [
+          { required: true, message: '请上传营业执照扫描件', trigger: 'blur' },
         ],
       },
     }
@@ -209,7 +240,6 @@ export default {
     },
   },
 
-
   methods: {
     goTo(url) {
       this.$router.push(url)
@@ -226,6 +256,13 @@ export default {
     acceptCheck(rule, value, callback) {
       if (value === 0) {
         callback(new Error('请仔细阅读并同意该协议'))
+      }
+      callback()
+    },
+
+    personImgCheck(rule, value, callback) {
+      if (this.formPerson.front === '' || this.formPerson.back === '') {
+        callback(new Error('请上传身份证正反面扫描件'))
       }
       callback()
     },
@@ -322,11 +359,12 @@ export default {
 
   .el-form-item {
     &__label {
-      width: 115px;
+      width: 130px;
+      padding-right:0;
     }
 
     &__error {
-      margin-left: 115px;
+      margin-left: 130px;
     }
 
     &.accept-item .el-form-item__error {
