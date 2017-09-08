@@ -188,7 +188,7 @@ export default {
   }
 
   &__form {
-    padding: 20px 50px;
+    padding: 30px 50px 10px;
   }
 
   &__footer {
@@ -196,6 +196,16 @@ export default {
 
     .el-button {
       width: 12em;
+    }
+  }
+
+  &-music {
+    .el-input {
+      width: 16em;
+
+      & + .el-button {
+        margin-left: 1em;
+      }
     }
   }
 }

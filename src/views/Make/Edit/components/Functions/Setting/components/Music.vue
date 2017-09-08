@@ -51,15 +51,3 @@ export default {
   },
 }
 </script>
-
-<style lang="postcss">
-.edit-setting-music {
-  .el-input {
-    width: 16em;
-
-    & + .el-button {
-      margin-left: 1em;
-    }
-  }
-}
-</style>
