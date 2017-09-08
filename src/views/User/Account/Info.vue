@@ -34,6 +34,9 @@
             :autosize="{ minRows: 4, maxRows: 6}"
           ></el-input>
         </el-form-item>
+        <el-form-item label="主页背景">
+          <background v-model="bgtest"></background>
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -57,6 +60,7 @@
   import { GLOBAL } from '@/store/mutationTypes'
   import AppFormAlert from '@/components/AppFormAlert'
   import Avatar from './components/Avatar'
+  import Background from './components/Background'
   import AddressSelect from './components/Address'
   import { strToArr } from './utils'
   import form from './mixins/form'
@@ -64,7 +68,7 @@
   export default {
     name: 'account-info',
     mixins: [form],
-    components: { Avatar, AddressSelect, AppFormAlert },
+    components: { Avatar, Background, AddressSelect, AppFormAlert },
     data() {
       return {
         areaKey: ['region_id', 'city_id', 'area_id'],
@@ -79,6 +83,7 @@
             { required: true, message: '请输入昵称', trigger: 'blur' },
           ],
         },
+        bgtest: '',
       }
     },
     computed: {
