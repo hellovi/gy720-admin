@@ -32,12 +32,12 @@
             <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
           <el-col :span="4">
-            <el-button v-show="checked.length" type="text" @click="moveToCate">移动到其他相册</el-button>
-            <span v-show="!checked.length">&nbsp;</span>
+            <el-button v-show="checked.length && !invoked" type="text" @click="moveToCate">移动到其他相册</el-button>
+            <span v-show="!checked.length || invoked">&nbsp;</span>
           </el-col>
           <el-col :span="4">
-            <el-button v-show="checked.length" type="text" @click="removeChecked">删除选中的素材</el-button>
-            <span v-show="!checked.length">&nbsp;</span>
+            <el-button v-show="checked.length && !invoked" type="text" @click="removeChecked">删除选中的素材</el-button>
+            <span v-show="!checked.length || invoked">&nbsp;</span>
           </el-col>
           <el-col class="text-right" :span="8">
             <div class="pano-material__header__count">
@@ -78,8 +78,8 @@
                   :src="pano.vtour === undefined || pano.vtour ? `${$url.static(pano.preview_image)}?imageView/2/w/250` : pano.preview"
                   :alt="pano.name">
                 <template slot="tools">
-                  <i role="button" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
-                  <i role="button" class="iconfont hover-warning" @click.stop="removeScene(pano)">&#xe615;</i>
+                  <i role="button" v-show="!invoked" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
+                  <i role="button" v-show="!invoked" class="iconfont hover-warning" @click.stop="removeScene(pano)">&#xe615;</i>
                 </template>
               </publish-item>
             </el-col>
