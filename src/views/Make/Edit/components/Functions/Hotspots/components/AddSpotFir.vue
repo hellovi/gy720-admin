@@ -2,7 +2,7 @@
   <div class="edit-functions__addspotsfir">
     <el-row :gutter="20">
 
-      <el-col :span="8"
+      <el-col :span="6"
         v-for="item in firInfo"
         :key="item.key"
         class="edit-functions__item"
@@ -50,7 +50,7 @@ export default {
 .edit-functions {
 
   &__addspotsfir {
-    width: 340px;
+    width: 640px;
     margin: 50px auto;
   }
 
@@ -69,7 +69,7 @@ export default {
      }
     }
 
-    &:nth-of-type(n+4) {
+    &:nth-of-type(n+5) {
       margin-top: 20px;
     }
   }

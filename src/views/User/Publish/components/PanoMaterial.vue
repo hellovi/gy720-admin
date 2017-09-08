@@ -552,7 +552,7 @@ export default {
   .el-checkbox {
     position: absolute;
     top: 6px;
-    left: 10px;
+    left: 6px;
   }
 
   & > img {
@@ -571,14 +571,6 @@ export default {
     color: #fff;
     font-weight: normal;
     line-height: 22px;
-  }
-}
-
-.material-panos__submit {
-  &--select {
-    position: absolute;
-    right: 0;
-    bottom: -56px;
   }
 }
 </style>

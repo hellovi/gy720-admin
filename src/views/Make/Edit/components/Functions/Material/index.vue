@@ -29,6 +29,7 @@
         :active-id="activeId"
         :selected="activeMaterial.selected"
         :add-files="files"
+        :select-multiple="activeMaterial.multiple"
         ref="materialPage"
       >
         <template slot="footer" scope="scope">
@@ -37,6 +38,12 @@
             class="material-panos__submit--select"
           >
             <el-button type="primary" @click="checkPanos(scope.checked)" :loading="selectLoading">选择全景图</el-button>
+          </div>
+          <div
+            v-if="activeType === 'photo'"
+            class="material-photos__submit--select"
+          >
+            <el-button type="primary" @click="checkPhotos(scope.checked)" :loading="selectLoading">选择相册</el-button>
           </div>
         </template>
       </div>
@@ -66,6 +73,7 @@ import modal from '../../../mixins/modal'
 import MaterialList from './components/MaterialList'
 import MaterialFooter from './components/MaterialFooter'
 import ImageText from './components/ImageText'
+import PhotoMaterial from './components/Photo'
 
 export default {
   name: 'edit-functions-material',
@@ -77,6 +85,7 @@ export default {
     MaterialList,
     MaterialFooter,
     ImageText,
+    PhotoMaterial,
   },
 
   data() {
@@ -92,6 +101,7 @@ export default {
         { type: 'article', id: 10, name: '图文信息', view: 'image-text' },
         { type: 'rotate', id: 11, name: '物品3D' },
         { type: 'audio', id: 9, name: '音频' },
+        { type: 'photo', id: 12, name: '相册', view: 'photo-material' },
         { type: 'other', id: 6, name: '其他' },
       ],
       selectLoading: false,
@@ -161,6 +171,11 @@ export default {
         })
     },
 
+    // 选择相册
+    checkPhotos(photos) {
+      this.$store.commit(EDIT.MATERIAL.SELECTS, photos)
+    },
+
     fileUpload(files) {
       this.files = files.map(({
         source_scene_id, upload_id, ...other }) =>
@@ -178,8 +193,7 @@ export default {
 }
 
 .material-tabs {
-  margin-bottom: 1em;
-
+  margin-right: -0.8em;
   &__item {
     float: left;
     padding: 0.3em 0.7em;
@@ -187,10 +201,8 @@ export default {
     background-color: var(--gray-extra-light);
     cursor: pointer;
     transition: 0.2s;
-
-    & + li {
-      margin-left: 0.8em;
-    }
+    margin-right: 0.65em;
+    margin-bottom: 1em;
 
     &--active {
       background-color: var(--color-primary);
@@ -213,6 +225,14 @@ export default {
 
   .pano-material__content {
     min-height: 365px;
+  }
+}
+
+.material-panos__submit, .material-photos__submit {
+  &--select {
+    position: absolute;
+    right: 0;
+    bottom: -56px;
   }
 }
 </style>

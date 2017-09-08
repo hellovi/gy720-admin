@@ -17,6 +17,7 @@
           alt="activeIcon.icon_id"/>
       </el-form-item>
 
+      <!--场景漫游-->
       <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="data_id">
         <el-button type="primary" size="small" @click="modal.sceneLink = true">选择</el-button>
         <!--下面区域-->
@@ -27,10 +28,12 @@
         </div>
       </el-form-item>
 
+      <!--超链接-->
       <el-form-item :label="secInfo" v-if="type === typeConfig.LINK" prop="data_id">
         <el-input v-model="form.data_id" placeholder="http://"></el-input>
       </el-form-item>
 
+      <!--图文信息|物品3D|音频-->
       <el-form-item :label="secInfo" prop="data_id"
         v-if="[typeConfig.ARTICLE,typeConfig.ROTATE,typeConfig.AUDIO].includes(type)"
       >
@@ -38,6 +41,65 @@
         <span class="addspots-sec__title">{{this.form.title}}</span>
       </el-form-item>
 
+      <!--视频-->
+      <el-form-item
+        class="tip-wrapper"
+        :label="secInfo"
+        v-if="type === typeConfig.VIDEO"
+        prop="data_id"
+      >
+        <el-input
+          type="textarea"
+          :rows="4"
+          v-model="form.data_id"
+          placeholder="请输入视频通用分享地址(暂时支持优酷、腾讯视频)"
+        ></el-input>
+        <el-tooltip
+          class="tip-mark-plus"
+          popper-class="tip-mark-plus__content"
+          transition="move-in-linear"
+          placement="right-start"
+        >
+          <span>?</span>
+          <a slot="content" href="http://www.gy720.com" target="_blank">查看详细教程>></a>
+        </el-tooltip>
+      </el-form-item>
+
+      <!--相册-->
+      <el-form-item
+        :label="secInfo"
+        v-if="type === typeConfig.PHOTO"
+        prop="data_id"
+      >
+        <div class="addspots-sec__photo">
+          <el-button type="primary" size="small" @click="selectMater(type)">选择</el-button>
+          <div class="addspots-sec__photo-list" v-if="isArray(form.data_id) && form.data_id.length">
+            <span class="tip-wrapper">
+            <span>已选图片列表</span>
+            <el-tooltip
+              class="tip-mark-plus"
+              popper-class="tip-mark-plus__content"
+              transition="move-in-linear"
+              placement="right-start"
+            >
+              <span>?</span>
+              <div slot="content">最多支持选择20张图片<br/>拖拽图片可以排序</div>
+            </el-tooltip>
+          </span>
+            <div>
+              <draggable v-model="form.data_id">
+                <transition-group tag="ul" class="addspots-photo-list list">
+                  <li v-for="list in form.data_id" :key="list.id">
+                    <img :src="$url.static(list.file_path)" width="80" height="50" alt="list.title">
+                  </li>
+                </transition-group>
+              </draggable>
+            </div>
+          </div>
+        </div>
+      </el-form-item>
+
+      <!--底部按钮-->
       <el-form-item>
         <el-button  @click="switchStep">上一步</el-button>
         <el-button type="primary" @click="submitForm('spotForm')">确定</el-button>
@@ -62,11 +124,12 @@
 <script>
 /**
  * 高级编辑 - hotspots
- * @author yj
- * @version 2017-09-01
+ * @author yj | chenliangshan
+ * @version 2017-09-08
  */
 import { mapState, mapGetters } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
+import Draggable from 'vuedraggable'
 import modal from '../../../../mixins/modal'
 import SceneLink from './SceneLink'
 
@@ -77,6 +140,7 @@ export default {
 
   components: {
     SceneLink,
+    Draggable,
   },
 
   props: {
@@ -108,7 +172,6 @@ export default {
 
       rules: {
         hot_name: [
-          { required: true, message: '请输入热点名称', trigger: 'blur' },
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
         ],
         data_id: [
@@ -135,6 +198,8 @@ export default {
         status: false,
         thumb: '',
       },
+
+      photoSort: [],
     }
   },
 
@@ -162,6 +227,10 @@ export default {
   },
 
   methods: {
+    isArray(data) {
+      return Object.prototype.toString.call(data) === '[object Array]'
+    },
+
     openIconModal() {
       this.$emit('open-modal', 'icon')
     },
@@ -171,11 +240,19 @@ export default {
     },
 
     selectMater(type) {
-      const invokeMater = (kind) => {
-        this.$store.dispatch(EDIT.MATERIAL.INVOKE, kind)
-          .then(({ id, title }) => {
-            this.form = { ...this.form, data_id: `${id}`, title }
-          })
+      const invokeMater = (kind, multiple) => {
+        if (multiple) {
+          // 多选素材
+          this.$store.dispatch(EDIT.MATERIAL.INVOKES, kind, multiple)
+            .then((res) => {
+              this.form = { ...this.form, data_id: [...res] }
+            })
+        } else {
+          this.$store.dispatch(EDIT.MATERIAL.INVOKE, kind)
+            .then(({ id, title }) => {
+              this.form = { ...this.form, data_id: `${id}`, title }
+            })
+        }
       }
       switch (type) {
         case this.typeConfig.ARTICLE:
@@ -189,6 +266,10 @@ export default {
         case this.typeConfig.ROTATE:
           // 物品3D
           invokeMater('rotate')
+          break
+        case this.typeConfig.PHOTO:
+          // 相册-多选
+          invokeMater('photo', true)
           break
         default:
           break
@@ -208,6 +289,8 @@ export default {
           return '请填写链接地址'
         case this.typeConfig.SCENE:
           return '请选择链接场景'
+        case this.typeConfig.VIDEO:
+          return '请输入视频通用分享地址'
         default:
           return '请选择所需素材'
       }
@@ -274,8 +357,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.submitHotSpots()
-        } else {
-          // console.log('error submit!!')
         }
       })
     },
@@ -300,6 +381,7 @@ export default {
 @import "vars.css";
 
 .addspots-sec {
+  padding: 0 20px;
   &__icon {
     width: 30px;
     height: 30px;
@@ -331,6 +413,15 @@ export default {
       width : 145px;
       height: auto;
     }
+  }
+}
+
+.addspots-photo-list {
+  li {
+    width: 90px;
+    float: left;
+    transition: 0.3s;
+    margin-bottom: 10px;
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-    :title="`${title}热点`"
+    :title="dialogTitle"
     :visible="active.hotspots"
     :before-close="() => closeModal('hotspots')"
     @close="closeModalAfter"
@@ -50,12 +50,14 @@ import AddSpotSec from './components/AddSpotSec'
 import IconHotspots from './components/IconHotspots'
 
 const TYPECONFIG = {
-  SCENE: 1,
-  ARTICLE: 6,
-  LINK: 3,
-  ROTATE: 5,
-  AUDIO: 8,
-  OTHER: 7,
+  SCENE: 1, // 场景漫游
+  ARTICLE: 6, // 图文信息
+  LINK: 3, // 超链接
+  ROTATE: 5, // 物品3D
+  AUDIO: 8, // 音频
+  VIDEO: 9, // 视频
+  PHOTO: 10, // 相册
+  OTHER: 7, // 无
 }
 
 export default {
@@ -79,7 +81,9 @@ export default {
         { icon: 'icon-wendang', key: TYPECONFIG.ARTICLE, text: '图文信息', label: '图文信息' },
         { icon: 'icon-liulanqidakailianjie', key: TYPECONFIG.LINK, text: '超链接', label: '超链接' },
         { icon: 'icon-3d1', key: TYPECONFIG.ROTATE, text: '物品3D', label: '物品3D' },
-        { icon: 'icon-shexiang', key: TYPECONFIG.AUDIO, text: '多媒体', label: '多媒体' },
+        { icon: 'icon-xitongxiaoxi', key: TYPECONFIG.AUDIO, text: '音频', label: '音频' },
+        { icon: 'icon-shexiang', key: TYPECONFIG.VIDEO, text: '视频', label: '视频' },
+        { icon: 'icon-xiangce', key: TYPECONFIG.PHOTO, text: '相册', label: '相册' },
         { icon: 'icon-danxuankuang', key: TYPECONFIG.OTHER, text: '无', label: '' },
       ],
       modal: {
@@ -104,6 +108,14 @@ export default {
 
     secInfo() {
       return this.cateType.find(item => (item.key === this.type)).label
+    },
+
+    dialogTitle() {
+      const title = `${this.title}热点`
+      if (this.currentView.name === AddSpotSec.name) {
+        return `${title} (${this.secInfo})`
+      }
+      return `${title}`
     },
   },
 

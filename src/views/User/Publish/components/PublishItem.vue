@@ -19,7 +19,8 @@
 
     <el-row class="publish-item__footer">
       <el-col :span="19">
-        <span class="ellipsis">{{ file.name }}</span>
+        <span class="ellipsis" v-show="file.name">{{ file.name }}</span>
+        <span v-show="!file.name">&nbsp;</span>
       </el-col>
       <el-col :span="5" class="publish-item__footer-tools">
         <slot name="tools">

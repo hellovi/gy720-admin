@@ -47,6 +47,11 @@ export default {
     size: '15MB',
   },
 
+  photo: {
+    mimeTypes: 'jpg,jpeg,png,gif',
+    size: '2MB',
+  },
+
   other: {
     mimeTypes: 'jpg,jpeg,png,mp3',
     size: '15MB',
