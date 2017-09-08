@@ -102,22 +102,8 @@ export default {
   },
 
   methods: {
-    /**
-     * 删除单个消息或已选中的所有消息，若传入id，则为前者，否则为后者
-     * 接口请求成功后，应根据id同时删去store中的对应数据
-     */
     removeMessage(removeId) {
-      this.loading = removeId || 'remove-selected'
-
-      const ids = removeId ? [removeId] : this.checked
-
-      this.$http.post('/user/chat/delete', {
-        ids: ids.map(id => ({ id })),
-      })
-        .then(() => {
-          this.$store.commit(MESSAGE.PRIVATE.DELETE, ids)
-          this.loading = -1
-        })
+      this.remove('private', '/user/chat/delete', removeId)
     },
 
     /**

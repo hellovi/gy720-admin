@@ -8,9 +8,21 @@ export default {
     system: { data: [] },
     private: { data: [] },
     chat: { history: [] },
+    say: { data: [] },
   },
 
   mutations: {
+    [MESSAGE.INIT](state, { type, result }) {
+      state[type] = result
+    },
+
+    [MESSAGE.DELETE](state, { type, ids }) {
+      state[type] = {
+        ...state[type],
+        data: state[type].data.filter(({ id }) => !ids.includes(id)),
+      }
+    },
+
     [MESSAGE.COUNT.INIT](state, counts) {
       state.counts = counts
     },
@@ -22,32 +34,10 @@ export default {
       }
     },
 
-    [MESSAGE.SYSTEM.INIT](state, list) {
-      state.system = list
-    },
-
-    [MESSAGE.SYSTEM.DELETE](state, ids) {
-      state.system = {
-        ...state.system,
-        data: state.system.data.filter(({ id }) => !ids.includes(id)),
-      }
-    },
-
-    [MESSAGE.PRIVATE.INIT](state, list) {
-      state.private = list
-    },
-
     [MESSAGE.PRIVATE.UPDATE](state, { id, content }) {
       const target = state.private.data.find(item => item.id === id)
       if (target) {
         Vue.set(target, 'content', content)
-      }
-    },
-
-    [MESSAGE.PRIVATE.DELETE](state, ids) {
-      state.system = {
-        ...state.system,
-        data: state.private.data.filter(({ id }) => !ids.includes(id)),
       }
     },
 
@@ -74,12 +64,16 @@ export default {
 
     [MESSAGE.SYSTEM.INIT]({ commit }, page = 1) {
       return Http.get(`/user/message?page=${page}`)
-        .then(({ result }) => commit(MESSAGE.SYSTEM.INIT, result))
+        .then(({ result }) => {
+          commit(MESSAGE.INIT, { type: 'system', result })
+        })
     },
 
     [MESSAGE.PRIVATE.INIT]({ commit }, page = 1) {
       return Http.get(`/user/chat?page=${page}`)
-        .then(({ result }) => commit(MESSAGE.PRIVATE.INIT, result))
+        .then(({ result }) => {
+          commit(MESSAGE.INIT, { type: 'private', result })
+        })
     },
 
     [MESSAGE.PRIVATE.HISTORY.INIT]({ commit }, userId) {
@@ -91,6 +85,13 @@ export default {
           commit(MESSAGE.PRIVATE.UPDATE, { id, content })
 
           commit(MESSAGE.PRIVATE.HISTORY.INIT, result)
+        })
+    },
+
+    [MESSAGE.SAY.INIT]({ commit }) {
+      return Http.get('/user/panocomment')
+        .then(({ result }) => {
+          commit(MESSAGE.INIT, { type: 'say', result })
         })
     },
   },
