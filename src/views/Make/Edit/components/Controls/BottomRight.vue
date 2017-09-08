@@ -15,10 +15,17 @@
     ></circle-button>
 
     <circle-button
+      label="收藏"
+      icon="aixin2"
+      v-model="showCollect"
+      @ui-switch="val => uiSwitch(val, 'show_comment')"
+    ></circle-button>
+
+    <circle-button
       label="点赞"
       icon="zan"
       v-model="showHit"
-      @ui-switch="val => uiSwitch(val, 'show_hit')"
+      @ui-switch="val => uiSwitch(val, 'show_comment')"
     ></circle-button>
   </div>
 </template>
@@ -61,6 +68,15 @@ export default {
       },
       set(show_comment) {
         this.$store.commit(EDIT.PANO.UPDATE, { show_comment })
+      },
+    },
+
+    showCollect: {
+      get() {
+        return this.panoInfo.show_collect
+      },
+      set(show_collect) {
+        this.$store.commit(EDIT.PANO.UPDATE, { show_collect })
       },
     },
 
