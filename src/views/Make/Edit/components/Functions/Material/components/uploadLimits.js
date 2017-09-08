@@ -8,7 +8,7 @@ export default {
     mimeTypes: 'jpg,jpeg,png',
     size: '2MB',
     dimension: w => w >= 500,
-    dimensionTip: '图片宽度必须大于等于500像素',
+    dimensionTip: '宽度大于等于500像素',
   },
 
   hotspot: {
@@ -22,7 +22,7 @@ export default {
     size: '2MB',
     ratio: [1, 1],
     dimension: w => w >= 200,
-    dimensionTip: '图片宽度必须大于等于200像素',
+    dimensionTip: '宽度大于等于200像素',
   },
 
   ad: {
@@ -30,7 +30,7 @@ export default {
     size: '2MB',
     ratio: [1, 1],
     dimension: w => w >= 300,
-    dimensionTip: '图片宽度必须大于等于300像素',
+    dimensionTip: '宽度大于等于300像素',
   },
 
   thumb: {
@@ -39,7 +39,7 @@ export default {
     ratio: [1, 1],
     dimension: (w, h) => w === 200 && h === 200,
 
-    dimensionTip: '图片尺寸必须为200*200像素',
+    dimensionTip: '等于200*200像素',
   },
 
   audio: {

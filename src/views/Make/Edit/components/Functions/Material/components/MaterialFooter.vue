@@ -31,6 +31,8 @@
       <ul v-else class="material-footer__desc list">
         <li>支持的文件格式：{{ limit.mimeTypes }}</li>
         <li>文件大小：{{ limit.size }}以内</li>
+        <li v-if="limit.dimensionTip">文件尺寸：{{ limit.dimensionTip }}</li>
+        <li v-if="limit.ratio">文件比例：{{ limit.ratio.join(':') }}</li>
       </ul>
     </div>
   </footer>
@@ -121,7 +123,7 @@ export default {
       const { width, height } = image
       const currentRatio = width / height
       if (dimension && !dimension(width, height)) {
-        this.$message.error(dimensionTip)
+        this.$message.error(`图片必须${dimensionTip}`)
         return false
       } else if (ratio) {
         const [w, h] = ratio
