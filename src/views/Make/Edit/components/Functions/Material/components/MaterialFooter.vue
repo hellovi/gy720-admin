@@ -20,6 +20,7 @@
         :size="limit.size"
         :static-url="uploadPath"
         :auto-start="false"
+        @init="init"
         @files-added="filesAdded"
         @upload-progress="uploadProgress"
         @file-uploaded="fileUploaded"
@@ -119,19 +120,25 @@ export default {
     isFileValid({ ratio, dimension, dimensionTip }, image) {
       const { width, height } = image
       const currentRatio = width / height
-      const [w, h] = ratio
-
-      if (!dimension(width, height)) {
-        this.files.pop()
+      if (dimension && !dimension(width, height)) {
         this.$message.error(dimensionTip)
         return false
-      } else if (currentRatio !== w / h) {
-        this.$message.error(`图片比例必须为${w}:${h}`)
-        this.files.pop()
-        return false
+      } else if (ratio) {
+        const [w, h] = ratio
+        if (currentRatio !== w / h) {
+          this.$message.error(`图片比例必须为${w}:${h}`)
+          return false
+        }
       }
 
       return true
+    },
+
+    /**
+     * 初始化上传组件
+     */
+    init(uploader) {
+      this.uploader = uploader
     },
 
     /**
@@ -140,27 +147,32 @@ export default {
      * 如果是图片，要做额外的比例检查，检查不通过移除该文件
      */
     filesAdded(up, files) {
-      files.forEach(({ id, name, type }) => {
-        const file = {
-          id,
-          name,
+      files.forEach((file) => {
+        const fileObj = {
+          id: file.id,
+          name: file.name,
           percent: 0,
         }
         this.files.push(file)
 
-        if (type.includes('image/')) {
+        if (file.type.includes('image/')) {
           const image = new Image()
           image.style.display = 'none'
           image.addEventListener('load', () => {
             const isValid = this.isFileValid(this.limit, image)
             if (isValid) {
-              file.percent = 1
+              fileObj.percent = 1
               up.start()
+            } else {
+              this.files.pop()
+              this.uploader.removeFile(file)
             }
           })
-          image.src = URL.createObjectURL(files[0].getNative())
+
+          // 这行代码谁写的，可能存在兼容性问题
+          image.src = URL.createObjectURL(file.getNative())
         } else {
-          file.percent = 1
+          fileObj.percent = 1
           up.start()
         }
       })
