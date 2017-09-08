@@ -54,7 +54,8 @@
           <img class="buy-price" :src="require('@/assets/icon-99.png')" alt="99元/年">
           <div class="buy-action">
             <div>作品按次收费</div>
-            <el-button type="primary" @click="visible2 = true">我的作品</el-button>
+            <!-- <el-button type="primary" @click="visible2 = true">我的作品</el-button> -->
+            <el-button type="primary" @click="$router.push('/user-client/works')">我的作品</el-button>
           </div>
         </section>
       </el-col>
@@ -104,7 +105,7 @@ export default {
 
       visible: false,
 
-      visible2: false,
+      visible2: false, // 测试公共购买组件
     }
   },
 
