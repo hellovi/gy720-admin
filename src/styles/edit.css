@@ -43,7 +43,7 @@
 }
 
 /* 表单字段提示 */
-.tip-mark {
+.tip-mark, .tip-mark-plus {
   position: relative;
   z-index: 10;
   display: inline-block;
@@ -56,7 +56,46 @@
   font-size: 12px;
   line-height: 16px;
   user-select: none;
+}
 
+.tip-mark-plus {
+  &__content {
+    transform: translateX(4px);
+
+    &.is-dark {
+       padding: 0.5em 0.76em;
+       border-radius: 3px;
+       margin-left: 5px;
+       background-color: var(--color-info);
+       box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
+       text-align: left;
+       line-height: 1.4;
+     }
+
+    &[x-placement^="right"] {
+      .popper__arrow, .popper__arrow::after {
+        border-right-color: var(--color-info);
+        }
+      &.move-in-linear {
+        &-enter-active, &-leave-active {
+           transition: 0.2s;
+        }
+
+        &-enter, &-leave-to {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+
+        &-enter-to, &-leave {
+          opacity: 1;
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+}
+
+.tip-mark {
   &:hover {
     &::before,
     &::after {
@@ -103,7 +142,8 @@
   position: relative;
 
   &--vip::before,
-  .tip-mark {
+  .tip-mark, .tip-mark-plus {
+    margin-left: 8px;
     position: absolute;
     top: 50%;
     left: 100%;
@@ -132,10 +172,6 @@
       background-color: #eef1f6;
       color: #bbb;
     }
-  }
-
-  .tip-mark {
-    margin-left: 8px;
   }
 }
 
