@@ -39,7 +39,7 @@
  * @version 2017-09-05
  */
 
-import defaultWxicon from '@/assets/wx_friend_icon.jpg'
+import placeholderImage from '@/assets/placeholder.jpg'
 import { EDIT } from '@/store/mutationTypes'
 
 export default {
@@ -55,7 +55,7 @@ export default {
   computed: {
     wxIconSrc() {
       const { wx_friend_icon } = this.form
-      return wx_friend_icon ? this.$url.static(wx_friend_icon) : defaultWxicon
+      return wx_friend_icon ? this.$url.static(wx_friend_icon) : placeholderImage
     },
   },
 
