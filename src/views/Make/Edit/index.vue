@@ -165,15 +165,18 @@ export default {
 .edit-control {
   overflow: hidden;
   color: #fff;
+}
 
+.edit-control__top-center,
+.edit-control__top-right {
   .el-button {
     height: 30px;
     padding-top: 0;
     padding-bottom: 0;
+  }
 
-    .iconfont {
-      font-size: 20px;
-    }
+  .iconfont {
+    font-size: 20px;
   }
 }
 </style>

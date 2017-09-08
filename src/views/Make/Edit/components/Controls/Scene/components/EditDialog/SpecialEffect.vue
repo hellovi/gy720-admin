@@ -1,27 +1,22 @@
 <template>
   <div class="edit-functions__scene-effect">
-    <section>
-      <h3>设置画面特效</h3>
-      <el-form-item>
-        <label
-          :class="{
-            'edit-effect-item': true,
-            'active': effect.value === data.scene_effect
-          }"
-          v-for="effect in effects"
-          :key="effect.value"
-          @click="onChooseEffect(effect.value)"
-        >
-          <input type="checkbox" name="" id="">
-          <i class="iconfont" :class="effect.icon"></i>
-          <span>{{ effect.text }}</span>
-        </label>
-      </el-form-item>
-      <!-- 公共设置 -->
-      <v-public-config
-        v-model="public.effect"
-      ></v-public-config>
-    </section>
+    <el-form-item>
+      <label
+        v-for="effect in effects"
+        :key="effect.value"
+        :class="{
+          'edit-effect-item': true,
+          'active': effect.value === form.scene_effect
+        }"
+        @click="onChooseEffect(effect.value)"
+      >
+        <input type="checkbox" name="scene_effect" :value="effect.id">
+        <i class="iconfont" :class="effect.icon"></i>
+        <span>{{ effect.text }}</span>
+      </label>
+    </el-form-item>
+
+    <apply-options v-model="form.effect"></apply-options>
   </div>
 </template>
 
@@ -30,23 +25,20 @@
  * 场景设置 - 场景特效
  *
  * @author luminghuai | huojinzhao
+ * @version 2017-09-08
  */
 
-import vPublicConfig from './PublicConfig'
+import ApplyOptions from './ApplyOptions'
 
 export default {
   name: 'edit-scene-setting-effect',
 
   components: {
-    vPublicConfig,
+    ApplyOptions,
   },
 
   props: {
-    data: {
-      type: Object,
-      required: true,
-    },
-    public: {
+    form: {
       type: Object,
       required: true,
     },
@@ -71,7 +63,7 @@ export default {
 
   methods: {
     onChooseEffect(value) {
-      this.data.scene_effect = value
+      this.form.scene_effect = value
     },
   },
 }
@@ -108,20 +100,6 @@ export default {
       color: #fff;
     }
 
-  }
-}
-
-.edit-functions__scene-effect {
-
-  & .effect {
-
-    &__sunlight {
-
-      & label {
-        font-size: 16px;
-        font-weight: bold;
-      }
-    }
   }
 }
 </style>

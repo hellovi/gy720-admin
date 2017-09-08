@@ -9,57 +9,10 @@
     ></scene-list>
 
     <!-- 场景设置弹框 -->
-    <el-dialog
-      :visible.sync="configModal.active"
-      title="场景设置"
-      size="large"
-      :before-close="closeSceneConfig"
-    >
-      <!-- 标签切换 -->
-      <nav class="edit-setting__nav">
-        <ul class="list clearfix">
-          <li
-            :class="{
-              active: configModal.tabType === index
-            }"
-            v-for="(tab, index) in tabs" :key="tab"
-            @click="configModal.tabType = index"
-          >{{ tab }}</li>
-        </ul>
-      </nav>
-      <!-- 表单主体 -->
-      <el-form class="edit-setting__form">
-        <app-form-alert :contents="errorReasons"></app-form-alert>
-        <v-basic
-          v-show="configModal.tabType === 0"
-          :data="sceneInfo"
-          :public="publicInfo"
-        ></v-basic>
-        <v-special-effect
-          v-show="configModal.tabType === 1"
-          :data="sceneInfo"
-          :public="publicInfo"
-        ></v-special-effect>
-        <v-supplement
-          v-show="configModal.tabType === 2"
-          :data="sceneInfo"
-          :public="publicInfo"
-        ></v-supplement>
-        <v-narrate
-          v-show="configModal.tabType === 3"
-          :data="sceneInfo"
-          :public="publicInfo"
-        ></v-narrate>
-      </el-form>
-      <!-- 控制按钮 -->
-      <div slot="footer" class="edit-setting__footer">
-        <el-button
-          type="primary"
-          :loading="configModal.confirmLoading"
-          @click="editConfig"
-        >确定</el-button>
-      </div>
-    </el-dialog>
+    <edit-dialog
+      :visible.sync="editDialog"
+      :scene="editScene"
+    ></edit-dialog>
   </div>
 </template>
 
@@ -70,29 +23,20 @@
  * @author luminghuai | huojinzhao
  */
 
-
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import deleteItem from '@/mixins/deleteItem'
-import Ajax from './modules/ajax'
-import modal from '../../../mixins/modal'
 import SceneList from './components/SceneList'
-import vBasic from './components/Basic'
-import vSpecialEffect from './components/SpecialEffect'
-import vSupplement from './components/Supplement'
-import vNarrate from './components/Narrate'
+import EditDialog from './components/EditDialog'
 
 export default {
   name: 'edit-scene',
 
-  mixins: [modal, deleteItem],
+  mixins: [deleteItem],
 
   components: {
     SceneList,
-    vBasic,
-    vSpecialEffect,
-    vSupplement,
-    vNarrate,
+    EditDialog,
   },
 
   props: {
@@ -102,21 +46,13 @@ export default {
     },
   },
 
-  data: () => ({
-    tabs: ['基本信息', '场景特效', '补天补地', '语音解说'],
-
-    sceneInfo: {},
-
-    publicInfo: {},
-
-    configModal: {
-      active: false,
-      confirmLoading: false,
-      tabType: 0,
-    },
-
-    errorReasons: {},
-  }),
+  data() {
+    return {
+      panoId: null,
+      editDialog: false,
+      editScene: {}, // 编辑中的场景
+    }
+  },
 
   computed: {
     activeSceneId() {
@@ -162,103 +98,57 @@ export default {
       this.$store.dispatch(
         EDIT.HOTSPOTS.INIT.SPOTS,
         {
-          pano_id: Ajax.defaultPanoId,
+          pano_id: this.$route.query.pano_id,
           scene_id: sceneId,
         },
       )
     },
 
-    /* ------ Assitance ------ */
-
-    /* --- config --- */
-
+    /**
+     * 打开场景编辑弹框
+     * 同时设置当前编辑的弹框的信息
+     */
     openSceneConfig(scene) {
-      this.sceneInfo = { ...scene }
-      this.publicInfo = { ...this.public }
-      this.configModal.active = true
+      this.editScene = scene
+      this.editDialog = true
     },
 
-    closeSceneConfig() {
-      this.configModal = {
-        active: false,
-        confirmLoading: false,
-        tabType: 0,
-      }
-      this.errorReasons = {}
-    },
-
-    /* ------ Application ------ */
-
-    /* --- deletion --- */
-
+    /**
+     * 确认删除场景
+     * 不允许删除当前选中场景
+     */
     preDeleteScene(sceneId) {
       if (sceneId === this.activeSceneId) {
-        this.$message({
-          type: 'error',
-          message: '当前选中场景不能删除',
-        })
+        this.$message.error('当前选中场景不能删除')
       } else {
         this.onDeleteItem({
           title: '删除场景',
           message: '此操作将永久删除该分类，是否继续？',
           itemId: sceneId,
           ajax: this.deleteScene,
-          success: this.sceneDeletionSucceed,
         })
       }
     },
-
+    /**
+     * 删除场景
+     */
     deleteScene(sceneId) {
-      return Ajax.removeScene(sceneId)
+      return this.$http.delete(`/user/scene/${sceneId}?pano_id=${this.panoId}`)
+        .then(() => this.$store.commit(EDIT.SCENE.DELETE, sceneId))
     },
 
-    sceneDeletionSucceed(sceneId) {
-      this.$store.commit(EDIT.SCENE.DELETE, sceneId)
-    },
-
-    /* --- edition --- */
-
-    editConfig() {
-      this.configModal.confirmLoading = true
-      Ajax.replaceScene({
-        ...this.sceneInfo,
-        ...this.publicInfo,
-      })
-        .then(() => this.editConfigSucceed())
-        .catch((errors) => {
-          this.configModal.confirmLoading = false
-          this.errorReasons = errors
-        })
-    },
-
-    editConfigSucceed() {
-      // 重新请求列表
-      Ajax.readScenelist()
-        // 更新store和公共设置状态
-        .then(list => this.$store.dispatch(EDIT.SCENE.UPDATE_LIST, list))
-      // 关闭编辑
-      this.closeSceneConfig()
-      // 结果提示
-      this.$message({
-        type: 'success',
-        message: '设置成功',
-      })
-    },
-
-    /* --- order --- */
-
+    /**
+     * 场景排序
+     */
     resortScenes() {
-      const ids = this.scenelist
-        .map(({ id }) => ({ id }))
-      Ajax.replaceScenesOrder({ sort: ids })
-        .then(() => {
-          this.$message.success('操作成功')
-        })
+      const sort = this.scenelist.map(({ id }) => ({ id }))
+      this.$http.post(`/user/scene/sort?pano_id=${this.panoId}`, { sort })
+        .then(() => this.$message.success('操作成功'))
     },
   },
 
   created() {
-    Ajax.defaultPanoId = this.$route.query.pano_id
+    this.panoId = this.$route.query.pano_id
   },
 }
 </script>
