@@ -33,7 +33,7 @@ export default {
 @import "vars.css";
 
 .app-body {
-  max-width: var(--content-width);
+  width: var(--content-width);
   min-height: var(--app-body-min-height);
   margin: 0 auto var(--app-user-margin-bottom);
   overflow: hidden;
