@@ -99,7 +99,6 @@ export default {
         fillColor: '#fff',
       }).toDataURL('image/jpeg')
       this.$emit('crop', { ...this.cropInfo, preview: srcUrl })
-      this.close()
     },
   },
 
