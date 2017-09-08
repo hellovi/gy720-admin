@@ -18,6 +18,7 @@
       :modal="$attrs.modal"
     >
       <app-cropper
+        :options="$attrs['crop-options']"
         :src="previemImg"
         :crop-width="$attrs['crop-width']"
         :crop-height="$attrs['crop-height']"
@@ -253,6 +254,7 @@ export default {
      * 确认剪裁后，存储剪裁信息，并触发上传
      */
     crop(data) {
+      this.cropShow = false
       this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
       if (this.autoStart) {
         this.uploader.start()
