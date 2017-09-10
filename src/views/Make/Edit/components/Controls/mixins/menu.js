@@ -52,7 +52,7 @@ export default {
 
       this.onDeleteItem({
         title: '删除菜单',
-        message: '此操作将永久删除该分类，是否继续？',
+        message: '此操作将永久删除该菜单，是否继续？',
         itemId: id,
         ajax: this.deleteMenu,
       })
