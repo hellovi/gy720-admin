@@ -1,6 +1,6 @@
 <template>
   <div class="message">
-    <app-tab :data="tabs" :counts="counts"></app-tab>
+    <app-tab :data="tabs"></app-tab>
     <keep-alive>
       <router-view class="message__content"></router-view>
     </keep-alive>
@@ -30,16 +30,9 @@ export default {
         { to: '/user-client/message/private', icon: '&#xe639;', text: '私信' },
         { to: '/user-client/message/say', icon: '&#xe611;', text: '说一说' },
       ],
-      counts: [],
     }
   },
 
-  created() {
-    this.$http.get('/user/message/unreadcount')
-      .then(({ result: { counts } }) => {
-        this.counts = [counts.sys, counts.person, counts.comment]
-      })
-  },
 }
 </script>
 

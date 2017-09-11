@@ -33,8 +33,7 @@
               <a href="#"><img :src="$url.static(message.avatar)" :alt="message.nickname"></a>
             </div>
             <div>
-              <!-- 这里及上面的头像似乎应该转跳到用户主页面，但目前地址还未确定 -->
-              <a href="#" class="hover-primary">{{ message.nickname }}</a>
+              <a :href="`/author/view/${message.user_id}`" class="hover-primary">{{ message.nickname }}</a>
               <div class="message-summary">{{ message.content }}</div>
             </div>
           </td>
