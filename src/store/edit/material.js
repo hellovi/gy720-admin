@@ -5,8 +5,11 @@ import { EDIT } from '../mutationTypes'
 const { MATERIAL, ROTATE } = EDIT
 
 // 自定义事件，用于MATERIAL.INVOKE和MATERIAL.SELECT中
-export const customEvent = document.createEvent('Event')
-customEvent.initEvent('selectMaterial', false, true)
+const selectMaterial = document.createEvent('Event')
+selectMaterial.initEvent('selectMaterial', false, true)
+// 自定义事件，用于MATERIAL.INVOKES和MATERIAL.SELECTS中
+const selectMaterials = document.createEvent('Event')
+selectMaterials.initEvent('selectMaterials', false, true)
 
 export default {
   state: {
@@ -81,7 +84,7 @@ export default {
      */
     [MATERIAL.SELECT](state, item) {
       state.selectedItem = item
-      window.dispatchEvent(customEvent)
+      window.dispatchEvent(selectMaterial)
     },
     /*
      * 调用素材选中多个素材
@@ -89,7 +92,9 @@ export default {
      */
     [MATERIAL.SELECTS](state, item) {
       state.selectedItems = item
-      window.dispatchEvent(customEvent)
+      if (item.length) {
+        window.dispatchEvent(selectMaterials)
+      }
     },
 
     /** 物品3D分类 */
@@ -179,7 +184,6 @@ export default {
      * 其它模块调用素材框
      * 把素材框设置为被调用状态（invoked），设置素材框的选中类型，打开素材框
      * 监听自定义事件，在选中某个素材后返回该素材，并重置上述改动
-     * multiple 为多选
      */
     [MATERIAL.INVOKE]({ commit, state }, type) {
       commit(MATERIAL.INVOKE, true)
@@ -206,7 +210,7 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
 
       return new Promise((resolve) => {
-        window.addEventListener('selectMaterial', () => {
+        window.addEventListener('selectMaterials', () => {
           resolve(state.selectedItems)
           commit(MATERIAL.CHANGE, 'panos')
           commit(MATERIAL.INVOKE, false)

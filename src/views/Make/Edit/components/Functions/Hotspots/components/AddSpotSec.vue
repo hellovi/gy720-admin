@@ -73,24 +73,25 @@
       >
         <div class="addspots-sec__photo">
           <el-button type="primary" size="small" @click="selectMater(type)">选择</el-button>
-          <div class="addspots-sec__photo-list" v-if="isArray(form.data_id) && form.data_id.length">
+          <div class="addspots-sec__photo-item" v-if="isArray(form.data_id) && form.data_id.length">
             <span class="tip-wrapper">
-            <span>已选图片列表</span>
-            <el-tooltip
-              class="tip-mark-plus"
-              popper-class="tip-mark-plus__content"
-              transition="move-in-linear"
-              placement="right-start"
-            >
-              <span>?</span>
-              <div slot="content">最多支持选择20张图片<br/>拖拽图片可以排序</div>
-            </el-tooltip>
-          </span>
+              <span>已选图片列表</span>
+              <el-tooltip
+                class="tip-mark-plus"
+                popper-class="tip-mark-plus__content"
+                transition="move-in-linear"
+                placement="right-start"
+              >
+                <span>?</span>
+                <div slot="content">最多支持选择20张图片<br/>拖拽图片可以排序</div>
+              </el-tooltip>
+            </span>
             <div>
               <draggable v-model="form.data_id">
                 <transition-group tag="ul" class="addspots-photo-list list">
                   <li v-for="list in form.data_id" :key="list.id">
                     <img :src="$url.static(list.file_path)" width="80" height="50" alt="list.title">
+                    <i role="button" class="iconfont hover-warning" @click.stop="removeDataId(list)">&#xe615;</i>
                   </li>
                 </transition-group>
               </draggable>
@@ -164,10 +165,10 @@ export default {
   data() {
     return {
       form: {
-        hot_name: '',
-        data_id: '',
-        title: '',
-        icon_info: { thumb: '', id: '' },
+        hot_name: null,
+        data_id: null,
+        title: null,
+        icon_info: { thumb: null, id: null },
       },
 
       rules: {
@@ -175,7 +176,7 @@ export default {
           { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
         ],
         data_id: [
-          { required: true, message: this.preDataRule(), trigger: 'blur' },
+          { type: this.ruleType('data_id'), required: true, message: this.preDataRule(), trigger: 'blur' },
         ],
         icon_info: [
           {
@@ -245,7 +246,11 @@ export default {
           // 多选素材
           this.$store.dispatch(EDIT.MATERIAL.INVOKES, kind, multiple)
             .then((res) => {
-              this.form = { ...this.form, data_id: [...res] }
+              this.form = { ...this.form, data_id: [...res, ...this.form.data_id] }
+              this.$nextTick(() => {
+                // 更新校验状态
+                this.$refs.spotForm.validateField('data_id')
+              })
             })
         } else {
           this.$store.dispatch(EDIT.MATERIAL.INVOKE, kind)
@@ -291,6 +296,8 @@ export default {
           return '请选择链接场景'
         case this.typeConfig.VIDEO:
           return '请输入视频通用分享地址'
+        case this.typeConfig.PHOTO:
+          return '请选择相册素材'
         default:
           return '请选择所需素材'
       }
@@ -319,6 +326,38 @@ export default {
         // diy_src: '', //自定义热点图标url
       }
       return postSpotsData
+    },
+
+    // 动态校验字段类型
+    ruleType(name) {
+      let type
+      switch (name) {
+        case 'data_id':
+          if (this.type === this.typeConfig.PHOTO) {
+            type = 'array'
+          } else {
+            type = 'string'
+          }
+          break
+        default:
+          type = 'string'
+          break
+      }
+      return type
+    },
+
+    // 移除data_id数据
+    removeDataId(item) {
+      switch (this.type) {
+        case this.typeConfig.PHOTO:
+          this.form.data_id = this.form.data_id.filter(({ id }) => id !== item.id)
+          // 更新STORE
+          this.$store.commit(EDIT.MATERIAL.SELECTS, this.form.data_id)
+          break
+        default:
+
+          break
+      }
     },
 
     submitHotSpots() {
@@ -367,10 +406,16 @@ export default {
   },
 
   mounted() {
+    const { data_title, hot_name, data_id } = this.editInfo
+
+    // 初始化MATERIAL.SELECTS 数据
+    if (this.type === this.typeConfig.PHOTO) {
+      this.form.data_id = []
+      this.$store.commit(EDIT.MATERIAL.SELECTS, data_id || [])
+    }
+
     if (this.editStatus) {
       // 编辑状态
-      // resetFields是重置到created时的状态
-      const { data_title, hot_name, data_id } = this.editInfo
       this.form = { hot_name, data_id, title: data_title }
     }
   },
@@ -422,6 +467,21 @@ export default {
     float: left;
     transition: 0.3s;
     margin-bottom: 10px;
+    position: relative;
+    cursor: move;
+    &:hover {
+      .iconfont {
+       display: inline-block;
+      }
+    }
+    .iconfont {
+      display: none;
+      line-height: 1.5;
+      position: absolute;
+      top: 2px;
+      right: 12px;
+      cursor: pointer;
+    }
   }
 }
 
