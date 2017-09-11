@@ -32,12 +32,20 @@
             <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
           <el-col :span="4">
-            <el-button v-show="checked.length && !invoked" type="text" @click="moveToCate">移动到其他相册</el-button>
-            <span v-show="!checked.length || invoked">&nbsp;</span>
+            <el-button
+              :disabled="!(checked.length && !invoked)"
+              size="small"
+              type="info"
+              @click="moveToCate"
+            >移动到其他相册</el-button>
           </el-col>
           <el-col :span="4">
-            <el-button v-show="checked.length && !invoked" type="text" @click="removeChecked">删除选中的素材</el-button>
-            <span v-show="!checked.length || invoked">&nbsp;</span>
+            <el-button
+              :disabled="!(checked.length && !invoked)"
+              size="small"
+              type="danger"
+              @click="removeChecked"
+            >删除选中的素材</el-button>
           </el-col>
           <el-col class="text-right" :span="8">
             <div class="pano-material__header__count">
@@ -460,9 +468,6 @@ export default {
 
     &__count {
       margin-right: 1em;
-    }
-    .el-button {
-      padding: 8px 0;
     }
   }
 
