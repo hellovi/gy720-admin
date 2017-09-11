@@ -6,7 +6,7 @@
         <li><el-button size="mini" type="primary" @click="upload">上传图片</el-button></li>
         <li><el-button size="mini" type="primary" @click="manage">管理图片</el-button></li>
         <li><el-button size="mini" @click="update">修改</el-button></li>
-        <li><el-button size="mini">预览</el-button></li>
+        <li><el-button size="mini" @click="viewer">预览</el-button></li>
         <li><el-button type="warning" size="mini" @click.stop="remove">删除</el-button></li>
       </ul>
     </div>
@@ -36,6 +36,10 @@ export default {
 
     update() {
       this.$emit('update', this.item.id)
+    },
+
+    viewer() {
+      this.$emit('viewer', this.item)
     },
 
     remove() {

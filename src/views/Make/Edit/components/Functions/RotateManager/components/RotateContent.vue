@@ -8,6 +8,7 @@
         @open-upload="openUpload"
         @open-manage="openImages"
         @update="update"
+        @viewer="viewerDialog"
         @remove="removeObject"
       ></rotate-item>
 
@@ -42,6 +43,17 @@
     >
       <rotate-images v-if="dialog.images" :id="activeItemId"></rotate-images>
     </el-dialog>
+
+    <!--预览-->
+    <el-dialog
+      :title="viewer.title"
+      :visible.sync="viewer.modal"
+      :modal="false"
+      size="large"
+      :close-on-click-modal="false"
+    >
+      <rotate-view :data="rotateViewData" v-if="viewer.modal"></rotate-view>
+    </el-dialog>
   </div>
 </template>
 
@@ -59,6 +71,11 @@ import RotateForm from './RotateForm'
 import RotateUpload from './RotateUpload'
 import RotateImages from './RotateImages'
 
+import viewData from './RotateView/data'
+import viewData2 from './RotateView/data2'
+
+const RotateView = () => import('./RotateView')
+
 export default {
   name: 'rotate-content',
 
@@ -67,6 +84,7 @@ export default {
     RotateForm,
     RotateUpload,
     RotateImages,
+    RotateView,
   },
 
   data() {
@@ -77,6 +95,10 @@ export default {
       },
       loading: false,
       activeItemId: null,
+      viewer: {
+        modal: false,
+      },
+      rotateViewData: viewData,
     }
   },
 
@@ -120,6 +142,19 @@ export default {
 
     pageChange(page) {
       this.getList(page)
+    },
+
+    /**
+     * 预览
+     */
+    viewerDialog({ id, title }) {
+      this.viewer.modal = true
+      this.viewer.title = title
+      if (id !== 3) {
+        this.rotateViewData = { ...viewData2 }
+      } else {
+        this.rotateViewData = { ...viewData }
+      }
     },
 
     /**
