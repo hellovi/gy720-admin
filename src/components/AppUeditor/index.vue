@@ -1,5 +1,5 @@
 <template>
-  <div :id="editorId"></div>
+  <div :id="editorId" v-loading.body="loading"></div>
 </template>
 
 <script>
@@ -46,6 +46,7 @@
 
     data: () => ({
       instance: null,
+      loading: true,
     }),
 
     computed: {
@@ -74,6 +75,9 @@
       },
       initEditor() {
         this.$nextTick(() => {
+          // 关闭loading
+          this.loading = false
+
           // 重置UEditor全局UE.ajax方法
           window.UE.ajax = UEajax()
 
