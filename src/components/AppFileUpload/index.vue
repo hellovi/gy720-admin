@@ -162,6 +162,13 @@ export default {
           },
 
           /**
+           * 文件删除回调处理相关事情
+           */
+          FilesRemoved: (up, files) => {
+            this.$emit('files-removed', up, files)
+          },
+
+          /**
            * 每个文件上传前,处理相关的事情
            * 可用于动态地添加表单参数等
            */
