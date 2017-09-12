@@ -19,11 +19,11 @@
 
     <div class="rotate-upload__files">
       <ul class="list clearfix" v-show="files.length">
-        <li class="float-left" v-for="(file, i) in files" :key="file.name">
+        <li class="float-left" v-for="(file, i) in files" :key="i">
           <figure class="rotate-upload-fig">
             <img :src="file.preview" :alt="file.name">
             <el-progress :percentage="file.percent || 0" :status="file.result" :show-text="!!file.result"></el-progress>
-            <figcaption>文件名称</figcaption>
+            <figcaption class="ellipsis">{{ file.name }}</figcaption>
           </figure>
         </li>
       </ul>
@@ -141,6 +141,12 @@ export default {
       this.loading = false
       this.$message.success('上传完成，请点击预览查看')
     },
+
+    // 删除文件
+    removeFile(file) {
+      // TODO 删除文件
+      this.uploader.removeFile(file)
+    },
   },
 }
 </script>
@@ -174,9 +180,12 @@ export default {
   }
 
   &__files {
-    height: 160px;
+    min-height: 160px;
+    max-height: 220px;
     padding: 20px 0;
     text-align: center;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .app-file-upload {
       margin-top: 40px;
@@ -206,8 +215,10 @@ export default {
   }
 
   & > figcaption {
+    max-width: 130px;
     margin-top: 5px;
     font-size: 12px;
+    height: 16px;
     text-align: center;
   }
 }

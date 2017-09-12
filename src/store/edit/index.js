@@ -26,6 +26,7 @@ export default {
       initialview: false,
       restrictView: false,
       object3d: false,
+      object3dView: false,
       imageTextEdit: false,
       summary: false,
       vipInfo: false,

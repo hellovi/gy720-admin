@@ -18,7 +18,10 @@
     <!--限制视角-->
     <restrict-view v-if="active.restrictView"></restrict-view>
 
+    <!--物品3D-->
     <rotate-manager></rotate-manager>
+    <!--物品3D-预览-->
+    <rotate-view></rotate-view>
 
     <edit-summary></edit-summary>
   </div>
@@ -46,6 +49,7 @@ import Initialview from './Initialview'
 import VipInfo from './VipInfo'
 import RestrictView from './RestrictView'
 import RotateManager from './RotateManager'
+import RotateView from './RotateManager/components/RotateView/'
 import EditSummary from './Summary'
 
 export default {
@@ -67,6 +71,7 @@ export default {
     VipInfo,
     RestrictView,
     RotateManager,
+    RotateView,
     EditSummary,
   },
 

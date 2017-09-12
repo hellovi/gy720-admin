@@ -31,6 +31,7 @@ export default {
     },
     selectedItem: {},
     selectedItems: [],
+    object3dItem: {},
     // 物品3D分类
     rotateCates: [],
     activeRotateCateId: null,
@@ -95,6 +96,14 @@ export default {
       if (item.length) {
         window.dispatchEvent(selectMaterials)
       }
+    },
+    /**
+     * 当前查看物品3D的数据
+     * @param state
+     * @param item {Object}
+     */
+    [MATERIAL.SELECT_OBJECT3D](state, item) {
+      state.object3dItem = item
     },
 
     /** 物品3D分类 */

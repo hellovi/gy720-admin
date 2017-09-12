@@ -30,6 +30,7 @@
       title="上传物品3D图片"
       :visible.sync="dialog.upload"
       :modal="false"
+      :close-on-click-modal="false"
       custom-class="rotate-upload-dialog"
     >
       <rotate-upload v-if="dialog.upload" :id="activeItemId" @close="dialog.upload = false"></rotate-upload>
@@ -39,20 +40,10 @@
       title="管理图片"
       :visible.sync="dialog.images"
       :modal="false"
+      :close-on-click-modal="false"
       custom-class="rotate-image-dialog"
     >
       <rotate-images v-if="dialog.images" :id="activeItemId"></rotate-images>
-    </el-dialog>
-
-    <!--预览-->
-    <el-dialog
-      :title="viewer.title"
-      :visible.sync="viewer.modal"
-      :modal="false"
-      size="large"
-      :close-on-click-modal="false"
-    >
-      <rotate-view :data="rotateViewData" v-if="viewer.modal"></rotate-view>
     </el-dialog>
   </div>
 </template>
@@ -70,14 +61,14 @@ import RotateItem from './RotateItem'
 import RotateForm from './RotateForm'
 import RotateUpload from './RotateUpload'
 import RotateImages from './RotateImages'
-
-import viewData from './RotateView/data'
-import viewData2 from './RotateView/data2'
+import modal from '../../../../mixins/modal'
 
 const RotateView = () => import('./RotateView')
 
 export default {
   name: 'rotate-content',
+
+  mixins: [modal],
 
   components: {
     RotateItem,
@@ -95,10 +86,7 @@ export default {
       },
       loading: false,
       activeItemId: null,
-      viewer: {
-        modal: false,
-      },
-      rotateViewData: viewData,
+      rotateViewId: null,
     }
   },
 
@@ -148,13 +136,8 @@ export default {
      * 预览
      */
     viewerDialog({ id, title }) {
-      this.viewer.modal = true
-      this.viewer.title = title
-      if (id !== 3) {
-        this.rotateViewData = { ...viewData2 }
-      } else {
-        this.rotateViewData = { ...viewData }
-      }
+      this.openModal('object3dView')
+      this.$store.commit(EDIT.MATERIAL.SELECT_OBJECT3D, { id, title })
     },
 
     /**

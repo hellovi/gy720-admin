@@ -15,14 +15,17 @@
         class="iconfont hover-warning"
         @click="removeItem(item.id)"
       >&#xe615;</i>
+
     </div>
 
     <div v-if="isAudio" class="material-item__play" @click="$emit('play', item)"></div>
-    <img v-else-if="isRotate" :src="item.thumb || 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
+    <img v-else-if="isRotate" :src="item.thumb ? $url.static(item.thumb) : 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
     <img v-else :src="$url.static(item.file_path)" :alt="item.title" />
 
     <figcaption class="ellipsis" :title="item.title">
-      <span v-if="isRotate"><a class="hover-primary" href="#">预览</a></span>
+      <span v-if="isRotate">
+        <el-button type="text" size="small" style="padding: 0;" @click="object3dDialog(item)">预览</el-button>
+      </span>
       <span v-else>{{ item.title }}</span>
     </figcaption>
   </figure>
@@ -37,9 +40,12 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
+import modal from '../../../../mixins/modal'
 
 export default {
   name: 'edit-material-item',
+
+  mixins: [modal],
 
   props: {
     item: {
@@ -73,6 +79,13 @@ export default {
           this.$store.dispatch(EDIT.MATERIAL.REMOVE, id)
             .then(() => this.$message.success('操作成功'))
         })
+    },
+    /**
+     * 物品3D-预览
+     */
+    object3dDialog({ id, title }) {
+      this.openModal('object3dView')
+      this.$store.commit(EDIT.MATERIAL.SELECT_OBJECT3D, { id, title })
     },
   },
 }
