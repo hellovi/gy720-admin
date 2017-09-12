@@ -1,5 +1,6 @@
 <template>
   <div class="app-user">
+
     <router-link class="app-user__avatar" to="/user-client/center">
       <img :src="$url.static(userInfo.avatar)" :alt="userInfo.nickname">
     </router-link>
@@ -24,6 +25,7 @@
         </span>
       </el-tooltip>
     </div>
+
     <div class="app-user__point">
       <el-tooltip
         effect="dark"
@@ -39,11 +41,11 @@
         积分：{{ userInfo.integral }}（可用：{{ userInfo.integral_remain }}）
       </router-link>
     </div>
-    <div>
-      <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
-      <el-button size="small" @click="locationTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
-      <el-button size="small" @click="goTo('/user-client/purchase')">续费</el-button>
-    </div>
+
+    <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
+    <el-button size="small" @click="locationTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
+    <el-button size="small" @click="goTo('/user-client/purchase')">续费</el-button>
+
   </div>
 </template>
 

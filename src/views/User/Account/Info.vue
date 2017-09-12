@@ -35,7 +35,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item label="主页背景">
-          <background v-model="bgtest"></background>
+          <background v-model="userInfo.wallpaper"></background>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -83,7 +83,6 @@
             { required: true, message: '请输入昵称', trigger: 'blur' },
           ],
         },
-        bgtest: '',
       }
     },
     computed: {
