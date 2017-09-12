@@ -1,7 +1,11 @@
 <template>
   <div class="edit-control__bottom-center">
-    <el-button type="primary">预览</el-button>
-    <el-button>发布</el-button>
+    <a :href="`/pano/view/${pano_id}`" target="_blank">
+      <el-button type="primary">预览</el-button>
+    </a>
+    <a href="/user-client/works" target="_blank">
+      <el-button>发布</el-button>
+    </a>
   </div>
 </template>
 
@@ -12,11 +16,18 @@
  * @version 2017-08-11
  */
 
+import { mapState } from 'vuex'
+
 export default {
   name: 'edit-bottom-center',
+
+  computed: {
+    ...mapState({
+      pano_id: state => state.edit.panoInfo.hash_pano_id,
+    }),
+  },
 }
 </script>
-
 
 <style lang="postcss">
 .edit-control__bottom-center {
@@ -25,6 +36,11 @@ export default {
   left: 50%;
   transform: translateX(-50%);
 
+  a {
+    + a {
+      padding-left: 20px;
+    }
+  }
   .el-button {
     width: 120px;
     height: 34px;
