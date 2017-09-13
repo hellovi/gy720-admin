@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
   to.matched.forEach((match) => {
     const { title } = match.meta
     if (title) {
-      document.title = title
+      document.title = `${title} - 光鱼全景`
     }
   })
 
