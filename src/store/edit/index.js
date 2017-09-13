@@ -11,6 +11,7 @@ import scene from './scene'
 export default {
   state: {
     active: {
+      sceneList: true,
       control: true,
       logo: false,
       author: false,

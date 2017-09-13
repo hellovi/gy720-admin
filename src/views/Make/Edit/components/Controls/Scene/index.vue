@@ -1,19 +1,21 @@
 <template>
-  <div class="edit-control__scene">
-    <scene-list
-      :scene-list="scenelist"
-      @select="selectScene"
-      @delete="preDeleteScene"
-      @edit="openSceneConfig"
-      @drag-end="resortScenes"
-    ></scene-list>
+  <transition name="fade">
+    <div class="edit-control__scene" v-show="active.sceneList">
+      <scene-list
+        :scene-list="scenelist"
+        @select="selectScene"
+        @delete="preDeleteScene"
+        @edit="openSceneConfig"
+        @drag-end="resortScenes"
+      ></scene-list>
 
-    <!-- 场景设置弹框 -->
-    <edit-dialog
-      :visible.sync="editDialog"
-      :scene="editScene"
-    ></edit-dialog>
-  </div>
+      <!-- 场景设置弹框 -->
+      <edit-dialog
+        :visible.sync="editDialog"
+        :scene="editScene"
+      ></edit-dialog>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -26,13 +28,14 @@
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import deleteItem from '@/mixins/deleteItem'
+import modal from '@/views/Make/Edit/mixins/modal'
 import SceneList from './components/SceneList'
 import EditDialog from './components/EditDialog'
 
 export default {
   name: 'edit-scene',
 
-  mixins: [deleteItem],
+  mixins: [deleteItem, modal],
 
   components: {
     SceneList,
@@ -160,5 +163,11 @@ export default {
   left: 0;
   width: 100%;
   height: 70px;
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 </style>

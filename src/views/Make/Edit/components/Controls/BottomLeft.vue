@@ -1,7 +1,12 @@
 <template>
   <div role="button" class="edit-control__bottom-left">
-    </span>
-    <span role="button" class="btn-circle btn-circle--pointer icon-items">场景</span>
+    <circle-button
+      label="场景"
+      icon="items"
+      pointer
+      v-model="activeSceneList"
+      @ui-switch="switchSceneShow"
+    >场景</circle-button>
 
     <circle-button
       label="分享"
@@ -71,6 +76,10 @@ export default {
 
   mixins: [modal, menu],
 
+  data: () => ({
+    activeSceneList: 20,
+  }),
+
   components: {
     Draggable,
     EditTools,
@@ -103,6 +112,13 @@ export default {
         show_share,
       })
         .then(() => this.$message.success('操作成功'))
+    },
+    switchSceneShow() {
+      if (this.activeSceneList === 20) {
+        this.openModal('sceneList')
+      } else {
+        this.closeModal('sceneList')
+      }
     },
   },
 
