@@ -29,8 +29,8 @@
         <tr v-for="(message, index) in list.data" :key="message.id">
           <td><el-checkbox :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
           <td class="text-left">
-            <div class="message-avatar">
-              <a href="#"><img :src="$url.static(message.avatar)" :alt="message.nickname"></a>
+            <div class="message-avatar" :class="{unread: message.unread}" :data-count="message.unread">
+              <a :href="`/author/view/${message.user_id}`"><img :src="$url.static(message.avatar)" :alt="message.nickname"></a>
             </div>
             <div>
               <a :href="`/author/view/${message.user_id}`" class="hover-primary">{{ message.nickname }}</a>

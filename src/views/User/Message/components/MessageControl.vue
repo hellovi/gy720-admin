@@ -20,9 +20,6 @@
         >标记已读</el-button>
       </span>
     </el-col>
-    <el-col :span="8">
-      <el-input size="small" placeholder="请输入关键词" icon="search"></el-input>
-    </el-col>
   </el-row>
 </template>
 

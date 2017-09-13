@@ -74,8 +74,7 @@ export default {
     }
   }
 
-  /* 私信用户头像上的未读计数，设计图有，原型上无，后端没做 */
-  /* &::after {
+  &.unread::after {
     content: attr(data-count);
     position: absolute;
     top: 0;
@@ -90,7 +89,7 @@ export default {
     font-size: 12px;
     text-align: center;
     line-height: 18px;
-  } */
+  }
 }
 
 .message-summary {
