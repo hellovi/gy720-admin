@@ -23,21 +23,20 @@
       ></edit-tools>
     </div>
     <!--作品作者-->
-    <el-tooltip
-      popper-class="edit-tip"
-      placement="right-end"
-    >
-      <!--作者名称内容-->
-      <div class="edit-author" @click="editAuthor">
-        作者：
-        <span v-if="panoInfo.show_nickname === 20 || !panoInfo.show_nickname">{{ panoInfo.nickname }}</span>
-        <span v-else>（昵称已隐藏）</span>
-      </div>
-      <!--提示语-->
-      <span slot="content" @click="editAuthor">
-        隐藏作者 <em class="vip">VIP</em>
+    <div class="edit-author">
+      <span :class="{opacity: panoInfo.show_nickname === 10}">
+        作者：<span>{{ panoInfo.nickname }}</span>
       </span>
-    </el-tooltip>
+      <div class="ui-swither ui-swither--right" @click.stop>
+        <el-switch
+          v-model="panoInfo.show_nickname"
+          on-text="显示" off-text="隐藏"
+          :on-value="20" :off-value="10"
+          @change="editAuthor"
+        ></el-switch>
+        <em class="vip">VIP</em>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -108,7 +107,7 @@ export default {
     // 显示隐藏作者名称
     editAuthor() {
       if (this.editAutho()) {
-        const show_nickname = this.panoInfo.show_nickname === 10 ? 20 : 10
+        const show_nickname = this.panoInfo.show_nickname
         this.$http.post('/user/pubset/author', {
           show_nickname,
           pano_id: this.panoInfo.hash_pano_id,
@@ -121,6 +120,8 @@ export default {
           .catch((res) => {
             this.$notify.error(res.status.reason)
           })
+      } else {
+        this.panoInfo.show_nickname = 20
       }
     },
 
@@ -174,6 +175,18 @@ export default {
   cursor: pointer;
   position: relative;
   z-index: 6;
+  .ui-swither {
+    line-height: normal;
+  }
+  .opacity {
+    opacity: .5;
+  }
+  .vip {
+    font-size: 12px;
+    color:#ffc000;
+    padding-right: 8px;
+    margin-left: -4px;
+  }
 }
 
 .el-tooltip__popper.edit-tip {

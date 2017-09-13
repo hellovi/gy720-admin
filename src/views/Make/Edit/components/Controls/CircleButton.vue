@@ -172,6 +172,33 @@ export default {
   :hover > &--left {
     transform: translate(-100%, -50%);
   }
+
+  &--right {
+    top: 50%;
+    right: 0%;
+    transform: translate(80%, -50%);
+    margin-right: -10px;
+
+    &::before {
+      top: 0%;
+      right: 100%;
+      width: 20px;
+      height: 100%;
+    }
+
+    &::after {
+      top: 50%;
+      right: 100%;
+      border-width: 6px 8px 6px 0;
+      border-color: transparent #fff transparent transparent;
+      margin-top: -6px;
+      margin-right: -1px;
+    }
+  }
+
+  :hover > &--right {
+    transform: translate(100%, -50%);
+  }
 }
 
 .ui-hidden {
