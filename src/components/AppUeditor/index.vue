@@ -14,14 +14,6 @@
   import UEajax from './ueditor.ajax'
   import UEautoupload from './plugins/autoupload'
 
-  // 默认配置
-  const defConfig = {
-    autoClearinitialContent: true, // focus时自动清空初始化时的内容
-    wordCount: false, // 关闭字数统计
-    elementPathEnabled: false, // 关闭elementPath
-    initialFrameHeight: 250, // 默认的编辑区域高度
-  }
-
   export default {
     name: 'app-ueditor',
 
@@ -53,8 +45,21 @@
       editorId() {
         return this.id || `app-ueditor_${Math.random().toString(36).substring(3, 8)}`
       },
+
+      // 默认配置
+      defConfig() {
+        const vModalDom = document.querySelector('.v-modal')
+        return {
+          autoClearinitialContent: true, // focus时自动清空初始化时的内容
+          wordCount: false, // 关闭字数统计
+          elementPathEnabled: false, // 关闭elementPath
+          initialFrameHeight: 250, // 默认的编辑区域高度
+          zIndex: vModalDom ? +vModalDom.style.zIndex : 2000, // 动态当前v-modal的zIndex
+        }
+      },
+
       ueditorConfig() {
-        return { ...defConfig, ...this.config }
+        return { ...this.defConfig, ...this.config }
       },
     },
 
