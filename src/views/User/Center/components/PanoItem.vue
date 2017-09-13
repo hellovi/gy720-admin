@@ -25,7 +25,7 @@
       <span
         :class="{
           'center-panoitem__info__collects': true,
-          'center-panoitem__info__collects--active': true,
+          'center-panoitem__info__collects--active': pano.is_collect,
         }"
         @click="onToggleCollection"
       >
@@ -37,7 +37,7 @@
     </div>
 
     <!-- 人气 | 点赞数 -->
-    <div class="center-panoitem__icons">
+    <div class="center-panoitem__icons clearfix">
       <div class="center-panoitem__icons--eye">
         <i class="iconfont">&#xe63d;</i>{{pano.popular}}
       </div>
@@ -47,6 +47,7 @@
       </div>
 
       <el-button
+        v-if="routeType === 'recent'"
         size='mini' type="warning"
         @click.stop="toPanoEdit"
       >
@@ -62,12 +63,17 @@
  *
  * @author huojinzhao
  */
+
 export default {
   name: 'center-panoItem',
 
   props: {
     pano: {
       type: Object,
+      required: true,
+    },
+    routeType: {
+      type: String,
       required: true,
     },
   },
@@ -88,7 +94,7 @@ export default {
     },
 
     onToggleCollection() {
-      this.$emit('toggleCollection', this.pano.id)
+      this.$emit('toggle-collection', this.pano.id)
     },
   },
 }
@@ -205,7 +211,7 @@ export default {
       float: left;
       border: 1px solid var(--color-light-gray);
       background-color: color(var(--color-extra-light-gray) alpha(60%));
-      color: var(--gray);
+      color: #fff;
     }
 
     &--thumb {

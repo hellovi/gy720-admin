@@ -33,8 +33,10 @@
       <v-pano-item
         class="center-panos__item"
         v-for="item in panosInfo.data"
-        :key="item.id" :pano="item"
-        @togglecollection="onToggleCollection"
+        :key="item.id"
+        :pano="item"
+        :routeType="routeType"
+        @toggle-collection="onToggleCollection"
       ></v-pano-item>
     </div>
 
@@ -85,7 +87,7 @@ export default {
         .then(() => {
           const pano = this.panosInfo.data
             .find(item => item.id === id)
-          if (pano) pano.is_follow = !pano.is_follow
+          if (pano) pano.is_collect = !pano.is_collect
         })
     },
   },

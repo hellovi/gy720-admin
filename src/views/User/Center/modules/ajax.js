@@ -6,7 +6,7 @@
 
 import { Http, Url } from '@/utils'
 
-const RECENTWORKS_URL = '/user/pano'
+const RECENTWORKS_URL = '/user/recent'
 const COLLECTIONS_URL = '/user/collection'
 const FANS_URL = '/user/fans'
 const FOLLOWS_URL = '/user/follow'
