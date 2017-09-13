@@ -161,7 +161,7 @@ export default {
                 percent: 100,
                 source_scene_id,
                 message: '正在排队中...',
-                preview: this.$url.host(preview_image),
+                preview: this.$url.static(preview_image),
                 preview_image,
                 thumb,
               })
@@ -233,7 +233,7 @@ export default {
                   percent: 100,
                   source_scene_id,
                   message: '正在排队中...',
-                  preview: this.$url.host(preview_image),
+                  preview: this.$url.static(preview_image),
                   preview_image,
                   thumb,
                 })

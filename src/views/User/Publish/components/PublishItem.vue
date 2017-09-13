@@ -3,7 +3,7 @@
     <slot name="checkbox"></slot>
 
     <slot name="preview">
-      <img v-if="file.preview" :src="file.preview" :alt="file.name">
+      <img v-if="file.preview" :src="uploaded ? file.preview + '?imageView2/2/w/261' : file.preview" :alt="file.name">
     </slot>
 
     <el-progress

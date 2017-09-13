@@ -1,32 +1,31 @@
 <template>
   <div class="pano-material">
     <el-row>
-      <el-col class="pano-material__left" :span="3">
+      <el-col class="pano-material__left" :span="4">
         <dl class="pano-material__menu">
           <dt>全景相册</dt>
           <a class="hover-primary pano-material__menu-add" @click="createCate">+创建新相册</a>
-          <el-tooltip
+          <dd
             v-for="(cate, index) in cates"
             :key="index"
             placement="right"
             popper-class="edit-tip"
             :disabled="index <= 0"
+            :class="{active: cate.id === currentCateId, first: index === 0}"
+            @click="selectCate(cate.id)"
           >
-            <dd
-              :class="{active: cate.id === currentCateId}"
-              @click="selectCate(cate.id)"
-            >
-                {{ cate.name }}
-            </dd>
-            <template slot="content">
-              <i role="button" class="iconfont pano-material__menu-edit" @click.stop="createCate(cate)">&#xe608;</i>
-              <i role="button" class="iconfont pano-material__menu-remove" @click.stop="removeCate(cate)">&#xe615;</i>
-            </template>
-          </el-tooltip>
+            <span class="pano-material__menu-left">
+              <i role="button" class="iconfont pano-material__menu-edit" title="编辑" @click.stop="createCate(cate)">&#xe608;</i>
+              <i role="button" class="iconfont pano-material__menu-remove" title="删除" @click.stop="removeCate(cate)">&#xe615;</i>
+            </span>
+            <span class="pano-material__menu-right">
+              {{ cate.name }}
+            </span>
+          </dd>
         </dl>
       </el-col>
 
-      <el-col class="pano-material__right" :span="21" v-loading="loading">
+      <el-col class="pano-material__right" :span="20" v-loading="loading">
         <el-row class="pano-material__header">
           <el-col :span="2">
             <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
@@ -83,7 +82,7 @@
                 </el-checkbox>
                 <img
                   slot="preview"
-                  :src="pano.vtour === undefined || pano.vtour ? `${$url.static(pano.preview_image)}?imageView/2/w/250` : pano.preview"
+                  :src="pano.vtour === undefined || pano.vtour ? `${$url.static(pano.preview_image)}?imageView2/2/w/214` : pano.preview"
                   :alt="pano.name">
                 <template slot="tools">
                   <i role="button" v-show="!invoked" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
@@ -505,6 +504,19 @@ export default {
     cursor: pointer;
   }
 
+  &-left {
+    width: 26%;
+    float: left;
+    text-align: left;
+    overflow: hidden;
+    opacity: 0;
+    transition: 0.3s;
+  }
+
+  &-right {
+    width: 74%;
+  }
+
   &-edit, &-remove {
     color: var(--color-warning);
     cursor: pointer;
@@ -540,6 +552,27 @@ export default {
       height: 10px;
       border-radius: 50%;
       background-color: var(--color-primary);
+    }
+
+    &:hover.active::before {
+      display: none;
+    }
+
+    &:hover {
+      .pano-material__menu-left {
+        overflow: visible;
+        opacity: 1;
+      }
+    }
+
+    &.first:hover {
+      &.active::before {
+        display: inline-block;
+      }
+      .pano-material__menu-left {
+        display: none;
+        opacity: 0;
+      }
     }
   }
 }

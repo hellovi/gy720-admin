@@ -154,7 +154,7 @@ export default {
         .map(pano => ({
           ...pano,
           source_scene_id: pano.id,
-          preview: this.$url.host(pano.preview_image),
+          preview: this.$url.static(pano.preview_image),
           vtour: true,
         }))
       this.files = [...this.files, ...files]
@@ -305,6 +305,9 @@ export default {
 .material-panos {
   width: 1190px;
   &__submit--select {
+    position: absolute;
+    right: 0;
+    bottom: -56px;
     .el-button {
       width: 8em;
     }
