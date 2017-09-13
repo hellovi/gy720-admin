@@ -65,9 +65,11 @@
 
     watch: {
       value(val) {
-        if (this.instance && Object.keys(this.instance).length) {
-          this.instance.setContent(val || '')
-        }
+        this.$nextTick(() => {
+          if (this.instance && Object.keys(this.instance).length) {
+            this.instance.setContent(val || '')
+          }
+        })
       },
     },
 
@@ -107,6 +109,7 @@
               const content = this.instance.getContent()
               this.$emit('input', content)
               this.$emit('update:value', content)
+              this.$emit('blur', content)
             })
             this.$emit('ready', this.instance)
           })

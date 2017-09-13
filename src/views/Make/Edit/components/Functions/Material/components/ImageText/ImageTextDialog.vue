@@ -14,7 +14,7 @@
       <el-form-item prop="content">
         <app-ueditor
           v-model="detail.content"
-          @ready="ueditorReady"
+          @blur="ueditorBlur"
           style="min-height: 280px"
         ></app-ueditor>
       </el-form-item>
@@ -168,10 +168,8 @@
       },
 
       // 富文本编辑器事件监听
-      ueditorReady(editor) {
-        editor.addListener('blur', () => {
-          this.$refs[this.formRef].validateField('content')
-        })
+      ueditorBlur() {
+        this.$refs[this.formRef].validateField('content')
       },
 
       // 重置表单为默认值
