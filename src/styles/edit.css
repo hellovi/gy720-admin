@@ -50,12 +50,13 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: var(--color-info);
+  background-color: #dfdfdf;
   color: #fff;
   text-align: center;
   font-size: 12px;
   line-height: 16px;
   user-select: none;
+  cursor: pointer;
 }
 
 .tip-mark-plus {
@@ -63,10 +64,11 @@
     transform: translateX(4px);
 
     &.is-dark {
+       width: 200px;
        padding: 0.5em 0.76em;
        border-radius: 3px;
        margin-left: 5px;
-       background-color: var(--color-info);
+       background: rgba(0, 0, 0, 0.6);
        box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
        text-align: left;
        line-height: 1.4;
@@ -74,8 +76,11 @@
 
     &[x-placement^="right"] {
       .popper__arrow, .popper__arrow::after {
-        border-right-color: var(--color-info);
-        }
+        border-width: 5px 5px 5px 0;
+        border-style: solid;
+        border-right-color: rgba(0, 0, 0, 0.6);
+        margin-top: 2px;
+      }
       &.move-in-linear {
         &-enter-active, &-leave-active {
            transition: 0.2s;
@@ -118,9 +123,9 @@
   &::before {
     content: "";
     top: 50%;
-    border-width: 5px 6px 5px 0;
+    border-width: 5px 5px 5px 0;
     border-style: solid;
-    border-color: transparent var(--color-info) transparent transparent;
+    border-color: transparent rgba(0, 0, 0, 0.6) transparent transparent;
     margin-top: -5px;
   }
 
@@ -131,7 +136,7 @@
     padding: 0.5em 0.76em;
     border-radius: 3px;
     margin-left: 5px;
-    background-color: var(--color-info);
+    background-color: rgba(0, 0, 0, 0.6);
     box-shadow: 1px 1px 2px 1px rgba(0, 0, 0, 0.1);
     text-align: left;
     line-height: 1.4;
