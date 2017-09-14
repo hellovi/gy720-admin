@@ -88,8 +88,8 @@ export default {
         })
     },
 
-    [MESSAGE.SAY.INIT]({ commit }) {
-      return Http.get('/user/panocomment')
+    [MESSAGE.SAY.INIT]({ commit }, { page = 1, pano_id = null }) {
+      return Http.get(`/user/panocomment?pano_id=${pano_id}&page=${page}`)
         .then(({ result }) => {
           commit(MESSAGE.INIT, { type: 'say', result })
         })

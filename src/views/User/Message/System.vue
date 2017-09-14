@@ -41,9 +41,9 @@
       </tbody>
     </table>
 
-    <div v-if="isEmpty" class="empty">
-      <div>您目前还没有收到任何系统消息</div>
-    </div>
+    <app-empty-body v-if="isEmpty">
+      您还没有收到任何系统消息
+    </app-empty-body>
 
     <el-pagination
       v-if="list.last_page > 1"

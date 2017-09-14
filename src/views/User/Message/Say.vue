@@ -42,22 +42,32 @@
           </td>
           <td>{{ message.name }}</td>
           <td>{{ message.created_at }}</td>
-          <td>{{ message.show_status_name }}</td>
           <td>
-            <el-button type="primary" size="small">隐藏</el-button>
+            <el-switch
+              v-model="message.show_status"
+              on-text="显示" off-text="隐藏"
+              :on-value="20" :off-value="10"
+              on-color="#13ce66" off-color="#ff4949"
+              name="message.id"
+              @change="switchVisible"
+              @click.native="changeVisible(message)"
+            ></el-switch>
+          </td>
+          <td>
             <el-button type="danger" size="small" @click="removeMessage(message.id)">删除</el-button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div v-if="isEmpty" class="empty">
-      <div>您目前还没有收到任何说一说评论</div>
-    </div>
+    <app-empty-body v-if="isEmpty">
+      您还没有收到任何说一说评论
+    </app-empty-body>
 
     <el-pagination
       v-if="list.last_page > 1"
       layout="prev, pager, next"
+      :page-size="list.per_page"
       :total="list.total"
       :current-page="list.current_page"
       @current-change="pageChange"
@@ -85,6 +95,7 @@ export default {
     return {
       listLoading: false,
       loading: -1,
+      currentId: null,
     }
   },
 
@@ -97,13 +108,32 @@ export default {
   methods: {
     getData(route) {
       this.listLoading = true
-      return this.$store.dispatch(MESSAGE.SAY.INIT, route.query.page)
+      return this.$store.dispatch(MESSAGE.SAY.INIT, { page: route.query.page })
         .catch(({ status }) => this.$message.error(status.reason))
         .then(() => { this.listLoading = false })
     },
 
     removeMessage(removeId) {
       this.remove('say', '/user/panocomment/delete', removeId)
+    },
+
+    // 操作显示状态
+    switchVisible() {
+      this.$http.put(`/user/panocomment/${this.currentId}`)
+        .then(({ result: { show_status } }) => {
+          this.$message.success('设置成功')
+          this.list.data = this.list.data.map((item) => {
+            if (item.id === this.currentId) {
+              return { ...item, show_status }
+            }
+            return item
+          })
+        })
+    },
+
+    // 获取当前Id
+    changeVisible({ id }) {
+      this.currentId = id
     },
   },
 }
