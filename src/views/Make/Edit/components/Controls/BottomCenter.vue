@@ -1,9 +1,9 @@
 <template>
   <div class="edit-control__bottom-center">
-    <a :href="`/pano/view/${pano_id}`" target="_blank">
+    <a :href="`/pano/view/${panoInfo.hash_pano_id}`" target="_blank">
       <el-button type="primary">预览</el-button>
     </a>
-    <a href="/user-client/works" target="_blank">
+    <a :href="`/user-client/works?cate_id=${panoInfo.pano_category_id}`" target="_blank">
       <el-button>发布</el-button>
     </a>
   </div>
@@ -23,7 +23,7 @@ export default {
 
   computed: {
     ...mapState({
-      pano_id: state => state.edit.panoInfo.hash_pano_id,
+      panoInfo: state => state.edit.panoInfo,
     }),
   },
 }
