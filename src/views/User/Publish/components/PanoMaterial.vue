@@ -83,7 +83,7 @@
                 <img
                   v-show="pano.preview || pano.preview_image"
                   slot="preview"
-                  :src="pano.preview || $url.static(`${pano.preview_image}?imageView2/2/w/268`)"
+                  :src="pano.preview || (pano.preview_image ? $url.static(`${pano.preview_image}?imageView2/2/w/268`) : '')"
                   :alt="pano.name">
                 <template slot="tools">
                   <i role="button" v-show="!invoked" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
