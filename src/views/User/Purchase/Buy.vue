@@ -40,12 +40,16 @@
         <section class="buy-panel buy-panel--vip">
           <h3 class="panel-list__title">购买方式</h3>
           <dl class="panel-list clearfix">
+
             <dt class="panel-list__sub-title">2299元 / 年</dt>
             <dd class="panel-list__item">直接点击<em>立即购买</em>开通会员</dd>
 
             <dt class="panel-list__sub-title">99元 / 次</dt>
-            <dd class="panel-list__item">点击<em>我的作品</em>进入作品列表页面<br>点击作品右侧<em>升级商业版</em>进行购买</dd>
-            <dd class="panel-list__item">点击作品右侧的<em>高级编辑</em><br>点击页面的<em>左上角LOGO</em>进行购买</dd>
+            <dd class="panel-list__item">点击<em>我的作品</em>进入作品列表页面</dd>
+            <dd class="panel-list__item">点击作品右侧<em>升级商业版</em>进行购买</dd>
+            <dd class="panel-list__item">点击作品右侧<em>高级编辑</em>进入作品页面
+              <br>点击页面的<em>左上角LOGO</em>进行购买
+            </dd>
           </dl>
         </section>
 
