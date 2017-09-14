@@ -1,7 +1,7 @@
 <template>
   <div class="edit-control__right-top">
     <div class="edit-qr-code">
-      <img :class="{'ui-hidden': showQrcode === 10}" :src="$url.static(panoInfo.qrcode)" alt="作品二维码">
+      <img :class="{'ui-hidden': showQrcode === 10}" :src="panoInfo.qrcode ? $url.static(panoInfo.qrcode) : ''" alt="作品二维码">
       <div class="ui-swither ui-swither--left" @click.stop>
         <el-switch
           v-model="showQrcode"
