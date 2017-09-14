@@ -12,10 +12,9 @@
       @upload-progress="uploadProgress"
       @upload-complete="uploadComplete"
       @error="uploadError"
-      v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/avatar-bg.jpg')})` : 'none'}"
       class="user-avatar__file"
     >
-      <img :src="getStatic(src)" v-if="!progress">
+      <img v-qiniu-src=" src"data-query="/thumbnail/200x200" v-if="!progress">
       <app-upload-progress
         slot="progress"
         :src="uploadSrc"
@@ -89,11 +88,6 @@
       // 监听上传出错
       uploadError() {
         this.progress = 0
-      },
-
-      // 构建完整
-      getStatic(path) {
-        return path ? this.$url.static(path) : ''
       },
 
       // 获取预览图

@@ -1,4 +1,5 @@
 // TODO: 必须判断生产环境和开发环境
+import { Regex } from '@/utils'
 
 export default class Url {
   static install(Vue) {
@@ -11,7 +12,7 @@ export default class Url {
   }
 
   static static(pathname) {
-    return `http://l-statics.gy720.com/${pathname}`
+    return Regex.url(pathname) || Regex.base64(pathname) ? pathname : `http://l-statics.gy720.com/${pathname}`
   }
 
   static host(pathname) {

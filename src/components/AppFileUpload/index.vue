@@ -87,6 +87,10 @@ export default {
       type: String,
       default: '裁剪图片',
     },
+    cropQuery: {
+      type: String,
+      default: '',
+    },
   },
 
   data() {
@@ -204,8 +208,12 @@ export default {
                 crop: this.cropInfo,
               }, src)
 
-              // 去除域名截取链接
-              val = val.replace(domain, '')
+              /**
+               * 去除域名截取链接
+               * 七牛图片处理参数
+               */
+              const cropQuery = this.cropQuery ? `${this.cropQuery}` : ''
+              val = `${val.replace(domain, '')}${cropQuery}`
             }
 
             // 更新value字段

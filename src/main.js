@@ -20,6 +20,7 @@ import router from './router'
 import store from './store'
 import { Http, Url } from './utils'
 import * as components from './components'
+import * as directives from './directive'
 
 Vue.config.productionTip = false
 
@@ -32,6 +33,7 @@ Vue.component(components.AppTab.name, components.AppTab)
 Vue.component(components.AppFormAlert.name, components.AppFormAlert)
 Vue.component(components.AppEmptyBody.name, components.AppEmptyBody)
 
+Vue.directive(directives.qiniuSrc.name, directives.qiniuSrc)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

@@ -12,7 +12,7 @@
         v-model="src"
         cropper
         accept="jpg,jpeg,png"
-        size="1mb"
+        size="1MB"
         :close-on-click-modal="false"
         :close-on-press-escape="false"
         @crop-success="getPreview"
@@ -24,7 +24,7 @@
         class="background-upload__file"
         v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require('../assets/background-bg.jpg')})` : 'none',}"
       >
-        <img :src="getStatic(src)" v-if="!progress">
+        <img :src="getStatic(src)" v-show="!progress && src">
         <app-upload-progress
           slot="progress"
           :src="uploadSrc"

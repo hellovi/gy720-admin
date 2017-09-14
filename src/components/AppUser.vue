@@ -2,7 +2,7 @@
   <div class="app-user">
 
     <router-link class="app-user__avatar" to="/user-client/center">
-      <img :src="userInfo.avatar" :alt="userInfo.nickname">
+      <img v-qiniu-src="userInfo.avatar" data-query="/thumbnail/200x200" :alt="userInfo.nickname">
     </router-link>
 
     <div class="app-user__info">
