@@ -55,7 +55,7 @@ export default {
 
   methods: {
     checkin() {
-      this.$http.get('/user/integral/complete/3')
+      this.$http.get('/user/integral/complete/1')
         .then(() => {
           this.$message('签到成功！ 积分+5，经验+5')
         })
