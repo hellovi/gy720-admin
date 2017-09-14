@@ -117,8 +117,10 @@ export default {
               if ('FileReader' in window) {
                 const reader = new FileReader()
                 reader.addEventListener('load', (event) => {
-                  const preview = event.target.result
-                  this.updateFile(id, { preview })
+                  this.createCanvas({ src: event.target.result, file })
+                    .then((res) => {
+                      this.updateFile(id, { preview: res })
+                    })
                 })
                 reader.readAsDataURL(file.getNative())
               } else {
@@ -129,9 +131,11 @@ export default {
                     height: 100,
                   })
                   preloader.crop(100)
-                  const preview = preloader.getAsDataURL('image/jpeg', 80)
-                  this.updateFile(id, { preview })
-                  preloader.destroy()
+                  this.createCanvas({ src: preloader.getAsDataURL(file.type, 80), file })
+                    .then((res) => {
+                      this.updateFile(id, { preview: res })
+                      preloader.destroy()
+                    })
                 }
                 preloader.load(file.getSource())
               }
@@ -290,7 +294,26 @@ export default {
               clearInterval(time)
             }
           })
-      }, 5000)
+      }, 10000)
+    },
+
+    // 创建canvas
+    createCanvas({ src, file, w = 300, h = 150 }) {
+      return new Promise((resolve) => {
+        const canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        const cxt = canvas.getContext('2d')
+
+        const img = new Image()
+        img.src = src
+        img.width = w
+        img.height = h
+        img.onload = () => {
+          cxt.drawImage(img, 0, 0, w, h)
+          resolve(canvas.toDataURL(file.type, 0.8))
+        }
+      })
     },
   },
 
