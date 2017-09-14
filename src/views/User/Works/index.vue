@@ -87,7 +87,6 @@ export default {
 }
 
 .works {
-  height: var(--area-height);
   padding: 20px 15px;
   background-color: var(--color-white);
 

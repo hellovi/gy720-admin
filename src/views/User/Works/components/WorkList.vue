@@ -29,12 +29,16 @@
       <v-work-item
         class="works-worklist__item"
         v-for="work in worklist.data" :key="work.id"
-        :item="work"  ref="list"
+        :item="work" ref="list"
         @change="onCheckWork"
         @delete="onDeleteWork"
         @share="onShareWork"
         @upgrade="onUpgradeWork"
+        v-if="worklist.data.length"
       ></v-work-item>
+      <app-empty-body v-if="worklist.data.length === 0">
+        当前分类暂无作品
+      </app-empty-body>
     </div>
 
     <!-- 移动分类的弹窗 -->
@@ -357,7 +361,7 @@ export default {
 }
 
 .works-worklist {
-  height: 100%;
+  min-height: calc(100vh - 370px);
   padding-top: 7px;
   padding-left: 40px;
   border-left: var(--border-split);
