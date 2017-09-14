@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import DefaultAvatar from '@/assets/default-avatar.jpg'
-import { Http } from '@/utils'
+import { Http, Url } from '@/utils'
 import { GLOBAL } from './mutationTypes'
 import work from './work'
 import message from './message'
@@ -37,7 +37,7 @@ export default new Vuex.Store({
     [GLOBAL.USER.INIT](state, userInfo) {
       state.userInfo = {
         ...userInfo,
-        ...(userInfo.avatar ? {} : { avatar: DefaultAvatar }),
+        avatar: userInfo.avatar ? Url.static(userInfo.avatar) : DefaultAvatar,
       }
     },
 

@@ -27,7 +27,7 @@
 
       <div class="app-header__portal">
         <router-link class="app-header__user" to="/user-client">
-          <img class="app-header__avatar" :src="$url.static(userInfo.avatar)" :alt="userInfo.nickname">
+          <img class="app-header__avatar" :src="userInfo.avatar" :alt="userInfo.nickname">
           <span class="app-header__name">{{ userInfo.nickname }}</span>
         </router-link>
         <ul class="app-header__menu list">

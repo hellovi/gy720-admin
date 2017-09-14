@@ -2,7 +2,7 @@
   <div class="app-user">
 
     <router-link class="app-user__avatar" to="/user-client/center">
-      <img :src="$url.static(userInfo.avatar)" :alt="userInfo.nickname">
+      <img :src="userInfo.avatar" :alt="userInfo.nickname">
     </router-link>
 
     <div class="app-user__info">
