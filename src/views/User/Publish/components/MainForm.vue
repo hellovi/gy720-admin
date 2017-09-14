@@ -16,7 +16,7 @@
     </el-col>
 
     <el-col :span="8" :offset="1">
-      <el-form-item label="作品标签" prop="tag_ids">
+      <el-form-item label="作品标签">
         <el-select v-model="form.tag_ids" placeholder="最多可选择3个标签" multiple :multiple-limit="3" style="width: 100%;">
           <el-option v-for="tag in tags" :key="tag.id" :value="tag.id" :label="tag.name"></el-option>
         </el-select>

@@ -67,13 +67,14 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import PanoMaterial from '@/views/User/Publish/components/PanoMaterial'
 import errorHandle from '@/mixins/errorHandle'
 import modal from '../../../mixins/modal'
 import MaterialList from './components/MaterialList'
 import MaterialFooter from './components/MaterialFooter'
 import ImageText from './components/ImageText'
 import PhotoMaterial from './components/Photo'
+
+const PanoMaterial = () => import('../../../../../User/Publish/components/PanoMaterial')
 
 export default {
   name: 'edit-functions-material',

@@ -80,8 +80,9 @@ import upload from './mixins/upload'
 import MainForm from './components/MainForm'
 import Explanation from './components/Explanation'
 import CateForm from './components/CateForm'
-import PanoMaterial from './components/PanoMaterial'
-import PublishItem from './components/PublishItem'
+
+const PanoMaterial = () => import('./components/PanoMaterial')
+const PublishItem = () => import('./components/PublishItem')
 
 export default {
   mixins: [errorHandle, upload],
@@ -154,7 +155,7 @@ export default {
         .map(pano => ({
           ...pano,
           source_scene_id: pano.id,
-          preview: this.$url.static(pano.preview_image),
+          preview: this.$url.static(`${pano.preview_image}?imageView2/2/w/268`),
           vtour: true,
         }))
       this.files = [...this.files, ...files]

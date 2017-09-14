@@ -81,8 +81,9 @@
                 >
                 </el-checkbox>
                 <img
+                  v-show="pano.preview || pano.preview_image"
                   slot="preview"
-                  :src="pano.vtour === undefined || pano.vtour ? `${$url.static(pano.preview_image)}?imageView2/2/w/214` : pano.preview"
+                  :src="pano.preview || $url.static(`${pano.preview_image}?imageView2/2/w/268`)"
                   :alt="pano.name">
                 <template slot="tools">
                   <i role="button" v-show="!invoked" class="iconfont hover-warning" @click.stop="editScene(pano)">&#xe608;</i>
@@ -144,7 +145,8 @@
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import errorHandle from '@/mixins/errorHandle'
-import PublishItem from './PublishItem'
+
+const PublishItem = () => import('./PublishItem')
 
 export default {
   name: 'pano-material',

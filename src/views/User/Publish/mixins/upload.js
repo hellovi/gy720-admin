@@ -4,6 +4,9 @@
  * @version 2017-08-22
  */
 
+import 'whatwg-fetch'
+import sceneLoading from '@/assets/scene-loading.gif'
+
 /**
  * @typedef {Object} File
  * @property {string} id - 用作上传时的upload_id
@@ -39,6 +42,8 @@ export default {
       files: [], /** @type {File[]} */
       fisheye_gid: null,
       timer: null, // 存放检查切图进度的定时器
+      fisheye_nums: 0,
+      oldFilesLen: 0,
     }
   },
 
@@ -69,7 +74,6 @@ export default {
       if (findBySceneId) {
         file = {
           ...file,
-          update_id: this.files[index].id,
           id: this.files[index].source_scene_id,
         }
       }
@@ -156,13 +160,12 @@ export default {
             if (code === 0) {
               this.handleUploadError(file.id, reason)
             } else {
-              const { preview_image, thumb, source_scene_id } = result
+              const { thumb, source_scene_id } = result
               this.updateFile(file.id, {
+                upload_id: file.id,
                 percent: 100,
                 source_scene_id,
                 message: '正在排队中...',
-                preview: this.$url.static(preview_image),
-                preview_image,
                 thumb,
               })
             }
@@ -200,8 +203,13 @@ export default {
           },
 
           BeforeUpload: (up, file) => {
+            if (this.oldFilesLen !== up.files.length) {
+              this.fisheye_nums = up.files.length - this.oldFilesLen
+              this.oldFilesLen = up.files.length
+            }
+
             uploader.setOption('multipart_params', {
-              fisheye_nums: up.files.length,
+              fisheye_nums: this.fisheye_nums,
               fisheye_item_id: file.id,
               upload_id: file.id,
               // 第一张图片上传完毕后接口将返回fisheye_gid，
@@ -230,13 +238,14 @@ export default {
 
               if (preview_image) {
                 this.updateFile(file.group, {
+                  preview: sceneLoading, // loading图
+                  upload_id: file.group,
                   percent: 100,
                   source_scene_id,
                   message: '正在排队中...',
-                  preview: this.$url.static(preview_image),
-                  preview_image,
                   thumb,
                 })
+                this.getImageView({ ...result, id: file.group, width: 268 })
               }
             }
           },
@@ -264,6 +273,23 @@ export default {
               })
             })
         }
+      }, 5000)
+    },
+
+    // 判断七牛图片裁剪是否完成
+    getImageView({ preview_image, id, width = 268 }) {
+      const srcUrl = this.$url.static(`${preview_image}?imageView2/2/w/${width}`)
+      const time = setInterval(() => {
+        fetch(`${srcUrl}`, {
+          method: 'GET',
+        })
+          .then((res) => {
+            if (res.ok) {
+              const index = this.files.findIndex(item => item.upload_id === id)
+              this.files[index].preview = `${srcUrl}`
+              clearInterval(time)
+            }
+          })
       }, 5000)
     },
   },
