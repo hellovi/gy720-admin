@@ -181,7 +181,7 @@ export default {
         case 30:
           return `已完成${count}次`
         default:
-          return '无任务类型'
+          return ''
       }
     },
   },
