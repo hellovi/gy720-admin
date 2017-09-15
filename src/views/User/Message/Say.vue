@@ -36,7 +36,7 @@
             </div>
             <div>
               <!-- 这里是否要跳链接 -->
-              <router-link to="/" class="hover-primary">{{ message.nickname }}</router-link>
+              <a :href="`/author/view/${message.hash_user_id}`" class="hover-primary">{{ message.nickname }}</a>
               <div class="message-summary ellipsis" :title="message.content">{{ message.content }}</div>
             </div>
           </td>
@@ -60,7 +60,7 @@
       </tbody>
     </table>
 
-    <app-empty-body v-if="isEmpty">
+    <app-empty-body v-if="isEmpty" width="560px">
       您还没有收到任何说一说评论
     </app-empty-body>
 
@@ -83,12 +83,16 @@ import check from './mixins/check'
 import MessageControl from './components/MessageControl'
 
 export default {
-  name: 'message-private',
+  name: 'message-say',
 
   mixins: [list, check],
 
   components: {
     MessageControl,
+  },
+
+  props: {
+    panoId: [Number, String],
   },
 
   data() {
@@ -105,16 +109,37 @@ export default {
     }),
   },
 
+  watch: {
+    panoId(val) {
+      if (val) {
+        this.pageChange(1)
+      }
+    },
+  },
+
   methods: {
     getData(route) {
       this.listLoading = true
-      return this.$store.dispatch(MESSAGE.SAY.INIT, { page: route.query.page })
+      return this.$store.dispatch(MESSAGE.SAY.INIT, {
+        page: route.query.page,
+        pano_id: this.panoId || '',
+      })
         .catch(({ status }) => this.$message.error(status.reason))
         .then(() => { this.listLoading = false })
     },
 
     removeMessage(removeId) {
       this.remove('say', '/user/panocomment/delete', removeId)
+    },
+
+    pageChange(page) {
+      if (this.panoId) {
+        this.getData({ query: { page } })
+      } else {
+        this.$router.push({
+          query: { ...this.$route.query, page },
+        })
+      }
     },
 
     // 操作显示状态

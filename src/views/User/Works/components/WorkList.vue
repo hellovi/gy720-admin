@@ -34,6 +34,7 @@
         @delete="onDeleteWork"
         @share="onShareWork"
         @upgrade="onUpgradeWork"
+        @chart="onChart"
         v-if="worklist.data.length"
       ></v-work-item>
       <app-empty-body v-if="worklist.data.length === 0">
@@ -111,6 +112,15 @@
       @current-change="onChangePagination"
       layout="prev, pager, next"
     ></el-pagination>
+
+    <!--管理说-说-->
+    <el-dialog
+      :title="`管理说一说(${chartItem.name})`"
+      :visible.sync="chartVisible"
+      size="large"
+    >
+      <message-say :pano-id="chartItem.hash_pano_id"></message-say>
+    </el-dialog>
   </div>
 </template>
 
@@ -125,6 +135,7 @@ import { EDIT } from '@/store/mutationTypes'
 import functionsShare from '@/views/Make/Edit/components/Functions/Share'
 import appPurchase from '@/components/AppPurchase'
 import deleteItem from '@/mixins/deleteItem'
+import messageSay from '@/views/User/Message/Say'
 
 import Ajax from '../module/ajax'
 
@@ -141,6 +152,7 @@ export default {
     vOfflineDoc,
     functionsShare,
     appPurchase,
+    messageSay,
   },
 
   props: {
@@ -186,6 +198,10 @@ export default {
     upgradedWorkInfo: {
       id: 0,
     },
+
+    chartItem: {},
+
+    chartVisible: false,
   }),
 
   computed: {
@@ -282,6 +298,11 @@ export default {
           this.submitWorksTransfer()
         }
       })
+    },
+
+    onChart(item) {
+      this.chartItem = item
+      this.chartVisible = true
     },
 
     submitWorksTransfer() {

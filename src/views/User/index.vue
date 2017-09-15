@@ -42,4 +42,49 @@ export default {
 .app-content {
   min-height: var(--app-content-min-height);
 }
+
+/* 说-说 */
+.message-control {
+  margin-bottom: 15px;
+}
+
+.message-avatar {
+  float: left;
+  position: relative;
+  width: 60px;
+  height: 60px;
+  margin-right: 1em;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &.unread::after {
+    content: attr(data-count);
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    margin-top: -3px;
+    margin-right: -3px;
+    background-color: var(--color-danger);
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
+  }
+}
+
+.message-summary {
+  margin-top: 10px;
+}
 </style>

@@ -154,7 +154,7 @@ export default {
     },
 
     onChart() {
-
+      this.$emit('chart', this.item)
     },
 
     onShare() {
@@ -257,6 +257,12 @@ export default {
           color: color(var(--color-warning) tint(30%));
         }
       }
+    }
+  }
+
+  > .el-dialog__wrapper {
+    .el-dialog {
+      width: 1000px;
     }
   }
 }
