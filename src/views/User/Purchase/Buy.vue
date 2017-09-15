@@ -48,7 +48,7 @@
             <dd class="panel-list__item">点击<em>我的作品</em>进入作品列表页面</dd>
             <dd class="panel-list__item">点击作品右侧<em>升级商业版</em>进行购买</dd>
             <dd class="panel-list__item">点击作品右侧<em>高级编辑</em>进入作品页面
-              <br>点击页面的<em>左上角LOGO</em>进行购买
+              <br>点击作品页面的<em>左上角LOGO</em>进行购买
             </dd>
           </dl>
         </section>
