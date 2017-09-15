@@ -57,6 +57,8 @@ export default {
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
+  /*防止hover时抖动*/
+  backface-visibility: hidden;
 
   .el-button {
     width: 32px;
