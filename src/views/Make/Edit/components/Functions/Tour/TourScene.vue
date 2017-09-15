@@ -1,14 +1,13 @@
 <template>
   <div
+    class="edit-functions__tour-scene"
    :class="{
-      'edit-functions__tour-scene': true,
       'forbidden': scene.is_used,
     }"
     @click="onChooseScene"
   >
-    <img :src="scene.thumb">
-    <span v-if="scene.is_used">已添加</span>
-    <span v-else>选择</span>
+    <img :src="$url.static(scene.thumb)">
+    <span>{{ scene.name }}</span>
   </div>
 </template>
 
@@ -41,7 +40,7 @@ export default {
           type: 'info',
           message: '选择场景成功',
         })
-        this.$emit('choose', this.scene.id)
+        this.$emit('choose', this.scene)
       }
     },
   },
@@ -53,16 +52,33 @@ export default {
 
 .edit-functions__tour-scene {
   position: relative;
-  margin: 0 11px 10px 11px;
-  padding: 3px;
+  margin: 0 6px 6px 4px;
+  padding: 2px;
   border: 1px solid var(--gray-light);
-  height: 70px;
-  width: 100px;
+  height: 86px;
+  width: 86px;
   text-align: center;
   cursor: pointer;
 
+  &:first-child {
+    margin-left: 7px;
+  }
+
   &.forbidden {
     cursor: not-allowed;
+    &:after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.5);
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+    & > span {
+      background: none;
+    }
   }
 
   & img {
@@ -70,11 +86,16 @@ export default {
   }
 
   & > span {
+    font-size: 12px;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    line-height: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 100%;
-    text-align: center;
+    z-index: 3;
   }
 }
 </style>

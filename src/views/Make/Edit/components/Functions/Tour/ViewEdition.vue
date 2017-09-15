@@ -1,9 +1,20 @@
 <template>
   <div class="edit-functions__view-edition" v-if="viewInfo">
+    <div class="edition__control">
+      <el-button
+        type="primary"
+        @click="openSceneSelection"
+      >添加场景</el-button>
+      <el-button
+        class="btn-primary"
+        @click="submit"
+      >完成编辑</el-button>
+    </div>
 
     <div class="edition__map">
       <v-view-panel
         v-for="(view, index) in viewInfo.map_scenes"
+        :info="view.scene_info"
         :key="view.scene_id"
         :top.sync="view.top"
         :left.sync="view.left"
@@ -34,20 +45,6 @@
       >
       </v-tour-scene>
     </el-dialog>
-    <div class="edition__control">
-      <el-button
-        type="info"
-        @click="openSceneSelection"
-      >添加场景</el-button>
-      <el-button
-        type="primary"
-        @click="submit"
-      >完成编辑</el-button>
-      <el-button
-        type="ghost"
-        @click="cancel"
-      >取消编辑</el-button>
-    </div>
   </div>
 </template>
 
@@ -115,15 +112,16 @@ export default {
       this.sceneSelectionModal.active = false
     },
 
-    onChooseScene(scene_id) {
+    onChooseScene(sceneInfo) {
       // 更新场景列表中项目的选择状态
       const scene = this.scenelist
-        .find(item => item.id === scene_id)
+        .find(item => item.id === sceneInfo.id)
       if (scene) scene.is_used = true
       // 新增viewPanel
       this.viewInfo.map_scenes.push({
         ...this.viewOrigin,
-        ...{ scene_id },
+        scene_id: sceneInfo.id,
+        scene_info: sceneInfo,
       })
       // 关闭场景选择
       this.closeSceneSelection()
@@ -210,12 +208,12 @@ export default {
 
 <style lang="postcss">
 .edit-functions__view-edition {
-  padding-bottom: 10px;
+  padding: 0 35px;
   text-align: center;
 
   & .edition__control {
-    text-align: center;
-    margin-top: 30px;
+    text-align: right;
+    margin-bottom: 10px;
   }
 
   & .edition__map {
@@ -223,7 +221,7 @@ export default {
     display: inline-block;
 
     & > img {
-      max-width: 800px;
+      width: 800px;
     }
   }
 
@@ -232,6 +230,7 @@ export default {
 
     & dd {
       margin-top: 10px;
+      margin-left: 20px;
     }
   }
 

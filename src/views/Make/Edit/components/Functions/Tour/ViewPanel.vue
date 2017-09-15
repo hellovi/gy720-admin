@@ -4,15 +4,20 @@
     ref="panel"
     @mousedown="onRotate"
   >
-    <div
-      class="point"
-      ref="point"
-      @mousedown="onTranslate"
-    ></div>
-    <i class="iconfont"
-      @click.stop.prevent="onDeleteView"
-    >&#xe607;</i>
-  </div>
+      <el-tooltip class="item" effect="dark" :content="`场景名称：${info.name}`" placement="top" :open-delay="600">
+        <div class="edit-functions__tour-tip"></div>
+      </el-tooltip>
+      <div
+        class="point"
+        ref="point"
+        @mousedown="onTranslate"
+      ></div>
+      <el-tooltip class="item" effect="dark" content="删除" placement="top">
+        <i class="iconfont"
+          @click.stop.prevent="onDeleteView"
+        >&#xe607;</i>
+      </el-tooltip>
+    </div>
 </template>
 
 <script>
@@ -36,6 +41,10 @@ export default {
     },
     degress: {
       type: Number,
+      required: true,
+    },
+    info: {
+      type: Object,
       required: true,
     },
   },
@@ -208,78 +217,88 @@ export default {
 </script>
 
 <style lang="postcss">
-.edit-functions__tour-viewpanel {
-  position: absolute;
-  height: 60px;
-  width: 60px;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.5);
-  cursor: pointer;
-
-  &::before {
-    content: '';
+  .edit-functions__tour-viewpanel {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 28px;
-    border-radius: 50%;
-    border-color: rgb(238, 124, 31) transparent transparent;
-    transform: translate(-50%, -50%);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    border: 2px solid white;
-    border-radius: 50%;
-    height: 55px;
-    width: 55px;
-    transform: translate(-50%, -50%);
-  }
-
-  & .point {
-    position: absolute;
-    z-index: 2;
-    top: 50%;
-    left: 50%;
-    height: 18px;
-    width: 18px;
-    border: 2px solid white;
-    border-radius: 50%;
-    background-color: rgb(238, 124, 31);
-    transform: translate(-50%, -50%);
-  }
-
-  & > i {
-    position:absolute;
-    visibility: hidden;
-    top: -25px;
-    right: -25px;
-    margin: 20px;
+    height: 60px;
+    width: 60px;
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.5);
-    line-height: 20px;
-    width: 20px;
-    font-size: 15px;
-    color: white;
-    overflow: hidden;
+    cursor: pointer;
 
-    &:hover {
-      visibility: visible;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 28px;
+      border-radius: 50%;
+      border-color: rgb(238, 124, 31) transparent transparent;
+      transform: translate(-50%, -50%);
     }
-  }
 
-  &:hover {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: block;
+      border: 2px solid white;
+      border-radius: 50%;
+      height: 55px;
+      width: 55px;
+      transform: translate(-50%, -50%);
+    }
+
+    & .point {
+      position: absolute;
+      z-index: 2;
+      top: 50%;
+      left: 50%;
+      height: 18px;
+      width: 18px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background-color: rgb(238, 124, 31);
+      transform: translate(-50%, -50%);
+    }
 
     & > i {
-      visibility: visible;
+      position: absolute;
+      visibility: hidden;
+      top: -30px;
+      right: -34px;
+      margin: 20px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      line-height: 20px;
+      width: 20px;
+      font-size: 15px;
+      color: white;
+      overflow: hidden;
+      transition: .6s;
+
+      &:hover {
+        visibility: visible;
+      }
+    }
+
+    &:hover {
+
+      & > i {
+        visibility: visible;
+      }
     }
   }
-}
+
+  .edit-functions__tour-tip {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+  }
 </style>

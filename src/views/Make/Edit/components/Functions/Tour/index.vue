@@ -60,7 +60,7 @@
     <!-- 编辑视角 -->
     <el-dialog
       class="tour-edition"
-      title="编辑导览图视角" size="large" top="5%"
+      title="编辑场景热点" size="large" top="5%"
       :close-on-click-modal="false"
       :visible.sync="viewEditionModal.active"
       :before-close="deactivateViewEdition"
