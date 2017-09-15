@@ -65,7 +65,7 @@ export default {
           { pattern: /^\S{1,30}$/, trigger: 'blur', message: '名称长度应在1到30个字符之间' },
         ],
         remark: [
-          { required: true, trigger: 'blur', message: '分类排序不能为空' },
+          { required: true, trigger: 'blur', message: '项目简介不能为空' },
         ],
         list_order: [
           { type: 'number', required: true, trigger: 'blur', message: '分类排序不能为空' },
