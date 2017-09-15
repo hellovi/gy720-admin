@@ -25,7 +25,7 @@ export default {
     dimensionTip: '宽度大于等于200像素',
   },
 
-  ad: {
+  sky: {
     mimeTypes: 'jpg,jpeg,png',
     size: '2MB',
     ratio: [1, 1],

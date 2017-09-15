@@ -86,7 +86,7 @@ export default {
 
   methods: {
     openMaterialAd(type) {
-      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'ad')
+      this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'sky')
         .then(({ file_path }) => {
           this.form[type] = file_path
         })

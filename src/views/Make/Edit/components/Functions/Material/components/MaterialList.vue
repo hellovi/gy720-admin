@@ -16,9 +16,9 @@
       </li>
     </ul>
 
-    <div v-if="isEmpty" class="empty">
-      <div>还没有上传素材哦……</div>
-    </div>
+    <app-empty-body v-if="isEmpty">
+      还没有上传素材哦……
+    </app-empty-body>
 
     <el-pagination
       v-if="list.last_page > 1"

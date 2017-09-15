@@ -21,7 +21,7 @@ export default {
       map: { data: [] },
       hotspot: { data: [] },
       wxicon: { data: [] },
-      ad: { data: [] },
+      sky: { data: [] },
       thumb: { data: [] },
       article: { data: [] },
       rotate: { data: [] },

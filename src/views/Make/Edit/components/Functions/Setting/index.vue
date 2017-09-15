@@ -164,7 +164,7 @@ export default {
 
 .edit-setting {
   .el-dialog__body {
-    height: 580px;
+    height: auto;
   }
 
   &__nav {
@@ -217,9 +217,6 @@ export default {
       .el-dialog {
         top: 5% !important;
       }
-    }
-    .el-dialog__body {
-      height: 440px;
     }
 
     &__form {

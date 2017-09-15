@@ -19,8 +19,14 @@
     </div>
 
     <div v-if="isAudio" class="material-item__play" @click="$emit('play', item)"></div>
-    <img v-else-if="isRotate" :src="item.thumb ? $url.static(item.thumb) : 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
-    <img v-else :src="$url.static(item.file_path)" :alt="item.title" />
+    <img v-else-if="isRotate" class="material-item__img" :src="item.thumb ? $url.static(item.thumb) : 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
+    <img v-else
+         :class="{
+           'material-item__other': ['logo', 'map', 'other'].includes(material.type),
+           'material-item__img': ['hotspot', 'wxicon', 'sky', 'thumb'].includes(material.type),
+         }"
+         :src="$url.static(item.file_path)"
+         :alt="item.title" />
 
     <figcaption class="ellipsis" :title="item.title">
       <span v-if="isRotate">
@@ -57,6 +63,7 @@ export default {
   computed: {
     ...mapState({
       invoked: state => state.edit.material.invoked,
+      material: state => state.edit.material,
     }),
 
     isAudio() {
@@ -143,6 +150,7 @@ export default {
     margin-top: 4px;
     text-align: center;
     font-size: 12px;
+    line-height: 18px;
   }
 
   &__play {
@@ -165,6 +173,16 @@ export default {
       margin-top: -7px;
       margin-left: -5px;
     }
+  }
+
+  &__other {
+    height: 70px;
+    object-fit: contain;
+  }
+
+  &__img {
+    height: 141px;
+    object-fit: cover;
   }
 
 
