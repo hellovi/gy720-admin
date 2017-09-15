@@ -173,7 +173,7 @@ export default {
 
       rules: {
         hot_name: [
-          { min: 1, max: 15, message: '长度在 1 到 15 个字符', trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' },
         ],
         data_id: [
           { type: this.ruleType('data_id'), required: true, message: this.preDataRule(), trigger: 'blur' },
