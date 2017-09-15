@@ -1,9 +1,11 @@
 <template>
   <el-dialog
+    custom-class="rotate-view"
     :title="viewer.title"
     :visible.sync="active.object3dView"
     :modal="false"
     size="large"
+    @close="rotateColse"
     :close-on-click-modal="false"
   >
     <rotate-view-3d :id="viewer.id"></rotate-view-3d>
@@ -18,8 +20,11 @@
    */
 
   import { mapState } from 'vuex'
+  import { EDIT } from '@/store/mutationTypes'
   import RotateView3d from './RotateView3d'
   import modal from '../../../../../mixins/modal'
+
+  const { MATERIAL } = EDIT
 
   export default {
     name: 'rotate-view',
@@ -34,6 +39,12 @@
       ...mapState({
         viewer: state => state.edit.material.object3dItem,
       }),
+    },
+
+    methods: {
+      rotateColse() {
+        this.$store.commit(MATERIAL.SELECT_OBJECT3D, {})
+      },
     },
   }
 </script>

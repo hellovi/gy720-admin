@@ -12,9 +12,9 @@
         @remove="removeObject"
       ></rotate-item>
 
-      <div v-if="isEmpty" class="empty">
-        <div>该分类下还未上传任何素材</div>
-      </div>
+      <app-empty-body v-if="isEmpty">
+        该分类下还未上传任何素材
+      </app-empty-body>
     </ul>
 
     <el-pagination
@@ -225,6 +225,8 @@ export default {
   &__img {
     float: left;
     width: var(--cover-width);
+    min-height: 161px;
+    max-width: var(--cover-width);
   }
 
   &__btns {

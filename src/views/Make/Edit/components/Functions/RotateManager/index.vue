@@ -108,4 +108,22 @@ export default {
     }
   }
 }
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .rotate-manage {
+    top: 5% !important;
+    .rotate-content, .rotate-list {
+      height: 480px;
+    }
+  }
+  .rotate-view {
+    width: 770px;
+    top: 4% !important;
+    .rotateView-box {
+      width: 740px;
+      height: 500px;
+    }
+  }
+}
 </style>

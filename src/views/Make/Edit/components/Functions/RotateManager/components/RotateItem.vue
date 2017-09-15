@@ -1,7 +1,7 @@
 <template>
   <li class="rotate-item">
     <div class="clearfix">
-      <img class="rotate-item__img" src="http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg"/>
+      <img class="rotate-item__img" v-qiniu-src="item.thumb || 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'"/>
       <ul class="list rotate-item__btns">
         <li><el-button size="mini" type="primary" @click="upload">上传图片</el-button></li>
         <li><el-button size="mini" type="primary" @click="manage">管理图片</el-button></li>

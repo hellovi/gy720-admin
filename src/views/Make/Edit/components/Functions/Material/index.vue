@@ -97,7 +97,7 @@ export default {
         { type: 'map', id: 2, name: '平面地图' },
         { type: 'hotspot', id: 7, name: '热点图标' },
         { type: 'wxicon', id: 3, name: '朋友圈小图标' },
-        { type: 'ad', id: 4, name: '天空/地面广告' },
+        { type: 'sky', id: 4, name: '天空/地面广告' },
         { type: 'thumb', id: 5, name: '场景缩略图' },
         { type: 'article', id: 10, name: '图文信息', view: 'image-text' },
         { type: 'rotate', id: 11, name: '物品3D' },

@@ -55,7 +55,7 @@
         </ul>
       </div>
     </div>
-    <app-empty-body v-if="data.length === 0">
+    <app-empty-body v-if="data.length === 0 && !loading">
       您暂时还没有物品图片
     </app-empty-body>
   </div>
@@ -79,7 +79,6 @@
     props: {
       id: {
         type: Number,
-        required: true,
       },
     },
 
@@ -100,8 +99,13 @@
     },
 
     watch: {
-      id() {
-        this.getData()
+      id(val) {
+        if (val) {
+          this.getData()
+        } else {
+          this.data = []
+          this.viewerDestroy()
+        }
       },
     },
 
@@ -111,7 +115,6 @@
         this.$http.get(`/user/sourcerotateimage?source_rotate_id=${this.id}`)
           .then(({ result }) => {
             this.data = [...result]
-            this.viewerDestroy()
             if (this.data.length) {
               // TODO 需要优化-重新实例有性能问题
               this.init()
@@ -189,7 +192,7 @@
       },
     },
 
-    created() {
+    mounted() {
       // 配置容器位置
       window.FWDViewContainer = `${this.rotateViewId}`
       dynamicLoadScript(`${this.rotatePath}view.js`)
