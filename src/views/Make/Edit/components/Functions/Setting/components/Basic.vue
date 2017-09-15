@@ -10,7 +10,6 @@
           <app-file-upload
             v-model="avatar"
             cropper
-            class="user-avatar__file"
             @crop-success="cropSuccess"
             @before-upload="loading = true"
             @file-uploaded="avatarUploaded"

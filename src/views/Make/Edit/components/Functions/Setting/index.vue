@@ -217,10 +217,15 @@ export default {
       .el-dialog {
         top: 5% !important;
       }
+      .el-dialog__body {
+        padding-bottom: 0;
+      }
     }
+
 
     &__form {
       padding-top: 20px;
+      padding-bottom: 0;
     }
   }
 }

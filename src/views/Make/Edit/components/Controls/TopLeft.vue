@@ -169,6 +169,7 @@ export default {
 }
 
 .edit-author {
+  display: inline-block;
   margin-top: 10px;
   font-size: 14px;
   line-height: 26px;
