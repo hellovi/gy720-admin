@@ -613,4 +613,38 @@ export default {
     line-height: 22px;
   }
 }
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .pano-material {
+    &__menu {
+      &-add {
+        margin-top: 10px;
+      }
+    }
+
+    &__right {
+      padding: 0 10px;
+    }
+
+    &__content {
+      padding-top: 10px;
+      min-height: 320px !important;
+
+      > .el-row {
+        margin-right: 0 !important;
+      }
+    }
+
+    &__item {
+      margin-bottom: 0;
+      padding-right: 0 !important;
+    }
+
+    .el-pagination {
+      margin-top: 2px;
+      padding-bottom: 16px;
+    }
+  }
+}
 </style>

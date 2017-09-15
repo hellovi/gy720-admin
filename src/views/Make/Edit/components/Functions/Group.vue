@@ -35,10 +35,12 @@
               <transition-group tag="ul" class="list">
                 <li v-for="scene in list.scenes" :key="scene.id" class="scene-group__item clearfix">
                   <img :src="$url.static(scene.thumb)" :alt="scene.name">
-                  <span class="scene-group__item__name">{{ scene.name }}</span>
-                  <span class="scene-group__item__edit">
-                    <i role="button" class="iconfont" @click="removeScene(list.id, scene)">&#xe615;</i>
-                  </span>
+                  <div class="scene-group__item__content">
+                    <span class="scene-group__item__name">{{ scene.name }}</span>
+                      <span class="scene-group__item__edit">
+                      <i role="button" class="iconfont" @click="removeScene(list.id, scene)">&#xe615;</i>
+                    </span>
+                  </div>
                 </li>
               </transition-group>
             </draggable>
@@ -67,7 +69,7 @@
       <ul class="work-scenes list clearfix" v-if="notGroupsList.length">
         <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
           <img :src="$url.static(list.thumb)" :alt="list.name">
-          <span>{{ list.name }}</span>
+          <span class="title ellipsis">{{ list.name }}</span>
         </li>
       </ul>
       <div v-else>
@@ -476,23 +478,37 @@ export default {
 
     & > img {
       width: 60px;
-      height: 30px;
+      height: 60px;
       position: absolute;
       left: 0;
     }
 
-    &__name {
+    &__content {
       float: left;
       width: 100%;
-      height: 30px;
-      line-height: 30px;
+      height: 60px;
+      line-height: 20px;
       text-align: center;
+      word-break: break-all;
+      position: relative;
+    }
+
+    &__name {
+      width: 90%;
+      padding: 0 20px 0 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
     }
     &__edit {
       display: none;
       line-height: 30px;
       position: absolute;
+      z-index: 10;
+      top: 0;
       right: 3px;
+
       .iconfont {
         cursor: pointer;
 
@@ -519,6 +535,7 @@ export default {
 
 .work-scenes {
   & > li {
+    width: 86px;
     float: left;
     padding: 2px;
     border: 1px solid var(--border-color);
@@ -534,8 +551,11 @@ export default {
     & > img {
       display: block;
       width: 80px;
-      height: 40px;
+      height: 80px;
       margin-bottom: 2px;
+    }
+    & > .title {
+      line-height: 18px;
     }
   }
 

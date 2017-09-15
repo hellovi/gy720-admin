@@ -346,3 +346,16 @@
 .btn-add.dash-box--cubic {
   line-height: 34px;
 }
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .edit-wrapper {
+    .el-dialog__body {
+      padding: 15px;
+    }
+
+    .el-pagination {
+      padding-bottom: 0;
+    }
+  }
+}

@@ -209,4 +209,22 @@ export default {
     }
   }
 }
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .edit-setting {
+    > .el-dialog__wrapper {
+      .el-dialog {
+        top: 5% !important;
+      }
+    }
+    .el-dialog__body {
+      height: 440px;
+    }
+
+    &__form {
+      padding-top: 20px;
+    }
+  }
+}
 </style>

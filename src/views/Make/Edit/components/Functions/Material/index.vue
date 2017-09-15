@@ -236,4 +236,20 @@ export default {
     bottom: -56px;
   }
 }
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .material-dialog {
+    top: 4% !important;
+
+    .material-tabs__item {
+      margin-bottom: 0.5em;
+    }
+
+    .material-content {
+      height: 420px;
+      padding: 0
+    }
+  }
+}
 </style>
