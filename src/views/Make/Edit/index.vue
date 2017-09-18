@@ -30,7 +30,7 @@
 /**
  * 高级编辑
  * @author luminghuai | chenliangshan
- * @version 2017-08-11
+ * @version 2017-09-18
  */
 
 import { mapState } from 'vuex'
@@ -129,7 +129,26 @@ export default {
           // 设置页面标题
           document.title = `${vm.$store.state.edit.panoInfo.name} - ${title}`
         })
+
+      /**
+       * 初始化高级编辑function弹窗状态
+       * 从非高级编辑路由跳转到高级编辑路由时生效
+       */
+      if (to.path !== from.path) {
+        vm.$store.commit(EDIT.MODAL.RESET)
+      }
     })
+  },
+
+  beforeRouteLeave(to, from, next) {
+    /**
+     * 重置高级编辑function弹窗状态
+     * 路由离开高级编辑时生效
+     */
+    if (to.path !== from.path) {
+      this.$store.commit(EDIT.MODAL.RESET)
+    }
+    next()
   },
 }
 

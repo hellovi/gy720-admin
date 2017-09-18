@@ -93,6 +93,7 @@ export const EDIT = {
   MODAL: {
     OPEN: 'EDIT.MODAL.OPEN',
     CLOSE: 'EDIT.MODAL.CLOSE',
+    RESET: 'EDIT.MODAL.RESET',
   },
 
   // Logo

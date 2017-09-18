@@ -8,30 +8,32 @@ import tour from './tour'
 import hotspots from './hotspots'
 import scene from './scene'
 
+const active = {
+  sceneList: true,
+  control: true,
+  logo: false,
+  author: false,
+  setting: false,
+  material: false,
+  group: false,
+  menu: false,
+  tour: false,
+  hotspots: false,
+  share: false,
+  scene: false,
+  snapshot: false,
+  initialview: false,
+  restrictView: false,
+  object3d: false,
+  object3dView: false,
+  imageTextEdit: false,
+  summary: false,
+  vipInfo: false,
+}
+
 export default {
   state: {
-    active: {
-      sceneList: true,
-      control: true,
-      logo: false,
-      author: false,
-      setting: false,
-      material: false,
-      group: false,
-      menu: false,
-      tour: false,
-      hotspots: false,
-      share: false,
-      scene: false,
-      snapshot: false,
-      initialview: false,
-      restrictView: false,
-      object3d: false,
-      object3dView: false,
-      imageTextEdit: false,
-      summary: false,
-      vipInfo: false,
-    },
+    active,
 
     panoInfo: {},
   },
@@ -60,6 +62,10 @@ export default {
 
     [EDIT.MODAL.CLOSE](state, name) {
       state.active[name] = false
+    },
+
+    [EDIT.MODAL.RESET](state) {
+      state.active = { ...active }
     },
 
     [EDIT.PANO.INIT](state, panoInfo) {
