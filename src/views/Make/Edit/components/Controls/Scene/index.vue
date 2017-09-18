@@ -121,8 +121,8 @@ export default {
      * 不允许删除当前选中场景
      */
     preDeleteScene(sceneId) {
-      if (sceneId === this.activeSceneId) {
-        this.$message.error('当前选中场景不能删除')
+      if (this.scenelist.length === 1) {
+        this.$notify.error('场景不能为空')
       } else {
         this.onDeleteItem({
           title: '删除场景',
@@ -137,7 +137,14 @@ export default {
      */
     deleteScene(sceneId) {
       return this.$http.delete(`/user/scene/${sceneId}?pano_id=${this.panoId}`)
-        .then(() => this.$store.commit(EDIT.SCENE.DELETE, sceneId))
+        .then(() => {
+          if (sceneId === this.activeSceneId) {
+            // 删除当前场景时切换其他场景
+            const sceneList = this.scenelist.filter(({ id }) => sceneId !== id)
+            this.selectScene(sceneList[0].id)
+          }
+          this.$store.commit(EDIT.SCENE.DELETE, sceneId)
+        })
     },
 
     /**
