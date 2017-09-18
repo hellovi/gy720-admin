@@ -39,7 +39,7 @@
           </td>
           <td>{{ message.date }}</td>
           <td>
-            <el-button type="primary" size="small" @click="openChatBox(message.user_id)">回复</el-button>
+            <el-button type="primary" size="small" @click="openChatBox(message)">回复</el-button>
             <el-button
               type="danger"
               size="small"
@@ -109,22 +109,20 @@ export default {
      * 标记所有选中项为已读
      * 接口请求成功后，应把store中对应的未读计数减去标记项的个数
      */
-    markSelected() {
+    markSelected(ids = this.checked) {
       this.loading = 'mark-selected'
       this.$http.post('/user/chat/read', {
-        ids: this.checked.map(id => ({ id })),
+        ids: ids.map(id => ({ id })),
       })
         .then(() => {
-          this.$store.commit(MESSAGE.COUNT.UPDATE, {
-            type: 'private',
-            count: this.checked.length,
-          })
+          ids.map(id => this.$store.commit(MESSAGE.PRIVATE.UPDATE, { id, unread: 0 }))
           this.loading = -1
         })
     },
 
-    openChatBox(userId) {
-      this.userId = userId
+    openChatBox({ id, user_id }) {
+      this.userId = user_id
+      this.markSelected([id])
       this.modal = true
     },
 

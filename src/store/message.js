@@ -34,11 +34,24 @@ export default {
       }
     },
 
-    [MESSAGE.PRIVATE.UPDATE](state, { id, content }) {
-      const target = state.private.data.find(item => item.id === id)
-      if (target) {
-        Vue.set(target, 'content', content)
+    [MESSAGE.PRIVATE.UPDATE](state, { id, content, unread }) {
+      if (content) {
+        const target = state.private.data.find(item => item.id === id)
+        if (target) {
+          Vue.set(target, 'content', content)
+        }
       }
+
+      // 更新未读数量
+      state.private.data = state.private.data.map((item) => {
+        if (item.id === id) {
+          return {
+            ...item,
+            unread,
+          }
+        }
+        return item
+      })
     },
 
     [MESSAGE.PRIVATE.HISTORY.INIT](state, chat) {
