@@ -1,5 +1,5 @@
 <template>
-  <div class="works">
+  <div class="works clearfix">
     <!-- 侧栏分类列表  -->
     <v-cate-list
       v-if="catelist.length"
@@ -81,6 +81,7 @@ export default {
 
 <style>
 @import "vars.css";
+@import './style/vars.css';
 
 :root {
    --area-height: 788px;
@@ -89,6 +90,16 @@ export default {
 .works {
   padding: 20px 15px;
   background-color: var(--color-white);
+  position: relative;
+
+  &:before {
+    content: '';
+    height: calc(100% - 40px);
+    border-left: var(--border-split);
+    position: absolute;
+    left: 135px;
+    z-index: 10;
+  }
 
   &__catelist {
     float: left;

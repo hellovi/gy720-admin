@@ -8,6 +8,14 @@
       >
         +创建新分类
       </a>
+      <!-- 我的作品（全部） -->
+      <v-cate-item
+        class="works-catelist__item"
+        :item="{name: '我的作品', id: null}"
+        :active="choosedCateId === null"
+        @chooseCate="onChooseCate"
+      >
+      </v-cate-item>
       <!-- 分类列表 -->
       <v-cate-item
         class="works-catelist__item"
@@ -117,7 +125,7 @@ export default {
     onChooseCate(cateId) {
       this.choosedCateId = cateId
       this.$router.push({
-        query: { cate_id: cateId },
+        query: { cate_id: cateId || '' },
       })
     },
 
@@ -185,7 +193,7 @@ export default {
 
   created() {
     const cate_id = this.$route.query.cate_id
-    this.choosedCateId = parseInt(cate_id, 10) || Ajax.defaultCateId
+    this.choosedCateId = parseInt(cate_id, 10) || null
   },
 }
 </script>

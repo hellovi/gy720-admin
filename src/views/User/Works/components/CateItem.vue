@@ -8,7 +8,7 @@
     </i>
     <!-- id为1是默认分类，不提供（不允许）删除 -->
     <i class="iconfont works-cateitem__tag--delete"
-      v-if="item.id !== 1"
+      v-if="item.id && item.id !== 1"
       @click.stop="onDeleteCate"
     >
       &#xe615;

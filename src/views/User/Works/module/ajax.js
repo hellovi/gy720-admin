@@ -66,7 +66,7 @@ class Ajax {
    */
   static getWorklist(
     {
-      cate_id = DEFAULT_CATE_ID,
+      cate_id = '',
       page = 1,
       per_page = 8,
     } = {},

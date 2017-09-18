@@ -394,7 +394,6 @@ export default {
   min-height: calc(100vh - 370px);
   padding-top: 7px;
   padding-left: 40px;
-  border-left: var(--border-split);
 
   &__header {
     border-bottom: var(--border-split);
