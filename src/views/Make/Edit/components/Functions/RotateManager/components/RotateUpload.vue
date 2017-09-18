@@ -49,6 +49,7 @@
       <div class="float-right">
         <label class="el-button el-button--primary" :for="uploadInputId">继续添加</label>
         <el-button :loading="loading" @click="upload">开始上传</el-button>
+        <el-button type="success" @click="$emit('close')" v-show="files.find(({ result }) => result === 'success')">完成</el-button>
       </div>
     </div>
   </div>

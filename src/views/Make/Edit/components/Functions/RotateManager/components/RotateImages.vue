@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <div class="rotate-images-tip clearfix">
       <span class="float-left">操作帮助：</span>
       <ul>
@@ -12,7 +12,7 @@
         </li>
       </ul>
     </div>
-    <draggable :list="(images)" @sort="onSort" v-loading="loading">
+    <draggable :list="(images)" @sort="onSort" v-if="images.length">
       <transition-group tag="ul" class="list clearfix rotate-image-list">
         <li class="float-left rotate-image-item" v-for="image in images" :key="image.id">
           <i class="iconfont" @click="update(image)">&#xe608;</i>
@@ -22,6 +22,10 @@
         </li>
       </transition-group>
     </draggable>
+
+    <app-empty-body v-else-if="!loading">
+      您暂无上传物品图片
+    </app-empty-body>
   </div>
 </template>
 
