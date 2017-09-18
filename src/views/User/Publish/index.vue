@@ -110,9 +110,6 @@ export default {
         pano_category_id: [
           { type: 'number', required: true, message: '作品分类不能为空', trigger: 'change' },
         ],
-        tag_ids: [
-          { type: 'array', required: true, message: '作品标签不能为空', trigger: 'change' },
-        ],
       },
       formLoading: false,
 
