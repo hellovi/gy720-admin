@@ -2,22 +2,8 @@
   <el-dialog
     class="edit-functions__share" title="分享"
     :visible.sync="active.share" size="small"
-    @close="closeModal"
   >
-    <div class="qrcode">
-      <img
-        class="qrcode-img"
-        :src="$url.static(data.qrcode)">
-      <p class="qrcode-title">微信“扫一扫”分享</p>
-    </div>
-    <div class="address">
-      <p class="address-title">作品地址：</p>
-      <el-input class="address-info" v-model="panoPath" disabled></el-input>
-    </div>
-    <div class="iframe">
-      <p class="iframe-title">分享到网站或者论坛：</p>
-      <el-input class="iframe-info" v-model="iframeUrl" disabled></el-input>
-    </div>
+    <app-share :data="data"></app-share>
   </el-dialog>
 </template>
 
@@ -28,28 +14,22 @@
  * @author huojinzhao
  */
 
+import AppShare from '@/components/AppShare'
 import modal from '../../mixins/modal'
-
-const PANO_VIEW_STATIC = 'http://www.gy720.com/pano/view'
 
 export default {
   name: 'edit-functions-share',
 
   mixins: [modal],
 
+  components: {
+    AppShare,
+  },
+
   props: {
     data: {
       type: Object,
       required: true,
-    },
-  },
-
-  computed: {
-    panoPath() {
-      return `${PANO_VIEW_STATIC}/${this.data.hash_pano_id}`
-    },
-    iframeUrl() {
-      return `<iframe src="${this.panoPath}" frameborder="no" border="0" style="width:800px;height:500px;"></iframe>`
     },
   },
 }

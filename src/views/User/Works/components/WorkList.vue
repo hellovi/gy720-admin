@@ -94,7 +94,14 @@
     </el-dialog>
 
     <!-- 分享弹窗 -->
-    <functions-share :data="sharedWork"></functions-share>
+
+    <el-dialog
+      title="分享"
+      :visible.sync="sharedVisible"
+      size="small"
+    >
+      <app-share :data="sharedWork"></app-share>
+    </el-dialog>
 
     <!-- 升级商业版 / 购买服务弹窗 -->
     <app-purchase
@@ -128,11 +135,11 @@
 /**
  * 个人作品 - 作品列表组件
  *
- * @author huojinzhao
+ * @author huojinzhao | chenliangshan
+ * @version 2017/09/18
  */
 
-import { EDIT } from '@/store/mutationTypes'
-import functionsShare from '@/views/Make/Edit/components/Functions/Share'
+import AppShare from '@/components/AppShare'
 import appPurchase from '@/components/AppPurchase'
 import deleteItem from '@/mixins/deleteItem'
 import messageSay from '@/views/User/Message/Say'
@@ -150,7 +157,7 @@ export default {
   components: {
     vWorkItem,
     vOfflineDoc,
-    functionsShare,
+    AppShare,
     appPurchase,
     messageSay,
   },
@@ -190,6 +197,8 @@ export default {
     offlineDocTag: false,
 
     sharedWork: {},
+
+    sharedVisible: false,
 
     upgradedWorkModal: {
       tag: false,
@@ -361,7 +370,7 @@ export default {
 
     onShareWork(work) {
       this.sharedWork = work
-      this.$store.commit(EDIT.MODAL.OPEN, 'share')
+      this.sharedVisible = true
     },
 
     onUpgradeWork(workId) {
