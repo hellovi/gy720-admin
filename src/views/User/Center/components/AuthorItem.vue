@@ -45,7 +45,7 @@
 
     <!-- 关注和取关按钮 -->
     <div class="authoritem__attention">
-      <el-button v-if="author.is_follow"
+      <el-button v-if="!author.is_follow"
         class="authoritem__attention--confirm"
         type="primary"
         @click="onToggleFollow"
