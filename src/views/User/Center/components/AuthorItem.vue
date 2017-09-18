@@ -129,7 +129,7 @@ export default {
 
     // 当前数据没有hash_user_id，等后端添加
     userPath() {
-      return this.$url.host(`author/${this.author.hash_user_id}`)
+      return this.$url.host(`author/view/${this.author.hash_user_id}`)
     },
   },
 
