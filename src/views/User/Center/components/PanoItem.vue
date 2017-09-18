@@ -80,7 +80,7 @@ export default {
 
   computed: {
     userPath() {
-      return this.$url.host(`author/${this.pano.hash_user_id}`)
+      return this.$url.host(`author/view/${this.pano.hash_user_id}`)
     },
 
     panoPath() {
