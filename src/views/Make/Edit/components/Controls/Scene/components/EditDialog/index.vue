@@ -138,10 +138,9 @@ export default {
       const { pano_id } = this.$route.query
       this.$http.put(`/user/scene/${this.form.id}?pano_id=${pano_id}`, this.form)
         .then(() => {
-          this.$store.dispatch(EDIT.SCENE.INIT, pano_id)
-
-          this.close()
+          this.$store.commit(EDIT.SCENE.UPDATE, { id: this.form.id, update: this.form })
           this.$message.success('操作成功')
+          this.close()
         })
         .catch((errors) => {
           this.errors = errors
