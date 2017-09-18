@@ -97,8 +97,12 @@ export default {
         password: [
           {
             validator: (rule, value, callback) => {
-              if (this.form.privacy === 2 && !value) {
-                callback(new Error('作品密码不能为空'))
+              if (this.form.privacy === 20) {
+                if (!value) {
+                  callback(new Error('作品密码不能为空'))
+                } else if (value.length > 8) {
+                  callback(new Error('作品密码为1~8个字符'))
+                }
               }
               callback()
             },
