@@ -61,11 +61,11 @@
       title="选择场景"
       :visible.sync="showScenes"
       :close-on-click-modal="false"
-      :close-on-press-escape="false"
       size="large"
       @open="getNotGroups"
       @close="closeSelectScenes"
-      :modal="false">
+      :modal="false"
+    >
       <ul class="work-scenes list clearfix" v-if="notGroupsList.length">
         <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
           <img :src="$url.static(list.thumb)" :alt="list.name">
