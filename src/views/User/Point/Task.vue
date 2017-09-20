@@ -46,14 +46,14 @@
               @click="$router.push('/user-client/publish')"
             >发布作品</el-button>
 
-            <el-button
-              v-if="task.id === 5 || task.id === 6"
-              type="primary"
-              size="small"
-              :disabled="task.user_mission_count >= task.limit"
-              @click="$router.push('/forum')"
-            >{{ task.id === 5 ? '回复话题': '发布话题' }}</el-button>
-
+            <a href="/forum">
+              <el-button
+                v-if="task.id === 5 || task.id === 6"
+                type="primary"
+                size="small"
+                :disabled="task.user_mission_count >= task.limit"
+              >{{ task.id === 5 ? '回复话题': '发布话题' }}</el-button>
+            </a>
           </td>
         </tr>
       </tbody>
@@ -73,7 +73,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr v-if="tasks.length">
           <td>邀请注册</td>
           <td>{{ `${tasks.find(item => item.id === 8).integral}积分 ${tasks.find(item => item.id === 8).experience}经验`.replace(/(^|\s)(?=\d+)/g, '$1+') }}</td>
           <td>{{`已邀请${tasks.find(item => item.id === 8).user_mission_count}次`}}</td>
