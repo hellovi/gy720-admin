@@ -9,6 +9,7 @@ import point from './point'
 import purchase from './purchase'
 import certificate from './certificate'
 import edit from './edit'
+import service from './service'
 
 Vue.use(Vuex)
 
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     purchase,
     certificate,
     edit,
+    service,
   },
 
   mutations: {

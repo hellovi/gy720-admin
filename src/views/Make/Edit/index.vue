@@ -35,6 +35,7 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
+import { serviceModal } from '@/mixins'
 
 import {
   TopCenter,
@@ -53,6 +54,8 @@ import EditFunctions from './components/Functions'
 
 export default {
   name: 'edit',
+
+  mixins: [serviceModal],
 
   components: {
     TopCenter,
@@ -138,6 +141,13 @@ export default {
         vm.$store.commit(EDIT.MODAL.RESET)
       }
     })
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    // 关闭购买弹窗
+    this.closeServiceModal('buyInfo')
+    this.closeServiceModal('isRenew')
+    next()
   },
 
   beforeRouteLeave(to, from, next) {

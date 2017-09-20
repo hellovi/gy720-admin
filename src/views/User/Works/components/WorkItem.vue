@@ -150,7 +150,7 @@ export default {
     },
 
     onUpgrade() {
-      this.$emit('upgrade', this.item.id)
+      this.$emit('upgrade', this.item)
     },
 
     onChart() {

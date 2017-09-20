@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-row :gutter="30">
+  <!--<div class="buy-server">-->
+    <!--<el-row :gutter="30">
       <el-col :span="8">
         <section class="buy-panel">
           <dl class="panel-list clearfix">
@@ -13,7 +13,7 @@
       </el-col>
 
       <el-col :span="8">
-        <section class="buy-panel buy-panel--vip">
+        <section class="buy-panel buy-panel&#45;&#45;vip">
           <dl class="panel-list clearfix">
             <dt class="panel-list__title">99套餐添加功能</dt>
             <dd class="panel-list__item" v-for="item in addList" :key="item">
@@ -37,7 +37,7 @@
       </el-col>
 
       <el-col :span="8">
-        <section class="buy-panel buy-panel--vip">
+        <section class="buy-panel buy-panel&#45;&#45;vip">
           <h3 class="panel-list__title">购买方式</h3>
           <dl class="panel-list clearfix">
 
@@ -57,7 +57,7 @@
           <img class="buy-price" :src="require('@/assets/icon-99.png')" alt="99元/年">
           <div class="buy-action">
             <div>作品按次收费</div>
-            <!-- <el-button type="primary" @click="visible2 = true">我的作品</el-button> -->
+            &lt;!&ndash; <el-button type="primary" @click="visible2 = true">我的作品</el-button> &ndash;&gt;
             <el-button type="primary" @click="$router.push('/user-client/works')">我的作品</el-button>
           </div>
         </section>
@@ -74,9 +74,9 @@
       :panorama-id='9'
       :visible.sync="visible2"
       @panoBuySuccess="ok"
-    ></app-purchase>
-
-  </div>
+    ></app-purchase>-->
+  <!--</div>-->
+  <app-buy-service :is-serve-page="true"></app-buy-service>
 </template>
 
 <script>
@@ -87,7 +87,7 @@
  * @version 2017-08-12
  */
 
-import { AppPurchase, CreateDialog } from '@/components'
+import { AppPurchase, CreateDialog, AppBuyService } from '@/components'
 
 export default {
   name: 'purchase-buy',
@@ -95,6 +95,7 @@ export default {
   components: {
     AppPurchase,
     CreateDialog,
+    AppBuyService,
   },
 
   data() {
@@ -148,7 +149,7 @@ export default {
     top: -10px;
     width: 64px;
     height: 64px;
-    background-image: url("./images/icon-vip.png");
+    // background-image: url("./images/icon-vip.png");
   }
 
   &:first-child:last-child {

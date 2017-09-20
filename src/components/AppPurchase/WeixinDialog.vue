@@ -40,26 +40,6 @@ export default {
       type: Boolean,
       default: 'false',
     },
-    isYearVip: {
-      type: Boolean,
-      default: 'true',
-    },
-    url: {
-      type: String,
-      required: true,
-    },
-    money: {
-      type: [Number, String],
-      required: true,
-    },
-    hashOrderId: {
-      type: String,
-      required: true,
-    },
-    currentWindowOpen: {
-      type: Boolean,
-      default: 'false',
-    },
   },
 
   methods: {

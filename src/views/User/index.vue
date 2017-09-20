@@ -11,9 +11,13 @@
 
 <script>
 import { AppHeader, AppFooter, AppUser } from '@/components'
+import { serviceModal } from '@/mixins'
+import { SERVICE } from '@/store/mutationTypes'
 
 export default {
   name: 'user-client',
+
+  mixins: [serviceModal],
 
   components: {
     AppHeader,
@@ -26,6 +30,15 @@ export default {
       return this.$route.path !== '/user-client/publish'
     },
   },
+
+  beforeRouteUpdate(to, from, next) {
+    // 关闭购买弹窗
+    // this.closeServiceModal('buyInfo')
+    // this.closeServiceModal('isRenew')
+    this.$store.commit(SERVICE.MODAL.RESET)
+    next()
+  },
+
 }
 </script>
 

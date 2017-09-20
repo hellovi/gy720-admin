@@ -104,11 +104,11 @@
     </el-dialog>
 
     <!-- 升级商业版 / 购买服务弹窗 -->
-    <app-purchase
+    <!--<app-purchase
       :visible.sync="upgradedWorkModal.tag"
       :panorama-id="upgradedWorkInfo.id"
       @panoBuySuccess="panoBuySuccess"
-    ></app-purchase>
+    ></app-purchase>-->
 
     <!-- 分页 -->
     <el-pagination
@@ -141,18 +141,17 @@
 
 import AppShare from '@/components/AppShare'
 import appPurchase from '@/components/AppPurchase'
-import deleteItem from '@/mixins/deleteItem'
+import { deleteItem, serviceModal } from '@/mixins'
 import messageSay from '@/views/User/Message/Say'
-
+import { SERVICE } from '@/store/mutationTypes'
 import Ajax from '../module/ajax'
-
 import vWorkItem from './WorkItem'
 import vOfflineDoc from './OfflineDoc'
 
 export default {
   name: 'works-work-list',
 
-  mixins: [deleteItem],
+  mixins: [deleteItem, serviceModal],
 
   components: {
     vWorkItem,
@@ -373,9 +372,12 @@ export default {
       this.sharedVisible = true
     },
 
-    onUpgradeWork(workId) {
-      this.upgradedWorkInfo.id = workId
-      this.upgradedWorkModal.tag = true
+    onUpgradeWork(work) {
+      this.$store.dispatch(SERVICE.MODAL.COMPLETEPAY, work)
+        .then(() => {
+          // TODO 购买完成回调
+        })
+      this.openServiceModal('buyInfo')
     },
   },
 }

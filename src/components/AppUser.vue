@@ -44,106 +44,120 @@
 
     <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
     <el-button size="small" @click="locationTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
-    <el-button size="small" @click="goTo('/user-client/purchase')">续费</el-button>
-
+    <el-button size="small" @click="renew">续费</el-button>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+  /**
+   * 用户中心头部
+   */
 
-export default {
-  name: 'app-user',
+  import { mapState } from 'vuex'
+  import serviceModal from '@/mixins/serviceModal'
 
-  computed: {
-    ...mapState(['userInfo']),
+  export default {
+    name: 'app-user',
 
-    vipExpireAt() {
-      return this.userInfo.vip_expire_at ? this.userInfo.vip_expire_at.slice(0, 10) : ''
+    mixins: [serviceModal],
+
+    data: () => ({
+      isRenew: false,
+    }),
+
+    computed: {
+      ...mapState(['userInfo']),
+
+      vipExpireAt() {
+        return this.userInfo.vip_expire_at ? this.userInfo.vip_expire_at.slice(0, 10) : ''
+      },
     },
-  },
 
-  methods: {
-    goTo(url) {
-      this.$router.push(url)
+    methods: {
+      goTo(url) {
+        this.$router.push(url)
+      },
+      locationTo(url) {
+        window.location.href = url
+      },
+      renew() {
+        this.openServiceModal('buyInfo')
+        this.openServiceModal('isRenew')
+      },
     },
-    locationTo(url) {
-      window.location.href = url
-    },
-  },
-}
+  }
 </script>
 
 
 <style lang="postcss">
-@import "vars.css";
+  @import "vars.css";
 
-:root {
-  --avatar-width: 127px;
-  --avatar-left: 22px;
-}
+  :root {
+    --avatar-width: 127px;
+    --avatar-left: 22px;
+  }
 
-.app-user {
-  position: relative;
-  width: var(--content-width);
-  height: var(--app-user-height);
-  padding: 15px 15px 15px calc(var(--avatar-width) + var(--avatar-left) + 18px);
-  margin: var(--app-user-margin-top) auto var(--app-user-margin-bottom);
-  background-color: #fff;
+  .app-user {
+    position: relative;
+    width: var(--content-width);
+    height: var(--app-user-height);
+    padding: 15px 15px 15px calc(var(--avatar-width) + var(--avatar-left) + 18px);
+    margin: var(--app-user-margin-top) auto var(--app-user-margin-bottom);
+    background-color: #fff;
 
-  &__avatar {
-    position: absolute;
-    bottom: 10px;
-    left: var(--avatar-left);
+    &__avatar {
+      position: absolute;
+      bottom: 10px;
+      left: var(--avatar-left);
 
-    & > img {
-      width: var(--avatar-width);
-      height: var(--avatar-width);
-      border: 3px solid #fff;
+      & > img {
+        width: var(--avatar-width);
+        height: var(--avatar-width);
+        border: 3px solid #fff;
+      }
+    }
+
+    &__info {
+      margin-bottom: 10px;
+      font-size: 16px;
+
+      em {
+        font-style: normal;
+        font-weight: 700;
+      }
+
+      & > .app-user__badge {
+        margin: 0 10px;
+      }
+    }
+
+    &__vip {
+      color: #ffc000;
+    }
+
+    &__point {
+      margin-bottom: 10px;
+      font-size: 14px;
+
+      & > a {
+        margin-right: 10px;
+      }
     }
   }
 
-  &__info {
-    margin-bottom: 10px;
-    font-size: 16px;
-
-    em {
-      font-style: normal;
-      font-weight: 700;
-    }
-
-    & > .app-user__badge {
-      margin: 0 10px;
-    }
-  }
-
-  &__vip {
-    color: #ffc000;
-  }
-
-  &__point {
-    margin-bottom: 10px;
+  .app-user__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background-color: #ff8a00;
+    color: #fff;
     font-size: 14px;
 
-    & > a {
-      margin-right: 10px;
+    &--gray {
+      background-color:  var(--gray);
+    }
+
+    &--level {
+      background-color: #ffc000;
     }
   }
-}
-
-.app-user__badge {
-  display: inline-block;
-  padding: 2px 8px;
-  background-color: #ff8a00;
-  color: #fff;
-  font-size: 14px;
-
-  &--gray {
-    background-color:  var(--gray);
-  }
-
-  &--level {
-    background-color: #ffc000;
-  }
-}
 </style>

@@ -1,83 +1,94 @@
 <template>
   <div>
     <el-dialog
-      title="生成订单"
+      :title="'我要购买' + (isYearVip ? '（2299元/年）' : '（99元/作品）')"
       size="small"
       :visible="visible"
       @update:visible="val => $emit('update:visible',val)"
-      class="create-dialog"
+      :close-on-click-modal="false"
+      custom-class="create-dialog"
     >
-      <p class="create-dialog__text" v-if="isYearVip">
-        <span>确定购买<em>2299元/年</em>的商业版会员么？共需支付<em>2299元</em></span>
-        <el-button type="text" @click="couponToggle">我有优惠券</el-button>
-      </p>
+      <div class="create-dialog__amount">
+        <template v-if="isYearVip">
+          <div class="text-center" v-if="">
+            <el-row>
+              <el-col :span="12">
+                总金额：￥{{`${numberPadEnd(2299)}`}}元
+              </el-col>
+              <el-col :span="12">
+                优惠金额：￥{{`${numberPadEnd(200)}`}}元
+              </el-col>
+            </el-row>
+            <h2 class="create-dialog__amount-gross">总金额：<span>￥{{`${numberPadEnd(2299)}`}}元</span></h2>
+            （支付完成后，商业版有效期至{{ expireTime }}）
+          </div>
+        </template>
+        <template v-else>
+          <div class="text-center">
+            <h2 class="create-dialog__amount-gross">总金额：<span>￥{{`${numberPadEnd(99)}`}}元</span></h2>
+            （作品名称：{{ panoInfo.name }}）
+          </div>
+        </template>
+      </div>
 
-      <p class="create-dialog__text create-dialog__text--pano" v-else>
-        <span>确定购买<em>99元/次</em>的单作品会员么？共需支付<em>99元</em></span>
-      </p>
-
-      <!-- 选择优惠券 -->
       <el-form
         ref="form"
         :model="form"
-        label-width="100px"
-        label-position="left"
+        label-width="160px"
         :rules="rules"
+        class="create-dialog__form"
       >
         <!-- 接口返回错误信息 -->
         <app-form-alert :contents="formAlert"></app-form-alert>
-
-        <!-- 优惠券 -->
-        <el-form-item v-if="hasCoupon" label="输入优惠券：" prop="coupon_code">
-          <el-input placeholder="请输入16位优惠券码" v-model="form.coupon_code"></el-input>
+        <el-form-item label="支付方式：" required>
+          <el-radio-group v-model="form.channel_type">
+            <el-radio :label="10">支付宝</el-radio>
+            <el-radio :label="20">微信</el-radio>
+          </el-radio-group>
         </el-form-item>
 
-        <!-- 是否需要发票 -->
-        <el-checkbox
-          v-if="isYearVip"
-          :true-label="1"
-          :false-label="0"
-          v-model="form.invoice"
-          @click='invoiceToggle'
-        >需要发票</el-checkbox>
+        <template v-if="isYearVip">
+          <!-- 优惠券 -->
+          <el-form-item label="输入优惠券：" prop="coupon_code">
+            <el-input placeholder="请输入16位优惠券码" v-model="form.coupon_code"></el-input>
+          </el-form-item>
+          <!-- 是否需要发票 -->
+          <el-form-item label="发票信息：">
+            <el-radio-group v-model="form.invoice" @change="invoiceToggle">
+              <el-radio :label="0">不需要</el-radio>
+              <el-radio :label="1">需要</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
-        <!-- 发票信息 -->
-        <div v-if="hasInvoice">
-          <el-form-item label="公司抬头：" prop="company">
-            <el-input placeholder="不填默认为个人发票" v-model="form.company"></el-input>
-          </el-form-item>
-          <el-form-item label="邮寄地址：" prop="address">
-            <el-input placeholder="请输入收件地址" v-model="form.address"></el-input>
-          </el-form-item>
-          <el-form-item label="联系人：" prop="contact">
-            <el-input placeholder="请输入联系人姓名" v-model="form.contact"></el-input>
-          </el-form-item>
-          <el-form-item label="电话号码：" prop="mobile">
-            <el-input placeholder="请输入联系电话" v-model="form.mobile"></el-input>
-          </el-form-item>
-        </div>
+          <!-- 发票信息 -->
+          <template v-if="hasInvoice">
+            <el-form-item label="公司抬头：" prop="company" required>
+              <el-input placeholder="不填默认为个人发票" v-model="form.company"></el-input>
+            </el-form-item>
+            <el-form-item label="邮寄地址：" prop="address" required>
+              <el-input placeholder="请输入收件地址" v-model="form.address"></el-input>
+            </el-form-item>
+            <el-form-item label="联系人：" prop="contact" required>
+              <el-input placeholder="请输入联系人姓名" v-model="form.contact"></el-input>
+            </el-form-item>
+            <el-form-item label="电话号码：" prop="mobile" required>
+              <el-input placeholder="请输入联系电话" v-model="form.mobile"></el-input>
+            </el-form-item>
+          </template>
+        </template>
+        <template v-else>
 
-        <div class="text-center">
+        </template>
+        <el-form-item>
           <el-button
             type="primary"
             :loading="formLoading"
             @click="createOrder"
-          >生成订单</el-button>
-        </div>
+            style="width: 110px;"
+          >支付款</el-button>
+        </el-form-item>
       </el-form>
     </el-dialog>
-
-    <!-- 确认订单组件 -->
-    <confirm-dialog
-      :visible.sync="dialog.confirm"
-      :is-year-vip="isYearVip"
-      :hash-order-id="hashOrderId"
-      :number="number"
-      :money="money"
-      @panoBuySuccess="panoBuySuccess"
-      :current-window-open="currentWindowOpen"
-    ></confirm-dialog>
-
   </div>
 </template>
 
@@ -85,22 +96,21 @@
 /**
  * 创建订单组件
  *
- * @author zhoumenglin
+ * @author zhoumenglin | chenliangshan
  * @param {Boolean} visible.sync - 控制组件显示
- * @param {Number|String} panoramaId - 作品id
  * @param {Number} orderType - 购买种类 10：年会员 20：单作品
- * @callback panoBuySuccess - 购买单作品完成的回调
  */
 
+import { mapState } from 'vuex'
 import AppFormAlert from '@/components/AppFormAlert'
-import ConfirmDialog from './ConfirmDialog'
+import { mobileRule } from '@/utils/rulesValidator'
+import { SERVICE } from '@/store/mutationTypes'
 
 export default {
   name: 'app-purchase-create',
 
   components: {
     AppFormAlert,
-    ConfirmDialog,
   },
 
   props: {
@@ -112,10 +122,6 @@ export default {
       type: Number,
       required: true,
     },
-    panoramaId: {
-      type: [Number, String],
-      default: null,
-    },
     currentWindowOpen: {
       type: Boolean,
       default: false,
@@ -125,6 +131,7 @@ export default {
   data() {
     return {
       form: {
+        channel_type: 10,
         order_type: 10, // 购买类型 10:年费 20:单个作品
         coupon_code: '', // 优惠券 （年费版）
         invoice: 0, // 是否需要发票 （年费版）
@@ -152,7 +159,7 @@ export default {
         ],
         mobile: [
           { validator: this.invoiceCheck('电话号码'), trigger: 'blur' },
-          { validator: this.mobileCheck, trigger: 'blur' },
+          { validator: mobileRule, trigger: 'blur' },
         ],
       },
 
@@ -162,10 +169,6 @@ export default {
 
       formAlert: {}, // 接口返回错误信息
       formLoading: false, // 提交按钮loading
-
-      dialog: { // 确认订单弹窗控制
-        confirm: false,
-      },
     }
   },
 
@@ -177,16 +180,42 @@ export default {
     hasInvoice() { // 是否需要发票
       return this.form.invoice === 1
     },
+
+    ...mapState({
+      panoInfo: state => state.service.buyPanoInfo,
+      userInfo: state => state.userInfo,
+    }),
+
+    expireTime() {
+      const expireTime = this.userInfo.vip_expire_at
+      const currentTime = new Date()
+      if (!expireTime || new Date(expireTime).getTime() < Date.now()) {
+        return `${currentTime.getFullYear() + 1}-${currentTime.getMonth() + 1}-${currentTime.getDate()}`
+      }
+      const newExpireTime = new Date(expireTime)
+      newExpireTime.setFullYear(new Date(expireTime).getFullYear() + 1)
+      return `${newExpireTime.getFullYear()}-${newExpireTime.getMonth() + 1}-${newExpireTime.getDate()}`
+    },
   },
 
   methods: {
+    numberPadEnd(num, units = 2) {
+      let str = num.toString()
+      let rs = str.indexOf('.')
+      if (rs < 0) {
+        str += '.'
+        rs = str.length
+      }
+      while (str.length < rs + units) {
+        str += '0'
+      }
+      return str
+    },
+
     couponSnCheck(rule, value, callback) { // 优惠券自定义验证
       const reg = /^\w{16}$/
-      if (this.hasCoupon) {
-        if (!reg.test(value)) {
-          callback(new Error('请输入16位的优惠券码'))
-        }
-        callback()
+      if (value && !reg.test(value)) {
+        callback(new Error('请输入16位的优惠券码'))
       }
       callback()
     },
@@ -194,7 +223,7 @@ export default {
     invoiceCheck(msg) { // 发票信息自定义验证
       return (rule, value, callback) => {
         if (this.hasInvoice) {
-          if (value === '') {
+          if (!value) {
             callback(new Error(`请输入${msg}`))
           }
           callback()
@@ -203,32 +232,19 @@ export default {
       }
     },
 
-    mobileCheck(rule, value, callback) { // 联系方式自定义验证
-      const reg = /^1\d{10}$/
-      if (this.hasInvoice) {
-        if (!reg.test(value)) {
-          callback(new Error('手机号格式不正确'))
-        }
-        callback()
-      }
-      callback()
-    },
-
     couponToggle() {
       this.hasCoupon = !this.hasCoupon
       this.form.coupon_code = ''
     },
 
     invoiceToggle() {
-      if (this.hasInvoice) {
-        this.form.invoice = 0
-      } else {
-        this.form.invoice = 1
+      this.form = {
+        ...this.form,
+        company: null,
+        address: null,
+        contact: null,
+        mobile: null,
       }
-      this.form.company = ''
-      this.form.address = ''
-      this.form.contact = ''
-      this.form.mobile = ''
     },
 
     createOrder() {
@@ -240,16 +256,13 @@ export default {
           this.$http.post('/user/order/store', {
             ...this.form,
             order_type: this.orderType,
-            panorama_id: this.panoramaId,
+            panorama_id: this.panoInfo.id || '',
           })
             .then(({ result }) => {
-              this.hashOrderId = result.hash_order_id
-              this.number = result.number
-              this.money = result.money
-
+              this.$store.commit(SERVICE.MODAL.SETORDERINFO, result)
               this.formLoading = false
-              this.dialog.confirm = true
               this.$emit('update:visible', false)
+              // TODO 跳转支付方式（微信弹窗|支付新打开标签窗口）
             })
             .catch((errors) => {
               this.formAlert = errors
@@ -271,6 +284,21 @@ export default {
 @import "vars.css";
 
 .create-dialog {
+
+  &__form {
+
+  }
+
+  &__amount {
+    padding-bottom: 22px;
+    &-gross {
+      font-size: 20px;
+      > span {
+        color: #f30e0e;
+      }
+    }
+
+  }
 
   &__text {
     margin: 0;
@@ -295,14 +323,6 @@ export default {
 
   .el-dialog__body{
     padding: 30px 76px;
-  }
-
-  .el-select,.el-radio-group{
-    display: block;
-  }
-
-  .el-checkbox,.el-radio-group{
-    margin-bottom: 20px;
   }
 }
 </style>
