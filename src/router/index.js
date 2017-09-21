@@ -17,6 +17,10 @@ const router = new Router({
   mode: 'history',
   routes: [
     {
+      path: '/pay',
+      component: views.Pay,
+    },
+    {
       path: '/user-client',
       component: views.User,
       children: [
