@@ -15,7 +15,7 @@
           <td>{{ record.code }}</td>
           <td>{{ record.name }}</td>
           <td>{{ record.date }}</td>
-          <td>{{ record.use_status }}</td>
+          <td>1</td>
           <td>{{ record.use_status_name }}</td>
         </tr>
       </tbody>
