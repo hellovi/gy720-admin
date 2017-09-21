@@ -73,3 +73,14 @@
 
   }
 </script>
+
+<style lang="postcss">
+  /* 兼容小分辨率屏幕 */
+  @media screen and (max-height: 760px) {
+    .app-buy-flow {
+      .app-buy-service-dialog__small, .app-buy-service-dialog__large {
+        top: 5% !important;
+      }
+    }
+  }
+</style>
