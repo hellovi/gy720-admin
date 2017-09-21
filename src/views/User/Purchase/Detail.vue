@@ -159,17 +159,25 @@ export default {
       this.$router.push('/user-client/purchase/orders')
     },
 
+    // 获取订单详情
+    getOrderDetail(ordersn) {
+      this.$http.get(`/user/order/${ordersn}`)
+        .then((res) => {
+          this.order = res.result
+        })
+    },
+
   },
 
   beforeRouteEnter(t, f, n) {
     n((vm) => {
-      const ordersn = t.params.ordersn
-      vm.$http.get(`/user/order/${ordersn}`)
-        .then((res) => {
-          // eslint-disable-next-line
-          vm.order = res.result
-        })
+      vm.getOrderDetail(t.params.ordersn)
     })
+  },
+
+  beforeRouteUpdate(t, f, n) {
+    this.getOrderDetail(t.params.ordersn)
+    n()
   },
 
 }

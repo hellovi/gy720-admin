@@ -46,3 +46,6 @@ export { default as Publish } from './User/Publish'
 
 // 高级编辑
 export { default as Edit } from './Make/Edit'
+
+// 跳转支付平台
+export { default as Pay } from './Pay'

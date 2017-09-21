@@ -103,13 +103,6 @@
       <app-share :data="sharedWork"></app-share>
     </el-dialog>
 
-    <!-- 升级商业版 / 购买服务弹窗 -->
-    <!--<app-purchase
-      :visible.sync="upgradedWorkModal.tag"
-      :panorama-id="upgradedWorkInfo.id"
-      @panoBuySuccess="panoBuySuccess"
-    ></app-purchase>-->
-
     <!-- 分页 -->
     <el-pagination
       v-if="worklist.last_page > 1"
@@ -199,14 +192,6 @@ export default {
 
     sharedVisible: false,
 
-    upgradedWorkModal: {
-      tag: false,
-    },
-
-    upgradedWorkInfo: {
-      id: 0,
-    },
-
     chartItem: {},
 
     chartVisible: false,
@@ -237,16 +222,13 @@ export default {
 
   methods: {
     /* 单作品购买成功回调方法 */
-
-    panoBuySuccess() {
-      const id = this.upgradedWorkInfo.id
+    panoBuySuccess(id) {
       const target = this.worklist.data
-        .find(work => work.id === id)
+        .find(work => work.hash_pano_id === id)
       if (target) target.is_vip = true
     },
 
     /* 所有单作品状态控制 */
-
     initializeCheckedWorks() {
       this.checkedWordsId = []
     },
@@ -373,9 +355,9 @@ export default {
     },
 
     onUpgradeWork(work) {
-      this.$store.dispatch(SERVICE.MODAL.COMPLETEPAY, work)
-        .then(() => {
-          // TODO 购买完成回调
+      this.$store.dispatch(SERVICE.MODAL.CALLBACK, work)
+        .then(({ hash_pano_id }) => {
+          this.panoBuySuccess(hash_pano_id)
         })
       this.openServiceModal('buyInfo')
     },

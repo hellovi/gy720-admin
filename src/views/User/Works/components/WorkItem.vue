@@ -22,7 +22,7 @@
     <div class="workitem__info">
       <!-- 第一行 -->
       <div class="workitem__info-name">
-        <span v-if="item.is_vip"
+        <span v-if="userInfo.is_vip || item.is_vip"
           class="workitem__info-name--isvip"
         >
           商业作品
@@ -62,7 +62,7 @@
     <!-- 作品操作 -->
     <div class="workitem__biz">
       <el-button
-        v-if="!item.is_vip"
+        v-if="!(userInfo.is_vip || item.is_vip)"
         type="text"
         @click="onUpgrade"
       >
@@ -105,6 +105,7 @@
  * @author huojinzhao
  */
 
+import { mapState } from 'vuex'
 import vWorkOffline from './WorkOffline'
 
 export default {
@@ -126,6 +127,10 @@ export default {
   }),
 
   computed: {
+    ...mapState({
+      userInfo: state => state.userInfo,
+    }),
+
     // 作品跳线上pano预览的地址
     workPanoPath() {
       return `/pano/view/${this.item.hash_pano_id}`

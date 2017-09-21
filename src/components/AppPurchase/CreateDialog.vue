@@ -142,8 +142,6 @@ export default {
         panorama_id: '', // 作品id （单作品）
       },
 
-      hasCoupon: false, // 是否有优惠券
-
       rules: { // 表单验证规则
         coupon_code: [
           { validator: this.couponSnCheck, trigger: 'blur' },
@@ -162,10 +160,6 @@ export default {
           { validator: mobileRule, trigger: 'blur' },
         ],
       },
-
-      money: '', // 创建后订单的价格
-      number: '', // 创建后的订单号
-      hashOrderId: '', // 创建后的订单hashid
 
       formAlert: {}, // 接口返回错误信息
       formLoading: false, // 提交按钮loading
@@ -232,11 +226,6 @@ export default {
       }
     },
 
-    couponToggle() {
-      this.hasCoupon = !this.hasCoupon
-      this.form.coupon_code = ''
-    },
-
     invoiceToggle() {
       this.form = {
         ...this.form,
@@ -270,10 +259,6 @@ export default {
             })
         }
       })
-    },
-
-    panoBuySuccess() {
-      this.$emit('panoBuySuccess')
     },
 
   },

@@ -7,6 +7,7 @@ const initActive = () => ({
   isRenew: false, // 是否续费操作
   weixinPay: false, // 微信支付
   alipay: false, // 支付宝
+  confirmPay: false, // 支付完成询问框
 })
 
 // 自定义事件，用于SERVICE.MODAL.SETPANOINFO中
@@ -38,8 +39,12 @@ export default {
       state.active[type] = false
     },
 
-    [SERVICE.MODAL.SETPANOINFO](state, { id, name }) {
-      state.buyPanoInfo = { id, name }
+    [SERVICE.MODAL.SETPANOINFO](state, { hash_pano_id = null, name = null }) {
+      state.buyPanoInfo = { hash_pano_id, name }
+    },
+
+    [SERVICE.MODAL.RESETPANOINFO](state, info = {}) {
+      state.buyPanoInfo = { ...info }
     },
 
     [SERVICE.MODAL.BUYTYPE](state, type = 10) {
@@ -50,7 +55,7 @@ export default {
       state.active = { ...initActive() }
     },
 
-    [SERVICE.MODAL.SETORDERINFO](state, info = {}) {
+    [SERVICE.MODAL.CREATEORDER](state, info = {}) {
       state.orderInfo = { ...info }
     },
 
@@ -61,13 +66,24 @@ export default {
   },
 
   actions: {
-    [SERVICE.MODAL.COMPLETEPAY]({ commit, state }, panoInfo = {}) {
+    [SERVICE.MODAL.CALLBACK]({ commit, state }, panoInfo = {}) {
       commit(SERVICE.MODAL.SETPANOINFO, panoInfo)
       return new Promise((resolve) => {
         window.addEventListener('completePay', () => {
-          resolve(state.orderInfo)
+          resolve({ ...state.orderInfo, hash_pano_id: panoInfo.hash_pano_id })
         })
       })
+    },
+
+    [SERVICE.MODAL.CREATEORDER]({ commit }, info = {}) {
+      commit(SERVICE.MODAL.CREATEORDER, info)
+      if (info.channel_type === 10) {
+        // 支付宝
+        commit(SERVICE.MODAL.OPEN, 'confirmPay')
+      } else {
+        // 微信支付
+        commit(SERVICE.MODAL.OPEN, 'weixinPay')
+      }
     },
   },
 }
