@@ -13,7 +13,7 @@
         </div>
       </el-col>
       <el-col :span="isRenew ? 12 : 8">
-        <div class="app-buy-service__type is-vip">
+        <div class="app-buy-service__type is-vip" :class="{active: !isServePage && !service.remain}">
           <h3 class="app-buy-service__title">2299元/年<span class="gold-color">（商业版）</span></h3>
           <p class="app-buy-service__intro">
             购买此服务，您所有的作品即可使用以下的商业版功能：
@@ -36,7 +36,7 @@
         </div>
       </el-col>
       <el-col :span="8" v-if="!isRenew">
-        <div class="app-buy-service__type is-vip" :class="{active: !isServePage}">
+        <div class="app-buy-service__type is-vip" :class="{active: !isServePage && service.remain}">
           <h3 class="app-buy-service__title">99元/作品<span class="gold-color">（商业版）</span></h3>
           <p class="app-buy-service__intro">
             购买此服务，您对应的作品即可使用以下的商业版功能：
@@ -47,7 +47,7 @@
           <div class="app-buy-service__hint">
             <i class="iconfont">&#xe621;</i>续费提示：
             <ol>
-              <li>此服务同一个账号只能购买{{ limitTotal }}次</li>
+              <li>此服务同一个账号只能购买5次</li>
               <li>此服务购买后永久有效，无需再次续费</li>
             </ol>
           </div>
@@ -62,12 +62,19 @@
           </template>
           <template v-else>
             <div class="app-buy-service__info">
-              <p class="app-buy-service__info-txt text-center">您还可购买 {{ limitTotal - buyCount }} 次此项服务</p>
+              <p class="app-buy-service__info-txt text-center">
+                <template v-if="service.remain">
+                  您还可购买 {{ service.remain }} 次此项服务
+                </template>
+                <template v-else>
+                  此项服务购买次数已用完，<br/>建议您购买2299元/年服务
+                </template>
+              </p>
               <h5>本次购买对应作品：</h5>
               <p class="app-buy-service__info-name text-center">《{{ panoInfo.name }}》</p>
             </div>
             <div class="app-buy-service__button">
-              <el-button type="primary" @click="buyService(20)">我要购买</el-button>
+              <el-button type="primary" @click="buyService(20)" :disabled="!service.remain">我要购买</el-button>
             </div>
           </template>
         </div>
@@ -132,14 +139,11 @@
         '平台后期开发的新功能优先内侧及使用权',
       ],
 
-      limitTotal: 5,
-
-      buyCount: 1,
-
     }),
 
     computed: {
       ...mapState({
+        service: state => state.service,
         panoInfo: state => state.service.buyPanoInfo,
       }),
     },

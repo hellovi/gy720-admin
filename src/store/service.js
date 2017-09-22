@@ -1,3 +1,4 @@
+import { Http } from '@/utils'
 import { SERVICE } from './mutationTypes'
 
 const initActive = () => ({
@@ -17,6 +18,7 @@ completePay.initEvent('completePay', false, true)
 export default {
   state: {
     buyType: 10, // 10：年会  20：作品
+    remain: 0, // 单作品剩下可购买次数
     isRender: false,
     buyPanoInfo: {},
     orderInfo: {}, // 订单信息
@@ -32,6 +34,15 @@ export default {
       if (!state.isRender) {
         state.isRender = true
       }
+
+      if (type === 'buyInfo') {
+        // 获取单作品可购买剩下次数
+        Http.get('/user/pano/remainpay')
+          .then(({ result }) => {
+            state.remain = result.remain
+          })
+      }
+
       state.active[type] = true
     },
 
