@@ -81,7 +81,7 @@ export default {
       commit(SERVICE.MODAL.SETPANOINFO, panoInfo)
       return new Promise((resolve) => {
         window.addEventListener('completePay', () => {
-          resolve({ ...state.orderInfo, hash_pano_id: panoInfo.hash_pano_id })
+          resolve({ ...state.orderInfo, hash_pano_id: panoInfo.hash_pano_id || null })
         })
       })
     },

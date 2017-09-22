@@ -13,8 +13,6 @@
     <scene></scene>
     <snapshot></snapshot>
     <initialview></initialview>
-    <!--vip信息-->
-    <vip-info :data="pano"></vip-info>
     <!--限制视角-->
     <restrict-view v-if="active.restrictView"></restrict-view>
 
@@ -46,7 +44,6 @@ import Share from './Share'
 import Scene from './Scene'
 import Snapshot from './Snapshot'
 import Initialview from './Initialview'
-import VipInfo from './VipInfo'
 import RestrictView from './RestrictView'
 import RotateManager from './RotateManager'
 import RotateView from './RotateManager/components/RotateView/'
@@ -68,7 +65,6 @@ export default {
     Scene,
     Snapshot,
     Initialview,
-    VipInfo,
     RestrictView,
     RotateManager,
     RotateView,

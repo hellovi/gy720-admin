@@ -133,7 +133,6 @@
  */
 
 import AppShare from '@/components/AppShare'
-import appPurchase from '@/components/AppPurchase'
 import { deleteItem, serviceModal } from '@/mixins'
 import messageSay from '@/views/User/Message/Say'
 import { SERVICE } from '@/store/mutationTypes'
@@ -150,7 +149,6 @@ export default {
     vWorkItem,
     vOfflineDoc,
     AppShare,
-    appPurchase,
     messageSay,
   },
 

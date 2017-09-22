@@ -47,7 +47,7 @@
           <div class="app-buy-service__hint">
             <i class="iconfont">&#xe621;</i>续费提示：
             <ol>
-              <li>此服务同一个账号只能购买5次</li>
+              <li>此服务同一个账号只能购买 <span class="gold-color">5</span> 次</li>
               <li>此服务购买后永久有效，无需再次续费</li>
             </ol>
           </div>
@@ -64,10 +64,10 @@
             <div class="app-buy-service__info">
               <p class="app-buy-service__info-txt text-center">
                 <template v-if="service.remain">
-                  您还可购买 {{ service.remain }} 次此项服务
+                  您还可购买 <span class="gold-color">{{ service.remain }}</span> 次此项服务
                 </template>
                 <template v-else>
-                  此项服务购买次数已用完，<br/>建议您购买2299元/年服务
+                  <strong>此项服务购买次数已用完<br/>建议您购买2299元/年这项服务</strong>
                 </template>
               </p>
               <h5>本次购买对应作品：</h5>
@@ -259,7 +259,7 @@
     &__added {
       &-title {
         font-size: 12px;
-        color: #ffc000;
+        color: var(--golb);
       }
 
       &-item {
@@ -307,9 +307,12 @@
 
     &__button {
       text-align: center;
-      margin: 20px 0 15px 0;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: 20px;
       & > .el-button {
-        width: 90%;
+        width: 60%;
       }
     }
 
@@ -339,8 +342,9 @@
     &__info {
       &-txt {
         font-size: 14px;
-        margin: 13px 0;
+        margin: 4px 0 13px 0;
         padding: 0;
+        line-height: 20px;
       }
 
       & > h5 {

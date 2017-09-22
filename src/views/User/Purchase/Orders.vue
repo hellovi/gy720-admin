@@ -35,18 +35,20 @@
             <el-button
               type="primary"
               size="small"
-              v-if="order.order_status === 10"
               class="purchase-orders__btn"
               @click="beforeOrderDelete(order.hash_order_id)"
-            >取消</el-button>
+            >
+              <template v-if="order.order_status === 10">取消</template>
+              <template v-if="order.order_status === 20">删除</template>
+            </el-button>
           </td>
         </tr>
       </tbody>
     </table>
 
-    <div v-if="isEmpty" class="empty">
-      <div>您暂时还没有任何订单信息……</div>
-    </div>
+    <app-empty-body v-if="isEmpty">
+      您暂时还没有任何订单信息
+    </app-empty-body>
 
     <el-pagination
       v-if="list.data.length"
@@ -64,7 +66,7 @@
 /**
  * 我的订单
  *
- * @author zhoumenglin
+ * @author zhoumenglin | chenliangshan
  * @version 2017-08-10
  */
 

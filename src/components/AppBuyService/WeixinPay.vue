@@ -72,6 +72,9 @@
       },
 
       getQrcode() {
+        if (!this.orderInfo.url) {
+          return
+        }
         this.$nextTick(() => {
           QRCode.toCanvas(this.$refs.canvas, this.orderInfo.url, () => {})
         })
@@ -91,6 +94,9 @@
 
     },
 
+    created() {
+      this.getQrcode()
+    },
   }
 </script>
 
@@ -109,6 +115,10 @@
       width: 128px;
       height: 128px;
       background-color:var(--gray);
+      > canvas {
+        max-width: 100%;
+        max-height: 100%;
+      }
     }
 
     & p {

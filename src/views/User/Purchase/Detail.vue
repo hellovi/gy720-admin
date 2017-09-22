@@ -1,70 +1,76 @@
 <template>
-  <div class="purchase-detail">
-    <table class="app-table purchase-detail__table">
-      <thead>
+  <div class="purchase-detail" v-loading="loading">
+    <template v-if="!orderEmpty">
+      <app-form-alert :contents="formAlert"></app-form-alert>
+
+      <table class="app-table purchase-detail__table">
+        <thead>
+        </thead>
+        <tbody>
         <tr>
-          <th>订单编号</th>
-          <th>{{order.number}}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>下单时间：</td>
+          <td>订单编号：</td>
+          <td>{{order.number}}</td>
+          <td>创建时间：</td>
           <td>{{order.created_at}}</td>
         </tr>
         <tr>
-          <td>订单金额：</td>
-          <td><span class="text-danger">￥{{order.money}}</span> 元</td>
-        </tr>
-        <tr>
-          <td>支付方式：</td>
-          <td>{{channel_type}}</td>
-        </tr>
-        <tr>
-          <td>订单状态：</td>
+          <td>服务名称：</td>
           <td>
-            {{order.order_status_name}}
+            <template v-if="order.order_type === 20">
+              作品：
+            </template>
+            {{ order.name }}
+          </td>
+          <td>订单金额：</td>
+          <td>
+            <span class="text-danger">￥{{ order.money }}</span>
           </td>
         </tr>
         <tr>
-          <td>订单商品：</td>
+          <td>订单状态：</td>
+          <td>{{ order.order_status_name }}</td>
+          <td>支付方式：</td>
           <td>
-            {{order.name}}
+            <template v-if="isWaitPay">
+              <el-select style="width: 100px;" v-model:number="order.channel_type" :disabled="!channelTypeEdit">
+                <el-option :value="10" label="支付宝"></el-option>
+                <el-option :value="20" label="微信"></el-option>
+              </el-select>
+              <el-button type="success" v-if="channelTypeEdit" @click="() => channelTypeEdit = false">确定</el-button>
+              <el-button type="primary" v-else @click="() => channelTypeEdit = true">更改</el-button>
+            </template>
+            <template v-else>
+              {{ order.channel_type_name }}
+            </template>
           </td>
         </tr>
         <tr v-if="isYearVip && hasInvoice">
           <td class="purchase-detail__bill"><p>发票信息：</p></td>
-          <td>
+          <td colspan="3">
             <p>公司抬头：{{ order.company }}</p>
             <p>邮寄地址：{{ order.address }}</p>
             <p>联&nbsp;&nbsp;系&nbsp;&nbsp;人：{{ order.contact }}</p>
             <p>电话号码：{{order.mobile }}</p>
           </td>
         </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
 
-    <div v-if="isWaitPay" class="purchase-detail__button">
-      <el-button
-        type="primary"
-        @click="dialog.confirm = true"
-      >去付款</el-button>
-      <el-button
-        type="primary"
-        @click="beforeOrderDelete(order.hash_order_id)"
-      >取消订单</el-button>
-    </div>
-
-     <!-- 确认订单组件 -->
-    <confirm-dialog
-      :visible.sync="dialog.confirm"
-      :is-year-vip="isYearVip"
-      :hash-order-id="order.hash_order_id"
-      :number="order.number"
-      :money="order.money"
-      :current-window-open='true'
-    ></confirm-dialog>
-
+      <div v-if="isWaitPay" class="purchase-detail__button">
+        <el-button
+          type="primary"
+          @click="updateOrder"
+          :loading="formLoading"
+        >去付款</el-button>
+        <el-button
+          type="primary"
+          @click="beforeOrderDelete(order.hash_order_id)"
+        >取消订单</el-button>
+      </div>
+    </template>
+    <app-empty-body v-if="orderEmpty && !loading">
+      该订单不存在
+    </app-empty-body>
   </div>
 </template>
 
@@ -72,21 +78,17 @@
 /**
  * 订单详情
  *
- * @author zhoumenglin
- * @version 2017-08-10
+ * @author zhoumenglin | chenliangshan
+ * @version 2017-09-22
  */
-import { ConfirmDialog } from '@/components'
+
 import { deleteItem } from '@/mixins'
-import { PURCHASE } from '@/store/mutationTypes'
+import { PURCHASE, SERVICE } from '@/store/mutationTypes'
 
 export default {
   name: 'purchase-detail',
 
   mixins: [deleteItem],
-
-  components: {
-    ConfirmDialog,
-  },
 
   data() {
     return {
@@ -105,9 +107,14 @@ export default {
         order_type: null,
       },
 
-      dialog: {
-        confirm: false,
-      },
+      channelTypeEdit: false,
+
+      formAlert: {},
+      formLoading: false,
+
+      loading: true,
+
+      orderEmpty: false,
     }
   },
 
@@ -118,17 +125,6 @@ export default {
 
     isWaitPay() { // 是否完成订单
       return this.order.order_status === 10
-    },
-
-    channel_type() { // 支付类型
-      switch (this.order.channel_type) {
-        case 10:
-          return '支付宝支付'
-        case 20:
-          return '微信支付'
-        default:
-          return '未付款'
-      }
     },
 
     hasInvoice() {
@@ -160,23 +156,71 @@ export default {
     },
 
     // 获取订单详情
-    getOrderDetail(ordersn) {
+    getOrderDetail(ordersn = this.$route.params.ordersn) {
+      this.channelTypeEdit = false
+      this.loading = true
       this.$http.get(`/user/order/${ordersn}`)
         .then((res) => {
           this.order = res.result
+          this.loading = false
+          this.orderEmpty = false
         })
+        .catch(() => {
+          this.loading = false
+          this.orderEmpty = true
+        })
+    },
+
+    // 提交更新订单支付
+    updateOrder() {
+      const isAlipay = this.order.channel_type === 10
+      const nw = isAlipay ? window.open('/pay') : null
+      this.formAlert = {}
+      this.formLoading = true
+
+      const ajaxForm = () => {
+        this.$http.get(`/user/order/payment/${this.order.hash_order_id}/${this.order.channel_type}`)
+          .then(({ result }) => {
+            if (isAlipay) {
+              // 更新支付平台链接（支付宝方式）
+              nw.location.replace(result.url)
+            }
+            this.$store.dispatch(SERVICE.MODAL.CREATEORDER, result)
+            this.formLoading = false
+            this.$store.dispatch(SERVICE.MODAL.CALLBACK)
+              .then(() => {
+                // 支付完成返回订单列表
+                this.$router.push('/user-client/purchase/orders')
+              })
+          })
+          .catch((errors) => {
+            if (isAlipay) {
+              nw.close()
+            }
+            this.formAlert = errors
+            this.formLoading = false
+          })
+      }
+
+      if (isAlipay) {
+        nw.onload = () => {
+          ajaxForm()
+        }
+      } else {
+        ajaxForm()
+      }
     },
 
   },
 
   beforeRouteEnter(t, f, n) {
     n((vm) => {
-      vm.getOrderDetail(t.params.ordersn)
+      vm.getOrderDetail()
     })
   },
 
   beforeRouteUpdate(t, f, n) {
-    this.getOrderDetail(t.params.ordersn)
+    this.getOrderDetail()
     n()
   },
 
@@ -185,13 +229,14 @@ export default {
 
 <style lang="postcss">
 .purchase-detail {
-  & th,
   & td {
     text-align: left;
-  }
-
-  & th:first-child {
-    width: 130px;
+    &:nth-child(odd) {
+      width: 110px;
+    }
+    &:nth-child(even) {
+      width: 400px;
+    }
   }
 
   &__bill {
