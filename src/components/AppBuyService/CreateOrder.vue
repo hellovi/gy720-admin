@@ -253,7 +253,7 @@ export default {
         this.formAlert = {}
         if (valid) {
           const isAlipay = this.form.channel_type === 10
-          const nw = isAlipay ? window.open('/pay') : null
+          const nw = isAlipay ? window.open('/user-client/pay') : null
           this.formAlert = {}
           this.formLoading = true
 

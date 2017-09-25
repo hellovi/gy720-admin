@@ -174,7 +174,7 @@ export default {
     // 提交更新订单支付
     updateOrder() {
       const isAlipay = this.order.channel_type === 10
-      const nw = isAlipay ? window.open('/pay') : null
+      const nw = isAlipay ? window.open('/user-client/pay') : null
       this.formAlert = {}
       this.formLoading = true
 
