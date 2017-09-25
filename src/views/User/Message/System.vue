@@ -27,7 +27,17 @@
       <tbody>
         <tr v-for="(message, index) in list.data" :key="message.id">
           <td><el-checkbox :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
-          <td class="text-left">{{ message.content }}</td>
+          <td class="text-left">
+            <div class="message-avatar" v-if="message.user_id">
+              <a :href="`/author/view/${message.user_id}`">
+                <img :src="$url.static(message.avatar)" :alt="message.nickname">
+              </a>
+            </div>
+            <div class="message-content">
+              <a :href="`/author/view/${message.user_id}`" v-if="message.user_id" class="message-name hover-primary">{{ message.nickname }}</a>
+              <div class="message-summary">{{ message.content }}</div>
+            </div>
+          </td>
           <td>{{ message.date }}</td>
           <td>
             <el-button
@@ -81,6 +91,7 @@ export default {
   computed: {
     ...mapState({
       list: state => state.message.system,
+      userInfo: state => state.userInfo,
     }),
   },
 
@@ -120,3 +131,17 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss">
+  .message {
+    &-content {
+      .message-summary {
+        margin: 0;
+      }
+    }
+    &-name {
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+  }
+</style>
