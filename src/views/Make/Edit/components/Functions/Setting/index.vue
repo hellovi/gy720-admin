@@ -35,6 +35,7 @@
 
 import { mapState, mapGetters } from 'vuex'
 import errorHandle from '@/mixins/errorHandle'
+import { pwdRule } from '@/utils/rulesValidator'
 import modal from '../../../mixins/modal'
 import Basic from './components/Basic'
 import Wechat from './components/Wechat'
@@ -100,12 +101,24 @@ export default {
               if (this.form.privacy === 20) {
                 if (!value) {
                   callback(new Error('作品密码不能为空'))
-                } else if (value.length > 8) {
-                  callback(new Error('作品密码为1~8个字符'))
+                } else if (value.length > 6) {
+                  callback(new Error('作品密码为1~6个字符'))
                 }
               }
               callback()
             },
+          },
+
+          {
+            validator: (rule, value, callback, source, options) => {
+              if (this.form.privacy === 20) {
+                return pwdRule(rule, value, callback, source, options)
+              }
+              this.form.password = ''
+              return callback()
+            },
+            type: 'string',
+            message: '密码只能包含字母、下划线、数字组合',
           },
         ],
       },
