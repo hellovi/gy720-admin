@@ -142,7 +142,7 @@ export default {
 
       rules: { // 表单验证规则
         coupon_code: [
-          { validator: this.couponSnCheck, trigger: 'blur' },
+          { validator: this.couponSnCheck, trigger: 'change' },
         ],
         company: [
           { validator: this.invoiceCheck('公司抬头'), trigger: 'blur' },
@@ -217,13 +217,14 @@ export default {
             })
             .catch(({ status }) => {
               this.discount = 0
-              callback(new Error(status.reason))
+              return callback(new Error(status.reason))
             })
         } else {
-          callback(new Error('请输入16位的优惠券码'))
+          return callback(new Error('请输入16位的优惠券码'))
         }
       }
-      callback()
+      this.discount = 0
+      return callback()
     },
 
     invoiceCheck(msg) { // 发票信息自定义验证
@@ -293,6 +294,7 @@ export default {
     },
 
     close() {
+      this.discount = 0
       this.formAlert = {}
       this.$refs.form.resetFields()
       this.formLoading = false
