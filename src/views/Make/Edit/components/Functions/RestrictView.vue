@@ -202,8 +202,25 @@ export default {
      * 获取lookat，示视角的在横轴和纵轴上的位置
      */
     getLookat() {
-      this.view.hlookat = Math.floor(window.__krpano.get('view.hlookat'))
+      this.view.hlookat = this.visualRange(Math.floor(window.__krpano.get('view.hlookat')))
       this.view.vlookat = Math.floor(window.__krpano.get('view.vlookat'))
+    },
+
+    /**
+     * 计算视角值（限制最小最大范围之间）
+     */
+    visualRange(hlookat) {
+      // 正数 && 负数
+      if (hlookat >= -180 && hlookat <= 180) {
+        return hlookat
+      } else if (parseInt(hlookat / 180, 10) % 2 === 1) {
+        // hlookat > 180
+        return (hlookat % 180) - 180
+      } else if (parseInt(hlookat / 180, 10) % 2 === -1) {
+        // hlookat < -180
+        return (hlookat % 180) + 180
+      }
+      return hlookat % 180
     },
 
     /**
