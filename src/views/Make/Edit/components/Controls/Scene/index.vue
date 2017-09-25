@@ -118,7 +118,7 @@ export default {
 
     /**
      * 确认删除场景
-     * 不允许删除当前选中场景
+     * 不允许删除最后一个场景
      */
     preDeleteScene(sceneId) {
       if (this.scenelist.length === 1) {
@@ -126,7 +126,7 @@ export default {
       } else {
         this.onDeleteItem({
           title: '删除场景',
-          message: '此操作将永久删除该分类，是否继续？',
+          message: '此操作将永久删除该场景，是否继续？',
           itemId: sceneId,
           ajax: this.deleteScene,
         })
