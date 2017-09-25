@@ -39,17 +39,26 @@ export default {
 
       const ids = removeId ? [removeId] : this.checked
 
-      this.$http.post(url, {
-        ids: ids.map(id => ({ id })),
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).then(() => {
+        this.$http.post(url, {
+          ids: ids.map(id => ({ id })),
+        })
+          .then(() => {
+            this.$store.commit(MESSAGE.DELETE, { type, ids })
+            this.$message.success('操作成功')
+          })
+          .catch(() => {
+            this.$message.error('操作出错')
+          })
+          .then(() => {
+            this.loading = -1
+          })
       })
-        .then(() => {
-          this.$store.commit(MESSAGE.DELETE, { type, ids })
-          this.$message.success('操作成功')
-        })
         .catch(() => {
-          this.$message.error('操作出错')
-        })
-        .then(() => {
           this.loading = -1
         })
     },
