@@ -4,9 +4,8 @@
  * @version 2017/08/19
  */
 
-/*eslint-disable*/
-
 const noEqualRule = (rule, value, callback, source, options) => {
+  // eslint-disable-next-line
   let errors = []
 
   if (value === rule.refs[rule.equal].value) {

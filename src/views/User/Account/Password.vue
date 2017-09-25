@@ -55,8 +55,8 @@
    */
 
   import AppFormAlert from '@/components/AppFormAlert'
+  import { pwdRule, equalRule, noEqualRule } from '@/utils/rulesValidator'
   import form from './mixins/form'
-  import { pwdRule, equalRule, noEqualRule } from './rules'
 
   export default {
     name: 'account-password',

@@ -103,9 +103,9 @@
    * @version 2017/08/17
    */
 
+  import { mobileRule } from '@/utils/rulesValidator'
   import form from './mixins/form'
   import BindForm from './components/BindForm'
-  import { mobileRule } from './rules'
 
   export default {
     name: 'account-bind',
