@@ -44,8 +44,8 @@ export { default as PointRule } from './User/Point/Rule'
 // 发布作品
 export { default as Publish } from './User/Publish'
 
+// 跳转支付平台
+export { default as Pay } from './User/Pay'
+
 // 高级编辑
 export { default as Edit } from './Make/Edit'
-
-// 跳转支付平台
-export { default as Pay } from './Pay'
