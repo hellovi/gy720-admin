@@ -8,9 +8,10 @@ import { Url, Regex } from '@/utils'
 
 const getSrc = (el, binding) => {
   const src = binding.value
+  const query = el.dataset ? el.dataset.query : el.getAttribute('data-query')
 
-  if (el.dataset.query) {
-    return `${Url.static(src)}${el.dataset.query}`
+  if (query) {
+    return `${Url.static(src)}${query}`
   } else if (Regex.base64(src)) {
     return src
   }
