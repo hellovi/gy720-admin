@@ -5,10 +5,11 @@
     </div>
     <div class="works-workoffline__content">
       <!-- 未创建离线下载  -->
-      <template v-if="false">
+      <template v-if="data.zip_status === 10">
         <el-button
           type="text"
           class="before-create"
+          @click="createOffline(10)"
         >
           创建离线数据包
         </el-button>
@@ -16,30 +17,28 @@
 
       <!-- 创建离线下载  -->
       <template v-else>
-        <el-progress
-          :text-inside="true"
-          :stroke-width="12"
-          :percentage="80"
-        ></el-progress>
-        <!-- 创建中 -->
-        <template v-if="true">
-          <p class="creating">离线数据包创建中</p>
-        </template>
-        <!-- 创建完成  -->
-        <template v-else>
-          <el-button
-            type="text"
-            class="after-create"
-          >
-            离线数据包下载
-          </el-button>
-          <el-button
-            type="text"
-            class="after-create"
-          >
-            重新创建离线数据包
-          </el-button>
-        </template>
+        <!-- 创建状态 -->
+        <p class="creating ellipsis">{{ data.zip_status_name }}</p>
+        <el-row class="text-center">
+          <el-col :span="12">
+            <el-button
+              type="text"
+              size="small"
+              class="after-create"
+              :disabled="data.zip_status !== 40"
+              @click="downloadOffline(data.zip_key)"
+            >下载</el-button>
+          </el-col>
+          <el-col :span="12">
+            <el-button
+              type="text"
+              size="small"
+              class="after-create"
+              :disabled="data.zip_status !== 41 && data.zip_status !== 0"
+              @click="createOffline(20)"
+            >重新创建</el-button>
+          </el-col>
+        </el-row>
       </template>
     </div>
   </div>
@@ -49,7 +48,8 @@
 /**
  * 个人作品 - 作品离线下载组件
  *
- * @author huojinzhao
+ * @author huojinzhao | chenliangshan
+ * @version 2017/09/26
  */
 
 export default {
@@ -60,6 +60,64 @@ export default {
       type: Object,
       require: true,
     },
+  },
+
+  data() {
+    return {
+      pollTime: null,
+      data: this.item,
+    }
+  },
+
+  computed: {
+    // 创建状态
+    pollStatus() {
+      return this.data.zip_status > 10 && this.data.zip_status < 40
+    },
+  },
+
+  methods: {
+    // 创建离线
+    createOffline(status = 10) {
+      this.getOfflineZip(status)
+    },
+
+    // 下载离线
+    downloadOffline(key) {
+      if (this.data.zip_status >= 40) window.open(key)
+    },
+
+    // 请求下载
+    getOfflineZip(status = 10) {
+      this.$http.get(`/user/pano/offline?pano_id=${this.data.hash_pano_id}&redo=${status}`)
+        .then(({ result }) => {
+          this.data = { ...this.data, ...result }
+          this.pollOffline()
+        })
+        .catch(() => {
+          clearTimeout(this.pollTime)
+        })
+    },
+
+    // 轮询创建状态
+    pollOffline() {
+      if (this.pollStatus) {
+        this.pollTime = setTimeout(() => {
+          this.getOfflineZip()
+        }, 5000)
+      } else {
+        clearTimeout(this.pollTime)
+      }
+    },
+
+  },
+
+  mounted() {
+    this.pollOffline()
+  },
+
+  beforeDestroy() {
+    clearTimeout(this.pollTime)
   },
 }
 </script>
@@ -115,9 +173,9 @@ export default {
     }
 
     & .creating {
-      margin: 8px 0;
+      margin: 8px 0 0 0;
       text-align: center;
-      font-size: 14px;
+      font-size: 12px;
       color: var(--disabled-color-base);
     }
 

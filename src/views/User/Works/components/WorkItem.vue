@@ -45,16 +45,17 @@
           {{item.created_at | formatDateString}}
         </span>
         <span class="workitem__info-detail__item">
-          <i class="iconfont">&#xe63d;</i>{{item.hits}}
+          <i class="iconfont">&#xe63d;</i>{{item.popular}}
         </span>
         <span class="workitem__info-detail__item">
-          <i class="iconfont">&#xe641;</i>{{item.like_nums}}
+          <i class="iconfont">&#xe641;</i>{{item.stargazers}}
         </span>
       </div>
     </div>
 
     <!-- 离线下载 -->
     <v-work-offline
+      v-if="item.id"
       class="workitem__offline"
       :item="item"
     ></v-work-offline>
@@ -231,6 +232,8 @@ export default {
 
       &-detail {
         &__item {
+          min-width: 46px;
+          display: inline-block;
           padding-right: var(--gap-unit-horizontal);
           color: var(--text-color);
           font-size: 12px;
