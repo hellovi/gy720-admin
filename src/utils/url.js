@@ -22,4 +22,19 @@ export default class Url {
   static staticHotSpots(pathname) {
     return `https://l.gy720.com/assets/3.0.1/lib/krpano/hoticon/${pathname}`
   }
+
+  static getQuery(url) {
+    // eslint-disable-next-line
+    let query = {}
+    const num = url.indexOf('?')
+    if (num !== -1) {
+      let str = url.substr(1)
+      str = str.substr(num)
+      const strs = str.split('&')
+      for (let i = 0; i < strs.length; i += 1) {
+        query[strs[i].split('=')[0]] = (strs[i].split('=')[1])
+      }
+    }
+    return query
+  }
 }
