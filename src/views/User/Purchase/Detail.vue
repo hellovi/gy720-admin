@@ -173,6 +173,7 @@ export default {
 
     // 提交更新订单支付
     updateOrder() {
+      if (this.formLoading) return
       const isAlipay = this.order.channel_type === 10
       const nw = isAlipay ? window.open('/user-client/pay') : null
       this.formAlert = {}
@@ -203,7 +204,8 @@ export default {
       }
 
       if (isAlipay) {
-        nw.onload = () => {
+        // eslint-disable-next-line
+        nw.onload = new function() {
           ajaxForm()
         }
       } else {

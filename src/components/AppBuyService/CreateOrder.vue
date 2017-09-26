@@ -252,7 +252,7 @@ export default {
     createOrder() {
       this.$refs.form.validate((valid) => {
         this.formAlert = {}
-        if (valid) {
+        if (valid && !this.formLoading) {
           const isAlipay = this.form.channel_type === 10
           const nw = isAlipay ? window.open('/user-client/pay') : null
           this.formAlert = {}
@@ -283,7 +283,8 @@ export default {
           }
 
           if (isAlipay) {
-            nw.onload = () => {
+            // eslint-disable-next-line
+            nw.onload = new function() {
               ajaxForm()
             }
           } else {
