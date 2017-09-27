@@ -156,6 +156,11 @@ export default {
   components: { PublishItem },
 
   props: {
+    // 限制显示个数
+    showNum: {
+      type: Number,
+      default: 12,
+    },
     selected: {
       type: Array,
       default: () => [],
@@ -210,7 +215,10 @@ export default {
     sceneList() {
       const data = this.addFiles.concat(this.list.data)
       const len = this.addFiles.length
-      const list = { ...this.list, data: data.slice(0, data.length - len) }
+      const list = {
+        ...this.list,
+        data: data.length > this.showNum ? data.slice(0, data.length - len) : data,
+      }
       return { ...list }
     },
   },
