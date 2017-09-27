@@ -13,7 +13,7 @@
         </div>
       </el-col>
       <el-col :span="isRenew ? 12 : 8">
-        <div class="app-buy-service__type is-vip" :class="{active: !isServePage && !service.remain}">
+        <div class="app-buy-service__type is-vip" :class="{active: isRenew || (!isServePage && !service.remain)}">
           <h3 class="app-buy-service__title">2299元/年<span class="gold-color">（商业版）</span></h3>
           <p class="app-buy-service__intro">
             购买此服务，您所有的作品即可使用以下的商业版功能：

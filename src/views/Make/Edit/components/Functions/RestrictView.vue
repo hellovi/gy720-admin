@@ -379,7 +379,7 @@ export default {
       left: 50px;
 
       button {
-        margin-left: 15px;
+        margin-left: 10px;
       }
     }
 
@@ -387,7 +387,7 @@ export default {
       right: 50px;
 
       button {
-        margin-right: 15px;
+        margin-right: 10px;
       }
 
       .v-box__txt {
@@ -398,6 +398,11 @@ export default {
     &__center {
       margin: 10px 0;
       text-align: center;
+      .el-button {
+        + .el-button {
+          margin-left: 8px;
+        }
+      }
     }
 
     &__txt {

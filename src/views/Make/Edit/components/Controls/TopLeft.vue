@@ -27,7 +27,7 @@
       <span :class="{opacity: panoInfo.show_nickname === 10}">
         作者：<span>{{ panoInfo.nickname }}</span>
       </span>
-      <div class="ui-swither ui-swither--right" @click.stop>
+      <div class="ui-swither ui-swither--right clearfix" @click.stop>
         <el-switch
           v-model="panoInfo.show_nickname"
           on-text="显示" off-text="隐藏"
@@ -182,8 +182,12 @@ export default {
   .opacity {
     opacity: .5;
   }
+  .el-switch, .vip {
+    float: left;
+  }
   .vip {
     font-size: 12px;
+    line-height: 22px;
     color:#ffc000;
     padding-right: 8px;
     margin-left: -4px;
