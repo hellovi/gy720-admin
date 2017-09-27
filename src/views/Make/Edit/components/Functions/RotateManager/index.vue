@@ -10,7 +10,7 @@
     <rotate-aside @create-rotate="createRotate"></rotate-aside>
 
     <!-- 主内容-->
-    <rotate-content @update-rotate="updateRotate"></rotate-content>
+    <rotate-content :updatecate.sync="updateItemCate" @update-rotate="updateRotate"></rotate-content>
 
     <!-- 创建物品3D弹窗 -->
     <el-dialog
@@ -22,7 +22,7 @@
       <rotate-form
         :active="dialog"
         :item="item"
-        @done="dialog = false"
+        @done="editDone"
       ></rotate-form>
     </el-dialog>
   </el-dialog>
@@ -31,15 +31,15 @@
 <script>
 /**
  * 高级编辑 - 素材库管理3D物品
- * @author yangjun | luminghuai
+ * @author yangjun | luminghuai | chenliangshan
  * @version 2017-08-31
  */
 
+import { mapState } from 'vuex'
 import modal from '../../../mixins/modal'
 import RotateAside from './components/RotateAside'
 import RotateContent from './components/RotateContent'
 import RotateForm from './components/RotateForm'
-
 
 export default {
   name: 'edit-rotate-manager',
@@ -56,7 +56,14 @@ export default {
     return {
       dialog: false,
       item: {},
+      updateItemCate: false,
     }
+  },
+
+  computed: {
+    ...mapState({
+      activeCateId: state => state.edit.material.activeRotateCateId,
+    }),
   },
 
   methods: {
@@ -71,7 +78,14 @@ export default {
     },
 
     close() {
+      this.updateItemCate = false
       this.closeModal('object3d')
+    },
+
+    editDone(data) {
+      this.dialog = false
+      // 判断是否移动分类
+      this.updateItemCate = this.activeCateId !== data.source_rotate_category_id
     },
   },
 }

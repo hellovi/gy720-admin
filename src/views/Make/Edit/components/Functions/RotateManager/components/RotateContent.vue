@@ -2,7 +2,7 @@
   <div class="rotate-content" v-loading="loading">
     <ul class="rotate-list list clearfix">
       <rotate-item
-        v-for="item in list.data"
+        v-for="item in itemData.data"
         :key="item.id"
         :item="item"
         @open-upload="openUpload"
@@ -18,10 +18,10 @@
     </ul>
 
     <el-pagination
-      v-if="list.last_page > 1"
-      :page-size="list.per_page"
-      :total="list.total"
-      :current-page="list.current_page"
+      v-if="itemData.last_page > 1"
+      :page-size="itemData.per_page"
+      :total="itemData.total"
+      :current-page="itemData.current_page"
       @current-change="pageChange"
       layout="prev, pager, next"
     ></el-pagination>
@@ -51,7 +51,7 @@
 <script>
 /**
  * 管理3D物品 - 列表
- * @author yangjun | luminghuai
+ * @author yangjun | luminghuai | chenliangshan
  * @version 2017-08-31
  */
 
@@ -78,6 +78,13 @@ export default {
     RotateView,
   },
 
+  props: {
+    updatecate: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data() {
     return {
       dialog: {
@@ -87,6 +94,8 @@ export default {
       loading: false,
       activeItemId: null,
       rotateViewId: null,
+      itemData: {},
+      editItem: {},
     }
   },
 
@@ -98,7 +107,7 @@ export default {
     }),
 
     isEmpty() {
-      return !this.loading && (!this.list.data || !this.list.data.length)
+      return !this.loading && (!this.itemData.data || !this.itemData.data.length)
     },
   },
 
@@ -108,6 +117,15 @@ export default {
      */
     activeCateId(val) {
       this.getList(1, val)
+    },
+
+    updatecate(val) {
+      if (val) {
+        // 过滤移动分类
+        this.itemData.data = this.itemData.data.filter(({ id }) => id !== this.editItem.id)
+        this.editItem = {}
+        this.$emit('update:updatecate', false)
+      }
     },
   },
 
@@ -119,11 +137,9 @@ export default {
      */
     getList(page = 1, cateId = 1) {
       this.loading = true
-      this.$store.dispatch(EDIT.MATERIAL.INIT, {
-        url: '/user/sourcerotate',
-        params: `?source_rotate_category_id=${cateId}&page=${page}`,
-      })
-        .then(() => {
+      this.$http.get(`/user/sourcerotate?source_rotate_category_id=${cateId}&page=${page}`)
+        .then(({ result }) => {
+          this.itemData = result
           this.loading = false
         })
     },
@@ -169,8 +185,9 @@ export default {
     /**
      * 打开修改窗口，填充修改项的数据
      */
-    update(id) {
-      const data = this.list.data.find(item => item.id === id)
+    update(list) {
+      this.editItem = list
+      const data = this.itemData.data.find(item => item.id === list.id)
       this.$emit('update-rotate', data)
     },
 

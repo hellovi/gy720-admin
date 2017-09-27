@@ -19,7 +19,7 @@
     </ul>
 
     <!-- 创建分类弹窗  -->
-    <el-dialog title="创建作品分类" :visible.sync="dialog" :modal="false" size="tiny">
+    <el-dialog title="创建作品分类" :visible.sync="dialog" :modal="false" size="tiny" style="text-align: left;">
       <el-form :model="form" :rules="rules" ref="form" label-width="95px">
         <el-form-item prop="name" label="分类名称">
           <el-input v-model="form.name"></el-input>

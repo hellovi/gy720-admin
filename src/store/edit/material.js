@@ -256,7 +256,7 @@ export default {
     },
 
     [ROTATE.UPDATE]({ commit }, data) {
-      Http.put(`/user/sourcerotate/${data.id}`, data)
+      return Http.put(`/user/sourcerotate/${data.id}`, data)
         .then(() => commit(ROTATE.UPDATE, data))
     },
 

@@ -4,13 +4,14 @@
       <el-input v-model="form.title"></el-input>
     </el-form-item>
 
-    <el-form-item prop="source_rotate_category_id" label="所属分类">
+    <el-form-item label="所属分类">
       <el-select v-model="form.source_rotate_category_id">
         <el-option
           v-for="cate in cates"
-          :key="cate.value"
+          :key="cate.id"
           :label="cate.name"
-          :value="cate.id">
+          :value="cate.id"
+        >
         </el-option>
       </el-select>
     </el-form-item>
@@ -20,7 +21,7 @@
     </el-form-item>
 
     <el-form-item prop="list_order" label="排序">
-      <el-input v-model="form.list_order"></el-input>
+      <el-input v-model.number="form.list_order"></el-input>
     </el-form-item>
 
     <el-form-item>
@@ -58,7 +59,6 @@ export default {
   data() {
     return {
       form: { ...defaultForm, ...this.item },
-
       rules: {
         title: [
           { required: true, trigger: 'blur', message: '物品名称不能为空' },
@@ -68,7 +68,8 @@ export default {
           { required: true, trigger: 'blur', message: '项目简介不能为空' },
         ],
         list_order: [
-          { type: 'number', required: true, trigger: 'blur', message: '分类排序不能为空' },
+          { required: true, type: 'number', trigger: 'blur', message: '分类排序不能为空' },
+          { type: 'number', trigger: 'blur', message: '分类排序为数字' },
         ],
       },
 
@@ -85,12 +86,13 @@ export default {
   watch: {
     active(val) {
       if (!val) {
-        this.form = { ...defaultForm }
+        this.$nextTick(() => {
+          this.$refs.form.resetFields()
+        })
       }
     },
-
     item(val) {
-      this.form = { ...this.form, ...val }
+      if (Object.keys(val).length) this.form = { ...val }
     },
   },
 
@@ -132,7 +134,7 @@ export default {
     success() {
       this.loading = false
       this.$message.success('操作成功')
-      this.$emit('done')
+      this.$emit('done', this.form)
     },
   },
 }

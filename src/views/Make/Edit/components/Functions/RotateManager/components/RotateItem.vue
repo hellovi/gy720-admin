@@ -35,7 +35,7 @@ export default {
     },
 
     update() {
-      this.$emit('update', this.item.id)
+      this.$emit('update', this.item)
     },
 
     viewer() {
