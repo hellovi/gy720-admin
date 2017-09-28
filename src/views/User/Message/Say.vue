@@ -40,7 +40,16 @@
               <div class="message-summary ellipsis" :title="message.content">{{ message.content }}</div>
             </div>
           </td>
-          <td>{{ message.name }}</td>
+          <td>
+            <a
+              class="text-primary"
+              :href="`/pano/view/${message.hash_pano_id}`"
+              title="查看场景"
+              v-if="message.name"
+            >
+              {{ message.name }}
+            </a>
+          </td>
           <td>{{ message.created_at }}</td>
           <td>
             <el-switch
