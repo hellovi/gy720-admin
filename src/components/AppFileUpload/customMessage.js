@@ -15,6 +15,9 @@ export default ({ up, err, errTip }) => {
       errMsg = `最大限制可上传${max_file_size}。`
       break
     }
+    case plupload.FILE_EXTENSION_ERROR:
+      errMsg = err.message
+      break
     default: {
       errMsg = errTip
     }

@@ -67,13 +67,17 @@ export default {
       type: String,
       default: 'data/avatar/',
     },
+    customUrl: {
+      type: String,
+      default: '',
+    },
     autoStart: {
       type: Boolean,
       default: true,
     },
     accept: {
       type: String,
-      default: 'jpg, jpeg, gif, png',
+      default: 'jpg,jpeg,gif,png',
     },
     size: {
       type: String,
@@ -256,7 +260,8 @@ export default {
               return `.${arr[arr.length - 1]}`
             }
             const key = `${pre}${getFileSuffix(file.name)}`
-            return `${this.staticUrl}${yearMonthStr()}/${random}${key}`
+            const srcUrl = this.customUrl || `${this.staticUrl}${yearMonthStr()}`
+            return `${srcUrl}/${random}${key}`
           },
         },
       }
