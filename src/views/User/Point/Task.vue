@@ -88,7 +88,7 @@
     <el-dialog :visible.sync="inviteModal" custom-class="invite-modal" title="分享" >
       <img class="invite-modal__qrcode" :src="qrcode" alt="微信扫一扫分享二维码" title="微信扫一扫分享二维码">
       <p class="text-gray">您的专属邀请二维码，微信“扫一扫”点击右上角分享</p>
-      <el-input v-model="inviteUrl" ref="input">
+      <el-input v-model="inviteUrl" ref="input" readonly>
         <template slot="append"><el-button @click="copyLink">复制链接</el-button></template>
       </el-input>
     </el-dialog>
@@ -165,9 +165,9 @@ export default {
       this.$refs.input.$el.children[0].select()
       try {
         document.execCommand('copy')
-        this.$message.success('操作成功')
+        this.$message.success('复制成功')
       } catch (e) {
-        this.$message.error('操作失败')
+        this.$message.error('复制失败，请手动 Ctrl+c 复制')
       }
     },
 
