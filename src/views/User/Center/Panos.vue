@@ -3,6 +3,13 @@
     class="center-panos"
     v-if="panosInfo"
   >
+    <template v-if="routeType === 'recent'">
+      <div class="text-right" style="margin-top: -10px">
+        <router-link to="/user-client/works">
+          <el-button type="text">查看全部作品</el-button>
+        </router-link>
+      </div>
+    </template>
     <!-- 缺省信息 -->
     <app-empty-body
       v-if="panosInfo.data.length === 0"
