@@ -30,7 +30,7 @@
           <td><el-checkbox :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
           <td class="text-left">
             <div class="message-avatar" :class="{unread: message.unread}" :data-count="message.unread">
-              <a :href="`/author/view/${message.user_id}`"><img :src="$url.static(message.avatar)" :alt="message.nickname"></a>
+              <a :href="`/author/view/${message.user_id}`"><img v-qiniu-src="message.avatar" :alt="message.nickname"></a>
             </div>
             <div>
               <a :href="`/author/view/${message.user_id}`" class="hover-primary">{{ message.nickname }}</a>

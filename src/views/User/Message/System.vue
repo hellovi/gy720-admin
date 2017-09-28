@@ -30,7 +30,7 @@
           <td class="text-left">
             <div class="message-avatar" v-if="message.user_id">
               <a :href="`/author/view/${message.user_id}`">
-                <img :src="$url.static(message.avatar)" :alt="message.nickname">
+                <img v-qiniu-src="message.avatar" data-type="avatar" :alt="message.nickname">
               </a>
             </div>
             <div class="message-content">

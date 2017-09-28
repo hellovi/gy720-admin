@@ -32,7 +32,7 @@
           <td><el-checkbox  :value="checked.includes(message.id)" @change="check(message.id)"></el-checkbox></td>
           <td class="text-left">
             <div class="message-avatar" data-count="2">
-              <img :src="$url.static(message.avatar)" :alt="message.nickname">
+              <img v-qiniu-src="message.avatar" data-type="avatar" :alt="message.nickname">
             </div>
             <div>
               <!-- 这里是否要跳链接 -->

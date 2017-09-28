@@ -51,4 +51,8 @@ export default {
     padding-bottom: 1em;
   }
 }
+
+.message-summary {
+  line-height: 20px;
+}
 </style>
