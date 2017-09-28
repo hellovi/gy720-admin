@@ -10,6 +10,9 @@ import 'core-js/fn/number/is-nan'
 import '@/utils/base64'
 import '@/utils/placeholders'
 
+// 低版本浏览提示
+import '@/utils/ieTip'
+
 import Vue from 'vue'
 import ElementUI from 'element-ui'
 import 'normalize.css'
