@@ -39,6 +39,7 @@ module.exports = {
       '/make/': proxySetting,
       '/data/': proxySetting,
       '/assets/3.0.1/lib/': proxySetting,
+      '/assets/3.0.1/images/': proxySetting,
       '/sms/': proxySetting,
       '/mail/': proxySetting,
       // '/lib/': proxySetting,
