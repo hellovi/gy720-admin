@@ -49,7 +49,6 @@ export default {
   width: var(--content-width);
   min-height: var(--app-body-min-height);
   margin: 0 auto var(--app-user-margin-bottom);
-  overflow: hidden;
 }
 
 .app-content {

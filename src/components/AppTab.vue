@@ -1,13 +1,15 @@
 <template>
-  <ul class="app-tab list">
-    <li v-for="(tab, index) in data" :key="tab.name" class="app-tab__item" :style="{width: `${100 / data.length}%`}">
-      <router-link :to="tab.to">
-        <i v-if="tab.icon" class="iconfont" v-html="tab.icon"></i>
-        <span class="app-tab__name">{{tab.text}}</span>
-        <span class="app-tab__count" v-if="counts[index]">{{ counts[index] }}</span>
-      </router-link>
-    </li>
-  </ul>
+  <div class="app-tab">
+    <ul class="list clearfix">
+      <li v-for="(tab, index) in data" :key="tab.name" class="app-tab__item" :style="{width: `${100 / data.length}%`}">
+        <router-link :to="tab.to">
+          <i v-if="tab.icon" class="iconfont" v-html="tab.icon"></i>
+          <span class="app-tab__name">{{tab.text}}</span>
+          <span class="app-tab__count" v-if="counts[index]">{{ counts[index] }}</span>
+        </router-link>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -38,10 +40,13 @@ export default {
 @import "vars.css";
 
 .app-tab {
-  margin: var(--app-tab-margin) 0;
+  padding: var(--app-tab-margin) 0;
   overflow: hidden;
-  background-color: #fff;
   font-size: 14px;
+
+  > .list {
+    background-color: #fff;
+  }
 
   &__item {
     float: left;
