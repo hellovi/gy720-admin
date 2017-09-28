@@ -118,13 +118,13 @@ export default {
       this.uploader.start()
     },
 
-    uploadProgress(up, { name, percent }) {
-      const target = this.files.find(file => file.name === name)
+    uploadProgress(up, { id, percent }) {
+      const target = this.files.find(file => file.id === id)
       target.percent = percent
     },
 
     // 尚未做图片上传失败处理
-    fileUploaded(up, { name }, info) {
+    fileUploaded(up, { name, id }, info) {
       const { key } = JSON.parse(info.response)
       this.$http.post('/user/sourcerotateimage', {
         title: name,
@@ -133,7 +133,7 @@ export default {
         list_order: 72,
       })
         .then(() => {
-          const target = this.files.find(file => file.name === name)
+          const target = this.files.find(file => file.id === id)
           Vue.set(target, 'result', 'success')
         })
     },
