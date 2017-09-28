@@ -10,6 +10,8 @@
           <app-file-upload
             v-model="avatar"
             cropper
+            :modal="false"
+            :custom-url="worksCover"
             @crop-success="cropSuccess"
             @before-upload="loading = true"
             @file-uploaded="avatarUploaded"
@@ -83,7 +85,7 @@
 <script>
 /**
  * 高级编辑 - 设置 - 基本
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-09-05
  */
 
@@ -126,6 +128,12 @@ export default {
     startImgSrc() {
       const { start_img } = this.form
       return start_img ? this.$url.static(start_img) : defaultStartImg
+    },
+
+    worksCover() {
+      const panoId = this.$store.state.edit.panoInfo.hash_pano_id
+      const userId = this.$store.state.edit.panoInfo.hash_user_id
+      return `data/pano/${userId}/${panoId}`
     },
   },
 
@@ -190,6 +198,9 @@ export default {
 .edit-setting-basic {
   .el-select {
     width: 100%;
+  }
+  .el-dialog {
+    position: inherit;
   }
 }
 </style>
