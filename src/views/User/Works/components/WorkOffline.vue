@@ -34,7 +34,7 @@
               type="text"
               size="small"
               class="after-create"
-              :disabled="data.zip_status !== 41 && data.zip_status !== 0"
+              :disabled="data.zip_status !== 40 && data.zip_status !== 0"
               @click="createOffline(20)"
             >重新创建</el-button>
           </el-col>
@@ -88,14 +88,16 @@ export default {
     },
 
     // 请求下载
-    getOfflineZip(status = 10) {
-      this.$http.get(`/user/pano/offline?pano_id=${this.data.hash_pano_id}&redo=${status}`)
+    getOfflineZip(val = 10) {
+      this.$http.get(`/user/pano/offline?pano_id=${this.data.hash_pano_id}&redo=${val}`)
         .then(({ result }) => {
           this.data = { ...this.data, ...result }
           this.pollOffline()
         })
-        .catch(() => {
+        .catch(({ status }) => {
+          this.data.zip_status = 0
           clearTimeout(this.pollTime)
+          this.$message.error(status.reason)
         })
     },
 
