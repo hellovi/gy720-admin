@@ -181,7 +181,7 @@ export default {
   }
 
   &__img {
-    height: 141px;
+    height: 140px;
     object-fit: cover;
   }
 

@@ -1,7 +1,7 @@
 <template>
-  <div class="photo-material">
+  <div class="photo-material" v-loading="loading">
     <el-row>
-      <el-col class="photo-material__right" v-loading="loading">
+      <el-col class="photo-material__right">
         <el-row class="photo-material__header">
           <el-col :span="2">
             <el-checkbox v-model="allChecked" @change="selectAllPhotos">全选</el-checkbox>
@@ -24,7 +24,7 @@
         </el-row>
 
         <div class="photo-material__content">
-          <el-row :gutter="20">
+          <el-row :gutter="10">
             <el-col
               class="photo-material__item"
               v-for="photo in list.data"
@@ -59,6 +59,7 @@
         </div>
 
         <el-pagination
+          :small="isSmallScreen"
           v-if="list.last_page > 1"
           :page-size="list.per_page"
           :total="list.total"
@@ -132,6 +133,7 @@ export default {
     ...mapState({
       list: state => state.edit.material.materialData.photo,
       invoked: state => state.edit.material.invoked,
+      isSmallScreen: state => state.edit.material.isSmallScreen,
     }),
 
     selected() {
@@ -235,12 +237,19 @@ export default {
   border-bottom: var(--border);
   position: relative;
 
+  > .el-row {
+    height: 100%;
+  }
+
   .el-pagination {
-    margin-top: 0;
-    padding-bottom: 20px;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    bottom: -4px;
   }
 
   &__right {
+    height: 100%;
     padding: 0;
   }
 
@@ -258,7 +267,9 @@ export default {
   }
 
   &__content {
-    min-height: 365px;
+    max-height: 384px;
+    overflow-x: hidden;
+    overflow-y: auto;
     padding: 20px 0 0;
     .disabled {
       cursor: not-allowed;
@@ -333,7 +344,7 @@ export default {
 
 .photo-material__item {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   cursor: pointer;
   transition: 0.2s;
 
@@ -409,6 +420,19 @@ export default {
     position: absolute;
     right: 0;
     bottom: -56px;
+  }
+}
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .photo-material {
+    .el-pagination {
+      bottom: 6px;
+    }
+
+    &__content {
+      max-height: 320px;
+    }
   }
 }
 </style>

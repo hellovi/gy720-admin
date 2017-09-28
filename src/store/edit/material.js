@@ -29,6 +29,7 @@ export default {
       photo: { data: [] },
       other: { data: [] },
     },
+    isSmallScreen: false,
     selectedItem: {},
     selectedItems: [],
     object3dItem: {},
@@ -104,6 +105,15 @@ export default {
      */
     [MATERIAL.SELECT_OBJECT3D](state, item) {
       state.object3dItem = item
+    },
+
+    /**
+     * 判断小屏幕状态
+     * @param state
+     * @param status {Boolean}
+     */
+    [MATERIAL.SET_SMALLSCREEN](state, status) {
+      state.isSmallScreen = status
     },
 
     /** 物品3D分类 */

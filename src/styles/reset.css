@@ -1,6 +1,6 @@
 @import "vars.css";
 
-.el-pagination {
+.el-pagination:not(.el-pagination--small) {
   margin-top: 45px;
   text-align: center;
 
@@ -27,6 +27,10 @@
     border-left: 1px solid var(--border-color-base);
     border-right: 1px solid var(--border-color-base);
   }
+}
+
+.el-pagination--small {
+  text-align: center;
 }
 
 .el-dialog {

@@ -61,7 +61,7 @@
 <script>
 /**
  * 高级编辑 - 素材库
- * @author yangjun | luminghuai
+ * @author yangjun | luminghuai | chenliangshan
  * @version 2017-09-01
  */
 
@@ -182,6 +182,23 @@ export default {
         source_scene_id, upload_id, ...other }) =>
         ({ ...other }))
     },
+
+    setSmallScreen() {
+      this.$store.commit(EDIT.MATERIAL.SET_SMALLSCREEN, document.body.clientHeight <= 600)
+    },
+
+    resize() {
+      window.addEventListener('resize', this.setSmallScreen)
+    },
+  },
+
+  mounted() {
+    this.resize()
+    this.setSmallScreen()
+  },
+
+  beforeDestroy() {
+    window.removeEventListener('resize', this.setSmallScreen)
   },
 }
 </script>
@@ -219,6 +236,7 @@ export default {
   border-width: 1px 0;
   border-style: solid;
   border-color: var(--gray-extra-light);
+  position: relative;
 
   .el-pagination {
     margin-top: 15px;
@@ -248,7 +266,7 @@ export default {
 
     .material-content {
       height: 420px;
-      padding: 0
+      padding-bottom: 0
     }
   }
 }

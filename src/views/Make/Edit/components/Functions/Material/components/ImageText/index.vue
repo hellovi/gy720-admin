@@ -47,6 +47,7 @@
       </el-table-column>
     </el-table>
     <el-pagination
+      :small="isSmallScreen"
       layout="prev, pager, next"
       :page-size="perPage"
       :total="listData.total"
@@ -96,6 +97,7 @@
    * @version 2017/08/25
    */
 
+  import { mapState } from 'vuex'
   import { EDIT } from '@/store/mutationTypes'
   import modal from '../../../../../mixins/modal'
 
@@ -121,6 +123,9 @@
     }),
 
     computed: {
+      ...mapState({
+        isSmallScreen: state => state.edit.material.isSmallScreen,
+      }),
       selectStatus() {
         return this.$store.state.edit.material.invoked
       },

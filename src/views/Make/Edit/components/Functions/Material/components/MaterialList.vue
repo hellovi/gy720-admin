@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading">
-    <ul class="material-list clearfix list">
+    <ul class="material-list clearfix list" v-if="!isEmpty">
       <li
         v-for="item in list.data"
         :key="item.id"
@@ -16,17 +16,19 @@
       </li>
     </ul>
 
-    <app-empty-body v-if="isEmpty">
+    <app-empty-body v-else>
       还没有上传素材哦……
     </app-empty-body>
 
     <el-pagination
+      :small="isSmallScreen"
       v-if="list.last_page > 1"
       :page-size="list.per_page"
       :total="list.total"
       :current-page="list.current_page"
       @current-change="pageChange"
       layout="prev, pager, next"
+      class="material-page"
     ></el-pagination>
 
     <!-- 编辑素材弹框 -->
@@ -67,14 +69,16 @@
 <script>
 /**
  * 高级编辑 - 素材列表
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-09-01
  */
 
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import AppUploadProgress from '@/components/AppUploadProgress'
 import MaterialItem from './MaterialItem'
 import material from '../mixins/material'
+import uploadLimits from './uploadLimits'
 
 const AppFileUpload = () => import('@/components/AppFileUpload')
 
@@ -106,6 +110,16 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      isSmallScreen: state => state.edit.material.isSmallScreen,
+    }),
+
+    limit() {
+      return uploadLimits[this.activeType]
+    },
+  },
+
   methods: {
     /**
      * 获取列表数据
@@ -118,7 +132,7 @@ export default {
       const url = this.activeType === 'rotate'
         ? '/user/sourcerotate'
         : '/user/source'
-      const params = `?tag_id=${this.activeId}&page=${page}`
+      const params = `?tag_id=${this.activeId}&page=${page}&per_page=${this.limit.perPage}`
 
       // 这里需要做接口错误处理
       this.$store.dispatch(EDIT.MATERIAL.INIT, { url, params })
@@ -165,7 +179,8 @@ export default {
 }
 
 .material-list {
-  padding-bottom: 20px;
+  height: calc(100% - 20px);
+  overflow-y: auto;
 
   &__item {
     float: left;
@@ -176,6 +191,13 @@ export default {
       margin-left: var(--gut-width);
     }
   }
+}
+
+.material-content .material-page {
+  width: 100%;
+  margin: 0;
+  position: absolute;
+  bottom: 10px;
 }
 
 .material-play {
@@ -193,6 +215,12 @@ export default {
 
   .el-dialog__body {
     padding: 15px 0;
+  }
+}
+
+@media screen and (max-height: 760px) {
+  .material-content .material-page {
+    bottom: 6px;
   }
 }
 </style>

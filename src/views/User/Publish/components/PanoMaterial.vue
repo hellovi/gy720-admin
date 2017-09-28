@@ -1,5 +1,5 @@
 <template>
-  <div class="pano-material">
+  <div class="pano-material" v-loading="loading">
     <el-row>
       <el-col class="pano-material__left" :span="4">
         <dl class="pano-material__menu">
@@ -25,7 +25,7 @@
         </dl>
       </el-col>
 
-      <el-col class="pano-material__right" :span="20" v-loading="loading">
+      <el-col class="pano-material__right" :span="20">
         <el-row class="pano-material__header">
           <el-col :span="2">
             <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
@@ -95,6 +95,7 @@
         </div>
 
         <el-pagination
+          :small="isSmallScreen"
           v-if="sceneList.last_page > 1"
           :page-size="sceneList.per_page"
           :total="sceneList.total"
@@ -187,6 +188,7 @@ export default {
     ...mapState({
       list: state => state.edit.material.materialData.scene,
       invoked: state => state.edit.material.invoked,
+      isSmallScreen: state => state.edit.material.isSmallScreen,
     }),
 
     // 过滤不可选择的全景图
@@ -460,14 +462,22 @@ export default {
   border-bottom: var(--border);
   position: relative;
 
+  > .el-row {
+    height: 100%;
+  }
+
   .el-pagination {
-    margin-top: 0;
-    padding-bottom: 20px;
+    width: 100%;
+    position: absolute;
+    margin: 0;
+    bottom: 0;
   }
 
   &__right {
+    height: 100%;
     padding: 0 20px;
     border-left: var(--border);
+    position: relative;
   }
 
   &__header {
@@ -633,6 +643,7 @@ export default {
 
     &__right {
       padding: 0 10px;
+      height: calc(100% - 10px);
     }
 
     &__content {
@@ -647,11 +658,6 @@ export default {
     &__item {
       margin-bottom: 0;
       padding-right: 0 !important;
-    }
-
-    .el-pagination {
-      margin-top: 2px;
-      padding-bottom: 16px;
     }
   }
 }
