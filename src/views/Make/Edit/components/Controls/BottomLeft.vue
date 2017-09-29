@@ -110,7 +110,7 @@ export default {
       this.$store.dispatch(EDIT.PANO.UPDATE, {
         show_share,
       })
-        .then(() => this.$message.success('操作成功'))
+        .then(({ status: { reason } }) => this.$message.success(reason))
     },
     switchSceneShow() {
       if (this.activeSceneList === 20) {

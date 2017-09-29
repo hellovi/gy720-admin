@@ -95,7 +95,7 @@ export default {
       this.$store.dispatch(EDIT.PANO.UPDATE, {
         [propName]: val,
       })
-        .then(() => this.$message.success('操作成功'))
+        .then(({ status: { reason } }) => this.$message.success(reason))
     },
   },
 }

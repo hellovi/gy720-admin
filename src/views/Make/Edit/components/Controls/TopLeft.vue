@@ -88,8 +88,8 @@ export default {
           this.$store.dispatch(EDIT.PANO.UPDATE, {
             logo: '',
           })
-            .then(() => {
-              this.$message.success('Logo删除成功!')
+            .then(({ status: { reason } }) => {
+              this.$message.success(reason)
               this.closeModal('logo')
             })
             .catch((res) => {
@@ -106,8 +106,8 @@ export default {
         this.$store.dispatch(EDIT.PANO.UPDATE, {
           show_nickname,
         })
-          .then(() => {
-            this.$message.success('设置成功')
+          .then(({ status: { reason } }) => {
+            this.$message.success(reason)
           })
           .catch((res) => {
             this.$notify.error(res.status.reason)

@@ -137,8 +137,8 @@ export default {
           this.$store.dispatch(EDIT.PANO.UPDATE, {
             logo, logo_url,
           })
-            .then(() => {
-              this.$message.success('Logo更换成功!')
+            .then(({ status: { reason } }) => {
+              this.$message.success(reason)
               this.closeModal('logo')
             })
             .catch((errors) => {

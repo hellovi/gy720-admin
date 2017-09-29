@@ -158,8 +158,8 @@ export default {
       this.$refs.form.validate((valid) => {
         if (valid) {
           this.$store.dispatch(EDIT.PANO.UPDATE, this.form)
-            .then(() => {
-              this.$message.success('操作成功')
+            .then(({ status: { reason } }) => {
+              this.$message.success(reason)
               this.closeModal('setting')
             })
             .catch(({ status: { reason } }) => {
