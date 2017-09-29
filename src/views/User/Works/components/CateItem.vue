@@ -1,5 +1,6 @@
 <template>
   <div
+    class="clearfix"
     :class="itemClass"
     @click.stop="onChooseCate"
   >
@@ -13,7 +14,14 @@
     >
       &#xe615;
     </i>
-    {{item.name}} ({{item.count}})
+    <el-row>
+      <el-col :span="18" class="ellipsis">
+        {{item.name}}
+      </el-col>
+      <el-col :span="6" class="ellipsis" :title="item.count">
+        ({{item.count}})
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -68,8 +76,6 @@ export default {
 .works-cateitem {
   position: relative;
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
 
   &:hover {
     & .works-cateitem__tag--delete {
@@ -102,6 +108,16 @@ export default {
     display: none;
     z-index: 1;
     color: var(--color-warning);
+  }
+  > .el-row {
+    margin-right: -12px;
+
+    .el-col {
+      + .el-col {
+        padding-left: 2px;
+        text-align: left;
+      }
+    }
   }
 }
 </style>

@@ -73,7 +73,7 @@ export default {
                 this.loading = false
                 this.catelist = data.map(item => ({
                   ...item,
-                  count: dataCount[item.id].count,
+                  count: dataCount[item.id] ? dataCount[item.id].count : 0,
                 }))
                 this.worklist = list
               })
@@ -112,13 +112,8 @@ export default {
     height: calc(100% - 40px);
     border-left: var(--border-split);
     position: absolute;
-    left: 135px;
+    left: 145px;
     z-index: 10;
-  }
-
-  &__catelist {
-    float: left;
-    width: 120px;
   }
 
   &__worklist {

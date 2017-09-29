@@ -1,67 +1,61 @@
 <template>
-  <div class="works-workitem clearfix">
-    <!-- 选择作品 -->
-    <div class="workitem__select">
+  <el-row class="works-workitem clearfix">
+    <el-col :span="10" class="workitem__select">
+      <!-- 选择作品 -->
       <el-checkbox
         :value="checked"
         @click.native.prevent="onChangeCheckedWorks"
       ></el-checkbox>
-    </div>
 
-    <!-- 作品封面 -->
-    <a class="workitem__avatar"
-      :href="workPanoPath"
-      :title="item.name"
-    >
-      <img class="workitem__avatar-img has-shadow"
-        :src="workAvatarPath"
-      />
-    </a>
+      <!-- 作品封面 -->
+      <a class="workitem__avatar"
+         :href="workPanoPath"
+         :title="item.name"
+      >
+        <img class="workitem__avatar-img has-shadow"
+             v-qiniu-src="item.thumb"
+        />
+      </a>
 
-    <!-- 作品信息 -->
-    <div class="workitem__info">
-      <!-- 第一行 -->
-      <div class="workitem__info-name">
-        <span v-if="userInfo.is_vip || item.is_vip"
-          class="workitem__info-name--isvip"
-        >
-          商业作品
-        </span>
-        <span v-else
-          class="workitem__info-name--novip"
-        >
-          普通作品
-        </span>
-        <a
-          :href="workPanoPath"
-          title="预览作品"
-        >
-          {{item.name}}
-        </a>
-      </div>
-      <!-- 第二行  -->
-      <div class="workitem__info-detail">
+      <!-- 作品信息 -->
+      <div class="workitem__info">
+        <!-- 第一行 -->
+        <div class="workitem__info-name ellipsis">
+          <span v-if="userInfo.is_vip || item.is_vip"
+                class="workitem__info-name--isvip"
+          >
+            商业作品
+          </span>
+            <span v-else
+                  class="workitem__info-name--novip"
+            >
+            普通作品
+          </span>
+          <a
+            class=""
+            :href="workPanoPath"
+            title="预览作品"
+          >
+            {{item.name}}
+          </a>
+        </div>
+        <!-- 第二行  -->
+        <div class="workitem__info-detail">
         <span class="workitem__info-detail__item">
           {{item.created_at | formatDateString}}
         </span>
-        <span class="workitem__info-detail__item">
+          <span class="workitem__info-detail__item">
           <i class="iconfont">&#xe63d;</i>{{item.popular}}
         </span>
-        <span class="workitem__info-detail__item">
+          <span class="workitem__info-detail__item">
           <i class="iconfont">&#xe641;</i>{{item.stargazers}}
         </span>
+        </div>
       </div>
-    </div>
-
-    <!-- 离线下载 -->
-    <v-work-offline
-      v-if="item.id"
-      class="workitem__offline"
-      :item="item"
-    ></v-work-offline>
+    </el-col>
 
     <!-- 作品操作 -->
-    <div class="workitem__biz">
+    <el-col :span="9" class="workitem__biz">
       <el-button
         v-if="!(userInfo.is_vip || item.is_vip)"
         type="text"
@@ -95,8 +89,17 @@
       >
         高级编辑
       </el-button>
-    </div>
-  </div>
+    </el-col>
+
+    <!-- 离线下载 -->
+    <el-col :span="5">
+      <v-work-offline
+        v-if="item.id"
+        class="workitem__offline"
+        :item="item"
+      ></v-work-offline>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -135,11 +138,6 @@ export default {
     // 作品跳线上pano预览的地址
     workPanoPath() {
       return `/pano/view/${this.item.hash_pano_id}`
-    },
-
-    // 作品封面在七牛云地址
-    workAvatarPath() {
-      return this.$url.static(this.item.thumb)
     },
   },
 
@@ -191,21 +189,23 @@ export default {
 
     &__select {
       float: left;
-      line-height: var(--workitem-lineheight);
     }
 
     &__avatar {
       @include contain-img-cover;
-
-      float: left;
       margin: 0 var(--gap-unit-horizontal);
       width: var(--workitem-lineheight);
+      height: var(--workitem-lineheight);
+      display: inline-block;
+      vertical-align: middle;
       background-color: var(--color-white);
     }
 
     &__info {
-      float: left;
+      max-width: calc(100% - 120px);
       padding: var(--gap-unit-vertical) 0;
+      display: inline-block;
+      vertical-align: middle;
 
       &-name {
         margin-bottom: var(--gap-unit-vertical);
@@ -246,11 +246,11 @@ export default {
     }
 
     &__offline {
-      float: right;
+
     }
 
     &__biz {
-      float: right;
+      text-align: right;
       line-height: var(--workitem-lineheight);
       font-size: 14px;
 

@@ -375,7 +375,7 @@ export default {
 .works-worklist {
   min-height: calc(100vh - 370px);
   padding-top: 7px;
-  padding-left: 40px;
+  padding-left: 24px;
 
   &__header {
     border-bottom: var(--border-split);

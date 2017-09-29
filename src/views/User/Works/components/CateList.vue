@@ -209,7 +209,7 @@ export default {
 
 .works-catelist {
   float: left;
-  width: 120px;
+  width: 130px;
   font-size: 14px;
 
   &__title {
