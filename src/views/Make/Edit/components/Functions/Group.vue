@@ -64,7 +64,7 @@
       size="large"
       @open="getNotGroups"
       @close="closeSelectScenes"
-      :modal="false"
+      ref="groupDialog"
     >
       <ul class="work-scenes list clearfix" v-if="notGroupsList.length">
         <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
@@ -362,6 +362,13 @@ export default {
         ),
       })
     },
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      // TODO 统一处理（临时处理遮罩层问题）
+      document.body.appendChild(this.$refs.groupDialog.$el)
+    })
   },
 }
 </script>
