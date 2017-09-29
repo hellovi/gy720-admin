@@ -29,11 +29,12 @@
 <script>
 /**
  * 高级编辑 - 设置
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-09-05
  */
 
 import { mapState, mapGetters } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 import errorHandle from '@/mixins/errorHandle'
 import { pwdRule } from '@/utils/rulesValidator'
 import modal from '../../../mixins/modal'
@@ -156,8 +157,7 @@ export default {
     submit() {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          const id = this.panoInfo.hash_pano_id
-          this.$http.post(`/user/pubset/update?pano_id=${id}`, this.form)
+          this.$store.dispatch(EDIT.PANO.UPDATE, this.form)
             .then(() => {
               this.$message.success('操作成功')
               this.closeModal('setting')

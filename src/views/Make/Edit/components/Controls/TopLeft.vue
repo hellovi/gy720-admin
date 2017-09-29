@@ -85,16 +85,11 @@ export default {
           cancelButtonText: '取消',
           type: 'warning',
         }).then(() => {
-          this.$http.post('/user/pubset/logo', {
-            logo: null,
-            pano_id: this.panoInfo.hash_pano_id,
+          this.$store.dispatch(EDIT.PANO.UPDATE, {
+            logo: '',
           })
             .then(() => {
               this.$message.success('Logo删除成功!')
-
-              // 更新store panoInfo
-              this.$store.commit(EDIT.PANO.UPDATE, { logo: null })
-
               this.closeModal('logo')
             })
             .catch((res) => {
@@ -108,14 +103,11 @@ export default {
     editAuthor() {
       if (this.editAutho()) {
         const show_nickname = this.panoInfo.show_nickname
-        this.$http.post('/user/pubset/author', {
+        this.$store.dispatch(EDIT.PANO.UPDATE, {
           show_nickname,
-          pano_id: this.panoInfo.hash_pano_id,
         })
           .then(() => {
             this.$message.success('设置成功')
-            // 更新store panoInfo
-            this.$store.commit(EDIT.PANO.UPDATE, { show_nickname })
           })
           .catch((res) => {
             this.$notify.error(res.status.reason)

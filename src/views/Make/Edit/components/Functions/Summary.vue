@@ -31,51 +31,55 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import { EDIT } from '@/store/mutationTypes'
-import modal from '../../mixins/modal'
+  /**
+   * 设置简介
+   * @author chenliangshan
+   * @version 2017/09/29
+   */
 
-export default {
-  name: 'edit-functions-summary',
+  import { mapState } from 'vuex'
+  import { EDIT } from '@/store/mutationTypes'
+  import modal from '../../mixins/modal'
 
-  mixins: [modal],
+  export default {
+    name: 'edit-functions-summary',
 
-  data() {
-    return {
-      form: {
-        pano_remark: '',
-        show_remark: 10,
+    mixins: [modal],
+
+    data() {
+      return {
+        form: {
+          pano_remark: '',
+          show_remark: 10,
+        },
+      }
+    },
+
+    computed: {
+      ...mapState({
+        panoInfo: state => state.edit.panoInfo,
+      }),
+    },
+
+    watch: {
+      panoInfo(val) {
+        const { pano_remark, show_remark } = val
+        this.form = { pano_remark, show_remark }
       },
-    }
-  },
-
-  computed: {
-    ...mapState({
-      panoInfo: state => state.edit.panoInfo,
-    }),
-  },
-
-  watch: {
-    panoInfo(val) {
-      const { pano_remark, show_remark } = val
-      this.form = { pano_remark, show_remark }
-    },
-  },
-
-  methods: {
-    close() {
-      this.closeModal('summary')
     },
 
-    submit() {
-      const id = this.panoInfo.hash_pano_id
-      this.$http.post(`/user/pubset/update?pano_id=${id}`, this.form)
-        .then(() => {
-          this.$message.success('操作成功')
-          this.$store.commit(EDIT.PANO.UPDATE, { show_remark: this.form.show_remark })
-          this.close()
-        })
+    methods: {
+      close() {
+        this.closeModal('summary')
+      },
+
+      submit() {
+        this.$store.dispatch(EDIT.PANO.UPDATE, this.form)
+          .then(() => {
+            this.$message.success('操作成功')
+            this.close()
+          })
+      },
     },
-  },
-}
+  }
 </script>

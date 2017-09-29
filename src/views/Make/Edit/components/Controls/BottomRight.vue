@@ -33,7 +33,7 @@
 <script>
 /**
  * 高级编辑 - 右下区域
- * @author luminghuai
+ * @author luminghuai | chenliangshan
  * @version 2017-09-07
  */
 
@@ -92,8 +92,7 @@ export default {
 
   methods: {
     uiSwitch(val, propName) {
-      const id = this.panoInfo.hash_pano_id
-      this.$http.post(`/user/pubset/update?pano_id=${id}`, {
+      this.$store.dispatch(EDIT.PANO.UPDATE, {
         [propName]: val,
       })
         .then(() => this.$message.success('操作成功'))

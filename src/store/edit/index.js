@@ -53,6 +53,15 @@ export default {
       return Http.get(`/user/pubset/get?pano_id=${pano_id}`)
         .then(({ result }) => commit(EDIT.PANO.INIT, result))
     },
+
+    [EDIT.PANO.UPDATE]({ commit, state }, update) {
+      return Http.post(`/user/pubset/update?pano_id=${state.panoInfo.hash_pano_id}`, {
+        ...update,
+      })
+        .then(() => {
+          commit(EDIT.PANO.UPDATE, update)
+        })
+    },
   },
 
   mutations: {

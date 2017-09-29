@@ -115,9 +115,8 @@ export default {
           this.$refs.logoForm.validateField('logo')
         })
       } else {
-        const { logo, logo_url, hash_pano_id } = this.panoInfo
+        const { logo, logo_url } = this.panoInfo
         this.logoInfo = {
-          pano_id: hash_pano_id,
           logo,
           logo_url,
         }
@@ -134,18 +133,12 @@ export default {
       this.$refs.logoForm.validate((valid) => {
         if (valid) {
           this.msgAlert = {}
-          this.$http.post('/user/pubset/logo', { ...this.logoInfo })
+          const { logo, logo_url } = this.logoInfo
+          this.$store.dispatch(EDIT.PANO.UPDATE, {
+            logo, logo_url,
+          })
             .then(() => {
-              const { logo, logo_url, pano_id } = this.logoInfo
               this.$message.success('Logo更换成功!')
-
-              // 更新store panoInfo
-              this.$store.commit(EDIT.PANO.UPDATE, {
-                logo,
-                logo_url,
-                hash_pano_id: pano_id,
-              })
-
               this.closeModal('logo')
             })
             .catch((errors) => {

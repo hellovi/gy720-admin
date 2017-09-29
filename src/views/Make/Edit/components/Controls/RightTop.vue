@@ -54,7 +54,7 @@
 /**
  * 高级编辑 - 右侧菜单
  *
- * @author luminghuai | huojinzhao
+ * @author luminghuai | huojinzhao | chenliangshan
  */
 
 import { mapState } from 'vuex'
@@ -109,8 +109,7 @@ export default {
 
   methods: {
     uiSwitch(show_qrcode) {
-      this.$http.post('/user/pubset/qrcode', {
-        pano_id: this.panoInfo.hash_pano_id,
+      this.$store.dispatch(EDIT.PANO.UPDATE, {
         show_qrcode,
       })
         .then(() => this.$message.success('操作成功'))

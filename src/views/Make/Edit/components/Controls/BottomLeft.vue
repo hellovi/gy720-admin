@@ -107,8 +107,7 @@ export default {
 
   methods: {
     uiSwitch(show_share) {
-      const id = this.panoInfo.hash_pano_id
-      this.$http.post(`/user/pubset/update?pano_id=${id}`, {
+      this.$store.dispatch(EDIT.PANO.UPDATE, {
         show_share,
       })
         .then(() => this.$message.success('操作成功'))
