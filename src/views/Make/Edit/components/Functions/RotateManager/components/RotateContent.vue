@@ -135,7 +135,7 @@ export default {
      * @param {number} page - 页数
      * @param {number} cateId - 分类id
      */
-    getList(page = 1, cateId = 1) {
+    getList(page = 1, cateId = '') {
       this.loading = true
       this.$http.get(`/user/sourcerotate?source_rotate_category_id=${cateId}&page=${page}`)
         .then(({ result }) => {

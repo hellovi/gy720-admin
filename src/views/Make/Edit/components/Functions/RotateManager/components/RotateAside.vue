@@ -6,6 +6,13 @@
 
     <ul class="list">
       <li
+        class="rotate-cate-item"
+        :class="{active: activeCateId === ''}"
+        @click.stop="selectCate('')"
+      >
+        3D物品
+      </li>
+      <li
         v-for="cate in cates"
         :key="cate.id"
         class="rotate-cate-item"

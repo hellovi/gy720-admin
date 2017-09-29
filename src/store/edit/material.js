@@ -119,7 +119,8 @@ export default {
     /** 物品3D分类 */
     [ROTATE.CATE.INIT](state, cates) {
       state.rotateCates = cates
-      state.activeRotateCateId = cates[0].id
+      // 默认显示所有3D物品
+      state.activeRotateCateId = ''
     },
 
     [ROTATE.CATE.SELECT](state, id) {
