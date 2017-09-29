@@ -13,7 +13,7 @@
     >
       &#xe615;
     </i>
-    {{item.name}}
+    {{item.name}} ({{item.count}})
   </div>
 </template>
 

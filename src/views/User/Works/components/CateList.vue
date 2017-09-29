@@ -11,7 +11,7 @@
       <!-- 我的作品（全部） -->
       <v-cate-item
         class="works-catelist__item"
-        :item="{name: '我的作品', id: null}"
+        :item="{name: '我的作品', id: null, count: cateCount}"
         :active="choosedCateId === null"
         @chooseCate="onChooseCate"
       >
@@ -69,7 +69,7 @@
 /**
  * 我的作品 - 作品分类列表
  *
- * @author huojinzhao
+ * @author huojinzhao | chenliangshan
  */
 
 import deleteItem from '@/mixins/deleteItem'
@@ -120,6 +120,12 @@ export default {
       ],
     },
   }),
+
+  computed: {
+    cateCount() {
+      return this.catelist.map(({ count }) => count).reduce((result, item) => result + item)
+    },
+  },
 
   methods: {
     onChooseCate(cateId) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="works clearfix">
+  <div class="works clearfix" v-loading="loading">
     <!-- 侧栏分类列表  -->
     <v-cate-list
       v-if="catelist.length"
@@ -45,6 +45,7 @@ export default {
     catelist: [],
     // 这里不是空数组，它的值是一个对象，包括分页信息
     worklist: null,
+    loading: true,
   }),
 
   methods: {
@@ -64,9 +65,23 @@ export default {
 
   created() {
     Ajax.getCatelist()
-      .then((data) => { this.catelist = data })
-    Ajax.getWorklist(this.$route.query)
-      .then((data) => { this.worklist = data })
+      .then((data) => {
+        Ajax.getCateCount()
+          .then((dataCount) => {
+            Ajax.getWorklist(this.$route.query)
+              .then((list) => {
+                this.loading = false
+                this.catelist = data.map(item => ({
+                  ...item,
+                  count: dataCount[item.id].count,
+                }))
+                this.worklist = list
+              })
+          })
+      })
+      .catch(() => {
+        this.loading = false
+      })
   },
 
   beforeRouteUpdate(to, from, next) {

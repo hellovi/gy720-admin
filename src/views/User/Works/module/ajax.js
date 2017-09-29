@@ -1,7 +1,7 @@
 /**
  * 我的作品 - 请求模块
  *
- * @author huojinzhao
+ * @author huojinzhao | chenliangshan
  */
 
 import Http from '@/utils/http'
@@ -11,6 +11,7 @@ const DEFAULT_CATE_ID = 1
 
 // 接口
 const CATE_API = '/user/panocategory'
+const CATE_COUNT_API = '/user/pano/category-count'
 const WORKS_API = '/user/pano'
 const PUT_WORKS_CATE_API = '/user/pano/category'
 
@@ -29,6 +30,17 @@ class Ajax {
    */
   static getCatelist() {
     return Http.get(CATE_API)
+      .then(({ result }) => result)
+  }
+
+  /**
+   * 请求分类包含作品数量信息
+   *
+   * @method GET
+   * @return {Promise}      type: Object
+   */
+  static getCateCount() {
+    return Http.get(CATE_COUNT_API)
       .then(({ result }) => result)
   }
 
