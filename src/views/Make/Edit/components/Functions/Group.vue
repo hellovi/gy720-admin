@@ -112,6 +112,7 @@ export default {
       selectSceneIds: [],
       addScenesLoading: false,
       groupsListLoad: false,
+      isRender: false,
     }
   },
 
@@ -136,6 +137,12 @@ export default {
         .catch((errors) => {
           this.errorHandler(errors)
         })
+
+      // TODO 统一处理（临时处理遮罩层问题）
+      if (!this.isRender) {
+        this.isRender = true
+        document.body.appendChild(this.$refs.groupDialog.$el)
+      }
     },
 
     // 获取场景分组列表
@@ -364,12 +371,6 @@ export default {
     },
   },
 
-  mounted() {
-    this.$nextTick(() => {
-      // TODO 统一处理（临时处理遮罩层问题）
-      document.body.appendChild(this.$refs.groupDialog.$el)
-    })
-  },
 }
 </script>
 
