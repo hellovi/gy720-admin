@@ -9,7 +9,10 @@ html {
 
 body {
   background-color: #f2f2f2;
-  font-family: sans-serif;
+}
+
+html, body, input, textarea, keygen, select, button {
+  font-family: OpenSans,Helvetica Neue,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,Arial,sans-serif;
 }
 
 *,
