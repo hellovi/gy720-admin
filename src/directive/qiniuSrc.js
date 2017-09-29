@@ -6,7 +6,7 @@
 
 import { Url, Regex } from '@/utils'
 import DefaultAvatar from '@/assets/default-avatar.jpg'
-import DefaultLoading from '@/assets/default-loading.gif'
+import DefaultImg from '@/assets/default-img.gif'
 
 const getSrc = (el, binding) => {
   const src = binding.value
@@ -28,7 +28,7 @@ const getSrc = (el, binding) => {
       srcUrl = DefaultAvatar
       break
     default :
-      srcUrl = DefaultLoading
+      srcUrl = DefaultImg
       break
   }
   return Url.static(srcUrl)
