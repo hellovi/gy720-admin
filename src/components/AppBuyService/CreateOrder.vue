@@ -263,6 +263,7 @@ export default {
               ...this.form,
               order_type: this.orderType,
               panorama_id: this.panoInfo.hash_pano_id || '',
+              panorama_name: this.panoInfo.name || '',
             })
               .then(({ result }) => {
                 if (isAlipay) {
