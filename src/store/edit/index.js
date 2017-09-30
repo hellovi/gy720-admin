@@ -58,8 +58,9 @@ export default {
       return Http.post(`/user/pubset/update?pano_id=${state.panoInfo.hash_pano_id}`, {
         ...update,
       })
-        .then(() => {
+        .then((res) => {
           commit(EDIT.PANO.UPDATE, update)
+          return res
         })
     },
   },
