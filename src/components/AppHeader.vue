@@ -36,7 +36,7 @@
           <li><router-link to="/user-client/purchase">购买服务</router-link></li>
           <li><router-link to="/user-client/account">账号管理</router-link></li>
           <li><router-link to="/user-client/message">我的消息</router-link></li>
-          <li><a href="/user/logout">退出登陆</a></li>
+          <li><a href="/user/logout">退出登录</a></li>
         </ul>
       </div>
     </div>
