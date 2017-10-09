@@ -174,6 +174,12 @@ export default {
               })
             }
           },
+
+          Error: (up, err) => {
+            if (err.code < 0) {
+              this.handleUploadError(err.file.id, err.message)
+            }
+          },
         },
       })
 
@@ -256,6 +262,12 @@ export default {
 
           UploadComplete: () => {
             this.fisheye_gid = null
+          },
+
+          Error: (up, err) => {
+            if (err.code < 0) {
+              this.handleUploadError(err.file.id, err.message)
+            }
           },
         },
       })
