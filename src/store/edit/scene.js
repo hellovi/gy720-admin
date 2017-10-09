@@ -28,11 +28,27 @@ export default {
      * 获取场景信息
      * 返回当前选中场景（加载完默认为第一项）的id，以便调用热点接口时能确保拿到此id
      */
-    [SCENE.INIT]({ commit }, pano_id) {
-      return Http.get(`/user/scene?pano_id=${pano_id}`)
+    [SCENE.INIT]({ dispatch, commit, getters }, param = { active: 0, pano_id: '' }) {
+      const panoId = param.pano_id || getters.panoId
+      return Http.get(`/user/scene?pano_id=${panoId}`)
         .then(({ result }) => {
-          commit(SCENE.INIT, result)
-          return result[0].id
+          // eslint-disable-next-line
+          const krpano = window.__krpano
+
+          // 当前场景id
+          const sceneId = result[param.active].id
+
+          // 设置场景列表
+          commit(SCENE.INIT, { active: param.active, scenes: result })
+
+          // 加载当前场景热点
+          krpano.hotspots = {}
+          dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
+
+          // 跳转指定场景
+          krpano.call(`ac_gotoscene(${sceneId})`)
+
+          return sceneId
         })
     },
   },
@@ -40,13 +56,13 @@ export default {
   mutations: {
     /**
      * 获取场景数据
-     * 把第一个场景设为当前场景
+     * 默认把第一个场景设为当前场景
      */
-    [SCENE.INIT](state, scenes) {
-      state.list = [
-        ...(scenes[0] ? [{ ...scenes[0], active: true }] : []),
-        ...scenes.slice(1),
-      ]
+    [SCENE.INIT](state, { active, scenes }) {
+      state.list = scenes.map((item, index) => ({
+        ...item,
+        active: active === index,
+      }))
     },
 
     /**
@@ -70,6 +86,10 @@ export default {
     [SCENE.DELETE](state, id) {
       state.list = state.list
         .filter(scene => scene.id !== id)
+
+      // 删除XML场景
+      // eslint-disable-next-line
+      window.__krpano.get('scene').removeItem(`scene_pano_${id}`)
     },
   },
 

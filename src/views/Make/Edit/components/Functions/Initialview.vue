@@ -13,10 +13,11 @@
 /**
  * 高级编辑 - 设置初始画面
  *
- * @author huojinzhao
+ * @author huojinzhao | chenliangshan
  */
 
 import { mapState, mapGetters } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 import vCamera from './components/Camera'
 import modal from '../../mixins/modal'
 import esc from '../../mixins/esc'
@@ -39,10 +40,11 @@ export default {
 
   methods: {
     onConfirmInitialView() {
-      /* eslint-disable no-underscore-dangle */
-      const fov = window.__krpano.get('view.fov')
-      const vlookat = window.__krpano.get('view.vlookat')
-      const hlookat = window.__krpano.get('view.hlookat')
+      // eslint-disable-next-line
+      const krpano = window.__krpano
+      const fov = krpano.get('view.fov')
+      const vlookat = krpano.get('view.vlookat')
+      const hlookat = krpano.get('view.hlookat')
       const id = this.activeScene.id
       const pano_id = this.pano.hash_pano_id
       this.$http.post('/user/scene/defaultangle',
@@ -54,6 +56,9 @@ export default {
           id,
         })
         .then(() => {
+          // 重新加载场景XML
+          this.$store.dispatch(EDIT.PANO.UPDATESCENE)
+
           this.$message({
             type: 'success',
             message: '初始画面设置成功',

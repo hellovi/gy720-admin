@@ -1,4 +1,4 @@
-import Http from '@/utils/http'
+import { Http, Url } from '@/utils'
 import { EDIT } from '../mutationTypes'
 import material from './material'
 import logo from './logo'
@@ -63,6 +63,15 @@ export default {
           return res
         })
     },
+
+    // 更新场景XML
+    [EDIT.PANO.UPDATESCENE]({ state }, config = []) {
+      // eslint-disable-next-line
+      const krpano = window.__krpano
+      const sceneName = krpano.get('xml').scene
+      const param = [`/user/pano/xml?pano_id=${state.panoInfo.hash_pano_id}`, ...config]
+      krpano.call(`loadpano(${param.join()});loadscene(${sceneName});`)
+    },
   },
 
   mutations: {
@@ -93,6 +102,14 @@ export default {
   getters: {
     isVip(state, getters, { userInfo }) {
       return userInfo.is_vip || state.panoInfo.is_vip
+    },
+
+    panoId(state, getters, { edit: { panoInfo } }) {
+      return panoInfo.hash_pano_id || Url.getQuery().pano_id
+    },
+
+    panoInfo(state, getters, { edit: { panoInfo } }) {
+      return panoInfo
     },
   },
 }

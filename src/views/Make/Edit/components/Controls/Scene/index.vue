@@ -22,7 +22,7 @@
 /**
  * @desc 高级编辑 - 场景设置，弹框共用Setting模块的样式
  *
- * @author luminghuai | huojinzhao
+ * @author luminghuai | huojinzhao | chenliangshan
  */
 
 import { mapState } from 'vuex'
@@ -74,6 +74,7 @@ export default {
       // eslint-disable-next-line
       const krpano = window.__krpano
       krpano.call(`ac_gotoscene(${sceneId})`)
+
       // 清空所有热点
       Object.keys(krpano.hotspots)
         .forEach((hotid) => {
@@ -143,6 +144,7 @@ export default {
             const sceneList = this.scenelist.filter(({ id }) => sceneId !== id)
             this.selectScene(sceneList[0].id)
           }
+
           this.$store.commit(EDIT.SCENE.DELETE, sceneId)
         })
     },
