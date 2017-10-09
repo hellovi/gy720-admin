@@ -172,6 +172,15 @@ export default {
                 message: '正在排队中...',
                 thumb,
               })
+
+              // 删除上传文件队列
+              uploader.removeFile(file)
+            }
+          },
+
+          Error: (up, err) => {
+            if (err.code < 0) {
+              this.handleUploadError(err.file.id, err.message)
             }
           },
         },
@@ -251,11 +260,20 @@ export default {
                 })
                 this.getImageView({ ...result, id: file.group, width: 268 })
               }
+
+              // 删除上传文件队列
+              uploader.removeFile(file)
             }
           },
 
           UploadComplete: () => {
             this.fisheye_gid = null
+          },
+
+          Error: (up, err) => {
+            if (err.code < 0) {
+              this.handleUploadError(err.file.id, err.message)
+            }
           },
         },
       })

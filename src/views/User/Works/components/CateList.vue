@@ -214,7 +214,7 @@ export default {
 
   &__title {
     margin: 10px 0;
-    padding: 4px 12px 8px;
+    padding: 4px 14px 8px;
     border-bottom: 1px solid var(--border-color-split);
     text-align: right;
     font-size: 18px;
@@ -227,7 +227,7 @@ export default {
 
   &__item {
     display: block;
-    padding: 10px 12px 10px 16px;
+    padding: 10px 14px 10px 16px;
     border-bottom: 1px dotted var(--border-color-split);
     line-height: 19px;
     cursor: pointer;

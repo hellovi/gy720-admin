@@ -203,6 +203,12 @@ export default {
 
     // 要处理上传错误的情况
   },
+
+  created() {
+    this.$on('on-reset-files', () => {
+      this.files = []
+    })
+  },
 }
 </script>
 

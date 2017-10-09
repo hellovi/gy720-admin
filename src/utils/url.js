@@ -23,11 +23,11 @@ export default class Url {
     return `https://l.gy720.com/assets/3.0.1/lib/krpano/hoticon/${pathname}`
   }
 
-  static getQuery(url) {
+  static getQuery(url = window.location.href) {
     // eslint-disable-next-line
     let query = {}
     const num = url.indexOf('?')
-    if (num !== -1) {
+    if (num !== -1 && url.indexOf('=') > 1) {
       let str = url.substr(1)
       str = str.substr(num)
       const strs = str.split('&')

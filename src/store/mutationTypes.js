@@ -87,6 +87,7 @@ export const EDIT = {
   PANO: {
     INIT: 'EDIT.PANO.INIT',
     UPDATE: 'EDIT.PANO.UPDATE',
+    UPDATESCENE: 'EDIT.PANO.UPDATESCENE',
   },
 
   // Functions组件控制

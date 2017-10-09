@@ -145,14 +145,14 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import errorHandle from '@/mixins/errorHandle'
+import { errorHandle, emitter } from '@/mixins'
 
 const PublishItem = () => import('./PublishItem')
 
 export default {
   name: 'pano-material',
 
-  mixins: [errorHandle],
+  mixins: [errorHandle, emitter],
 
   components: { PublishItem },
 
@@ -217,11 +217,14 @@ export default {
     sceneList() {
       const data = this.addFiles.concat(this.list.data)
       const len = this.addFiles.length
-      const list = {
-        ...this.list,
-        data: data.length > this.showNum ? data.slice(0, data.length - len) : data,
+      if (len) {
+        const list = {
+          ...this.list,
+          data: data.length > this.showNum ? data.slice(0, data.length - len) : data,
+        }
+        return { ...list }
       }
-      return { ...list }
+      return this.list
     },
   },
 
@@ -256,6 +259,9 @@ export default {
     },
 
     pageChange(page) {
+      // 清除上传临时文件数组
+      this.dispatch('edit-functions-material', 'on-reset-files')
+
       this.getPanos(page)
     },
 

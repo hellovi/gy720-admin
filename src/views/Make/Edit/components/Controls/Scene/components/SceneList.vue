@@ -132,7 +132,11 @@ export default {
     openSceneCreation() {
       this.$store.dispatch(EDIT.MATERIAL.INVOKE, 'scene')
         .then(() => {
-          document.location.reload()
+          // document.location.reload()
+          // eslint-disable-next-line
+          const count = window._krpano.get('scene').getArray().length
+          this.$store.dispatch(EDIT.PANO.UPDATESCENE)
+          this.$store.dispatch(EDIT.SCENE.INIT, { active: count })
         })
     },
 

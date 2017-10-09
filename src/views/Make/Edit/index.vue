@@ -117,18 +117,15 @@ export default {
   },
 
   beforeDestroy() {
-    this.$store.commit(EDIT.SCENE.INIT, [])
+    this.$store.commit(EDIT.SCENE.INIT, { scenes: [] })
   },
 
   beforeRouteEnter(to, from, next) {
     const title = document.title
     next((vm) => {
       // 获取场景信息
-      vm.$store.dispatch(EDIT.SCENE.INIT, vm.panoId)
-        .then((sceneId) => {
-          // 加载当前场景热点
-          window.__krpano.hotspots = {}
-          vm.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: vm.panoId })
+      vm.$store.dispatch(EDIT.SCENE.INIT)
+        .then(() => {
           // 设置页面标题
           document.title = `${vm.$store.state.edit.panoInfo.name} - ${title}`
         })
