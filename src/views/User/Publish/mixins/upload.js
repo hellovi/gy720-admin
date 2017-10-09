@@ -172,6 +172,9 @@ export default {
                 message: '正在排队中...',
                 thumb,
               })
+
+              // 删除上传文件队列
+              uploader.removeFile(file)
             }
           },
 
@@ -257,6 +260,9 @@ export default {
                 })
                 this.getImageView({ ...result, id: file.group, width: 268 })
               }
+
+              // 删除上传文件队列
+              uploader.removeFile(file)
             }
           },
 

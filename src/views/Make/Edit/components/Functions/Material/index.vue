@@ -67,7 +67,7 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
-import errorHandle from '@/mixins/errorHandle'
+import { errorHandle, emitter } from '@/mixins'
 import modal from '../../../mixins/modal'
 import MaterialList from './components/MaterialList'
 import MaterialFooter from './components/MaterialFooter'
@@ -79,7 +79,7 @@ const PanoMaterial = () => import('../../../../../User/Publish/components/PanoMa
 export default {
   name: 'edit-functions-material',
 
-  mixins: [errorHandle, modal],
+  mixins: [errorHandle, emitter, modal],
 
   components: {
     PanoMaterial,
@@ -195,6 +195,12 @@ export default {
   mounted() {
     this.resize()
     this.setSmallScreen()
+
+    // 重置全景图上传注册派发事件
+    this.$on('on-reset-files', () => {
+      this.files = []
+      this.broadcast('edit-material-footer', 'on-reset-files')
+    })
   },
 
   beforeDestroy() {
