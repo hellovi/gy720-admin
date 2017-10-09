@@ -4,13 +4,17 @@
     :visible="active.summary"
     :before-close="close"
   >
-    <el-form class="edit-setting__form">
-      <el-form-item>
+    <el-form
+      class="edit-setting__form"
+      :model="form"
+      ref="form"
+      :rules="formRules"
+    >
+      <el-form-item prop="pano_remark">
         <el-input
           v-model="form.pano_remark"
           type="textarea"
           :rows="6"
-          :maxlength="1000"
           placeholder="请输入作品简介（1000个字符内）"
         ></el-input>
       </el-form-item>
@@ -52,6 +56,12 @@
           pano_remark: '',
           show_remark: 10,
         },
+
+        formRules: {
+          pano_remark: [
+            { type: 'string', max: 1000, message: '不能超过1000个字符' },
+          ],
+        },
       }
     },
 
@@ -74,11 +84,15 @@
       },
 
       submit() {
-        this.$store.dispatch(EDIT.PANO.UPDATE, this.form)
-          .then(({ status: { reason } }) => {
-            this.$message.success(reason)
-            this.close()
-          })
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            this.$store.dispatch(EDIT.PANO.UPDATE, this.form)
+              .then(({ status: { reason } }) => {
+                this.$message.success(reason)
+                this.close()
+              })
+          }
+        })
       },
     },
   }
