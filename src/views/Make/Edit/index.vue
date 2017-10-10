@@ -52,6 +52,8 @@ import {
 
 import EditFunctions from './components/Functions'
 
+const { embedpano, removepano, krpanoReady } = window
+
 export default {
   name: 'edit',
 
@@ -73,7 +75,10 @@ export default {
 
   data() {
     return {
+      createLock: false,
+      krpanoObj: null,
       panoId: null,
+      title: '',
     }
   },
 
@@ -82,52 +87,68 @@ export default {
       active: state => state.edit.active,
       scenes: state => state.edit.scene.list,
     }),
+    krpanoObjId() {
+      return `krpano_${Math.random().toString(36).substring(3, 8)}`
+    },
   },
 
   methods: {
     initPano(pano_id) {
-      window.embedpano({
-        swf: '/assets/3.0.1/lib/krpano/tour.swf',
-        xml: `/user/pano/xml?pano_id=${pano_id}`,
-        target: 'pano-editor',
-        html5: 'only+webgl+preservedrawingbuffer',
-        onready: window.krpanoReady,
-      })
+      if (!this.createLock && !this.krpanoObj) {
+        this.createLock = true
 
-      window._krpano = document.getElementById('krpanoSWFObject')
-      window.__krpano = new window.krpanoplugin(window._krpano)
+        embedpano({
+          id: this.krpanoObjId,
+          swf: '/assets/3.0.1/lib/krpano/tour.swf',
+          xml: `/user/pano/xml?pano_id=${pano_id}`,
+          target: 'pano-editor',
+          html5: 'only+webgl+preservedrawingbuffer',
+          onready: (krpanoObj) => {
+            this.krpanoObj = krpanoObj
+            this.createLock = false
 
-      // window.__krpano.hotspots = {}
+            window._krpano = krpanoObj
+            window.__krpano = new window.krpanoplugin(krpanoObj)
 
-      // window._krpano.querySelector('canvas')
+            return krpanoReady && krpanoReady()
+          },
+        })
+
+        // window.__krpano.hotspots = {}
+
+        // window._krpano.querySelector('canvas')
+      }
     },
-  },
 
-  created() {
-    this.panoId = this.$route.query.pano_id
-    // 获取作品信息
-    this.$store.dispatch(EDIT.PANO.INIT, this.panoId)
+    setTitle(title) {
+      this.title = title
+    },
 
-    // 菜单初始化
-    this.$store.dispatch(EDIT.MENU.INIT, this.panoId)
-  },
+    updatePano(to, from) {
+      // 初始化高级编辑信息
+      const pano_id = to.query.pano_id
 
-  mounted() {
-    this.initPano(this.panoId)
-  },
+      // 获取作品信息
+      this.$store.dispatch(EDIT.PANO.INIT, pano_id)
+        .then(() => {
+          if (this.krpanoObj) {
+            this.$store.dispatch(EDIT.PANO.UPDATESCENE)
+          } else {
+            this.initPano(pano_id)
+          }
+        })
 
-  beforeDestroy() {
-    this.$store.commit(EDIT.SCENE.INIT, { scenes: [] })
-  },
+      // 菜单初始化
+      this.$store.dispatch(EDIT.MENU.INIT, pano_id)
 
-  beforeRouteEnter(to, from, next) {
-    const title = document.title
-    next((vm) => {
+      // 清空场景信息
+      this.$store.commit(EDIT.SCENE.INIT, { scenes: [] })
+
       // 获取场景信息
-      vm.$store.dispatch(EDIT.SCENE.INIT)
+      this.$store.dispatch(EDIT.SCENE.INIT, { pano_id })
         .then(() => {
           // 设置页面标题
-          document.title = `${vm.$store.state.edit.panoInfo.name} - ${title}`
+          document.title = `${this.$store.state.edit.panoInfo.name} - ${this.title}`
         })
 
       /**
@@ -135,8 +156,37 @@ export default {
        * 从非高级编辑路由跳转到高级编辑路由时生效
        */
       if (to.path !== from.path) {
-        vm.$store.commit(EDIT.MODAL.RESET)
+        this.$store.commit(EDIT.MODAL.RESET)
       }
+    },
+
+    removePano() {
+      if (this.krpanoObj) {
+        removepano(this.krpanoObj.id)
+        delete this.krpanoObj
+      }
+    },
+
+  },
+
+  created() {
+    // this.panoId = this.$route.query.pano_id
+  },
+
+  mounted() {
+    // this.initPano(this.panoId)
+  },
+
+  beforeDestroy() {
+    this.$store.commit(EDIT.SCENE.INIT, { scenes: [] })
+    this.removePano()
+  },
+
+  beforeRouteEnter(to, from, next) {
+    const title = document.title
+    next((vm) => {
+      vm.setTitle(title)
+      vm.updatePano(to, from)
     })
   },
 
@@ -144,6 +194,12 @@ export default {
     // 关闭购买弹窗
     this.closeServiceModal('buyInfo')
     this.closeServiceModal('isRenew')
+
+    // 销毁上个实例
+    this.removePano()
+    // 更新作品
+    this.updatePano(to, from)
+
     next()
   },
 

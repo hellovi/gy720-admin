@@ -1,4 +1,4 @@
-import { Http, Url } from '@/utils'
+import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 import material from './material'
 import logo from './logo'
@@ -35,7 +35,9 @@ export default {
   state: {
     active,
 
-    panoInfo: {},
+    panoInfo: {
+      hash_pano_id: null,
+    },
   },
 
   modules: {
@@ -67,10 +69,14 @@ export default {
     // 更新场景XML
     [EDIT.PANO.UPDATESCENE]({ state }, config = []) {
       // eslint-disable-next-line
-      const krpano = window.__krpano
+      const krpano = window._krpano
       const sceneName = krpano.get('xml').scene
-      const param = [`/user/pano/xml?pano_id=${state.panoInfo.hash_pano_id}`, ...config]
-      krpano.call(`loadpano(${param.join()});loadscene(${sceneName});`)
+      /**
+       * 重新获取XML
+       * @type {[string]} 有值为刷新XML
+       */
+      const param = [`/user/pano/xml?pano_id=${state.panoInfo.hash_pano_id}&type=10`, ...config]
+      krpano.call(`loadpano(${param.join()},null,MERGE);loadscene(${sceneName});`)
     },
   },
 
@@ -105,7 +111,7 @@ export default {
     },
 
     panoId(state, getters, { edit: { panoInfo } }) {
-      return panoInfo.hash_pano_id || Url.getQuery().pano_id
+      return panoInfo.hash_pano_id
     },
 
     panoInfo(state, getters, { edit: { panoInfo } }) {

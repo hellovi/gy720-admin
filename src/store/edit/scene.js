@@ -1,4 +1,4 @@
-import Http from '@/utils/http'
+import { Http, Url } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
 const { SCENE } = EDIT
@@ -28,25 +28,25 @@ export default {
      * 获取场景信息
      * 返回当前选中场景（加载完默认为第一项）的id，以便调用热点接口时能确保拿到此id
      */
-    [SCENE.INIT]({ dispatch, commit, getters }, param = { active: 0, pano_id: '' }) {
-      const panoId = param.pano_id || getters.panoId
+    [SCENE.INIT]({ dispatch, commit, getters }, { active = 0, pano_id = Url.getQuery().pano_id }) {
+      const panoId = pano_id || getters.panoId
       return Http.get(`/user/scene?pano_id=${panoId}`)
         .then(({ result }) => {
           // eslint-disable-next-line
           const krpano = window.__krpano
 
           // 当前场景id
-          const sceneId = result[param.active].id
+          const sceneId = result[active].id
 
           // 设置场景列表
-          commit(SCENE.INIT, { active: param.active, scenes: result })
+          commit(SCENE.INIT, { active, scenes: result })
 
           // 加载当前场景热点
           krpano.hotspots = {}
           dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
 
           // 跳转指定场景
-          krpano.call(`ac_gotoscene(${sceneId})`)
+          krpano.call(`loadscene(scene_pano_${sceneId},null)`)
 
           return sceneId
         })
