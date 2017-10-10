@@ -18,7 +18,6 @@
       :visible.sync="dialog"
       :modal="false"
       @open="createOpen"
-      @close="createClose"
       size="tiny"
     >
       <rotate-form
@@ -88,19 +87,18 @@ export default {
       this.broadcast('rotate-form', 'on-set-form', this.item)
     },
 
-    createClose() {
-      this.broadcast('rotate-form', 'on-reset-fields')
-    },
-
     editDone(data, type) {
       this.dialog = false
       // 判断是否移动分类-编辑
       this.updateItemCate =
         this.activeCateId !== '' && this.activeCateId !== data.source_rotate_category_id
 
-      // 新增刷新列表
       if (type === 'create') {
+        // 新增刷新列表
         this.broadcast('rotate-content', 'on-refresh-list')
+      } else {
+        // 编辑更新信息
+        this.broadcast('rotate-content', 'on-update-list', data)
       }
     },
   },

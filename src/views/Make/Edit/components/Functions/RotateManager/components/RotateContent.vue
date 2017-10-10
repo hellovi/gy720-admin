@@ -210,6 +210,17 @@ export default {
     this.$on('on-refresh-list', () => {
       this.getList()
     })
+
+    // 更新编辑信息
+    this.$on('on-update-list', (val) => {
+      this.itemData.data = this.itemData.data
+        .map((item) => {
+          if (item.id === val.id) {
+            return val
+          }
+          return item
+        })
+    })
   },
 }
 </script>

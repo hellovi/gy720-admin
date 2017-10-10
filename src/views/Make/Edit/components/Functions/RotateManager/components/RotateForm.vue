@@ -125,11 +125,6 @@ export default {
     // 初始化赋值
     this.form = { ...defaultForm, ...this.item }
 
-    // 关闭重置表单
-    this.$on('on-reset-fields', () => {
-      this.$refs.form.resetFields()
-    })
-
     // 编辑
     this.$on('on-set-form', (val) => {
       this.form = {

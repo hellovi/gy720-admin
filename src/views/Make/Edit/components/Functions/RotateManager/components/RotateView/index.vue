@@ -16,11 +16,12 @@
   /**
    * 物品3D-弹窗预览
    * @author chenliangshan
-   * @version 2017/09/12
+   * @version 2017/10/10
    */
 
   import { mapState } from 'vuex'
   import { EDIT } from '@/store/mutationTypes'
+  import { emitter } from '@/mixins'
   import RotateView3d from './RotateView3d'
   import modal from '../../../../../mixins/modal'
 
@@ -29,7 +30,7 @@
   export default {
     name: 'rotate-view',
 
-    mixins: [modal],
+    mixins: [emitter, modal],
 
     components: {
       RotateView3d,
@@ -44,6 +45,7 @@
     methods: {
       rotateColse() {
         this.$store.commit(MATERIAL.SELECT_OBJECT3D, {})
+        this.broadcast('rotate-view-3d', 'on-reset')
       },
     },
   }

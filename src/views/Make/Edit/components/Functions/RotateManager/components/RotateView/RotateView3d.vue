@@ -74,7 +74,7 @@
   const rotateSkinPath = `/${rotatePath}skin/2/`
 
   export default {
-    name: 'rotate-view',
+    name: 'rotate-view-3d',
 
     props: {
       id: {
@@ -199,6 +199,11 @@
         .then(() => {
           this.getData()
         })
+
+      // 重置状态
+      this.$on('on-reset', () => {
+        this.loading = false
+      })
     },
 
     beforeDestroy() {
