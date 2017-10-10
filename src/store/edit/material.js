@@ -213,7 +213,7 @@ export default {
       return new Promise((resolve) => {
         window.addEventListener('selectMaterial', () => {
           resolve(state.selectedItem)
-          commit(MATERIAL.CHANGE, 'panos')
+          commit(MATERIAL.CHANGE, 'scene')
           commit(MATERIAL.INVOKE, false)
           commit(EDIT.MODAL.CLOSE, 'material')
         })
@@ -232,7 +232,7 @@ export default {
       return new Promise((resolve) => {
         window.addEventListener('selectMaterials', () => {
           resolve(state.selectedItems)
-          commit(MATERIAL.CHANGE, 'panos')
+          commit(MATERIAL.CHANGE, 'scene')
           commit(MATERIAL.INVOKE, false)
           commit(EDIT.MODAL.CLOSE, 'material')
         })
