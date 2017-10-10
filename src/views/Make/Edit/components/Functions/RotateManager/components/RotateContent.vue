@@ -92,7 +92,7 @@ export default {
         images: false,
       },
       loading: false,
-      activeItemId: null,
+      activeItemId: '',
       rotateViewId: null,
       itemData: {},
       editItem: {},
@@ -135,7 +135,7 @@ export default {
      * @param {number} page - 页数
      * @param {number} cateId - 分类id
      */
-    getList(page = 1, cateId = '') {
+    getList(page = 1, cateId = this.activeCateId) {
       this.loading = true
       this.$http.get(`/user/sourcerotate?source_rotate_category_id=${cateId}&page=${page}`)
         .then(({ result }) => {
@@ -175,6 +175,7 @@ export default {
     remove(id) {
       this.$store.dispatch(EDIT.ROTATE.REMOVE, id)
         .then(() => {
+          this.itemData.data = this.itemData.data.filter(item => item.id !== id)
           this.$message.success('操作成功')
         })
         .catch(({ status: { reason } }) => {
@@ -202,6 +203,13 @@ export default {
       this.activeItemId = id
       this.dialog.images = true
     },
+  },
+
+  created() {
+    // 刷新当前分类
+    this.$on('on-refresh-list', () => {
+      this.getList()
+    })
   },
 }
 </script>

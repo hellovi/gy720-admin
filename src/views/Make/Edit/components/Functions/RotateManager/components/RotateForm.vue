@@ -46,10 +46,6 @@ export default {
   name: 'rotate-form',
 
   props: {
-    active: {
-      type: Boolean,
-      required: true,
-    },
     item: {
       type: Object,
       required: true,
@@ -58,7 +54,7 @@ export default {
 
   data() {
     return {
-      form: { ...defaultForm, ...this.item },
+      form: { ...defaultForm },
       rules: {
         title: [
           { required: true, trigger: 'blur', message: '物品名称不能为空' },
@@ -81,19 +77,6 @@ export default {
     ...mapState({
       cates: state => state.edit.material.rotateCates,
     }),
-  },
-
-  watch: {
-    active(val) {
-      if (!val) {
-        this.$nextTick(() => {
-          this.$refs.form.resetFields()
-        })
-      }
-    },
-    item(val) {
-      if (Object.keys(val).length) this.form = { ...val }
-    },
   },
 
   methods: {
@@ -120,7 +103,7 @@ export default {
      */
     update() {
       this.$store.dispatch(EDIT.ROTATE.UPDATE, this.form)
-        .then(this.success)
+        .then(result => this.success(result), 'update')
     },
 
     /**
@@ -128,14 +111,32 @@ export default {
      */
     create() {
       this.$store.dispatch(EDIT.ROTATE.CREATE, this.form)
-        .then(this.success)
+        .then(result => this.success(result, 'create'))
     },
 
-    success() {
+    success(result, type) {
       this.loading = false
       this.$message.success('操作成功')
-      this.$emit('done', this.form)
+      this.$emit('done', this.form, type)
     },
+  },
+
+  mounted() {
+    // 初始化赋值
+    this.form = { ...defaultForm, ...this.item }
+
+    // 关闭重置表单
+    this.$on('on-reset-fields', () => {
+      this.$refs.form.resetFields()
+    })
+
+    // 编辑
+    this.$on('on-set-form', (val) => {
+      this.form = {
+        ...defaultForm,
+        ...val,
+      }
+    })
   },
 }
 </script>

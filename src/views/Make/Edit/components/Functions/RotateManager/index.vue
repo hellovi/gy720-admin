@@ -17,10 +17,11 @@
       title="创建物品3D"
       :visible.sync="dialog"
       :modal="false"
+      @open="createOpen"
+      @close="createClose"
       size="tiny"
     >
       <rotate-form
-        :active="dialog"
         :item="item"
         @done="editDone"
       ></rotate-form>
@@ -36,6 +37,7 @@
  */
 
 import { mapState } from 'vuex'
+import { emitter } from '@/mixins'
 import modal from '../../../mixins/modal'
 import RotateAside from './components/RotateAside'
 import RotateContent from './components/RotateContent'
@@ -44,7 +46,7 @@ import RotateForm from './components/RotateForm'
 export default {
   name: 'edit-rotate-manager',
 
-  mixins: [modal],
+  mixins: [emitter, modal],
 
   components: {
     RotateAside,
@@ -82,10 +84,24 @@ export default {
       this.closeModal('object3d')
     },
 
-    editDone(data) {
+    createOpen() {
+      this.broadcast('rotate-form', 'on-set-form', this.item)
+    },
+
+    createClose() {
+      this.broadcast('rotate-form', 'on-reset-fields')
+    },
+
+    editDone(data, type) {
       this.dialog = false
-      // 判断是否移动分类
-      this.updateItemCate = this.activeCateId !== data.source_rotate_category_id
+      // 判断是否移动分类-编辑
+      this.updateItemCate =
+        this.activeCateId !== '' && this.activeCateId !== data.source_rotate_category_id
+
+      // 新增刷新列表
+      if (type === 'create') {
+        this.broadcast('rotate-content', 'on-refresh-list')
+      }
     },
   },
 }

@@ -262,18 +262,27 @@ export default {
 
     /** 物品3D列表 */
     [ROTATE.CREATE]({ commit }, data) {
-      Http.post('/user/sourcerotate', data)
-        .then(({ result }) => commit(ROTATE.CREATE, result))
+      return Http.post('/user/sourcerotate', data)
+        .then(({ result }) => {
+          commit(ROTATE.CREATE, result)
+          return result
+        })
     },
 
     [ROTATE.UPDATE]({ commit }, data) {
       return Http.put(`/user/sourcerotate/${data.id}`, data)
-        .then(() => commit(ROTATE.UPDATE, data))
+        .then(({ result }) => {
+          commit(ROTATE.UPDATE, data)
+          return result
+        })
     },
 
     [ROTATE.REMOVE]({ commit }, id) {
-      Http.delete(`/user/sourcerotate/${id}`)
-        .then(() => commit(ROTATE.REMOVE, id))
+      return Http.delete(`/user/sourcerotate/${id}`)
+        .then(({ result }) => {
+          commit(ROTATE.REMOVE, id)
+          return result
+        })
     },
   },
 }
