@@ -76,7 +76,7 @@ export default {
        * @type {[string]} 有值为刷新XML
        */
       const param = [`/user/pano/xml?pano_id=${state.panoInfo.hash_pano_id}&type=10`, ...config]
-      krpano.call(`loadpano(${param.join()},null,MERGE);loadscene(${sceneName});`)
+      krpano.call(`loadpano(${param.join()},null,MERGE);loadscene(${sceneName},null,MERGE,BLEND(0.5, easeOutInCubic));`)
     },
   },
 

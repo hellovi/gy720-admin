@@ -73,7 +73,9 @@ export default {
     switchKrpanoScene(sceneId) {
       // eslint-disable-next-line
       const krpano = window.__krpano
-      krpano.call(`ac_gotoscene(${sceneId})`)
+
+      // 切换场景
+      krpano.call(`loadscene(scene_pano_${sceneId},null,MERGE,BLEND(.8, easeInOutCubic));`)
 
       // 清空所有热点
       Object.keys(krpano.hotspots)
