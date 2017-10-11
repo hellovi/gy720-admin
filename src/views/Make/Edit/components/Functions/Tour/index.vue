@@ -29,7 +29,7 @@
             >&#xe615;</i>
           </div>
           <div>
-            <img :src="$url.static(tour.image)">
+            <img v-qiniu-src="tour.image">
           </div>
           <p>{{tour.name}}</p>
         </li>

@@ -71,7 +71,7 @@
         :href="panoPath(item.hash_pano_id)"
         :title="`作品：${item.pano_name}`"
       >
-        <img class="zoom-in" :src="item.thumb">
+        <img class="zoom-in" v-qiniu-src="item.thumb">
       </a>
       <div
         class="authoritem__compositions--only"

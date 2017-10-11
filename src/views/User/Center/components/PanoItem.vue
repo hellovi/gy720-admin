@@ -7,7 +7,7 @@
       :href="panoPath"
       :title="pano.pano_name"
     >
-      <img :src="pano.thumb"/>
+      <img v-qiniu-src="pano.thumb"/>
     </a>
 
     <!-- 作者头像 | 作品名 -->
@@ -20,7 +20,7 @@
         <img
           class="center-panoitem__info__avatar-img"
           :alt="`作品：${pano.name}`"
-          :src="pano.avatar"/>
+          v-qiniu-src="pano.avatar"/>
       </a>
       <span
         :class="{

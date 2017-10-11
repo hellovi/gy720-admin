@@ -6,7 +6,7 @@
     }"
     @click="onChooseScene"
   >
-    <img :src="$url.static(scene.thumb)">
+    <img v-qiniu-src="scene.thumb">
     <span>{{ scene.name }}</span>
   </div>
 </template>
