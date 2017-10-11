@@ -238,6 +238,9 @@ export default {
 
     getPanos(page) {
       this.loading = true
+      // 清除上传临时文件数组
+      this.dispatch('edit-functions-material', 'on-reset-files')
+
       const params = page ? `${this.params}&page=${page}` : this.params
       this.getFetchPanos(params)
     },
@@ -255,13 +258,13 @@ export default {
         this.currentCateId = id
         this.getPanos()
         this.checked = []
+
+        // 更新所在分类id （适用素材库）
+        this.dispatch('edit-functions-material', 'on-update-scene-cateid', id)
       }
     },
 
     pageChange(page) {
-      // 清除上传临时文件数组
-      this.dispatch('edit-functions-material', 'on-reset-files')
-
       this.getPanos(page)
     },
 
@@ -375,6 +378,8 @@ export default {
               // 删除成功过滤列表数组
               this.cates = this.cates.filter(item => item.id !== id)
               this.$message.success('删除成功!')
+              // 选中默认分类
+              this.selectCate(1)
             })
             .catch((errors) => {
               this.errorHandler(errors)

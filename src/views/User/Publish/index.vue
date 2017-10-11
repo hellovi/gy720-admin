@@ -213,6 +213,7 @@ export default {
   created() {
     this.$store.dispatch(WORK.CATE.INIT)
     this.$store.dispatch(WORK.TAG.INIT)
+    this.$store.commit(EDIT.MATERIAL.SCENE.UPDATE.CATEID)
   },
 }
 </script>

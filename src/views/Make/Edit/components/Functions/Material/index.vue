@@ -201,6 +201,11 @@ export default {
       this.files = []
       this.broadcast('edit-material-footer', 'on-reset-files')
     })
+
+    // 更新全景图列表所在分类id
+    this.$on('on-update-scene-cateid', (id) => {
+      this.$store.commit(EDIT.MATERIAL.SCENE.UPDATE.CATEID, id)
+    })
   },
 
   beforeDestroy() {

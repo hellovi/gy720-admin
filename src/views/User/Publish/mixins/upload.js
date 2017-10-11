@@ -58,6 +58,13 @@ export default {
         .map(file => !file.vtour && file.source_scene_id)
         .filter(source_scene_id => source_scene_id)
     },
+
+    /**
+     * 当前场景素材所在分类
+     */
+    scene_source_category_id() {
+      return this.$store.state.edit.material.activeSceneCateId || 1
+    },
   },
 
   methods: {
@@ -148,6 +155,7 @@ export default {
           BeforeUpload: (up, file) => {
             uploader.setOption('multipart_params', {
               upload_id: file.id,
+              scene_source_category_id: this.scene_source_category_id, // 上传到某个分类-默认为默认分类
             })
           },
 
@@ -172,9 +180,6 @@ export default {
                 message: '正在排队中...',
                 thumb,
               })
-
-              // 删除上传文件队列
-              uploader.removeFile(file)
             }
           },
 
@@ -225,6 +230,7 @@ export default {
               fisheye_nums: this.fisheye_nums,
               fisheye_item_id: file.id,
               upload_id: file.id,
+              scene_source_category_id: this.scene_source_category_id, // 上传到某个分类-默认为默认分类
               // 第一张图片上传完毕后接口将返回fisheye_gid，
               // 后续的图片上传时需要带上这个参数
               ...(this.fisheye_gid ? { fisheye_gid: this.fisheye_gid } : {}),
@@ -260,9 +266,6 @@ export default {
                 })
                 this.getImageView({ ...result, id: file.group, width: 268 })
               }
-
-              // 删除上传文件队列
-              uploader.removeFile(file)
             }
           },
 

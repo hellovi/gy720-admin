@@ -36,6 +36,8 @@ export default {
     // 物品3D分类
     rotateCates: [],
     activeRotateCateId: null,
+    // 全景图分类
+    activeSceneCateId: null,
   },
 
   mutations: {
@@ -165,6 +167,10 @@ export default {
     [ROTATE.REMOVE](state, id) {
       const { data } = state.materialData.rotate
       Vue.set(state.materialData.rotate, 'data', data.filter(item => item.id !== id))
+    },
+
+    [MATERIAL.SCENE.UPDATE.CATEID](state, id = 1) {
+      state.activeSceneCateId = id
     },
   },
 
