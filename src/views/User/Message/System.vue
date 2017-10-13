@@ -35,7 +35,7 @@
             </div>
             <div class="message-content">
               <a :href="`/author/view/${message.user_id}`" v-if="message.user_id" class="message-name hover-primary">{{ message.nickname }}</a>
-              <div class="message-summary">{{ message.content }}</div>
+              <div class="message-summary message-system" v-html="message.content"></div>
             </div>
           </td>
           <td>{{ message.date }}</td>
@@ -133,10 +133,18 @@ export default {
 </script>
 
 <style lang="postcss">
+  @import "vars.css";
+
   .message {
     &-content {
       .message-summary {
         margin: 0;
+      }
+      .message-system {
+        a {
+          color: var(--color-primary);
+          margin: 0 0.5em;
+        }
       }
     }
     &-name {
