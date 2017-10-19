@@ -26,6 +26,7 @@ export default function (data) {
     },
     legend: {
       orient: 'vertical',
+      top: '10%',
       left: 0,
       // 省份名称
       data: [...nameArr],
@@ -51,6 +52,7 @@ export default function (data) {
       {
         name: '访问省份TOP5',
         type: 'pie',
+        center: ['50%', '70%'],
         data: [
           {
             ...data[0],

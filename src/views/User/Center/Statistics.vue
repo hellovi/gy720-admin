@@ -47,27 +47,24 @@
  * @author huojinzhao
  */
 import chartsBoot from '@/utils/chartConfig'
-import mock from './mock'
 
 export default {
   name: 'center-statistics',
 
   mounted() {
-    // ajax.get(/* static*/)
-    // mock为本地假数据，接口完成删除
-    Promise.resolve(mock)
-      .then((res) => {
+    this.$http.get('/user/panolog')
+      .then(({ result }) => {
         chartsBoot({
           line: {
-            data: res.review,
+            data: result.trend,
             dom: this.$refs.lineChart,
           },
           map: {
-            data: res.nation,
+            data: result.map,
             dom: this.$refs.mapChart,
           },
           pie: {
-            data: res.province,
+            data: result.pie,
             dom: this.$refs.pieChart,
           },
         })
@@ -109,8 +106,8 @@ export default {
 
   &__map {
     display: inline-block;
-    margin-right: 3%;
-    width: 57%;
+    margin-right: 1%;
+    width: 67%;
 
     &Chart {
       position: relative;
@@ -120,7 +117,7 @@ export default {
 
   &__pie {
     display: inline-block;
-    width: 40%;
+    width: 32%;
 
     &Chart {
       @include statChartBelow;
