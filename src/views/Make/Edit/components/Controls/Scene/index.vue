@@ -100,7 +100,8 @@ export default {
       this.activateScene(sceneId)
       // 切换krpano场景
       this.switchKrpanoScene(sceneId)
-      // 加载热点
+
+      // 加载当前场景热点
       this.$store.dispatch(
         EDIT.HOTSPOTS.INIT.SPOTS,
         {

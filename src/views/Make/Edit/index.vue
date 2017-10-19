@@ -86,9 +86,29 @@ export default {
     ...mapState({
       active: state => state.edit.active,
       scenes: state => state.edit.scene.list,
+      panoInfo: state => state.edit.panoInfo,
+      spotsList: state => state.edit.hotspots.spotsList,
     }),
     krpanoObjId() {
       return `krpano_${Math.random().toString(36).substring(3, 8)}`
+    },
+  },
+
+  watch: {
+    'panoInfo.name': function panoName(val) {
+      // 设置页面标题
+      document.title = `${val} - ${this.title}`
+    },
+
+    spotsList: {
+      handler(val) {
+        if (val.length) {
+          this.$nextTick(() => {
+            val.forEach(item => window.__krpano.adddesignhotspot(item))
+          })
+        }
+      },
+      deep: true,
     },
   },
 
@@ -103,13 +123,14 @@ export default {
           xml: `/user/pano/xml?pano_id=${pano_id}`,
           target: 'pano-editor',
           html5: 'only+webgl+preservedrawingbuffer',
-          onready: (krpanoObj) => {
-            this.krpanoObj = krpanoObj
+          onready: () => {
+            this.krpanoObj = document.getElementById(this.krpanoObjId)
             this.createLock = false
 
-            window._krpano = krpanoObj
-            window.__krpano = new window.krpanoplugin(krpanoObj)
+            window._krpano = this.krpanoObj
+            window.__krpano = new window.krpanoplugin(this.krpanoObj)
 
+            this.updatePanoInit(pano_id)
             return krpanoReady && krpanoReady()
           },
         })
@@ -128,15 +149,26 @@ export default {
       // 初始化高级编辑信息
       const pano_id = to.query.pano_id
 
+      // 实例及更新krpano
+      if (this.krpanoObj) {
+        this.$store.dispatch(EDIT.PANO.UPDATESCENE)
+        this.updatePanoInit(pano_id)
+      } else {
+        this.initPano(pano_id)
+      }
+
+      /**
+       * 初始化高级编辑function弹窗状态
+       * 从非高级编辑路由跳转到高级编辑路由时生效
+       */
+      if (to.path !== from.path) {
+        this.$store.commit(EDIT.MODAL.RESET)
+      }
+    },
+
+    updatePanoInit(pano_id) {
       // 获取作品信息
       this.$store.dispatch(EDIT.PANO.INIT, pano_id)
-        .then(() => {
-          if (this.krpanoObj) {
-            this.$store.dispatch(EDIT.PANO.UPDATESCENE)
-          } else {
-            this.initPano(pano_id)
-          }
-        })
 
       // 菜单初始化
       this.$store.dispatch(EDIT.MENU.INIT, pano_id)
@@ -146,18 +178,6 @@ export default {
 
       // 获取场景信息
       this.$store.dispatch(EDIT.SCENE.INIT, { pano_id })
-        .then(() => {
-          // 设置页面标题
-          document.title = `${this.$store.state.edit.panoInfo.name} - ${this.title}`
-        })
-
-      /**
-       * 初始化高级编辑function弹窗状态
-       * 从非高级编辑路由跳转到高级编辑路由时生效
-       */
-      if (to.path !== from.path) {
-        this.$store.commit(EDIT.MODAL.RESET)
-      }
     },
 
     removePano() {

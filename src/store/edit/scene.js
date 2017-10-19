@@ -41,13 +41,13 @@ export default {
           // 设置场景列表
           commit(SCENE.INIT, { active, scenes: result })
 
-          // 加载当前场景热点
-          krpano.hotspots = {}
-          dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
-
           // 跳转指定场景
-          krpano.call(`loadscene(scene_pano_${sceneId},null)`)
+          if (active !== 0) {
+            krpano.call(`loadscene(scene_pano_${sceneId},null,MERGE,BLEND(.8, easeInOutCubic));`)
+          }
 
+          // 加载当前场景热点
+          dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
           return sceneId
         })
     },

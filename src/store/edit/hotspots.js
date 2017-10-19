@@ -57,12 +57,14 @@ export default {
       const params = `?pano_id=${pano_id}&scene_id=${scene_id}`
       return Http.get(`/user/scenehotspot${params}`)
         .then(({ result }) => {
+          /* eslint-disable no-underscore-dangle */
+          // 清空所有热点
+          window.__krpano.hotspots = {}
           result.forEach((item) => {
             item.pano_id = pano_id
-            /* eslint-disable no-underscore-dangle */
-            window.__krpano.adddesignhotspot(item)
           })
           commit(HOTSPOTS.INIT.SPOTS, result)
+          return result
         })
     },
 
