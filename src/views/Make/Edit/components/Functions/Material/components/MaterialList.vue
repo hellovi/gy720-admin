@@ -61,7 +61,7 @@
       top="25%"
       custom-class="material-play"
     >
-      <audio :src="$url.host(item.file_path)" controls></audio>
+      <audio :src="$url.static(item.file_path)" controls></audio>
     </el-dialog>
   </div>
 </template>
