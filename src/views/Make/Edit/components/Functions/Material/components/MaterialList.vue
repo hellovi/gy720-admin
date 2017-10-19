@@ -66,7 +66,7 @@
       custom-class="material-play"
       ref="audioDialog"
     >
-      <audio :src="$url.static(item.file_path)" controls></audio>
+      <audio ref="audio" :src="$url.static(item.file_path)" controls></audio>
     </el-dialog>
   </div>
 </template>
@@ -141,6 +141,11 @@ export default {
       if (val && !this.isRender.play) {
         this.isRender.play = true
         this.setDialogToBody('audioDialog')
+      } else {
+        this.$nextTick(() => {
+          this.$refs.audio.pause()
+          this.$refs.audio.currentTime = 0
+        })
       }
     },
   },
