@@ -1,5 +1,5 @@
 <template>
-  <div class="statistics">
+  <div class="statistics" v-loading="loading">
 
     <div class="statistics__line">
       <div class="statistics__inner">
@@ -51,9 +51,16 @@ import chartsBoot from '@/utils/chartConfig'
 export default {
   name: 'center-statistics',
 
+  data() {
+    return {
+      loading: true,
+    }
+  },
+
   mounted() {
     this.$http.get('/user/panolog')
       .then(({ result }) => {
+        this.loading = false
         chartsBoot({
           line: {
             data: result.trend,
