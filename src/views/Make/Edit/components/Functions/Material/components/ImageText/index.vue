@@ -57,10 +57,9 @@
     <!--添加|修改窗口-->
     <el-dialog
       :visible.sync="active.imageTextEdit"
-      :modal="false"
-      top="2%"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      ref="imageTextDialog"
       style="position: fixed"
       >
       <image-text-dialog
@@ -99,12 +98,13 @@
 
   import { mapState } from 'vuex'
   import { EDIT } from '@/store/mutationTypes'
+  import { dialog } from '@/mixins'
   import modal from '../../../../../mixins/modal'
 
   export default {
     name: 'image-text',
 
-    mixins: [modal],
+    mixins: [dialog, modal],
 
     components: {
       ImageTextDialog: () => import('./ImageTextDialog'),
@@ -145,6 +145,11 @@
       preShow(val) {
         if (val) {
           this.preViewRendered = true
+        }
+      },
+      'active.imageTextEdit': function imageText(val) {
+        if (val) {
+          this.setDialogToBody('imageTextDialog')
         }
       },
     },
@@ -237,5 +242,8 @@
     .el-dialog {
       position: inherit;
     }
+  }
+  .edui-default .edui-dialog-modalmask {
+    background-color: #000 !important;
   }
 </style>

@@ -32,7 +32,12 @@
     ></el-pagination>
 
     <!-- 编辑素材弹框 -->
-    <el-dialog title="编辑素材" :visible.sync="dialog.edit" :modal="false" size="tiny">
+    <el-dialog
+      title="编辑素材"
+      :visible.sync="dialog.edit"
+      size="tiny"
+      ref="editDialog"
+    >
       <el-form :model="form" :rules="rules" label-width="6em" ref="form">
         <el-form-item label="素材名称" prop="title">
           <el-input v-model="form.title"></el-input>
@@ -57,9 +62,9 @@
     <el-dialog
       :title="`[试听]${item.title}`"
       :visible.sync="dialog.play"
-      :modal="false"
       top="25%"
       custom-class="material-play"
+      ref="audioDialog"
     >
       <audio :src="$url.static(item.file_path)" controls></audio>
     </el-dialog>
@@ -76,6 +81,7 @@
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import AppUploadProgress from '@/components/AppUploadProgress'
+import { dialog } from '@/mixins'
 import MaterialItem from './MaterialItem'
 import material from '../mixins/material'
 import uploadLimits from './uploadLimits'
@@ -85,7 +91,7 @@ const AppFileUpload = () => import('@/components/AppFileUpload')
 export default {
   name: 'edit-material-list',
 
-  mixins: [material],
+  mixins: [dialog, material],
 
   components: {
     AppFileUpload,
@@ -107,6 +113,10 @@ export default {
   data() {
     return {
       loading: false,
+      isRender: {
+        play: false,
+        edit: false,
+      },
     }
   },
 
@@ -117,6 +127,21 @@ export default {
 
     limit() {
       return uploadLimits[this.activeType]
+    },
+  },
+
+  watch: {
+    'dialog.edit': function dialogEdit(val) {
+      if (val && !this.isRender.edit) {
+        this.isRender.edit = true
+        this.setDialogToBody('editDialog')
+      }
+    },
+    'dialog.play': function dialogPlay(val) {
+      if (val && !this.isRender.play) {
+        this.isRender.play = true
+        this.setDialogToBody('audioDialog')
+      }
     },
   },
 

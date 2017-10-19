@@ -138,7 +138,7 @@ export default {
           this.errorHandler(errors)
         })
 
-      // TODO 统一处理（临时处理遮罩层问题）
+      // 处理遮罩层问题
       if (!this.isRender) {
         this.isRender = true
         document.body.appendChild(this.$refs.groupDialog.$el)
