@@ -117,7 +117,7 @@ export default {
           FilesAdded: (up, files) => {
             [...files].forEach((file) => {
               // 为每个文件生成一个file对象，推入files数组
-              this.files.push(new File(file))
+              this.files = [new File(file), ...this.files]
 
               // 为每个文件生成缩略图，并更新到对应的file对象
               const { id } = file
