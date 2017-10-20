@@ -14,12 +14,13 @@
     <div class="edition__map">
       <v-view-panel
         v-for="(view, index) in viewInfo.map_scenes"
-        :info="view.scene_info"
+        :info="scenelist.find(({ id }) => view.scene_id === id)"
         :key="view.scene_id"
         :top.sync="view.top"
         :left.sync="view.left"
         :degress.sync="view.degrees"
         @delete="preDeleteView(index)"
+        v-if="renderPanel"
       ></v-view-panel>
       <img :src="$url.static(viewInfo.image)">
     </div>
@@ -99,6 +100,8 @@ export default {
     sceneSelectionModal: {
       active: false,
     },
+
+    renderPanel: false,
   }),
 
   methods: {
@@ -197,8 +200,11 @@ export default {
     }
 
     // 读取场景选择列表
-    Ajax.readScenelist()
-      .then((res) => { this.scenelist = res })
+    Ajax.readScenelist(this.tourId)
+      .then((res) => {
+        this.scenelist = res
+        this.renderPanel = true
+      })
 
     // 设置viewPanelOrigin对应的导览id
     // this.viewOrigin.pano_map_id = this.tourId

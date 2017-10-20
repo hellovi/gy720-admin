@@ -142,10 +142,11 @@ export default class Ajax {
    *
    * @return  {Promise}     type:Array   - 场景列表
    */
-  static readScenelist() {
+  static readScenelist(tourId) {
     return Http.get(this.setQueryUrl({
       host: TOUR_SCENES_API,
       pano_id: this.defaultPanoId,
+      pano_map_id: tourId,
     }))
       .then(({ result }) => result)
   }

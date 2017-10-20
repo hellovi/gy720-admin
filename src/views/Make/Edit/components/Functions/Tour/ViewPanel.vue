@@ -40,7 +40,7 @@ export default {
       required: true,
     },
     degress: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     info: {
@@ -253,6 +253,7 @@ export default {
     }
 
     & .point {
+      cursor: move;
       position: absolute;
       z-index: 2;
       top: 50%;
