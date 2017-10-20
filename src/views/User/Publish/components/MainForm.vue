@@ -17,7 +17,7 @@
 
     <el-col :span="8" :offset="1">
       <el-form-item label="作品标签">
-        <el-select v-model="form.tag_ids" placeholder="最多可选择3个标签" multiple :multiple-limit="3" style="width: 100%;">
+        <el-select v-model="form.tag_ids" ref="workTag" placeholder="最多可选择3个标签" multiple :multiple-limit="3" style="width: 100%;">
           <el-option v-for="tag in tags" :key="tag.id" :value="tag.id" :label="tag.name"></el-option>
         </el-select>
       </el-form-item>
@@ -41,6 +41,17 @@ export default {
       cates: state => state.work.cates,
       tags: state => state.work.tags,
     }),
+  },
+
+  watch: {
+    'form.tag_ids': function formTag(val) {
+      if (val.length === 3) {
+        this.$nextTick(() => {
+          // 收起下拉
+          this.$refs.workTag.handleClose()
+        })
+      }
+    },
   },
 }
 </script>
