@@ -1,5 +1,60 @@
-// TODO: 必须判断生产环境和开发环境
+/**
+ * 开发环境：
+ * 域名: https://l.gy720.com
+ * CDN: http://l-statics.gy720.com
+ *
+ * 测试环境：
+ * 域名: https://l-test.gy720.cm
+ * CDN: http://www-statics.gy720.com
+ *
+ * 正式环境：
+ * 域名: https://www.gy720.com
+ * CDN: http://www-statics.gy720.com
+ *
+ * @author chenliangshan
+ * @version 2017-10-20
+ */
 import { Regex } from '@/utils'
+
+let configHost = {}
+const linkList = {
+  // 开发环境
+  dev: {
+    origin: 'https://l.gy720.com',
+    cdn: 'http://l-statics.gy720.com',
+  },
+  // 测试环境
+  test: {
+    origin: 'https://l-test.gy720.cm',
+    cdn: 'http://www-statics.gy720.com',
+  },
+  // 正式生产环境
+  production: {
+    origin: 'https://www.gy720.com',
+    cdn: 'http://www-statics.gy720.com',
+  },
+}
+const currentOrigin = window.location.origin
+
+/**
+ * 当前环境判断
+ */
+switch (currentOrigin) {
+  case linkList.dev.origin:
+    configHost = { ...linkList.dev }
+    break
+
+  case linkList.test.origin:
+    configHost = { ...linkList.test }
+    break
+
+  case linkList.production.origin:
+    configHost = { ...linkList.production }
+    break
+
+  default :
+    configHost = { ...linkList.dev }
+}
 
 export default class Url {
   static install(Vue) {
@@ -12,15 +67,15 @@ export default class Url {
   }
 
   static static(pathname) {
-    return Regex.url(pathname) || Regex.base64(pathname) ? pathname : `http://l-statics.gy720.com/${pathname}`
+    return Regex.url(pathname) || Regex.base64(pathname) ? pathname : `${configHost.cdn}/${pathname}`
   }
 
   static host(pathname) {
-    return `https://l.gy720.com/${pathname}`
+    return `${configHost.origin}/${pathname}`
   }
 
   static staticHotSpots(pathname) {
-    return `https://l.gy720.com/assets/3.0.1/lib/krpano/hoticon/${pathname}`
+    return `${configHost.origin}/assets/3.0.1/lib/krpano/hoticon/${pathname}`
   }
 
   static getQuery(url = window.location.href) {
@@ -37,4 +92,6 @@ export default class Url {
     }
     return query
   }
+
+  static configHost = configHost
 }

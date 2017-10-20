@@ -38,13 +38,14 @@
 
 import 'qiniu-js'
 import yearMonthStr from '@/utils/yearMonthStr'
+import { Url } from '@/utils'
 
 // 上传错误信息提示-自定义
 import customMessage from './customMessage'
 
 const AppCropper = () => import('@/components/AppCropper')
-const domain = 'http://l-statics.gy720.com/'
 
+const domain = `${Url.configHost.cdn}`
 
 export default {
   name: 'app-file-upload',
