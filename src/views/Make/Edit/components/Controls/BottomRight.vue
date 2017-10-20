@@ -18,14 +18,14 @@
       label="收藏"
       icon="aixin2"
       v-model="showCollect"
-      @ui-switch="val => uiSwitch(val, 'show_comment')"
+      @ui-switch="val => uiSwitch(val, 'show_collect')"
     ></circle-button>
 
     <circle-button
       label="点赞"
       icon="zan"
       v-model="showHit"
-      @ui-switch="val => uiSwitch(val, 'show_comment')"
+      @ui-switch="val => uiSwitch(val, 'show_hit')"
     ></circle-button>
   </div>
 </template>
@@ -34,7 +34,7 @@
 /**
  * 高级编辑 - 右下区域
  * @author luminghuai | chenliangshan
- * @version 2017-09-07
+ * @version 2017-10-20
  */
 
 import { mapState } from 'vuex'
