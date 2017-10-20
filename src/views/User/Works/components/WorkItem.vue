@@ -10,6 +10,7 @@
       <!-- 作品封面 -->
       <a class="workitem__avatar"
          :href="workPanoPath"
+         target="_blank"
          :title="item.name"
       >
         <img class="workitem__avatar-img has-shadow"
@@ -34,6 +35,7 @@
           <a
             class=""
             :href="workPanoPath"
+            target="_blank"
             title="预览作品"
           >
             {{item.name}}
@@ -45,10 +47,13 @@
           {{item.created_at | formatDateString}}
         </span>
           <span class="workitem__info-detail__item">
-          <i class="iconfont">&#xe63d;</i>{{item.popular}}
+          <i class="iconfont">&#xe63d;</i> {{item.popular}}
         </span>
           <span class="workitem__info-detail__item">
-          <i class="iconfont">&#xe641;</i>{{item.stargazers}}
+          <i class="iconfont">&#xe641;</i> {{item.stargazers}}
+        </span>
+          <span class="workitem__info-detail__item">
+          <i class="iconfont">&#xe642;</i> {{item.collects}}
         </span>
         </div>
       </div>
@@ -81,13 +86,12 @@
       >
         删除
       </el-button>
+
       <el-button
         type="text"
         class="workitem__biz-editor"
-        @click="onEdit"
-        :to="`/make-client/edit?pano_id=${item.id}`"
       >
-        高级编辑
+        <a :href="`/make-client/edit?pano_id=${this.item.hash_pano_id}`" target="_blank">高级编辑</a>
       </el-button>
     </el-col>
 
@@ -167,10 +171,6 @@ export default {
 
     onDelete() {
       this.$emit('delete', this.item.id)
-    },
-
-    onEdit() {
-      this.$router.push(`/make-client/edit?pano_id=${this.item.hash_pano_id}`)
     },
   },
 }

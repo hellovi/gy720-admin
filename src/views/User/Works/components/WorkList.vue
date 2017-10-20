@@ -118,6 +118,7 @@
       :title="`管理说一说(${chartItem.name})`"
       :visible.sync="chartVisible"
       size="large"
+      custom-class="works-worklist__chart"
     >
       <message-say :pano-id="chartItem.hash_pano_id"></message-say>
     </el-dialog>
@@ -421,6 +422,14 @@ export default {
 
     &:active {
       color: color(var(--button-color-disabled) shade(10%));
+    }
+  }
+
+  &__chart {
+    width: 950px;
+
+    .message-summary {
+      max-width: 200px;
     }
   }
 }

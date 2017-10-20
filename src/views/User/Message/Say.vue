@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="listLoading">
+  <div class="message-say" v-loading="listLoading">
     <message-control
       :allChecked="allChecked"
       :someChecked="checked.length > 0"
@@ -11,9 +11,9 @@
     <table class="app-table">
       <colgroup>
         <col width="5%">
-        <col width="40%">
-        <col width="10%">
+        <col width="35%">
         <col width="20%">
+        <col width="15%">
         <col width="10%">
         <col width="15%">
       </colgroup>
@@ -172,3 +172,11 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss" scoped>
+  .message-say {
+    .message-summary {
+      max-width: 300px;
+    }
+  }
+</style>
