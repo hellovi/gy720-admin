@@ -171,7 +171,7 @@ export default {
       )
         .then(() => {
           this.$message({
-            message: '视角编辑操作完成',
+            message: '操作成功',
             type: 'success',
           })
           this.cancel()
