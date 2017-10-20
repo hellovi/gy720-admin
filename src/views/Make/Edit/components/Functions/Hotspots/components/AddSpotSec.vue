@@ -61,7 +61,7 @@
           placement="right-start"
         >
           <span>?</span>
-          <a slot="content" href="http://www.gy720.com" target="_blank">查看详细教程>></a>
+          <a slot="content" :href="`${configHost.origin}`" target="_blank">查看详细教程>></a>
         </el-tooltip>
       </el-form-item>
 
@@ -129,6 +129,7 @@
  * @version 2017-09-08
  */
 import { mapState, mapGetters } from 'vuex'
+import { Url } from '@/utils'
 import { EDIT } from '@/store/mutationTypes'
 import Draggable from 'vuedraggable'
 import modal from '../../../../mixins/modal'
@@ -164,6 +165,8 @@ export default {
 
   data() {
     return {
+      configHost: Url.configHost,
+
       form: {
         hot_name: null,
         data_id: null,
