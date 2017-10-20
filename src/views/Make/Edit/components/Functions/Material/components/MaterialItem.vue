@@ -18,7 +18,7 @@
 
     </div>
 
-    <div v-if="isAudio" class="material-item__play" @click="$emit('play', item)"></div>
+    <div v-if="isAudio" class="material-item__play" @click="!invoked && $emit('play', item)"></div>
     <img v-else-if="isRotate" class="material-item__img" :src="item.thumb ? $url.static(item.thumb) : `${rotateDefault}`" alt="item.title">
     <img v-else
          :class="{
@@ -112,6 +112,7 @@ export default {
   position: relative;
   padding: 6px;
   border-radius: 2px;
+  border: 2px solid var(--gray-extra-light);
   background-color: var(--gray-extra-light);
   margin: 0;
 
@@ -119,7 +120,7 @@ export default {
     cursor: pointer;
 
     &:hover {
-      outline: 2px solid var(--color-primary);
+      border-color: var(--color-primary);
     }
   }
 
