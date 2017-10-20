@@ -100,7 +100,7 @@ export default {
       // 发布表单
       form: {
         name: '',
-        pano_category_id: '',
+        pano_category_id: 1, // 默认选中默认分类
         tag_ids: [],
       },
       rules: {
