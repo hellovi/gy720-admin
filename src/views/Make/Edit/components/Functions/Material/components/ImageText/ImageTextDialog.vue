@@ -54,7 +54,7 @@
             <el-col :span="7">
               <el-form-item prop="btn_url">
                 <el-input
-                  placeholder="例如:http://gy720.com"
+                  :placeholder="`例如:${configHost.origin}`"
                   v-model="detail.btn_url"
                   size="small"
                   @change="validChange('btn_url')"
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+  import { Url } from '@/utils'
 
   const defInfo = {
     id: null,
@@ -104,6 +105,7 @@
     },
 
     data: () => ({
+      configHost: Url.configHost,
       detail: {
         ...defInfo,
       },

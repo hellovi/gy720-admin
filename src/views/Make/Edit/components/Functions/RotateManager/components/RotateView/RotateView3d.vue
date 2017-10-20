@@ -68,7 +68,7 @@
    * @version 2017/09/11
    */
 
-  import { dynamicLoadScript } from '@/utils'
+  import { dynamicLoadScript, Url } from '@/utils'
 
   const rotatePath = 'assets/3.0.1/lib/rotate/'
   const rotateSkinPath = `/${rotatePath}skin/2/`
@@ -173,7 +173,7 @@
               scrollBarHandlerToolTipOffsetY: 4,
               zoomInAndOutToolTipOffsetY: -4,
               buttonsToolTipOffsetY: 0,
-              link: 'http://www.gy720.com',
+              link: Url.configHost.origin,
               buttonToolTipFontColor: '#FFFFFF',
               infoWindowBackgroundOpacity: 0.9,
               infoWindowBackgroundColor: '#FFFFFF',

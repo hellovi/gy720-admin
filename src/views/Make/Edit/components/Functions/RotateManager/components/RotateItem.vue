@@ -1,7 +1,7 @@
 <template>
   <li class="rotate-item">
     <div class="clearfix">
-      <img class="rotate-item__img" v-qiniu-src="item.thumb || 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'"/>
+      <img class="rotate-item__img" v-qiniu-src="item.thumb || `${rotateDefault}`"/>
       <ul class="list rotate-item__btns">
         <li><el-button size="mini" type="primary" @click="upload">上传图片</el-button></li>
         <li><el-button size="mini" type="primary" @click="manage">管理图片</el-button></li>
@@ -15,36 +15,44 @@
 </template>
 
 <script>
-export default {
-  name: 'rotate-item',
+  import rotateDefault from '@/assets/default-rotate.jpg'
 
-  props: {
-    item: {
-      type: Object,
-      required: true,
-    },
-  },
+  export default {
+    name: 'rotate-item',
 
-  methods: {
-    upload() {
-      this.$emit('open-upload', this.item.id)
+    props: {
+      item: {
+        type: Object,
+        required: true,
+      },
     },
 
-    manage() {
-      this.$emit('open-manage', this.item.id)
+    data() {
+      return {
+        rotateDefault,
+      }
     },
 
-    update() {
-      this.$emit('update', this.item)
-    },
+    methods: {
+      upload() {
+        this.$emit('open-upload', this.item.id)
+      },
 
-    viewer() {
-      this.$emit('viewer', this.item)
-    },
+      manage() {
+        this.$emit('open-manage', this.item.id)
+      },
 
-    remove() {
-      this.$emit('remove', this.item.id)
+      update() {
+        this.$emit('update', this.item)
+      },
+
+      viewer() {
+        this.$emit('viewer', this.item)
+      },
+
+      remove() {
+        this.$emit('remove', this.item.id)
+      },
     },
-  },
-}
+  }
 </script>

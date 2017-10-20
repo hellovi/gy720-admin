@@ -59,7 +59,7 @@
       height: 8px;
       border-radius: 4px;
       margin-top: -6px;
-      background: #1483d8 url("http://www.gy720.com/statics/images/webuploader/progress.png");
+      background: #1483d8 url(../assets/progress.png);
       animation: progress 2s linear infinite;
     }
   }

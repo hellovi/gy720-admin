@@ -16,7 +16,7 @@ const getSrc = (el, binding) => {
   if (src) {
     if (query) {
       return `${Url.static(src)}${query}`
-    } else if (Regex.base64(src)) {
+    } else if (Regex.base64(src) || src.includes('/assets/')) {
       return src
     }
     return Url.static(src)

@@ -4,7 +4,7 @@
  * CDN: http://l-statics.gy720.com
  *
  * 测试环境：
- * 域名: https://l-test.gy720.cm
+ * 域名: https://l-test.gy720.com
  * CDN: http://www-statics.gy720.com
  *
  * 正式环境：
@@ -25,7 +25,7 @@ const linkList = {
   },
   // 测试环境
   test: {
-    origin: 'https://l-test.gy720.cm',
+    origin: 'https://l-test.gy720.com',
     cdn: 'http://www-statics.gy720.com',
   },
   // 正式生产环境

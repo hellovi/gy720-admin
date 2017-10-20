@@ -19,7 +19,7 @@
     </div>
 
     <div v-if="isAudio" class="material-item__play" @click="$emit('play', item)"></div>
-    <img v-else-if="isRotate" class="material-item__img" :src="item.thumb ? $url.static(item.thumb) : 'http://www.gy720.com/data/rotate/984/152/small_59376a9ee502d.jpg'" alt="item.title">
+    <img v-else-if="isRotate" class="material-item__img" :src="item.thumb ? $url.static(item.thumb) : `${rotateDefault}`" alt="item.title">
     <img v-else
          :class="{
            'material-item__other': ['logo', 'map', 'other'].includes(material.type),
@@ -46,6 +46,7 @@
 
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
+import rotateDefault from '@/assets/default-rotate.jpg'
 import modal from '../../../../mixins/modal'
 
 export default {
@@ -58,6 +59,12 @@ export default {
       type: Object,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      rotateDefault,
+    }
   },
 
   computed: {

@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-
+import { Url } from '@/utils'
 // 最后应该统一调用url插件中的方法
 function url(pathname) {
-  return `http://www.gy720.com/statics${pathname}`
+  return `${Url.configHost.origin}/statics${pathname}`
 }
 
 /**
