@@ -14,9 +14,9 @@
       @error="uploadError"
       :crop-options="{aspectRatio: scale}"
       class="cert-upload__file"
-      v-bind:style="{backgroundImage: !getStatic(src) ? `url(${require(`../assets/${background}`)})` : 'none',width:width +'px',height:(width/scale) +'px'}"
+      v-bind:style="{width:width +'px',height:(width/scale) +'px'}"
     >
-      <img :src="getStatic(src)" v-if="!progress">
+      <img :src="getStatic(src) || `${require(`../assets/${background}`)}`" v-if="!progress">
       <app-upload-progress
         slot="progress"
         :src="uploadSrc"
