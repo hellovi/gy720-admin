@@ -37,7 +37,19 @@
             <div>
               <!-- 这里是否要跳链接 -->
               <a :href="`/author/view/${message.hash_user_id}`" class="hover-primary">{{ message.nickname }}</a>
-              <div class="message-summary ellipsis" :title="message.content">{{ message.content }}</div>
+
+              <template v-if="message.type_id === 10">
+                <div class="message-summary ellipsis" :title="message.content">{{ message.content }}</div>
+              </template>
+
+              <template v-if="message.type_id === 20 && message.content">
+                <div class="message-summary ellipsis">
+                  <audio controls style="width: 100%;">
+                    <source :src="message.content" type="audio/mpeg">
+                    您的浏览器不支持 audio 元素。
+                  </audio>
+                </div>
+              </template>
             </div>
           </td>
           <td>
