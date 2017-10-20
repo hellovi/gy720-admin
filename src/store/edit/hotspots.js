@@ -1,7 +1,12 @@
+import Vue from 'vue'
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 
-const { HOTSPOTS } = EDIT
+const { MATERIAL, HOTSPOTS } = EDIT
+
+// 自定义事件，用于MATERIAL.INVOKE和MATERIAL.SELECT中
+const selectMaterial = document.createEvent('Event')
+selectMaterial.initEvent('selectMaterial', false, true)
 
 export default {
   state: {
@@ -91,6 +96,26 @@ export default {
         .then(() => {
           commit(HOTSPOTS.REMOVE, id)
         })
+    },
+
+    [HOTSPOTS.SELECT.ICON]({ commit, getters }, type) {
+      commit(MATERIAL.INVOKE, true)
+      commit(MATERIAL.CHANGE, type)
+      commit(EDIT.MODAL.OPEN, 'material')
+      return new Promise((resolve) => {
+        Vue.customEvent = Vue.customEvent || {}
+        Vue.customEvent.selectMaterial = () => {
+          resolve(getters.selectedItem)
+          commit(EDIT.HOTSPOTS.SELECT.ICON, {
+            icon_id: getters.selectedItem.id.toString(),
+            thumb: getters.selectedItem.file_path,
+          })
+          commit(MATERIAL.CHANGE, 'scene')
+          commit(MATERIAL.INVOKE, false)
+          commit(EDIT.MODAL.CLOSE, 'material')
+        }
+        window.addEventListener('selectMaterial', Vue.customEvent.selectMaterial)
+      })
     },
   },
 }

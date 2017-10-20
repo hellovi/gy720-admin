@@ -295,4 +295,10 @@ export default {
         })
     },
   },
+
+  getters: {
+    selectedItem(state) {
+      return state.selectedItem
+    },
+  },
 }

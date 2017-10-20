@@ -11,9 +11,9 @@
        :rules="[ { required: true, message: '请输入热点名称', trigger: 'blur' }]"> -->
       <el-form-item label="热点图标" prop="icon_info">
         <el-button type="primary" size="small" @click="openIconModal">选择</el-button>
-        <img v-if = "activeIcon.thumb"
+        <img v-if="activeIcon.thumb"
           class="addspots-sec__icon"
-          :src="activeIcon.thumb"
+          v-qiniu-src="activeIcon.thumb"
           alt="activeIcon.icon_id"/>
       </el-form-item>
 
@@ -186,7 +186,7 @@ export default {
             type: 'object',
             required: true,
             fields: {
-              id: { required: true, message: '请选择热点图标', trigger: 'blur' },
+              id: { required: true, message: '请选择热点图标', trigger: 'change' },
             },
           },
         ],

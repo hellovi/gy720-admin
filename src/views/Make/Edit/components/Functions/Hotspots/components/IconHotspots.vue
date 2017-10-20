@@ -2,7 +2,13 @@
   <div>
     <div class="hotspots-icon__lists" v-loading="loading">
       <dl class="hotspots-icon__item clearfix">
-      <dt>系统图标</dt>
+      <dt>
+        <el-row>
+          <el-col :span="3">系统图标</el-col>
+          <el-col :span="3" @click.native="openMaterial" style="cursor: pointer">自定义图标</el-col>
+        </el-row>
+      </dt>
+
       <dd
       v-for="icon in icons"
       :key="icon.icon_id"
@@ -61,6 +67,15 @@ export default {
     selectIcon(icon) {
       this.activeInfo = icon
       this.activeId = icon.icon_id
+    },
+
+    // 自定义图标
+    openMaterial() {
+      this.$store.dispatch(EDIT.HOTSPOTS.SELECT.ICON, 'hotspot')
+        .then(() => {
+          this.activeInfo = {}
+          this.$emit('input', false)
+        })
     },
   },
 
