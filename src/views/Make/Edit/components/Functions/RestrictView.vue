@@ -155,6 +155,7 @@
 /** @typedef {'fov'|'vlookat'|'hlookat'} ViewProp */
 
 import { mapGetters } from 'vuex'
+import { EDIT } from '@/store/mutationTypes'
 import modal from '../../mixins/modal'
 import esc from '../../mixins/esc'
 
@@ -296,6 +297,7 @@ export default {
     close() {
       this.closeModal('restrictView')
       this.openModal('control')
+      this.$store.dispatch(EDIT.PANO.UPDATESCENE)
     },
   },
 
