@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { Http } from '@/utils'
 import { EDIT } from '../mutationTypes'
 import material from './material'
@@ -29,6 +30,11 @@ const active = {
   imageTextEdit: false,
   summary: false,
   vipInfo: false,
+}
+
+// 删除监听事件
+const removeEvent = (name) => {
+  window.removeEventListener(name, Vue.customEvent[name])
 }
 
 export default {
@@ -87,6 +93,10 @@ export default {
 
     [EDIT.MODAL.CLOSE](state, name) {
       state.active[name] = false
+      if (name === 'material') {
+        // 删除监听事件
+        ['selectMaterial', 'selectMaterials'].forEach(item => removeEvent(item))
+      }
     },
 
     [EDIT.MODAL.RESET](state) {

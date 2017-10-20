@@ -217,12 +217,14 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
 
       return new Promise((resolve) => {
-        window.addEventListener('selectMaterial', () => {
+        Vue.customEvent = Vue.customEvent || {}
+        Vue.customEvent.selectMaterial = () => {
           resolve(state.selectedItem)
           commit(MATERIAL.CHANGE, 'scene')
           commit(MATERIAL.INVOKE, false)
           commit(EDIT.MODAL.CLOSE, 'material')
-        })
+        }
+        window.addEventListener('selectMaterial', Vue.customEvent.selectMaterial)
       })
     },
     /**
@@ -236,12 +238,14 @@ export default {
       commit(EDIT.MODAL.OPEN, 'material')
 
       return new Promise((resolve) => {
-        window.addEventListener('selectMaterials', () => {
+        Vue.customEvent = Vue.customEvent || {}
+        Vue.customEvent.selectMaterials = () => {
           resolve(state.selectedItems)
           commit(MATERIAL.CHANGE, 'scene')
           commit(MATERIAL.INVOKE, false)
           commit(EDIT.MODAL.CLOSE, 'material')
-        })
+        }
+        window.addEventListener('selectMaterials', Vue.customEvent.selectMaterials)
       })
     },
 
