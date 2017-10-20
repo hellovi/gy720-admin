@@ -240,6 +240,10 @@ export default {
     margin-bottom: 0;
     text-align: center;
 
+    .el-form-item__content {
+      margin-left: 0 !important;
+    }
+
     .el-button {
       width: 8em;
     }
@@ -313,6 +317,15 @@ export default {
   }
   > .el-dialog__body {
     padding-bottom: 60px;
+  }
+}
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .publish-panos {
+    &__content {
+      min-height: calc(100vh - 320px);
+    }
   }
 }
 </style>
