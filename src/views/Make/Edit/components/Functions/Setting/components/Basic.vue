@@ -178,7 +178,11 @@ export default {
     },
 
     removeStartImg() {
-      this.form.start_img = null
+      if (!this.isVip) {
+        this.$emit('focus-on-vip-field')
+      } else {
+        this.form.start_img = null
+      }
     },
 
     /**
