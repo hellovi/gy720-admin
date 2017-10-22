@@ -38,6 +38,8 @@ export default {
     activeRotateCateId: null,
     // 全景图分类
     activeSceneCateId: null,
+    // 上传图片状态
+    uploading: false,
   },
 
   mutations: {
@@ -171,6 +173,10 @@ export default {
 
     [MATERIAL.SCENE.UPDATE.CATEID](state, id = 1) {
       state.activeSceneCateId = id
+    },
+
+    [MATERIAL.UPLOADING](state, status) {
+      state.uploading = status
     },
   },
 

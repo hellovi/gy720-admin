@@ -6,6 +6,7 @@
 
 import 'whatwg-fetch'
 import sceneLoading from '@/assets/scene-loading.gif'
+import { EDIT } from '@/store/mutationTypes'
 
 /**
  * @typedef {Object} File
@@ -157,6 +158,8 @@ export default {
               upload_id: file.id,
               source_scene_category_id: this.source_scene_category_id, // 上传到某个分类-默认为默认分类
             })
+            // 改变上传状态
+            this.$store.commit(EDIT.MATERIAL.UPLOADING, true)
           },
 
           UploadProgress: (up, file) => {
@@ -225,6 +228,9 @@ export default {
               this.fisheye_nums = up.files.length - this.oldFilesLen
               this.oldFilesLen = up.files.length
             }
+
+            // 改变上传状态
+            this.$store.commit(EDIT.MATERIAL.UPLOADING, true)
 
             uploader.setOption('multipart_params', {
               fisheye_nums: this.fisheye_nums,

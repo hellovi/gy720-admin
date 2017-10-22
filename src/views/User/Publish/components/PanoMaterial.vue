@@ -28,7 +28,7 @@
       <el-col class="pano-material__right" :span="20">
         <el-row class="pano-material__header">
           <el-col :span="2">
-            <el-checkbox v-model="allChecked" @change="selectAllPanos">全选</el-checkbox>
+            <el-checkbox :value="allChecked" @change="selectAllPanos">全选</el-checkbox>
           </el-col>
           <el-col :span="4">
             <el-button
@@ -99,7 +99,7 @@
           v-if="sceneList.last_page > 1"
           :page-size="sceneList.per_page"
           :total="sceneList.total"
-          :current-page="sceneList.current_page"
+          :current-page="currentPage"
           @current-change="pageChange"
           layout="prev, pager, next"
         ></el-pagination>
@@ -181,6 +181,7 @@ export default {
       loading: false,
       moveDialog: false,
       selectCateId: null,
+      currentPage: 1,
     }
   },
 
@@ -189,6 +190,7 @@ export default {
       list: state => state.edit.material.materialData.scene,
       invoked: state => state.edit.material.invoked,
       isSmallScreen: state => state.edit.material.isSmallScreen,
+      uploading: state => state.edit.material.uploading,
     }),
 
     // 过滤不可选择的全景图
@@ -217,10 +219,18 @@ export default {
     sceneList() {
       const data = this.addFiles.concat(this.list.data)
       const len = this.addFiles.length
+      const uploadingArr = this.addFiles.filter(({ percent, vtour }) => percent > 0 && !vtour)
+      if (!uploadingArr.length) {
+        this.$store.commit(EDIT.MATERIAL.UPLOADING, false)
+      } else {
+        this.$store.commit(EDIT.MATERIAL.UPLOADING, true)
+      }
       if (len) {
         const list = {
           ...this.list,
-          data: data.length > this.showNum ? data.slice(0, data.length - len) : data,
+          data: data.length > this.showNum ? data.slice(0, 12) : data,
+          total: this.list.total + len,
+          last_page: this.list.total + len > 12 ? this.list.last_page + 1 : this.list.last_page,
         }
         return { ...list }
       }
@@ -229,6 +239,24 @@ export default {
   },
 
   methods: {
+    // 判断是否正在上传图片
+    uploadedPic() {
+      if (this.uploading) {
+        if (this.currentPage !== this.list.current_page) {
+          this.$confirm('正在上传图片，请勿操作！', '提示', { type: 'warning' })
+            .then(() => {
+              // 恢复页码
+              this.currentPage = this.list.current_page
+            })
+            .catch(() => {
+              // 恢复页码
+              this.currentPage = this.list.current_page
+            })
+        }
+        return false
+      }
+      return true
+    },
     getFetchPanos(params) {
       this.$store.dispatch(EDIT.MATERIAL.INIT, { url: '/user/sourcescene', params })
         .then(() => {
@@ -237,12 +265,15 @@ export default {
     },
 
     getPanos(page) {
-      this.loading = true
-      // 清除上传临时文件数组
-      this.dispatch('edit-functions-material', 'on-reset-files')
+      this.currentPage = page
+      if (this.uploadedPic()) {
+        this.loading = true
+        // 清除上传临时文件数组
+        this.dispatch('edit-functions-material', 'on-reset-files')
 
-      const params = page ? `${this.params}&page=${page}` : this.params
-      this.getFetchPanos(params)
+        const params = page ? `${this.params}&page=${page}` : this.params
+        this.getFetchPanos(params)
+      }
     },
 
     // 搜索素材
@@ -254,7 +285,7 @@ export default {
      * 选择不同的相册后，重新获取列表并清空选中项
      */
     selectCate(id) {
-      if (id !== this.currentCateId) {
+      if (id !== this.currentCateId && this.uploadedPic()) {
         this.currentCateId = id
         this.getPanos()
         this.checked = []
@@ -288,103 +319,111 @@ export default {
 
     // 编辑场景素材名称
     editScene({ id, name }) {
-      const inputValidator = val => !!val
-      const dialogTitle = '编辑全景图'
+      if (this.uploadedPic()) {
+        const inputValidator = val => !!val
+        const dialogTitle = '编辑全景图'
 
-      this.$prompt('请输入全景图名称', dialogTitle, {
-        closeOnPressEscape: false,
-        closeOnClickModal: false,
-        inputValue: name,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValidator,
-        inputErrorMessage: '全景图名称不能为空',
-      }).then(({ value }) => {
-        this.$http.put(`/user/sourcescene/${id}`, { id, name: value })
-          .then(() => {
-            this.$message.success('编辑成功!')
-            // 更新列表信息
-            this.getPanos(this.sceneList.current_page)
-          })
-          .catch((errors) => {
-            this.errorHandler(errors)
-          })
-      })
+        this.$prompt('请输入全景图名称', dialogTitle, {
+          closeOnPressEscape: false,
+          closeOnClickModal: false,
+          inputValue: name,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValidator,
+          inputErrorMessage: '全景图名称不能为空',
+        }).then(({ value }) => {
+          this.$http.put(`/user/sourcescene/${id}`, { id, name: value })
+            .then(() => {
+              this.$message.success('编辑成功!')
+              // 更新列表信息
+              this.getPanos(this.sceneList.current_page)
+            })
+            .catch((errors) => {
+              this.errorHandler(errors)
+            })
+        })
+      }
     },
 
     // 移除场景素材图
     removeScene({ id }) {
-      this.$confirm('确认删除该素材？', '提示', { type: 'warning' })
-        .then(() => {
-          this.$http.delete(`/user/sourcescene/${id}`)
-            .then(() => {
-              this.$message.success('删除成功!')
-              this.resetGetPanos(1)
+      if (this.uploadedPic()) {
+        this.$confirm('确认删除该素材？', '提示', { type: 'warning' })
+          .then(() => {
+            this.$http.delete(`/user/sourcescene/${id}`)
+              .then(() => {
+                this.$message.success('删除成功!')
+                this.resetGetPanos(1)
+              })
+              .catch((errors) => {
+                this.errorHandler(errors)
+              })
+          })
+      }
+    },
+
+    createCate({ name = null, id = '' }) {
+      if (this.uploadedPic()) {
+        const inputValidator = val => !!val
+        let dialogTitle = '创建新相册'
+        let type = 'post'
+
+        if (id) {
+          dialogTitle = '编辑相册'
+          type = 'put'
+        }
+        this.$prompt('请输入相册名', dialogTitle, {
+          closeOnPressEscape: false,
+          closeOnClickModal: false,
+          inputValue: name,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputValidator,
+          inputErrorMessage: '相册名不能为空',
+        }).then(({ value }) => {
+          this.$http[type](`/user/sourcescenecategory/${id}`, { name: value })
+            .then(({ result: { deleted_at, created_at, updated_at, ...other } }) => {
+              if (id) {
+                // 编辑列表内容
+                this.cates = this.cates.map((item) => {
+                  let data = { ...item }
+                  if (item.id === id) {
+                    data = { ...item, name: value }
+                  }
+                  return data
+                })
+              } else {
+                // 添加成功新增列表数组
+                this.cates.push({ ...other })
+              }
+
+              this.$message.success(`${dialogTitle}成功!`)
             })
             .catch((errors) => {
               this.errorHandler(errors)
             })
         })
-    },
-
-    createCate({ name = null, id = '' }) {
-      const inputValidator = val => !!val
-      let dialogTitle = '创建新相册'
-      let type = 'post'
-
-      if (id) {
-        dialogTitle = '编辑相册'
-        type = 'put'
       }
-      this.$prompt('请输入相册名', dialogTitle, {
-        closeOnPressEscape: false,
-        closeOnClickModal: false,
-        inputValue: name,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputValidator,
-        inputErrorMessage: '相册名不能为空',
-      }).then(({ value }) => {
-        this.$http[type](`/user/sourcescenecategory/${id}`, { name: value })
-          .then(({ result: { deleted_at, created_at, updated_at, ...other } }) => {
-            if (id) {
-              // 编辑列表内容
-              this.cates = this.cates.map((item) => {
-                let data = { ...item }
-                if (item.id === id) {
-                  data = { ...item, name: value }
-                }
-                return data
-              })
-            } else {
-              // 添加成功新增列表数组
-              this.cates.push({ ...other })
-            }
-
-            this.$message.success(`${dialogTitle}成功!`)
-          })
-          .catch((errors) => {
-            this.errorHandler(errors)
-          })
-      })
     },
 
     // 删除场景素材相册
     removeCate({ id }) {
-      this.$confirm('确认删除该相册？', '提示', { type: 'warning' })
-        .then(() => {
-          this.$http.delete(`/user/sourcescenecategory/${id}`)
-            .then(() => {
-              // 删除成功过滤列表数组
-              this.cates = this.cates.filter(item => item.id !== id)
-              this.$message.success('删除成功!')
-              // 选中默认分类
-              this.selectCate(1)
-            })
-            .catch((errors) => {
-              this.errorHandler(errors)
-            })
-        })
+      if (this.uploadedPic()) {
+        this.$confirm('确认删除该相册？', '提示', { type: 'warning' })
+          .then(() => {
+            this.$http.delete(`/user/sourcescenecategory/${id}`)
+              .then(() => {
+                // 删除成功过滤列表数组
+                this.cates = this.cates.filter(item => item.id !== id)
+                this.$message.success('删除成功!')
+                // 选中默认分类
+                this.selectCate(1)
+              })
+              .catch((errors) => {
+                this.errorHandler(errors)
+              })
+          })
+      }
     },
 
     // 打开移动到其他相册窗口
@@ -399,55 +438,64 @@ export default {
 
     // 移动到其他相册
     moveCateSub() {
-      if (this.selectCateId !== this.currentCateId) {
-        this.$http.put('/user/sourcescene/updatecategory', {
-          ids: this.checked,
-          source_scene_category_id: this.selectCateId,
-        })
-          .then(() => {
-            this.$message.success('移动成功!')
-            this.currentCateId = this.selectCateId
-            this.moveDialog = false
-            this.checked = []
-            this.getPanos()
+      if (this.uploadedPic()) {
+        if (this.selectCateId !== this.currentCateId) {
+          this.$http.put('/user/sourcescene/updatecategory', {
+            ids: this.checked,
+            source_scene_category_id: this.selectCateId,
           })
-          .catch((errors) => {
-            this.errorHandler(errors)
-          })
-      } else {
-        this.errorHandler('请选择其他相册!')
+            .then(() => {
+              this.$message.success('移动成功!')
+              this.currentCateId = this.selectCateId
+              this.moveDialog = false
+              this.checked = []
+              this.getPanos()
+            })
+            .catch((errors) => {
+              this.errorHandler(errors)
+            })
+        } else {
+          this.errorHandler('请选择其他相册!')
+        }
       }
     },
 
     // 批量删除选中的素材
     removeChecked() {
-      if (this.checked.length) {
-        this.$confirm(`确认删除所选 ${this.checked.length} 张素材？`, '提示', { type: 'warning' })
-          .then(() => {
-            this.$http.post('/user/sourcescene/batchdelete', {
-              ids: this.checked,
+      if (this.uploadedPic()) {
+        if (this.checked.length) {
+          this.$confirm(`确认删除所选 ${this.checked.length} 张素材？`, '提示', { type: 'warning' })
+            .then(() => {
+              this.$http.post('/user/sourcescene/batchdelete', {
+                ids: this.checked,
+              })
+                .then(() => {
+                  this.$message.success('删除成功!')
+                  this.resetGetPanos(this.checked.length)
+                  this.checked = []
+                })
+                .catch((errors) => {
+                  this.errorHandler(errors)
+                })
             })
-              .then(() => {
-                this.$message.success('删除成功!')
-                this.resetGetPanos(this.checked.length)
-                this.checked = []
-              })
-              .catch((errors) => {
-                this.errorHandler(errors)
-              })
-          })
-      } else {
-        this.errorHandler('请先选择要删除的素材!')
+            .catch(() => {
+
+            })
+        } else {
+          this.errorHandler('请先选择要删除的素材!')
+        }
       }
     },
 
     // 重新请求当前列表
     resetGetPanos(len) {
-      let page = this.sceneList.current_page
-      if (this.sceneList.data.length <= len) {
-        page -= 1
+      if (this.uploadedPic()) {
+        let page = this.sceneList.current_page
+        if (this.sceneList.data.length <= len) {
+          page -= 1
+        }
+        this.getPanos(page)
       }
-      this.getPanos(page)
     },
   },
 

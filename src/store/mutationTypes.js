@@ -131,6 +131,8 @@ export const EDIT = {
         CATEID: 'EDIT.MATERIAL.SCENE.UPDATE.CATEID',
       },
     },
+
+    UPLOADING: 'EDIT.MATERIAL.UPLOADING',
   },
 
   // 物品3D
