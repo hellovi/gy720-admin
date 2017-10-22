@@ -7,7 +7,6 @@
           v-model="showQrcode"
           on-text="显示" off-text="隐藏"
           :on-value="20" :off-value="10"
-          @change="uiSwitch"
         ></el-switch>
       </div>
     </div>
@@ -93,7 +92,7 @@ export default {
         return this.panoInfo.show_qrcode
       },
       set(show_qrcode) {
-        this.$store.commit(EDIT.PANO.UPDATE, { show_qrcode })
+        this.$store.dispatch(EDIT.PANO.UPDATE, { show_qrcode })
       },
     },
 
@@ -102,18 +101,13 @@ export default {
         return this.panoInfo.show_like
       },
       set(show_like) {
-        this.$store.commit(EDIT.PANO.UPDATE, { show_like })
+        this.$store.dispatch(EDIT.PANO.UPDATE, { show_like })
       },
     },
   },
 
   methods: {
-    uiSwitch(show_qrcode) {
-      this.$store.dispatch(EDIT.PANO.UPDATE, {
-        show_qrcode,
-      })
-        .then(({ status: { reason } }) => this.$message.success(reason))
-    },
+
   },
 
   created() {
