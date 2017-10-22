@@ -50,7 +50,7 @@ function adddesignhotspot(data) {
   const hotspot = this.addhotspot(hotspotName, {
     id,
     type: 'image',
-    url: _url,
+    url: Url.static(_url),
     keep: 'true',
     enabled: 'true',
     scale: data.scale,

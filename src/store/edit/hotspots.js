@@ -106,9 +106,11 @@ export default {
         Vue.customEvent = Vue.customEvent || {}
         Vue.customEvent.selectMaterial = () => {
           resolve(getters.selectedItem)
-          commit(EDIT.HOTSPOTS.SELECT.ICON, {
-            icon_id: getters.selectedItem.id.toString(),
+          commit(HOTSPOTS.SELECT.ICON, {
+            icon_id: '0',
             thumb: getters.selectedItem.file_path,
+            data_id: getters.selectedItem.id,
+            diy_src: getters.selectedItem.file_path,
           })
           commit(MATERIAL.CHANGE, 'scene')
           commit(MATERIAL.INVOKE, false)
