@@ -156,7 +156,7 @@ export default {
 
   &__image {
     display: block;
-    max-width: 200px;
+    max-width: 140px;
   }
 }
 
