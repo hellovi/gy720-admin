@@ -240,6 +240,8 @@ export default {
     },
 
     switchStep() {
+      this.$refs.spotForm.resetFields()
+      this.$store.commit(EDIT.HOTSPOTS.SELECT.ICON, {})
       this.$emit('switch-step', 1)
     },
 

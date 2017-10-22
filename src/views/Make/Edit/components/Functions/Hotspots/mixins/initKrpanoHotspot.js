@@ -30,6 +30,7 @@ import deleteImg from '../assets/delete.png'
 function adddesignhotspot(data) {
   const id = data.id
 
+  this.hotspots = this.hotspots || {}
   this.hotspots[id] = data
 
   const hotspotName = `hotspot_${id}`

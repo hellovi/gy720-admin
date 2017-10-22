@@ -46,8 +46,10 @@ export default {
             krpano.call(`loadscene(scene_pano_${sceneId},null,MERGE,BLEND(.8, easeInOutCubic));`)
           }
 
-          // 加载当前场景热点
-          dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
+          // 加载当前场景热点 防止显示加载顺序问题导致热点不显示
+          setTimeout(() => {
+            dispatch(EDIT.HOTSPOTS.INIT.SPOTS, { scene_id: sceneId, pano_id: panoId })
+          }, 1000)
           return sceneId
         })
     },
