@@ -128,7 +128,6 @@
         ],
         btn_url: [
           { required: true, message: '请输入链接地址', trigger: 'blur' },
-          { type: 'url', message: '链接地址格式有误', trigger: 'blur' },
           { type: 'string', max: 300, message: '不能超出300个字符', trigger: 'blur' },
         ],
       },
