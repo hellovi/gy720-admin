@@ -7,9 +7,6 @@
 	    <a href="tel:0592-5995993">联系电话：0592-5995993</a>
 	    <a href="https://jq.qq.com/?_wv=1027&k=41MWcRz" target="_blank">QQ群：494461194</a>
     </p>
-    <p>
-      <a href="http://www.hiavr.com" target="_blank">友情链接：VR网</a>
-    </p>
   </footer>
 </template>
 
