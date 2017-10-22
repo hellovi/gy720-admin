@@ -1,9 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import { Url } from '@/utils'
-// 最后应该统一调用url插件中的方法
-function url(pathname) {
-  return `${Url.configHost.origin}/statics${pathname}`
-}
+
+import editImg from '../assets/edit.png'
+import trigonImg from '../assets/trigon.png'
+import deleteImg from '../assets/delete.png'
 
 /**
  * @typedef {Object} Hotspot
@@ -113,7 +113,7 @@ function adddesignhotspot(data) {
   // - 编辑按钮
   this.addlayer(hotspotManageEdit, {
     parent: hotspotManageBg,
-    url: url('/images/edit.png'),
+    url: Url.static(editImg),
     // url: require('@/views/UserMake/Edit/components/Bottom/Hotspot/images/edit.png'),
     align: 'left',
     crop: '0|0|60|26',
@@ -128,7 +128,7 @@ function adddesignhotspot(data) {
     // Edit/components/Bottom/Hotspot/images/edit.png'),
     // url: require('url-loader?limit=10!@/views/UserMake/
     // Edit/components/Bottom/Hotspot/images/edit.png'),
-    url: url('/images/delete.png'),
+    url: Url.static(deleteImg),
     align: 'right',
     crop: '0|0|60|26',
     onovercrop: '0|26|60|26',
@@ -140,7 +140,7 @@ function adddesignhotspot(data) {
   // - 小三角
   this.addlayer(hotspotManageTriangle, {
     parent: hotspotManageBg,
-    url: url('/images/sanjiao.png'),
+    url: Url.static(trigonImg),
     alpha: '0.5',
     align: 'bottom',
     edge: 'top',
