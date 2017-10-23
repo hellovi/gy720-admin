@@ -186,7 +186,7 @@ export default {
             type: 'object',
             required: true,
             fields: {
-              id: { required: true, message: '请选择热点图标', trigger: 'change' },
+              id: { required: true, type: 'string', message: '请选择热点图标', trigger: 'change' },
             },
           },
         ],
@@ -367,9 +367,10 @@ export default {
 
     submitHotSpots() {
       const data = this.prepareSpotsData()
+      const { ath, atv, ...editData } = data
       const request = !this.editStatus ? EDIT.HOTSPOTS.CREATE : EDIT.HOTSPOTS.UPDATE
       const params = !this.editStatus ?
-        data : { id: this.editInfo.id, data: { ...this.editInfo, ...data } }
+        data : { id: this.editInfo.id, data: { ...this.editInfo, ...editData } }
       this.$store.dispatch(request, params)
         .then((result) => {
           this.resetForm('spotForm')
@@ -391,8 +392,11 @@ export default {
           if (!this.editStatus) {
             krpanoWin.adddesignhotspot(this.hotSpots)
           } else {
-            params.data.url = this.$url.staticHotSpots(`${params.data.icon_id}.png`)
-            krpanoWin.adddesignhotspot({ id: this.editInfo.id, ...params.data })
+            // params.data.url = this.$url.staticHotSpots(`${params.data.icon_id}.png`)
+            // krpanoWin.adddesignhotspot({ id: this.editInfo.id, ...params.data })
+            this.$store.dispatch(EDIT.HOTSPOTS.INIT.SPOTS, {
+              scene_id: this.scenes.find(({ active }) => active).id,
+              pano_id: this.panoId })
           }
         })
     },
@@ -413,6 +417,8 @@ export default {
   mounted() {
     const { data_title, hot_name, data_id } = this.editInfo
 
+    this.form.icon_info.id = this.activeIcon.icon_id || null
+
     // 初始化MATERIAL.SELECTS 数据
     if (this.type === this.typeConfig.PHOTO) {
       this.form.data_id = []
@@ -421,7 +427,7 @@ export default {
 
     if (this.editStatus) {
       // 编辑状态
-      this.form = { hot_name, data_id, title: data_title }
+      this.form = { ...this.form, hot_name, data_id, title: data_title }
     }
   },
 }
