@@ -34,7 +34,11 @@ const active = {
 
 // 删除监听事件
 const removeEvent = (name) => {
-  window.removeEventListener(name, Vue.customEvent[name])
+  try {
+    return window.removeEventListener(name, Vue.customEvent[name])
+  } catch (err) {
+    return err
+  }
 }
 
 export default {
