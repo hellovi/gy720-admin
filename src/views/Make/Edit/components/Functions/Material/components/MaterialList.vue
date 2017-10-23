@@ -66,7 +66,7 @@
       custom-class="material-play"
       ref="audioDialog"
     >
-      <audio ref="audio" :src="$url.static(item.file_path)" controls></audio>
+      <audio ref="audio" preload="none" :src="$url.static(item.file_path)" autoplay controls></audio>
     </el-dialog>
   </div>
 </template>
@@ -138,15 +138,20 @@ export default {
       }
     },
     'dialog.play': function dialogPlay(val) {
-      if (val && !this.isRender.play) {
-        this.isRender.play = true
-        this.setDialogToBody('audioDialog')
-      } else {
-        this.$nextTick(() => {
-          this.$refs.audio.pause()
+      this.$nextTick(() => {
+        this.$refs.audio.pause()
+        if (val) {
+          if (!this.isRender.play) {
+            this.isRender.play = true
+            this.setDialogToBody('audioDialog')
+          }
+          setTimeout(() => {
+            this.$refs.audio.play()
+          }, 1000)
+        } else {
           this.$refs.audio.currentTime = 0
-        })
-      }
+        }
+      })
     },
   },
 
