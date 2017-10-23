@@ -311,7 +311,8 @@ export default {
     getImageView({ preview_image, id, width = 268 }) {
       const srcUrl = this.$url.static(`${preview_image}?imageView2/2/w/${width}`)
       const time = setInterval(() => {
-        fetch(`${srcUrl}`, {
+        const url = srcUrl.replace(/^http:\/\//i, 'https://')
+        fetch(`${url}`, {
           method: 'GET',
         })
           .then((res) => {
