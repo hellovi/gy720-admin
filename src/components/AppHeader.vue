@@ -22,7 +22,8 @@
         </form>
       </div>
 
-      <el-button class="app-header__button btn-primary" size="small" @click="checkin">签到</el-button>
+      <el-button class="app-header__button btn-primary" size="small" @click="checkin" v-if="!userInfo.is_sign">签到</el-button>
+      <el-button class="app-header__button btn-primary" disabled size="small" v-else>已签到</el-button>
       <el-button class="app-header__button" type="primary" size="small" @click="$router.push('/user-client/publish')">发布</el-button>
 
       <div class="app-header__portal">
@@ -45,6 +46,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { GLOBAL } from '@/store/mutationTypes'
 
 export default {
   name: 'app-header',
@@ -55,11 +57,18 @@ export default {
 
   methods: {
     checkin() {
-      this.$http.get('/user/integral/complete/1')
-        .then(() => {
-          this.$message('签到成功！ 积分+5，经验+5')
-        })
-        .catch(() => this.$message.error('您今天已经签到成功，请明天再试'))
+      if (!this.userInfo.is_sign) {
+        this.$http.get('/user/integral/complete/1')
+          .then(() => {
+            this.$message({
+              message: '签到成功！ 积分+5，经验+5',
+              onClose: () => {
+                this.$store.commit(GLOBAL.USER.INIT, { ...this.userInfo, is_sign: true })
+              },
+            })
+          })
+          .catch(() => this.$message.error('您今天已经签到成功，请明天再试'))
+      }
     },
   },
 }
