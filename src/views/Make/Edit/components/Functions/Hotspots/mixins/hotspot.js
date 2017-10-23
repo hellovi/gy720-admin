@@ -12,7 +12,9 @@ export default {
       this.editInfo = this.spotsList.find(spot => spot.id === +id)
       const info = this.editInfo
       // 热点图标赋值 ???? // 这里还是得区分有无c-
-      const activeIcon = { icon_id: info.icon_id, thumb: info.icon_thumb, y: info.y }
+      const activeIcon = { icon_id: info.icon_id,
+        thumb: info.icon_thumb || info.diy_src,
+        y: info.y }
       this.$store.commit(EDIT.HOTSPOTS.SELECT.ICON, activeIcon)
       this.openModal('hotspots')
       this.switchStep(2, info.type_id)
