@@ -149,6 +149,8 @@ export default {
           }
 
           this.$store.commit(EDIT.SCENE.DELETE, sceneId)
+          // 更新xml
+          this.$store.dispatch(EDIT.PANO.UPDATESCENE)
         })
     },
 
