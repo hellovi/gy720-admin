@@ -38,7 +38,7 @@
           >{{ userInfo.lv }}</router-link>
         </el-tooltip>
         <router-link class="hover-primary" to="/user-client/point">
-          积分：{{ userInfo.integral }}（可用：{{ userInfo.integral_remain }}）
+          经验值：{{ userInfo.integral }}（可用积分：{{ userInfo.integral_remain }}）
         </router-link>
       </div>
 

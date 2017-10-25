@@ -38,8 +38,9 @@
               class="purchase-orders__btn"
               @click="beforeOrderDelete(order.hash_order_id)"
             >
-              <template v-if="order.order_status === 10">取消</template>
-              <template v-if="order.order_status === 20">删除</template>
+              删除
+              <!--<template v-if="order.order_status === 10">取消</template>-->
+              <!--<template v-if="order.order_status === 20">删除</template>-->
             </el-button>
           </td>
         </tr>
