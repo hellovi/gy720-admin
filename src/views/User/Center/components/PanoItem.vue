@@ -116,6 +116,8 @@ export default {
   background-color: var(--color-white);
 
   &:hover {
+    color: var(--link-hover-color);
+
     & .center-panoitem__icons {
       transform: translateY(0);
     }

@@ -33,7 +33,7 @@
             普通作品
           </span>
           <a
-            class=""
+            class="a-link"
             :href="workPanoPath"
             target="_blank"
             title="预览作品"

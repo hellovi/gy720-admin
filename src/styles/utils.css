@@ -53,6 +53,7 @@
 
 .hover-primary:hover {
   color: var(--color-primary-light);
+  opacity: var(--link-active-hover);
 }
 
 .text-success,
@@ -145,6 +146,14 @@
 .btn-info:hover {
   color: var(--color-info-light);
   border-color: var(--color-info-light);
+}
+
+.btn-text, .a-link {
+  color: var(--color-black);
+}
+
+.btn-text:hover, .a-link:hover {
+  color: var(--color-primary);
 }
 
 /*缺省页外部容器*/

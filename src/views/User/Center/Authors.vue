@@ -7,7 +7,10 @@
       v-if="routeType === 'follows' && authorsInfo.data.length === 0"
     >
       您暂时还没关注摄影师喔！
-      <br>快去<a href="/author">摄影师</a>页面看看吧 ...
+      <br>快去<a class="link" href="/author">摄影师</a>
+      发布
+    </router-link>
+      页面看看吧 ...
     </app-empty-body>
 
     <!-- 缺省信息（粉丝） -->
@@ -16,7 +19,7 @@
     >
       您暂时还没有粉丝喔！
       <br>快去
-      <router-link to="/user-client/publish" class="link">
+      <router-link to="/user-client/publish" class="link" exact>
         发布
       </router-link>
       作品吧 ...

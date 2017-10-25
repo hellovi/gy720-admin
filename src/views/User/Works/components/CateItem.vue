@@ -14,7 +14,7 @@
     >
       &#xe615;
     </i>
-    <el-row>
+    <el-row class="btn-text">
       <el-col :span="18" class="ellipsis">
         {{item.name}}
       </el-col>

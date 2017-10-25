@@ -71,6 +71,10 @@
   --link-color: var(--color-extra-light-black);
   --link-hover-color: var(--color-primary);
 
+  /* Opacity
+   -------------------------- */
+  --link-active-hover: 0.85;
+
   /* Border
   -------------------------- */
   --border-width-base: 1px;

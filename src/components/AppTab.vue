@@ -58,6 +58,9 @@ export default {
       &:hover,
       &.router-link-active {
         color: var(--color-primary);
+        &:hover {
+          opacity: var(--link-active-hover);
+        }
 
         & > .iconfont {
           color: var(--color-primary);
