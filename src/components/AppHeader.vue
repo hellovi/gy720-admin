@@ -23,7 +23,6 @@
       </div>
 
       <el-button class="app-header__button btn-primary" size="small" @click="checkin" v-if="!userInfo.is_sign">签到</el-button>
-      <el-button class="app-header__button btn-primary" disabled size="small" v-else>已签到</el-button>
       <el-button class="app-header__button" type="primary" size="small" @click="$router.push('/user-client/publish')">发布</el-button>
 
       <div class="app-header__portal">
