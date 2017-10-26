@@ -169,7 +169,7 @@ export default {
 
       form: {
         hot_name: null,
-        data_id: null,
+        data_id: 0,
         title: null,
         icon_info: { thumb: null, id: null },
       },

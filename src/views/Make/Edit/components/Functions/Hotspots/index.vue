@@ -113,7 +113,7 @@ export default {
     dialogTitle() {
       const title = `${this.title}热点`
       if (this.currentView.name === AddSpotSec.name) {
-        return `${title} (${this.secInfo})`
+        return `${title} (${this.secInfo || '其它'})`
       }
       return `${title}`
     },
