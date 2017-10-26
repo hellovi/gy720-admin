@@ -100,10 +100,10 @@ export default {
 
     showLike: {
       get() {
-        return this.panoInfo.show_like
+        return this.panoInfo.show_hit
       },
-      set(show_like) {
-        this.$store.commit(EDIT.PANO.UPDATE, { show_like })
+      set(show_hit) {
+        this.$store.commit(EDIT.PANO.UPDATE, { show_hit })
       },
     },
   },
@@ -113,8 +113,8 @@ export default {
       this.$store.dispatch(EDIT.PANO.UPDATE, { show_qrcode })
     },
 
-    changeshowLike(show_like) {
-      this.$store.dispatch(EDIT.PANO.UPDATE, { show_like })
+    changeshowLike(show_hit) {
+      this.$store.dispatch(EDIT.PANO.UPDATE, { show_hit })
     },
   },
 

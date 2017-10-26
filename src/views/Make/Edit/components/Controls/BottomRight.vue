@@ -24,8 +24,8 @@
     <circle-button
       label="点赞"
       icon="zan"
-      v-model="showHit"
-      @ui-switch="val => uiSwitch(val, 'show_hit')"
+      v-model="showLike"
+      @ui-switch="val => uiSwitch(val, 'show_like')"
     ></circle-button>
   </div>
 </template>
@@ -80,12 +80,12 @@ export default {
       },
     },
 
-    showHit: {
+    showLike: {
       get() {
-        return this.panoInfo.show_hit
+        return this.panoInfo.show_like
       },
-      set(show_hit) {
-        this.$store.commit(EDIT.PANO.UPDATE, { show_hit })
+      set(show_like) {
+        this.$store.commit(EDIT.PANO.UPDATE, { show_like })
       },
     },
   },
