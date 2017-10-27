@@ -75,7 +75,7 @@
       </a>
       <div
         class="authoritem__compositions--only"
-        v-if="author.panorama && author.panorama.length === 1"
+        v-if="author.panorama.length === 1"
       >
         <p>
           摄影师暂时
@@ -90,7 +90,7 @@
     <!-- 暂时还没上传作品 -->
     <div
       class="authoritem__compositions"
-      v-if="!author.panorama || author.panorama.length === 0"
+      v-else
     >
       <div class="authoritem__compositions--none clearfix">
         摄影师暂时还没
