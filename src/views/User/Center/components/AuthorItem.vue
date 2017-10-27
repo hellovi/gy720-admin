@@ -63,19 +63,19 @@
     <!-- 作品展示 -->
     <div
       class="authoritem__compositions clearfix"
-      v-if="author.pano && author.pano.length > 0"
+      v-if="author.panorama && author.panorama.length > 0"
     >
       <a
         class="authoritem__compositions__item"
-        v-for="item in author.pano" :key="item.id"
+        v-for="item in author.panorama" :key="item.id"
         :href="panoPath(item.hash_pano_id)"
-        :title="`作品：${item.pano_name}`"
+        :title="`作品：${item.name}`"
       >
         <img class="zoom-in" v-qiniu-src="item.thumb">
       </a>
       <div
         class="authoritem__compositions--only"
-        v-if="author.pano && author.pano.length === 1"
+        v-if="author.panorama && author.panorama.length === 1"
       >
         <p>
           摄影师暂时
@@ -90,7 +90,7 @@
     <!-- 暂时还没上传作品 -->
     <div
       class="authoritem__compositions"
-      v-if="!author.pano || author.pano.length === 0"
+      v-if="!author.panorama || author.panorama.length === 0"
     >
       <div class="authoritem__compositions--none clearfix">
         摄影师暂时还没
