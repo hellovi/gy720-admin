@@ -48,13 +48,14 @@
         <i class="iconfont">&#xe641;</i>{{pano.stargazers}}
       </div>
 
-      <el-button
-        v-if="routeType === 'recent'"
-        size='mini' type="warning"
-        @click.stop="toPanoEdit"
-      >
-        高级编辑
-      </el-button>
+      <router-link target="_blank" :to="`/make-client/edit?pano_id=${pano.hash_pano_id}`">
+        <el-button
+          v-if="routeType === 'recent'"
+          size='mini' type="warning"
+        >
+          高级编辑
+        </el-button>
+      </router-link>
     </div>
   </div>
 </template>
@@ -91,10 +92,6 @@ export default {
   },
 
   methods: {
-    toPanoEdit() {
-      this.$router.push(`/make-client/edit?pano_id=${this.pano.hash_pano_id}`)
-    },
-
     onToggleCollection() {
       this.$emit('toggle-collection', this.pano.id)
     },
