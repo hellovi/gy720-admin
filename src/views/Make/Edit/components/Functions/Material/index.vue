@@ -32,7 +32,7 @@
         :select-multiple="activeMaterial.multiple"
         ref="materialPage"
       >
-        <template slot="footer" scope="scope">
+        <template slot="footer" slot-scope="scope">
           <div
             v-if="activeType === 'scene'"
             class="material-panos__submit--select"

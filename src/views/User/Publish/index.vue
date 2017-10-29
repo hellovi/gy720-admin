@@ -55,7 +55,7 @@
     <!-- 素材库弹出  -->
     <el-dialog title="素材库" :visible.sync="active.material" custom-class="material-panos">
       <pano-material ref="panoMaterial" :selected="files">
-        <template slot="footer" scope="scope">
+        <template slot="footer" slot-scope="scope">
           <div class="material-panos__submit--select">
             <el-button type="primary" @click="selectPanos(scope.checked)">下一步</el-button>
           </div>

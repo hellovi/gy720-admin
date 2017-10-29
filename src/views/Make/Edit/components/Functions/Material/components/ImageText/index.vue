@@ -21,7 +21,7 @@
         width="280"
         align="center"
       >
-        <template scope="scope">
+        <template slot-scope="scope">
           <el-button
             size="small"
             type="info"
