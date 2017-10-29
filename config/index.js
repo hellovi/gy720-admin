@@ -42,6 +42,7 @@ module.exports = {
       '/assets/3.0.1/images/': proxySetting,
       '/sms/': proxySetting,
       '/mail/': proxySetting,
+      '/captcha/': proxySetting,
       // '/lib/': proxySetting,
       '/login': Object.assign({
         pathRewrite: {
