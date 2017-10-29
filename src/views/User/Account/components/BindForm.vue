@@ -20,6 +20,20 @@
           v-model="bindForm[formModel.account]"
         ></el-input>
       </el-form-item>
+      <el-form-item>
+        <el-row>
+          <el-col :span="10">
+            <el-input
+              :style="{paddingRight: '10px'}"
+              placeholder="图片验证码"
+              v-model="bindForm[formModel.img_code]"
+            ></el-input>
+          </el-col>
+          <el-col :span="8" class="bind-phone__img-code">
+            <img :src="`/captcha/default?${random}`" @click="updateImgCode">
+          </el-col>
+        </el-row>
+      </el-form-item>
       <el-form-item :prop="formModel.code">
         <el-row>
           <el-col :span="10">
@@ -108,6 +122,7 @@
       visible: false,
       bindForm: {},
       disabled: false,
+      random: '',
     }),
 
     methods: {
@@ -158,7 +173,23 @@
           })
       },
 
+      // 更新图片验证码
+      updateImgCode() {
+        this.random = `${Math.random().toString(36).substring(3, 13)}`
+      },
+
     },
 
   }
 </script>
+
+<style lang="postcss" scoped>
+  .bind-phone {
+    &__img-code {
+      height: 36px;
+      img {
+        cursor: pointer;
+      }
+     }
+  }
+</style>
