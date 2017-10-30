@@ -131,6 +131,7 @@
         },
         mobileModel: {
           account: 'mobile',
+          imgCode: 'img_code',
           code: 'captcha',
         },
         emailRules: {
@@ -147,6 +148,9 @@
           mobile: [
             { required: true, message: '请输入手机号码', trigger: 'blur' },
             { validator: mobileRule, message: '手机号码格式有误', trigger: 'blur' },
+          ],
+          img_code: [
+            { required: true, type: 'string', message: '请输入图形验证码', trigger: 'blur' },
           ],
           captcha: [
             { required: true, type: 'string', message: '请输入验证码', trigger: 'blur' },
