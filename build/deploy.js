@@ -40,5 +40,5 @@ git
   .add('./*')
   .commit('更新前端静态资源')
   .exec(() => console.log('pushing updates...'))
-  .push('origin', 'master')
+  .push('origin', 'master', {'--rebase': 'true'})
   .exec(() => console.log('deploy successfully!'))
