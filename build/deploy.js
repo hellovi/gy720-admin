@@ -36,9 +36,9 @@ const git = require('simple-git')(LARAVEL_PATH)
 
 git
   .exec(() => console.log('pulling updates...'))
-  .pull('origin', 'master')
+  .pull('origin', 'master', {'--rebase': 'true'})
   .add('./*')
   .commit('更新前端静态资源')
   .exec(() => console.log('pushing updates...'))
-  .push('origin', 'master', {'--rebase': 'true'})
+  .push('origin', 'master')
   .exec(() => console.log('deploy successfully!'))
