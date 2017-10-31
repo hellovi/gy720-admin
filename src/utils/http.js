@@ -25,6 +25,7 @@ class Http {
       patch: Http.patch,
       put: Http.put,
       delete: Http.delete,
+      codepost: Http.codepost,
     }
   }
 
@@ -136,6 +137,34 @@ class Http {
         ...defaultHeaders,
         ...headers,
       },
+    })
+      .then(Http.errorHandler)
+  }
+
+  /**
+   * 获取短信邮箱验证码 - POST请求
+   * @param {string} uri - 请求接口
+   * @param {Object} body - 请求所需携带参数
+   * @param {Object} headers - 指定额外的请求头
+   * @returns {Promise}
+   */
+  static codepost(uri, body, headers = {}) {
+    return fetch(uri, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...defaultHeaders,
+        ...headers,
+      },
+      body: JSON.stringify(body),
+      /**
+       * 使用图形验证码校验
+       * credentials为请求发送cookie配置
+       * omit: 默认值，忽略cookie的发送
+       * same-origin: 表示cookie只能同域发送，不能跨域发送
+       * include: cookie既可以同域发送，也可以跨域发送
+       */
+      credentials: 'same-origin',
     })
       .then(Http.errorHandler)
   }

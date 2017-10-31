@@ -126,11 +126,11 @@
     }),
 
     methods: {
-      // 发送邮箱
+      // 获取短信、邮箱验证码
       codeSend() {
         if (!this.validFields([this.formModel.account, this.formModel.imgCode]).join().includes('true')) {
           this.disabled = true
-          this.$http.post(this.sendUrl, this.bindForm)
+          this.$http.codepost(this.sendUrl, this.bindForm)
             .then(() => {
               this.sended()
               this.$message.success('验证码发送成功，请查收！')
