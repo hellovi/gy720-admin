@@ -1,6 +1,9 @@
 <template>
   <div class="addspots-sec">
-
+    <app-form-alert
+      label-width="80px"
+      :contents="formErrors"
+    ></app-form-alert>
     <el-form ref="spotForm" :rules="rules" :model="form" label-width="80px">
       <!--名称图标固定显示-->
       <el-form-item label="热点名称" prop="hot_name">
@@ -167,9 +170,11 @@ export default {
     return {
       configHost: Url.configHost,
 
+      formErrors: {},
+
       form: {
         hot_name: null,
-        data_id: 0,
+        data_id: '',
         title: null,
         icon_info: { thumb: null, id: null },
       },
@@ -249,7 +254,7 @@ export default {
       const invokeMater = (kind, multiple) => {
         if (multiple) {
           // 多选素材
-          this.$store.dispatch(EDIT.MATERIAL.INVOKES, kind, multiple)
+          this.$store.dispatch(EDIT.MATERIAL.INVOKES, kind)
             .then((res) => {
               this.form = { ...this.form, data_id: [...res, ...this.form.data_id] }
               this.$nextTick(() => {
@@ -284,6 +289,10 @@ export default {
         default:
           break
       }
+    },
+
+    errorsHandler(errors) {
+      this.formErrors = errors
     },
 
     sceneLink(id, thumb) {
@@ -399,6 +408,7 @@ export default {
               pano_id: this.panoId })
           }
         })
+        .catch(this.errorsHandler)
     },
 
     submitForm(formName) {
