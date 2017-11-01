@@ -130,6 +130,8 @@
       codeSend() {
         if (!this.validFields([this.formModel.account, this.formModel.imgCode]).join().includes('true')) {
           this.disabled = true
+          // 清空错误信息
+          this.formAlert = {}
           this.$http.codepost(this.sendUrl, this.bindForm)
             .then(() => {
               this.sended()
@@ -137,6 +139,10 @@
             })
             .catch((errors) => {
               this.disabled = false
+              if (this.formModel.imgCode) {
+                // 更新图形验证码
+                this.updateImgCode()
+              }
               this.errorHandler(errors)
             })
         }
