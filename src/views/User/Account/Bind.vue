@@ -127,6 +127,7 @@
         bindInfo: {},
         emailModel: {
           account: 'email',
+          imgCode: 'img_code',
           code: 'captcha',
         },
         mobileModel: {
@@ -139,6 +140,9 @@
             { required: true, message: '请输入邮箱', trigger: 'blur' },
             { type: 'email', message: '邮箱格式有误', trigger: 'blur' },
           ],
+          img_code: [
+            { required: true, type: 'string', message: '请输入图片验证码', trigger: 'blur' },
+          ],
           captcha: [
             { required: true, type: 'string', message: '请输入验证码', trigger: 'blur' },
             { type: 'string', len: 4, message: '验证码长度为4个字符', trigger: 'blur' },
@@ -150,7 +154,7 @@
             { validator: mobileRule, message: '手机号码格式有误', trigger: 'blur' },
           ],
           img_code: [
-            { required: true, type: 'string', message: '请输入图形验证码', trigger: 'blur' },
+            { required: true, type: 'string', message: '请输入图片验证码', trigger: 'blur' },
           ],
           captcha: [
             { required: true, type: 'string', message: '请输入验证码', trigger: 'blur' },
