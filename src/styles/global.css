@@ -24,4 +24,5 @@ html, body, input, textarea, keygen, select, button {
 a {
   color: inherit;
   text-decoration: none;
+  outline: none;
 }
