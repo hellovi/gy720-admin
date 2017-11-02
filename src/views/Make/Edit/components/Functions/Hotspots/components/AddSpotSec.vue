@@ -64,7 +64,7 @@
           placement="right-start"
         >
           <span>?</span>
-          <a slot="content" :href="`${configHost.origin}`" target="_blank">查看详细教程>></a>
+          <a slot="content" :href="`${panoInfo.hotspot_video_manual_url}`" target="_blank">查看详细教程>></a>
         </el-tooltip>
       </el-form-item>
 
@@ -216,6 +216,7 @@ export default {
     ...mapState({
       activeIcon: state => state.edit.hotspots.activeIcon,
       panoId: state => state.edit.panoInfo.hash_pano_id,
+      panoInfo: state => state.edit.panoInfo,
       scenes: state => state.edit.scene.list,
     }),
 
