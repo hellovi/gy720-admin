@@ -101,12 +101,12 @@ export default {
             validator: (rule, value, callback) => {
               if (this.form.privacy === 20) {
                 if (!value) {
-                  callback(new Error('作品密码不能为空'))
+                  return callback(new Error('作品密码不能为空'))
                 } else if (value.length > 6) {
-                  callback(new Error('作品密码为1~6个字符'))
+                  return callback(new Error('作品密码为1~6个字符'))
                 }
               }
-              callback()
+              return callback()
             },
           },
 

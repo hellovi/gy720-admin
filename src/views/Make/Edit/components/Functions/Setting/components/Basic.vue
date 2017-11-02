@@ -44,7 +44,7 @@
         <span class="tip-mark" data-tip="设置为加密并输入作品密码后，他人需输入密码才能查看该作品">?</span>
       </el-form-item>
 
-      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 20" prop="password" required>
+      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 20" prop="password" :required="form.privacy === 20">
         <el-input placeholder="请输入作品密码" v-model="form.password"></el-input>
       </el-form-item>
 
