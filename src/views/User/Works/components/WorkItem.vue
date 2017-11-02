@@ -87,12 +87,18 @@
         删除
       </el-button>
 
-      <el-button
-        type="text"
-        class="workitem__biz-editor"
+      <router-link
+        :to="`/make-client/edit?pano_id=${this.item.hash_pano_id}`"
+        target="_blank"
+        style="margin: 0 10px;"
       >
-        <a :href="`/make-client/edit?pano_id=${this.item.hash_pano_id}`" target="_blank">高级编辑</a>
-      </el-button>
+        <el-button
+          type="text"
+          class="workitem__biz-editor"
+        >
+          高级编辑
+        </el-button>
+      </router-link>
     </el-col>
 
     <!-- 离线下载 -->
