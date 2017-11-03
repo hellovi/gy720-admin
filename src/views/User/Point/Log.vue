@@ -26,7 +26,7 @@
       v-if="list.last_page > 1"
       layout="prev, pager, next"
       :total="list.total"
-      :page-sizes="list.per_page"
+      :page-size="list.per_page"
       :current-page="list.current_page"
       @current-change="pageChange"
     ></el-pagination>
