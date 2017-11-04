@@ -111,6 +111,7 @@ export default {
       cropShow: false,
       previemImg: '',
       multiFileSrc: [],
+      uploadStatus: false,
     }
   },
 
@@ -164,7 +165,11 @@ export default {
                 })
 
                 this.previemImg = dataUrl
-                this.cropShow = true
+                if (!this.uploadStatus && this.cropper) {
+                  this.cropShow = true
+                  // 删除原图阵列并把剪裁后图片添加到阵列
+                  this.uploader.removeFile(file)
+                }
               })
             })
             this.$emit('files-added', up, files)
@@ -201,31 +206,29 @@ export default {
            */
           FileUploaded: (up, file, info) => {
             const res = JSON.parse(info.response)
-
             // 文件路径
             const src = res.key
+            // let val = src
 
-            let val = src
-
-            if (this.cropper) {
-              // 提交七牛裁剪
-              val = window.Qiniu.imageMogr2({
-                crop: this.cropInfo,
-              }, src)
-
-              /**
-               * 去除域名截取链接
-               * 七牛图片处理参数
-               */
-              const cropQuery = this.cropQuery ? `${this.cropQuery}` : ''
-              val = `${val.replace(domain, '')}${cropQuery}`
-            }
+            // if (this.cropper) {
+            //   // 提交七牛裁剪
+            //   val = window.Qiniu.imageMogr2({
+            //     crop: this.cropInfo,
+            //   }, src)
+            //
+            //   /**
+            //    * 去除域名截取链接
+            //    * 七牛图片处理参数
+            //    */
+            //   const cropQuery = this.cropQuery ? `${this.cropQuery}` : ''
+            //   val = `${val.replace(domain, '')}${cropQuery}`
+            // }
 
             // 更新value字段
             if (!this.multiple) {
-              this.$emit('input', val)
+              this.$emit('input', src)
             }
-            this.multiFileSrc.push(val)
+            this.multiFileSrc.push(src)
             this.$emit('file-uploaded', up, file, info)
           },
 
@@ -233,6 +236,7 @@ export default {
            * 上传出错时,处理相关的事情
            */
           Error: (up, err, errTip) => {
+            this.uploadStatus = false
             this.$message.error(customMessage({ up, err, errTip }))
             this.$emit('error', up, err, errTip)
           },
@@ -241,6 +245,7 @@ export default {
            * 队列文件处理完毕后,处理相关的事情
            */
           UploadComplete: () => {
+            this.uploadStatus = false
             if (this.multiple) {
               this.$emit('input', this.multiFileSrc)
             }
@@ -276,11 +281,29 @@ export default {
      */
     crop(data) {
       this.cropShow = false
+      this.uploadStatus = true
       this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
       if (this.autoStart) {
+        // 添加剪裁后图片文件到上传阵列
+        this.uploader.addFile(this.convertBase64UrlToBlob(data.preview))
+        // 手动开始上传
         this.uploader.start()
       }
       this.$emit('crop-success', data, this.uploader)
+    },
+
+    // 将base64格式图片转换为文件形式
+    convertBase64UrlToBlob(urlData) {
+      // 去掉url的头，并转换为byte
+      const bytes = window.atob(urlData.split(',')[1])
+      // 处理异常,将ascii码小于0的转换为大于0
+      const ab = new ArrayBuffer(bytes.length)
+      const ia = new Uint8Array(ab)
+
+      for (let i = 0; i < bytes.length; i += 1) {
+        ia[i] = bytes.charCodeAt(i)
+      }
+      return new Blob([ab], { type: 'image/png' })
     },
 
     /**
