@@ -21,7 +21,9 @@
           class="center-panoitem__info__avatar-img"
           :alt="`作品：${pano.name}`"
           v-qiniu-src="pano.avatar"
-          data-type="avatar">
+          data-type="avatar"
+          data-query="/thumbnail/200x200"
+        >
       </a>
       <span
         :class="{

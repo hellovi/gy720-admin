@@ -167,7 +167,7 @@ export default {
                 this.previemImg = dataUrl
                 if (!this.uploadStatus && this.cropper) {
                   this.cropShow = true
-                  // 删除原图阵列并把剪裁后图片添加到阵列
+                  // 删除原图阵列并把裁剪后图片添加到阵列
                   this.uploader.removeFile(file)
                 }
               })
@@ -208,27 +208,26 @@ export default {
             const res = JSON.parse(info.response)
             // 文件路径
             const src = res.key
-            // let val = src
+            let val = src
 
-            // if (this.cropper) {
-            //   // 提交七牛裁剪
-            //   val = window.Qiniu.imageMogr2({
-            //     crop: this.cropInfo,
-            //   }, src)
-            //
-            //   /**
-            //    * 去除域名截取链接
-            //    * 七牛图片处理参数
-            //    */
-            //   const cropQuery = this.cropQuery ? `${this.cropQuery}` : ''
-            //   val = `${val.replace(domain, '')}${cropQuery}`
-            // }
+            if (this.cropper) {
+              // 提交七牛裁剪
+              val = window.Qiniu.imageMogr2({
+                crop: this.cropInfo,
+              }, src)
+              /**
+               * 去除域名截取链接
+               * 七牛图片处理参数
+               */
+              const cropQuery = this.cropQuery ? `${this.cropQuery}` : ''
+              val = `${val.replace(domain, '')}${cropQuery}`
+            }
 
             // 更新value字段
             if (!this.multiple) {
-              this.$emit('input', src)
+              this.$emit('input', val)
             }
-            this.multiFileSrc.push(src)
+            this.multiFileSrc.push(val)
             this.$emit('file-uploaded', up, file, info)
           },
 
@@ -277,14 +276,15 @@ export default {
     },
 
     /**
-     * 确认剪裁后，存储剪裁信息，并触发上传
+     * 确认裁剪后，存储裁剪信息，并触发上传
      */
     crop(data) {
       this.cropShow = false
       this.uploadStatus = true
-      this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
+      // this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
+      this.cropInfo = `!${data.width}x${data.height}a0a0`
       if (this.autoStart) {
-        // 添加剪裁后图片文件到上传阵列
+        // 添加裁剪后图片文件到上传阵列
         this.uploader.addFile(this.convertBase64UrlToBlob(data.preview))
         // 手动开始上传
         this.uploader.start()

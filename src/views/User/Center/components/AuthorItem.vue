@@ -12,7 +12,7 @@
       :href="userPath"
       :title="`${author.nickname}的主页`"
     >
-      <img v-qiniu-src="author.avatar" data-type="avatar" :alt="`${author.nickname}的头像`">
+      <img v-qiniu-src="author.avatar" data-type="avatar" data-query="/thumbnail/200x200" :alt="`${author.nickname}的头像`">
     </a>
 
     <!-- 姓名 -->
