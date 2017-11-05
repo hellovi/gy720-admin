@@ -112,6 +112,7 @@ export default {
       previemImg: '',
       multiFileSrc: [],
       uploadStatus: false,
+      fileInfo: {},
     }
   },
 
@@ -167,6 +168,7 @@ export default {
                 this.previemImg = dataUrl
                 if (!this.uploadStatus && this.cropper) {
                   this.cropShow = true
+                  this.fileInfo = file
                   // 删除原图阵列并把裁剪后图片添加到阵列
                   this.uploader.removeFile(file)
                 }
@@ -285,7 +287,7 @@ export default {
       this.cropInfo = `!${data.width}x${data.height}a0a0`
       if (this.autoStart) {
         // 添加裁剪后图片文件到上传阵列
-        this.uploader.addFile(this.convertBase64UrlToBlob(data.preview))
+        this.uploader.addFile(this.convertBase64UrlToBlob(data.preview), this.fileInfo.name)
         // 手动开始上传
         this.uploader.start()
       }
@@ -303,7 +305,7 @@ export default {
       for (let i = 0; i < bytes.length; i += 1) {
         ia[i] = bytes.charCodeAt(i)
       }
-      return new Blob([ab], { type: 'image/png' })
+      return new Blob([ab], { type: this.fileInfo.type })
     },
 
     /**
