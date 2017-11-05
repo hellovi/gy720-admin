@@ -67,7 +67,7 @@
             <el-switch
               v-model="message.show_status"
               on-text="显示" off-text="隐藏"
-              :on-value="20" :off-value="10"
+              :on-value="10" :off-value="20"
               on-color="#13ce66" off-color="#ff4949"
               name="message.id"
               @change="switchVisible"
