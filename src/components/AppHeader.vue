@@ -9,7 +9,7 @@
         <li><a href="/">首页</a></li>
         <li><a href="/pano">720°全景</a></li>
         <li><a href="/author">摄影师</a></li>
-        <li><a href="/service">服务</a></li>
+        <li><a href="/page/service">服务</a></li>
         <li><a href="/forum">话题</a></li>
       </ul>
     </nav>

@@ -134,6 +134,7 @@ export default {
   bottom: 30px;
   left: 15px;
   height: 40px;
+  z-index: 10;
 
   & > * {
     vertical-align: top;
