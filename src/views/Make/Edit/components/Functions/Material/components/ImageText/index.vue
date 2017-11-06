@@ -51,6 +51,7 @@
       layout="prev, pager, next"
       :page-size="perPage"
       :total="listData.total"
+      @current-change="getListData"
       v-if="listData.total"
     >
     </el-pagination>
