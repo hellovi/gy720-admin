@@ -243,6 +243,11 @@ export default {
   & .edition__selection {
     text-align: left;
 
+    .el-dialog--large {
+      width: 920px;
+      position: inherit;
+    }
+
     &-item {
       float: left;
     }

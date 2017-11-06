@@ -24,10 +24,10 @@
       <el-form-item :label="secInfo" v-if="type === typeConfig.SCENE" prop="data_id">
         <el-button type="primary" size="small" @click="modal.sceneLink = true">选择</el-button>
         <!--下面区域-->
-        <div v-show="scenesLink.status" class="addspots-sec__scenes-link">
-          <img :src="$url.host(activeScene.thumb)" alt=""/>
+        <div v-show="scenesLink.status || activeIcon.data_thumb" class="addspots-sec__scenes-link">
+          <img v-qiniu-src="activeScene.thumb"/>
           <i class="iconfont">&#xe60d;</i>
-          <img :src="$url.host(scenesLink.thumb)" alt=""/>
+          <img v-qiniu-src="scenesLink.thumb || activeIcon.data_thumb"/>
         </div>
       </el-form-item>
 
@@ -485,7 +485,7 @@ export default {
 
   /*覆盖弹窗嵌套样式*/
   .hotspot-scene-dialog {
-    width: 1000px;
+    width: 910px;
     position: inherit;
   }
 }

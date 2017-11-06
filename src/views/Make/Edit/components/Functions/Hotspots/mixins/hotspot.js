@@ -1,8 +1,22 @@
+/**
+ * @author luminghuai | chenliangshan
+ * @version 2017-11-06
+ */
+
 /* eslint-disable no-underscore-dangle */
+
+import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import './initKrpanoHotspot'
 
 export default {
+
+  computed: {
+    ...mapState({
+      sceneList: state => state.edit.scene.list,
+    }),
+  },
+
   methods: {
     /**
      * 编辑热点
@@ -14,7 +28,9 @@ export default {
       // 热点图标赋值 ???? // 这里还是得区分有无c-
       const activeIcon = { icon_id: info.icon_id,
         thumb: info.icon_thumb || info.diy_src,
-        y: info.y }
+        y: info.y,
+        data_thumb: info.type_id === 1 ? this.sceneList.find(list => list.id === +info.data_id).thumb : '',
+      }
       this.$store.commit(EDIT.HOTSPOTS.SELECT.ICON, activeIcon)
       this.openModal('hotspots')
       this.switchStep(2, info.type_id)

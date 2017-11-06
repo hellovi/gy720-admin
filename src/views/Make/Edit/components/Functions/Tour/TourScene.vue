@@ -55,14 +55,10 @@ export default {
   margin: 0 6px 6px 4px;
   padding: 2px;
   border: 1px solid var(--gray-light);
-  height: 86px;
-  width: 86px;
+  height: 100px;
+  width: 100px;
   text-align: center;
   cursor: pointer;
-
-  &:first-child {
-    margin-left: 7px;
-  }
 
   &.forbidden {
     cursor: not-allowed;

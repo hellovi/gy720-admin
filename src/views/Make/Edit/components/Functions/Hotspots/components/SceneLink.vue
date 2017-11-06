@@ -1,14 +1,14 @@
 <template>
   <div class="hotspot-scene">
     <el-row :gutter="20">
-      <el-col :span="6"
+      <el-col :span="3"
         v-for="item in list" :key="item.id"
         class="hotspot-scene__item"
         :class="{'hotspot-scene__item--active':activeId === item.id}"
         @click.native="selectScene(item.id, item.thumb)"
       >
         <img v-qiniu-src="item.thumb" :alt="item.name"/>
-        <h4>{{item.name}}</h4>
+        <h5>{{item.name}}</h5>
       </el-col>
     </el-row>
     <el-button class="hotspot-scene__btn" type="primary" @click="submitScene">确定</el-button>
@@ -62,7 +62,8 @@ export default {
   transition: 0.2s;
   padding: 0 !important;
   margin-left: 10px;
-  width: 180px;
+  width: 100px;
+  height: 100px;
 
   &:hover {
     opacity: 0.9;
@@ -71,9 +72,10 @@ export default {
   & > img {
     width: 100%;
     height: 100%;
+    font-size: 0;
   }
 
-  & > h4 {
+  & > h5 {
     position: absolute;
     bottom: 0;
     width: 100%;
