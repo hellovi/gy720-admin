@@ -7,7 +7,7 @@
         :class="{'hotspot-scene__item--active':activeId === item.id}"
         @click.native="selectScene(item.id, item.thumb)"
       >
-        <img :src="$url.host(item.thumb)" :alt="item.name"/>
+        <img v-qiniu-src="item.thumb" :alt="item.name"/>
         <h4>{{item.name}}</h4>
       </el-col>
     </el-row>

@@ -114,6 +114,7 @@
      <!--场景链接弹窗-->
     <el-dialog
       title="选择漫游场景"
+      size="large"
       custom-class="hotspot-scene-dialog"
       :modal="false"
       :visible.sync="modal.sceneLink"
@@ -481,6 +482,12 @@ export default {
       height: auto;
     }
   }
+
+  /*覆盖弹窗嵌套样式*/
+  .hotspot-scene-dialog {
+    width: 1000px;
+    position: inherit;
+  }
 }
 
 .addspots-photo-list {
@@ -505,12 +512,6 @@ export default {
       cursor: pointer;
     }
   }
-}
-
-/*覆盖弹窗嵌套样式*/
-.hotspot-scene-dialog {
-  width: 1000px !important;
-  position: fixed;
 }
 
 </style>
