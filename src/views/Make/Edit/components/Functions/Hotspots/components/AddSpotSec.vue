@@ -334,8 +334,8 @@ export default {
         pano_id: this.panoId,
         scene_id: this.$store.getters.activeScene.id,
         hot_name: this.form.hot_name,
-        ath: sphereY,
-        atv: sphereX,
+        ath: sphereX,
+        atv: sphereY,
         icon_id: this.activeIcon.icon_id,
         type_id: this.type, // 热点类型
         data_id: this.form.data_id,
