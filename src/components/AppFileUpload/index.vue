@@ -144,7 +144,7 @@ export default {
             { title: 'Image files', extensions: this.accept },
           ],
         },
-        flash_swf_url: '/assets/3.0.1/lib/plupload-2.1.4/js/Moxie.swf',
+        flash_swf_url: `/assets/${process.env.ASSETS_VERSION}/lib/plupload-2.1.4/js/Moxie.swf`,
         max_retries: 3,
         dragdrop: true,
         drop_element: container,

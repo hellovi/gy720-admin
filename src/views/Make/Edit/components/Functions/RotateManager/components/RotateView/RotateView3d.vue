@@ -70,7 +70,7 @@
 
   import { dynamicLoadScript, Url } from '@/utils'
 
-  const rotatePath = 'assets/3.0.1/lib/rotate/'
+  const rotatePath = `assets/${process.env.ASSETS_VERSION}/lib/rotate/`
   const rotateSkinPath = `/${rotatePath}skin/2/`
 
   export default {

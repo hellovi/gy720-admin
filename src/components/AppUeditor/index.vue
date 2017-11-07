@@ -28,7 +28,7 @@
       },
       path: {
         type: String,
-        default: 'assets/3.0.1/lib/ueditor/1.4.3/',
+        default: `assets/${process.env.ASSETS_VERSION}/lib/ueditor/1.4.3/`,
       },
       config: {
         type: Object,

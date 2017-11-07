@@ -119,7 +119,7 @@ export default {
 
         embedpano({
           id: this.krpanoObjId,
-          swf: '/assets/3.0.1/lib/krpano/tour.swf',
+          swf: `/assets/${process.env.ASSETS_VERSION}/lib/krpano/tour.swf`,
           xml: `/user/pano/xml?pano_id=${pano_id}`,
           target: 'pano-editor',
           html5: 'only+webgl+preservedrawingbuffer',

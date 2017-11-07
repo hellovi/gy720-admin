@@ -75,7 +75,7 @@ export default class Url {
   }
 
   static staticHotSpots(pathname) {
-    return `${configHost.origin}/assets/3.0.1/lib/krpano/hoticon/${pathname}`
+    return `${configHost.origin}/assets/${process.env.ASSETS_VERSION}/lib/krpano/hoticon/${pathname}`
   }
 
   static getQuery(url = window.location.href) {

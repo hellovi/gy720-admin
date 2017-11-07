@@ -21,7 +21,7 @@
    * window.UEDITOR_HOME_URL = "/xxxx/xxxx/";
    */
   // var URL = window.UEDITOR_HOME_URL || getUEBasePath();
-  var URL = window.UEDITOR_HOME_URL || '/assets/3.0.1/lib/ueditor/1.4.3/';
+  var URL = window.UEDITOR_HOME_URL || `/assets/${process.env.ASSETS_VERSION}/lib/ueditor/1.4.3/`;
 
   /**
    * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
