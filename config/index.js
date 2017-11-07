@@ -1,6 +1,6 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 var path = require('path')
-
+var package = require('../package.json')
 var proxySetting = {
   target: 'https://l.gy720.com',
   changeOrigin: true,
@@ -12,7 +12,7 @@ module.exports = {
     env: require('./prod.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'assets/3.0.1/vue',
+    assetsSubDirectory: `assets/${package.assetsVersion}/vue`,
     assetsPublicPath: '/',
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
@@ -31,15 +31,15 @@ module.exports = {
     env: require('./dev.env'),
     port: 8080,
     autoOpenBrowser: true,
-    assetsSubDirectory: 'assets/3.0.1/vue',
+    assetsSubDirectory: `assets/${package.assetsVersion}/vue`,
     assetsPublicPath: '/',
     proxyTable: {
       '/user/': proxySetting,
       '/api/': proxySetting,
       '/make/': proxySetting,
       '/data/': proxySetting,
-      '/assets/3.0.1/lib/': proxySetting,
-      '/assets/3.0.1/images/': proxySetting,
+      [`/assets/${package.assetsVersion}/lib/`]: proxySetting,
+      [`/assets/${package.assetsVersion}/images/`]: proxySetting,
       '/sms/': proxySetting,
       '/mail/': proxySetting,
       '/captcha/': proxySetting,
