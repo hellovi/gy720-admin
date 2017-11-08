@@ -11,7 +11,7 @@
       <div class="group-dialog__header__tip clearfix">
       <h5>温馨提示:</h5>
         <ol>
-          <li>最多支持添加5个分组</li>
+          <li>最多支持添加10个分组</li>
           <li>拖动整个分组名称可以排序</li>
           <li>拖动单个场景可以排序</li>
           <li>未分组的场景显示在第一个默认分组（场景）内</li>
@@ -239,8 +239,8 @@ export default {
         dialogTitle = '编辑场景分组'
       }
 
-      // 限制最多5个分组
-      if (title || this.groupsList.length < 5) {
+      // 限制最多10个分组
+      if (title || this.groupsList.length < 10) {
         this.$prompt('请输入分组名', dialogTitle, {
           closeOnPressEscape: false,
           closeOnClickModal: false,
@@ -270,7 +270,7 @@ export default {
           }
         })
       } else {
-        this.errorHandler('场景分组最多不能超出5个')
+        this.errorHandler('场景分组最多不能超出10个')
       }
     },
 
