@@ -395,7 +395,6 @@ export default {
 }
 .group-dialog {
   width: var(--dialog-width);
-  height: 60%;
   transform: none;
   margin-left: calc(var(--dialog-width) / -2);
 
@@ -435,7 +434,8 @@ export default {
 }
 
 .group-list-warp {
-  max-height: 480px;
+  min-height: 450px;
+  max-height: 500px;
   overflow: hidden;
 
   &:hover {
@@ -594,6 +594,18 @@ export default {
 
     .el-button {
       width: 10em;
+    }
+  }
+}
+
+/* 兼容小分辨率屏幕 */
+@media screen and (max-height: 760px) {
+  .group-dialog {
+    top: 5% !important;
+
+    .group-list-warp {
+      min-height: 400px;
+      max-height: 420px;
     }
   }
 }
