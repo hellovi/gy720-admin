@@ -18,18 +18,6 @@ const LARAVEL_PATH = path.resolve(__dirname, '../../gy720.laravel')
 // 复制dist中的静态文件到laravel项目中的public文件夹中
 const ASSETS_PATH = path.join(DIST_PATH, assetsSubDirectory)
 const PUBLIC_PATH = path.join(LARAVEL_PATH, 'public', assetsSubDirectory)
-console.log('copying assets...')
- // 复制前先清空laravel中的相关文件夹
-fs.emptyDir(PUBLIC_PATH)
-  .then(() => {
-    fs.copySync(ASSETS_PATH, PUBLIC_PATH)
-  })
-
-// 复制dist中的html文件到laravel中的模板文件夹中
-const HMTL_PATH = path.join(DIST_PATH, 'index.html')
-const TEMPLATE_PATH = path.join(LARAVEL_PATH, 'resources/views/vue/index.blade.php')
-console.log('copying index.html...')
-fs.copySync(HMTL_PATH, TEMPLATE_PATH)
 
 // 提交变更带到git并推送
 const git = require('simple-git')(LARAVEL_PATH)
@@ -37,6 +25,20 @@ const git = require('simple-git')(LARAVEL_PATH)
 git
   .exec(() => console.log('pulling updates...'))
   .pull('origin', 'develop')
+  .exec(() => {
+    // 复制前先清空laravel中的相关文件夹
+    console.log('delete files...')
+    fs.emptyDirSync(PUBLIC_PATH)
+
+    console.log('copying assets...')
+    fs.copySync(ASSETS_PATH, PUBLIC_PATH)
+
+    // 复制dist中的html文件到laravel中的模板文件夹中
+    const HMTL_PATH = path.join(DIST_PATH, 'index.html')
+    const TEMPLATE_PATH = path.join(LARAVEL_PATH, 'resources/views/vue/index.blade.php')
+    console.log('copying index.html...')
+    fs.copySync(HMTL_PATH, TEMPLATE_PATH)
+  })
   .add('./*')
   .commit('更新前端静态资源')
   .exec(() => console.log('pushing updates...'))
