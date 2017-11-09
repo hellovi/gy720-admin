@@ -261,7 +261,7 @@ export default {
   &__img {
     float: left;
     width: var(--cover-width);
-    min-height: 161px;
+    height: 160px;
     max-width: var(--cover-width);
   }
 
