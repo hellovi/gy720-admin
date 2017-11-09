@@ -20,7 +20,7 @@
       <el-button type="primary" size="small" @click="createNewGroup">添加场景分组</el-button>
     </header>
 
-    <draggable v-model="groupsList" :options="{group:'list'}" @sort="groupsSort">
+    <draggable v-model="groupsList" :options="{group:'list'}" class="group-list-warp" @sort="groupsSort">
       <transition-group tag="ul" class="group-list list">
         <li v-for="list in groupsList" :key="list.id">
           <div class="scene-group">
@@ -31,7 +31,7 @@
                 <i role="button" class="iconfont" @click="removeGroup(list)">&#xe615;</i>
               </div>
             </div>
-            <draggable :list="list.scenes" v-if="list.scenes.length" @sort="sceneSort(list.id)">
+            <draggable :list="list.scenes" class="scene-group__list" @sort="sceneSort(list.id)">
               <transition-group tag="ul" class="list">
                 <li v-for="scene in list.scenes" :key="scene.id" class="scene-group__item clearfix">
                   <img :src="$url.static(scene.thumb)" :alt="scene.name">
@@ -113,6 +113,7 @@ export default {
       addScenesLoading: false,
       groupsListLoad: false,
       isRender: false,
+      saveStatus: false,
     }
   },
 
@@ -191,6 +192,7 @@ export default {
         })
           .then(() => {
             this.$message.success('添加场景成功!')
+            this.saveStatus = true
             this.showScenes = false
             this.addScenesLoading = false
           })
@@ -201,18 +203,23 @@ export default {
 
     // 关闭场景窗口清空选择场景数据
     closeSelectScenes() {
-      this.groupsList = this.groupsList.map((item) => {
-        const scenes = [...item.scenes.concat(this.selectSceneIds)]
-        if (item.id === this.currentGroupsId) {
-          this.currentGroupsId = null
-          this.selectSceneIds = []
-          return {
-            ...item,
-            scenes,
+      if (!this.saveStatus) {
+        this.selectSceneIds = []
+      } else {
+        this.groupsList = this.groupsList.map((item) => {
+          const scenes = [...item.scenes.concat(this.selectSceneIds)]
+          if (item.id === this.currentGroupsId) {
+            this.currentGroupsId = null
+            this.saveStatus = false
+            this.selectSceneIds = []
+            return {
+              ...item,
+              scenes,
+            }
           }
-        }
-        return item
-      })
+          return item
+        })
+      }
     },
 
     // 修改分组名称
@@ -391,7 +398,6 @@ export default {
   height: 60%;
   transform: none;
   margin-left: calc(var(--dialog-width) / -2);
-  overflow: auto;
 
   &__header {
     margin-bottom: 20px;
@@ -428,16 +434,22 @@ export default {
   }
 }
 
+.group-list-warp {
+  max-height: 480px;
+  overflow: hidden;
+
+  &:hover {
+    overflow-y: auto;
+  }
+}
+
 .group-list {
   & > li {
     float: left;
     transition: 0.3s;
     width: 20%;
-    & + li {
-      .scene-group {
-        margin-left: 20px;
-      }
-    }
+    padding: 0 10px;
+    margin-bottom: 20px;
   }
 }
 
@@ -473,6 +485,15 @@ export default {
 
     & > .el-input {
       width: 182px;
+    }
+  }
+
+  &__list {
+    height: 204px;
+    overflow: hidden;
+
+    &:hover {
+      overflow-y: auto;
     }
   }
 
