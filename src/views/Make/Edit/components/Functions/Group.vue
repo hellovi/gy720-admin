@@ -20,7 +20,14 @@
       <el-button type="primary" size="small" @click="createNewGroup">添加场景分组</el-button>
     </header>
 
-    <draggable v-model="groupsList" :options="{group:'list'}" class="group-list-warp" @sort="groupsSort">
+    <app-empty-body
+      width="560px"
+      v-if="!groupsList.length && groupsListLoad"
+    >
+      您还没有设置场景分组，<br/>多个场景建议您设置分组哦！
+    </app-empty-body>
+
+    <draggable v-model="groupsList" :options="{group:'list'}" class="group-list-warp" v-else @sort="groupsSort">
       <transition-group tag="ul" class="group-list list">
         <li v-for="list in groupsList" :key="list.id">
           <div class="scene-group">
@@ -49,13 +56,6 @@
         </li>
       </transition-group>
     </draggable>
-
-    <app-empty-body
-      width="560px"
-      v-if="!groupsList.length && groupsListLoad"
-    >
-      您还没有设置场景分组，<br/>多个场景建议您设置分组哦！
-    </app-empty-body>
 
     <el-dialog
       title="选择场景"
