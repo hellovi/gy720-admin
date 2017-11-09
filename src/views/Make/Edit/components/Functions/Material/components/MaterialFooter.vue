@@ -1,6 +1,6 @@
 <template>
   <footer class="material-footer">
-    <span v-show="activeType === 'scene'">
+    <span v-if="activeType === 'scene'">
       <div class="el-button btn-primary" id="normal">上传2:1全景图</div>
       <div class="el-button btn-primary" id="fisheye">上传4张鱼眼图</div>
     </span>
@@ -106,6 +106,16 @@ export default {
         this.$emit('file-upload', val)
       },
       deep: true,
+    },
+
+    activeType(val) {
+      if (val === 'scene') {
+        // 重新实例全景图上传控件
+        this.$nextTick(() => {
+          this.initNormalUpload('normal')
+          this.initFisheyeUpload('fisheye')
+        })
+      }
     },
   },
 

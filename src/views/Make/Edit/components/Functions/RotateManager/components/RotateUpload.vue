@@ -30,6 +30,7 @@
       <app-file-upload
         v-show="!files.length"
         multiple
+        static-url="data/source/rotate/"
         :auto-start="false"
         @init="init"
         @file-preview="filePreview"
