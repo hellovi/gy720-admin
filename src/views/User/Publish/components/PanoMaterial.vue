@@ -77,6 +77,7 @@
                   slot="checkbox"
                   :disabled="disabledId.includes(pano.id)"
                   :value="disabledId.includes(pano.id) || checked.includes(pano.id)"
+                  :checked="disabledId.includes(pano.id) || checked.includes(pano.id)"
                   @change="selectPano(pano, $event.target.checked)"
                 >
                 </el-checkbox>
@@ -301,7 +302,7 @@ export default {
 
     selectPano({ id, vtour }, checked) {
       if (!this.disabledId.includes(id) && (vtour === undefined || vtour)) {
-        if (checked || this.checked.includes(id)) {
+        if ((checked !== undefined && !checked) || this.checked.includes(id)) {
           this.checked = this.checked.filter(item => item !== id)
         } else {
           this.checked.push(id)
