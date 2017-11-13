@@ -65,16 +65,19 @@
 
         <!-- 发票信息 -->
         <template v-if="hasInvoice">
-          <el-form-item label="公司抬头：" prop="company" required>
+          <el-form-item label="公司抬头：" prop="company">
             <el-input placeholder="不填默认为个人发票" v-model="form.company"></el-input>
           </el-form-item>
-          <el-form-item label="邮寄地址：" prop="address" required>
+          <el-form-item label="纳税人识别号：" prop="taxpayer_id" v-if="form.company">
+            <el-input placeholder="请填写大小写 + 字母" v-model="form.taxpayer_id"></el-input>
+          </el-form-item>
+          <el-form-item label="邮寄地址：" prop="address">
             <el-input placeholder="请输入收件地址" v-model="form.address"></el-input>
           </el-form-item>
-          <el-form-item label="联系人：" prop="contact" required>
+          <el-form-item label="联系人：" prop="contact">
             <el-input placeholder="请输入联系人姓名" v-model="form.contact"></el-input>
           </el-form-item>
-          <el-form-item label="电话号码：" prop="mobile" required>
+          <el-form-item label="电话号码：" prop="mobile">
             <el-input placeholder="请输入联系电话" v-model="form.mobile"></el-input>
           </el-form-item>
         </template>
@@ -138,23 +141,24 @@ export default {
         contact: '', // 联系人 （年费版）
         mobile: '', // 联系方式 （年费版）
         panorama_id: '', // 作品id （单作品）
+        taxpayer_id: '', // 纳税人识别号
       },
 
       rules: { // 表单验证规则
         coupon_code: [
           { validator: this.couponSnCheck, trigger: 'change' },
         ],
-        company: [
-          { validator: this.invoiceCheck('公司抬头'), trigger: 'blur' },
+        taxpayer_id: [
+          { required: true, validator: this.invoiceCheck('纳税人识别号'), trigger: 'blur' },
         ],
         address: [
-          { validator: this.invoiceCheck('邮寄地址'), trigger: 'blur' },
+          { required: true, validator: this.invoiceCheck('邮寄地址'), trigger: 'blur' },
         ],
         contact: [
-          { validator: this.invoiceCheck('联系人'), trigger: 'blur' },
+          { required: true, validator: this.invoiceCheck('联系人'), trigger: 'blur' },
         ],
         mobile: [
-          { validator: this.invoiceCheck('电话号码'), trigger: 'blur' },
+          { required: true, validator: this.invoiceCheck('电话号码'), trigger: 'blur' },
           { validator: mobileRule, trigger: 'blur' },
         ],
       },
@@ -229,13 +233,11 @@ export default {
 
     invoiceCheck(msg) { // 发票信息自定义验证
       return (rule, value, callback) => {
-        if (this.hasInvoice) {
-          if (!value) {
-            callback(new Error(`请输入${msg}`))
-          }
-          callback()
+        const error = []
+        if (this.hasInvoice && !value) {
+          error.push(`请输入${msg}`)
         }
-        callback()
+        return callback(error)
       }
     },
 
