@@ -68,8 +68,12 @@
           <el-form-item label="公司抬头：" prop="company">
             <el-input placeholder="不填默认为个人发票" v-model="form.company"></el-input>
           </el-form-item>
-          <el-form-item label="纳税人识别号：" prop="taxpayer_id" v-if="form.company">
-            <el-input placeholder="请填写大小写 + 字母" v-model="form.taxpayer_id"></el-input>
+          <el-form-item label="纳税人识别号：" prop="taxpayer_id">
+            <el-input placeholder="请填写纳税人识别号" v-model="form.taxpayer_id"></el-input>
+            <span
+              data-tip="开公司抬头（必填）：纳税人识别号填写格式为：大小写 + 字母；开个人抬头（可填）：根据需要填写个人身份证号码。"
+              class="tip-mark"
+            >?</span>
           </el-form-item>
           <el-form-item label="邮寄地址：" prop="address">
             <el-input placeholder="请输入收件地址" v-model="form.address"></el-input>
@@ -149,7 +153,7 @@ export default {
           { validator: this.couponSnCheck, trigger: 'change' },
         ],
         taxpayer_id: [
-          { required: true, validator: this.invoiceCheck('纳税人识别号'), trigger: 'blur' },
+          { validator: this.taxpayerValid('纳税人识别号'), trigger: 'blur' },
         ],
         address: [
           { required: true, validator: this.invoiceCheck('邮寄地址'), trigger: 'blur' },
@@ -235,6 +239,16 @@ export default {
       return (rule, value, callback) => {
         const error = []
         if (this.hasInvoice && !value) {
+          error.push(`请输入${msg}`)
+        }
+        return callback(error)
+      }
+    },
+
+    taxpayerValid(msg) {
+      return (rule, value, callback) => {
+        const error = []
+        if (this.form.company && !value) {
           error.push(`请输入${msg}`)
         }
         return callback(error)
@@ -351,6 +365,15 @@ export default {
 
   .el-dialog__body{
     padding: 30px 76px;
+  }
+
+  .tip-mark {
+    margin-left: 8px;
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
   }
 }
 </style>

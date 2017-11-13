@@ -47,10 +47,26 @@
         <tr v-if="isYearVip && hasInvoice">
           <td class="purchase-detail__bill"><p>发票信息：</p></td>
           <td colspan="3">
-            <p>公司抬头：{{ order.company }}</p>
-            <p>邮寄地址：{{ order.address }}</p>
-            <p>联&nbsp;&nbsp;系&nbsp;&nbsp;人：{{ order.contact }}</p>
-            <p>电话号码：{{order.mobile }}</p>
+            <el-row class="invoice-info" v-if="order.company">
+              <el-col :span="3">公司抬头：</el-col>
+              <el-col :span="10">{{ order.company }}</el-col>
+            </el-row>
+            <el-row class="invoice-info" v-if="order.taxpayer_id">
+              <el-col :span="3">纳税人识别号：</el-col>
+              <el-col :span="10">{{ order.taxpayer_id }}</el-col>
+            </el-row>
+            <el-row class="invoice-info">
+              <el-col :span="3">邮寄地址：</el-col>
+              <el-col :span="10">{{ order.address }}</el-col>
+            </el-row>
+            <el-row class="invoice-info">
+              <el-col :span="3">联系人：</el-col>
+              <el-col :span="10">{{ order.contact }}</el-col>
+            </el-row>
+            <el-row class="invoice-info">
+              <el-col :span="3">电话号码：</el-col>
+              <el-col :span="10">{{order.mobile }}</el-col>
+            </el-row>
           </td>
         </tr>
         </tbody>
@@ -245,7 +261,7 @@ export default {
     vertical-align: top;
   }
 
-  p {
+  .invoice-info {
       margin:20px 0;
     }
 
