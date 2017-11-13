@@ -44,7 +44,10 @@
 
       <el-button size="small" @click="goTo('/user-client/account')">修改资料</el-button>
       <el-button size="small" @click="locationTo(`/author/view/${ userInfo.hash_user_id }`)">我的主页</el-button>
-      <el-button size="small" @click="renew">续费</el-button>
+      <el-button size="small" @click="renew">
+        <template v-if="userInfo.is_vip">续费</template>
+        <template v-else>购买商业版</template>
+      </el-button>
     </div>
   </div>
 </template>
