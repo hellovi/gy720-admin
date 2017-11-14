@@ -242,7 +242,7 @@ export default {
   methods: {
     // 判断是否正在上传图片
     uploadedPic() {
-      if (this.uploading) {
+      if (this.uploading && this.addFiles.length) {
         if (this.currentPage !== this.list.current_page) {
           this.$confirm('正在上传图片，请勿操作！', '提示', { type: 'warning' })
             .then(() => {
@@ -265,7 +265,7 @@ export default {
         })
     },
 
-    getPanos(page) {
+    getPanos(page = 1) {
       this.currentPage = page
       if (this.uploadedPic()) {
         this.loading = true
