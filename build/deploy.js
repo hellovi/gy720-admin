@@ -23,16 +23,16 @@ const PUBLIC_PATH = path.join(LARAVEL_PATH, 'public', assetsSubDirectory)
 const git = require('simple-git')(LARAVEL_PATH)
 
 git
+  .exec(() => console.log('checkout develop!'))
+  .checkout('develop')
   .exec(() => console.log('pulling updates...'))
   .pull('origin', 'develop')
   .exec(() => {
-    // 复制前先清空laravel中的相关文件夹
+    //  复制前先清空laravel中的相关文件夹
     console.log('delete files...')
     fs.emptyDirSync(PUBLIC_PATH)
-
     console.log('copying assets...')
     fs.copySync(ASSETS_PATH, PUBLIC_PATH)
-
     // 复制dist中的html文件到laravel中的模板文件夹中
     const HMTL_PATH = path.join(DIST_PATH, 'index.html')
     const TEMPLATE_PATH = path.join(LARAVEL_PATH, 'resources/views/vue/index.blade.php')
@@ -41,6 +41,18 @@ git
   })
   .add('./*')
   .commit('更新前端静态资源')
-  .exec(() => console.log('pushing updates...'))
+  .exec(() => console.log('pushing develop updates...'))
   .push('origin', 'develop')
-  .exec(() => console.log('deploy successfully!'))
+  .exec(() => console.log('develop push successfully!'))
+  // 合并develop分支到release分支
+  // .exec(() => console.log('checkout release!'))
+  // .checkout('release')
+  // .pull('origin', 'release')
+  // .rebase(['develop'])
+  // .add('./*')
+  // .commit('合并develop分支')
+  // .exec(() => console.log('pushing release updates...'))
+  // .push('origin', 'release')
+  // .exec(() => console.log('release successfully!'))
+  // .exec(() => console.log('checkout develop!'))
+  // .checkout('develop')
