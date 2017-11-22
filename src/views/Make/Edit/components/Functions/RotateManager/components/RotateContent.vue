@@ -29,9 +29,9 @@
     <el-dialog
       title="上传物品3D图片"
       :visible.sync="dialog.upload"
-      :modal="false"
       :close-on-click-modal="false"
       custom-class="rotate-upload-dialog"
+      v-append-to-body
     >
       <rotate-upload v-if="dialog.upload" :id="activeItemId" @close="dialog.upload = false"></rotate-upload>
     </el-dialog>
@@ -39,9 +39,9 @@
     <el-dialog
       title="管理图片"
       :visible.sync="dialog.images"
-      :modal="false"
       :close-on-click-modal="false"
       custom-class="rotate-image-dialog"
+      v-append-to-body
     >
       <rotate-images v-if="dialog.images" :id="activeItemId"></rotate-images>
     </el-dialog>

@@ -11,7 +11,7 @@
         <h5>{{item.name}}</h5>
       </el-col>
     </el-row>
-    <el-button class="hotspot-scene__btn" type="primary" @click="submitScene">确定</el-button>
+    <el-button class="hotspot-scene__btn" type="primary" :disabled="!activeId" @click="submitScene">确定</el-button>
   </div>
 </template>
 

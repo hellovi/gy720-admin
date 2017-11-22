@@ -116,9 +116,8 @@
       title="选择漫游场景"
       size="large"
       custom-class="hotspot-scene-dialog"
-      :modal="false"
       :visible.sync="modal.sceneLink"
-      top="0%"
+      v-append-to-body
     >
       <scene-link @scene-link="sceneLink"></scene-link>
     </el-dialog>

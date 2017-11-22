@@ -27,7 +27,7 @@
       title="热点图标库"
       :visible.sync="modal.icon"
       size="large"
-      :modal="false"
+      v-append-to-body
     >
       <icon-hotspots v-model="modal.icon"></icon-hotspots>
     </el-dialog>

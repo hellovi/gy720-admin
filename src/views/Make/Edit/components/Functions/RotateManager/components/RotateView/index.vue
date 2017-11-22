@@ -3,10 +3,10 @@
     custom-class="rotate-view"
     :title="viewer.title"
     :visible.sync="active.object3dView"
-    :modal="false"
     size="large"
     @close="rotateColse"
     :close-on-click-modal="false"
+    v-append-to-body
   >
     <rotate-view-3d :id="viewer.id"></rotate-view-3d>
   </el-dialog>

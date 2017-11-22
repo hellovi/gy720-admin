@@ -3,7 +3,7 @@
     title="管理3D物品"
     custom-class="rotate-manage"
     :visible.sync="active.object3d"
-    top="10%"
+    v-append-to-body
     @before-close="close"
   >
     <!-- 侧边栏 -->
@@ -14,11 +14,11 @@
 
     <!-- 创建物品3D弹窗 -->
     <el-dialog
-      title="创建物品3D"
+      :title="`${dialogTitle}物品3D`"
       :visible.sync="dialog"
-      :modal="false"
       @open="createOpen"
       size="tiny"
+      v-append-to-body
     >
       <rotate-form
         :item="item"
@@ -58,6 +58,7 @@ export default {
       dialog: false,
       item: {},
       updateItemCate: false,
+      dialogTitle: '创建',
     }
   },
 
@@ -69,11 +70,13 @@ export default {
 
   methods: {
     createRotate() {
+      this.dialogTitle = '创建'
       this.dialog = true
       this.item = {}
     },
 
     updateRotate(item) {
+      this.dialogTitle = '编辑'
       this.dialog = true
       this.item = item
     },

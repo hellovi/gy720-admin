@@ -37,6 +37,7 @@ Vue.component(components.AppFormAlert.name, components.AppFormAlert)
 Vue.component(components.AppEmptyBody.name, components.AppEmptyBody)
 
 Vue.directive(directives.qiniuSrc.name, directives.qiniuSrc)
+Vue.directive(directives.appendToBody.name, directives.appendToBody)
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

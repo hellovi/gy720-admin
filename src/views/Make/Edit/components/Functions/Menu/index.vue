@@ -129,7 +129,7 @@
     <el-dialog
       class="menu__gps"
       title="地址导航" size="large"
-      :modal="false"
+      v-append-to-body
       :visible.sync="gpsModal.tag"
     >
       <v-menu-gps

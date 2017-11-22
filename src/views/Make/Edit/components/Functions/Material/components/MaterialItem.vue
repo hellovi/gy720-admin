@@ -30,7 +30,7 @@
 
     <figcaption class="ellipsis" :title="item.title">
       <span v-if="isRotate">
-        <el-button type="text" size="small" style="padding: 0;" @click="object3dDialog(item)">预览</el-button>
+        <el-button type="text" size="small" style="padding: 0;" @click.stop="object3dDialog(item)">预览</el-button>
       </span>
       <span v-else>{{ item.title }}</span>
     </figcaption>

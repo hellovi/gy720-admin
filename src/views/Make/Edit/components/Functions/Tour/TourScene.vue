@@ -59,6 +59,7 @@ export default {
   width: 100px;
   text-align: center;
   cursor: pointer;
+  display: inline-block;
 
   &.forbidden {
     cursor: not-allowed;

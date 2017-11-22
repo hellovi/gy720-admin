@@ -114,9 +114,9 @@
       :visible.sync="moveDialog"
       title="移动到其他相册"
       size="tiny"
-      :modal="false"
       :close-on-click-modal="false"
       custom-class="pano-material__move"
+      v-append-to-body
     >
       <el-form label-width="110px">
         <el-form-item label="移动到">

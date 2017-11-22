@@ -59,9 +59,7 @@
     <el-dialog
       :visible.sync="active.imageTextEdit"
       :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      ref="imageTextDialog"
-      style="position: fixed"
+      v-append-to-body
       >
       <image-text-dialog
         :visible="active.imageTextEdit"
@@ -76,10 +74,8 @@
     <!--预览窗口-->
     <el-dialog
       :visible.sync="preShow"
-      :modal="false"
-      top="2%"
       :close-on-click-modal="false"
-      :close-on-press-escape="false"
+      v-append-to-body
     >
       <image-text-preview
         :visible="preShow"
@@ -99,13 +95,12 @@
 
   import { mapState } from 'vuex'
   import { EDIT } from '@/store/mutationTypes'
-  import { dialog } from '@/mixins'
   import modal from '../../../../../mixins/modal'
 
   export default {
     name: 'image-text',
 
-    mixins: [dialog, modal],
+    mixins: [modal],
 
     components: {
       ImageTextDialog: () => import('./ImageTextDialog'),
@@ -146,11 +141,6 @@
       preShow(val) {
         if (val) {
           this.preViewRendered = true
-        }
-      },
-      'active.imageTextEdit': function imageText(val) {
-        if (val) {
-          this.setDialogToBody('imageTextDialog')
         }
       },
     },

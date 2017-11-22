@@ -10,7 +10,6 @@
           <app-file-upload
             v-model="avatar"
             cropper
-            :modal="false"
             :custom-url="worksCover"
             @crop-success="cropSuccess"
             @before-upload="loading = true"

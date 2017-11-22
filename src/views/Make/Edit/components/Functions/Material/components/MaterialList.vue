@@ -36,7 +36,7 @@
       title="编辑素材"
       :visible.sync="dialog.edit"
       size="tiny"
-      ref="editDialog"
+      v-append-to-body
     >
       <el-form :model="form" :rules="rules" label-width="6em" ref="form">
         <el-form-item label="素材名称" prop="title">
@@ -64,7 +64,7 @@
       :visible.sync="dialog.play"
       top="25%"
       custom-class="material-play"
-      ref="audioDialog"
+      v-append-to-body
     >
       <audio ref="audio" preload="none" :src="$url.static(item.file_path)" autoplay controls></audio>
     </el-dialog>
@@ -81,7 +81,6 @@
 import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import AppUploadProgress from '@/components/AppUploadProgress'
-import { dialog } from '@/mixins'
 import MaterialItem from './MaterialItem'
 import material from '../mixins/material'
 import uploadLimits from './uploadLimits'
@@ -91,7 +90,7 @@ const AppFileUpload = () => import('@/components/AppFileUpload')
 export default {
   name: 'edit-material-list',
 
-  mixins: [dialog, material],
+  mixins: [material],
 
   components: {
     AppFileUpload,
@@ -115,7 +114,6 @@ export default {
       loading: false,
       isRender: {
         play: false,
-        edit: false,
       },
     }
   },
@@ -131,19 +129,12 @@ export default {
   },
 
   watch: {
-    'dialog.edit': function dialogEdit(val) {
-      if (val && !this.isRender.edit) {
-        this.isRender.edit = true
-        this.setDialogToBody('editDialog')
-      }
-    },
     'dialog.play': function dialogPlay(val) {
       this.$nextTick(() => {
         this.$refs.audio.pause()
         if (val) {
           if (!this.isRender.play) {
             this.isRender.play = true
-            this.setDialogToBody('audioDialog')
           }
           setTimeout(() => {
             this.$refs.audio.play()

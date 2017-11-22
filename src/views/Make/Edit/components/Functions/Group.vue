@@ -64,7 +64,7 @@
       size="large"
       @open="getNotGroups"
       @close="closeSelectScenes"
-      ref="groupDialog"
+      v-append-to-body
     >
       <ul class="work-scenes list clearfix" v-if="notGroupsList.length">
         <li v-for="list in notGroupsList" :key="list.id" :class="{'active': checkedScene(list)}" @click="selectScenes(list)">
@@ -112,7 +112,6 @@ export default {
       selectSceneIds: [],
       addScenesLoading: false,
       groupsListLoad: false,
-      isRender: false,
       saveStatus: false,
     }
   },
@@ -138,12 +137,6 @@ export default {
         .catch((errors) => {
           this.errorHandler(errors)
         })
-
-      // 处理遮罩层问题
-      if (!this.isRender) {
-        this.isRender = true
-        document.body.appendChild(this.$refs.groupDialog.$el)
-      }
     },
 
     // 获取场景分组列表

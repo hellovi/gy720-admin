@@ -14,8 +14,7 @@
       :visible.sync="cropShow"
       :size="$attrs['dialog-size']"
       :close-on-click-modal="$attrs['close-on-click-modal']"
-      :close-on-press-escape="$attrs['close-on-press-escape']"
-      :modal="$attrs.modal"
+      v-append-to-body
     >
       <app-cropper
         :options="$attrs['crop-options']"

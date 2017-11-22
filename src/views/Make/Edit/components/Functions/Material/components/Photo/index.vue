@@ -73,7 +73,7 @@
     <slot name="footer" v-if="invoked" :checked="checkedphotos"></slot>
 
     <!-- 编辑素材弹框 -->
-    <el-dialog title="编辑素材" :visible.sync="dialog.edit" :modal="false" size="tiny">
+    <el-dialog title="编辑素材" :visible.sync="dialog.edit" v-append-to-body size="tiny">
       <el-form :model="form" :rules="rules" label-width="6em" ref="form">
         <el-form-item label="素材名称" prop="title">
           <el-input v-model="form.title"></el-input>

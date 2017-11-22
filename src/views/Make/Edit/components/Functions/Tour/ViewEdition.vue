@@ -35,8 +35,9 @@
     <!-- 选择场景 -->
     <el-dialog
       class="edition__selection"
-      title="选择场景" size="large" :modal="false"
+      title="选择场景" size="large"
       :visible.sync="sceneSelectionModal.active"
+      v-append-to-body
     >
       <v-tour-scene
         class="edition__selection-item"
