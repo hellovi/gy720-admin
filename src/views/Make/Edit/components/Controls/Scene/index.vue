@@ -78,11 +78,13 @@ export default {
       krpano.call(`loadscene(scene_pano_${sceneId},null,MERGE,BLEND(.8, easeInOutCubic));`)
 
       // 清空所有热点
-      Object.keys(krpano.hotspots)
-        .forEach((hotid) => {
-          krpano.removehotspot(`hotspot_${hotid}`)
-          krpano.removelayer(`hotspot_txt_${hotid}`)
-        })
+      if (krpano.hotspots) {
+        Object.keys(krpano.hotspots)
+          .forEach((hotid) => {
+            krpano.removehotspot(`hotspot_${hotid}`)
+            krpano.removelayer(`hotspot_txt_${hotid}`)
+          })
+      }
     },
 
     // 更新场景激活信息
