@@ -4,13 +4,14 @@ export default {
   methods: {
     showError(reason) {
       const h = this.$createElement
+      const msgList = typeof reason === 'string' ? [reason] : reason
       this.$msgbox({
         type: 'error',
         title: '提交错误',
         message: h(
           'ol',
           null,
-          Object.keys(reason).map(key => h('li', null, reason[key])),
+          Object.keys(msgList).map(key => h('li', null, msgList[key])),
         ),
         confirmButtonText: '确定',
       })

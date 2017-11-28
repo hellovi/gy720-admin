@@ -52,6 +52,10 @@ export default {
           }, 1000)
           return sceneId
         })
+        .catch(() => {
+          // 获取信息失败时，跳转作品列表
+          window.location.href = '/user-client/works'
+        })
     },
   },
 
