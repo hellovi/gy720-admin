@@ -95,7 +95,7 @@
           :loading="formLoading"
           @click="createOrder"
           style="width: 110px;"
-        >支付款</el-button>
+        >去付款</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>

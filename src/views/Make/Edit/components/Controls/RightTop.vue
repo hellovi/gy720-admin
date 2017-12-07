@@ -13,7 +13,7 @@
     </div>
 
     <div class="edit-likes">
-      <span :class="{'ui-hidden': showLike === 10}">人气：123</span>
+      <span :class="{'ui-hidden': showLike === 10}">人气：{{panoInfo.popular}}</span>
       <div class="ui-swither ui-swither--left" @click.stop>
         <el-switch
           v-model="showLike"
