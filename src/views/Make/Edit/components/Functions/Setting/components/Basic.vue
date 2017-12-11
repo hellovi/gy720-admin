@@ -36,14 +36,14 @@
       </el-form-item>
 
       <el-form-item class="tip-wrapper tip-wrapper--vip" label="密码访问" label-width="6em">
-        <el-select v-model="form.privacy" :readonly="!isVip" @change="privacyChange">
+        <el-select v-model="form.privacy" :disabled="!isVip" @click.native="privacyChange">
           <el-option label="公开" :value="10"></el-option>
           <el-option label="加密" :value="20"></el-option>
         </el-select>
         <span class="tip-mark" data-tip="设置为加密并输入作品密码后，他人需输入密码才能查看该作品">?</span>
       </el-form-item>
 
-      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 20" prop="password" :required="form.privacy === 20">
+      <el-form-item label="作品密码" label-width="6em" v-show="form.privacy === 20" :readonly="!isVip" prop="password" :required="form.privacy === 20">
         <el-input placeholder="请输入作品密码" v-model="form.password"></el-input>
       </el-form-item>
 
@@ -187,9 +187,8 @@ export default {
     /**
      * 非会员选择加密时，重置为公开，并弹出购买弹窗
      */
-    privacyChange(val) {
-      if (!this.isVip && val === 20) {
-        this.form.privacy = 10
+    privacyChange() {
+      if (!this.isVip) {
         this.$emit('focus-on-vip-field')
       }
     },
