@@ -96,7 +96,7 @@ export default {
     confirm() {
       // 生成裁剪后的图片
       const srcUrl = this.cropper.getCroppedCanvas().toDataURL('image/png')
-      this.$emit('crop', { ...this.cropInfo, preview: srcUrl })
+      this.$emit('crop', { ...this.cropInfo, preview: srcUrl, cropper: this.cropper })
     },
   },
 

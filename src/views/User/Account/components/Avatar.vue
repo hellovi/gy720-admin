@@ -14,12 +14,13 @@
       @error="uploadError"
       class="user-avatar__file"
     >
-      <img v-qiniu-src="src" data-type="avatar" data-query="/thumbnail/200x200" v-if="!progress">
+    {{progress}}
+      <img v-qiniu-src="src" data-type="avatar" data-query="/thumbnail/200x200" v-show="!progress">
       <app-upload-progress
         slot="progress"
         :src="uploadSrc"
         :progress="progress"
-        v-if="progress"
+        v-show="progress > 0 && progress <= 100"
       ></app-upload-progress>
     </app-file-upload>
     <div class="user-avatar__remark">
@@ -70,7 +71,7 @@
     methods: {
       // 监听上传前处理
       beforeUpload() {
-        this.progress = 0
+        this.progress = 10
       },
 
       // 监听上传进度

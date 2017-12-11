@@ -67,7 +67,10 @@ export default class Url {
   }
 
   static static(pathname) {
-    return Regex.url(pathname) || Regex.base64(pathname) ? pathname : `${configHost.cdn}/${pathname}`
+    if (Regex.url(pathname) || Regex.base64(pathname)) {
+      return pathname
+    }
+    return /^\/.*$/.test(`${pathname}`) ? `${configHost.cdn}${pathname}` : `${configHost.cdn}/${pathname}`
   }
 
   static host(pathname) {

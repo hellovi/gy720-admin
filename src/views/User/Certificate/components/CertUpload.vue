@@ -16,12 +16,12 @@
       class="cert-upload__file"
       v-bind:style="{width:width +'px',height:(width/scale) +'px'}"
     >
-      <img :src="getStatic(src) || `${require(`../assets/${background}`)}`" v-if="!progress">
+      <img v-qiniu-src="src" :data-src="`${require(`../assets/${background}`)}`" v-show="!progress">
       <app-upload-progress
         slot="progress"
         :src="uploadSrc"
         :progress="progress"
-        v-if="progress"
+        v-show="progress > 0 && progress <= 100"
       ></app-upload-progress>
     </app-file-upload>
   </div>
@@ -93,7 +93,7 @@
       uploadComplete() {
         setTimeout(() => {
           this.progress = 0
-        }, 300)
+        }, 3000)
       },
 
       // 监听上传出错
@@ -108,6 +108,7 @@
 
       // 获取预览图
       getPreview({ preview }) {
+        this.progress = 10
         this.uploadSrc = preview
       },
 

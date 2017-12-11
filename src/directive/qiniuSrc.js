@@ -12,25 +12,33 @@ const getSrc = (el, binding) => {
   const src = binding.value
   const query = el.dataset ? el.dataset.query : el.getAttribute('data-query')
   const type = el.dataset ? el.dataset.type : el.getAttribute('data-type')
+  const defaultSrc = el.dataset ? el.dataset.src : el.getAttribute('data-src')
+  const isNotCDNURL = url => Regex.base64(url) || url.includes('/assets/')
 
+  let srcUrl = src
   if (src) {
     if (query) {
       return `${Url.static(src)}${query}`
-    } else if (Regex.base64(src) || src.includes('/assets/')) {
+    } else if (isNotCDNURL(src)) {
       return src
     }
-    return Url.static(src)
+  } else if (defaultSrc) {
+    if (isNotCDNURL(defaultSrc)) {
+      return defaultSrc
+    }
+    srcUrl = defaultSrc
+  } else {
+    // 默认图片
+    switch (type) {
+      case 'avatar':
+        srcUrl = DefaultAvatar
+        break
+      default :
+        srcUrl = DefaultImg
+        break
+    }
   }
-  // 默认图片
-  let srcUrl = src
-  switch (type) {
-    case 'avatar':
-      srcUrl = DefaultAvatar
-      break
-    default :
-      srcUrl = DefaultImg
-      break
-  }
+
   return Url.static(srcUrl)
 }
 

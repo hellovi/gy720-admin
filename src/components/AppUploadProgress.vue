@@ -1,6 +1,6 @@
 <template>
   <div class="avatar-progress">
-    <img :src="src" class="avatar-progress__preview">
+    <img v-qiniu-src="src" class="avatar-progress__preview">
     <div class="avatar-progress__shade"></div>
     <div class="avatar-progress__bar" :style="{width: `${progress}%`}"></div>
   </div>

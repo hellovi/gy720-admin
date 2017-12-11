@@ -285,29 +285,14 @@ export default {
       // this.cropInfo = `!${data.width}x${data.height}a${data.x}a${data.y}`
       this.cropInfo = `!${data.width}x${data.height}a0a0`
       if (this.autoStart) {
-        // 添加裁剪后图片文件到上传阵列
-        this.uploader.addFile(new File([this.convertBase64UrlToBlob(data.preview)],
-          this.fileInfo.name))
-        // 手动开始上传
-        this.uploader.start()
+        // 添加裁剪后图片文件到上传阵列并且压缩80%
+        data.cropper.getCroppedCanvas().toBlob((blob) => {
+          this.uploader.addFile(new File([blob], this.fileInfo.name))
+          // 手动开始上传
+          this.uploader.start()
+        }, this.fileInfo.type, 0.8)
       }
       this.$emit('crop-success', data, this.uploader)
-    },
-
-    // 将base64格式图片转换为文件形式
-    convertBase64UrlToBlob(urlData) {
-      // 去掉url的头，并转换为byte
-      const bytes = window.atob(urlData.split(',')[1])
-      // 处理异常,将ascii码小于0的转换为大于0
-      const ab = new ArrayBuffer(bytes.length)
-      const ia = new Uint8Array(ab)
-
-      for (let i = 0; i < bytes.length; i += 1) {
-        ia[i] = bytes.charCodeAt(i)
-      }
-
-      const blob = new Blob([ab], { type: this.fileInfo.type })
-      return blob
     },
 
     /**
