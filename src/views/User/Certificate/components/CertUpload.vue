@@ -93,7 +93,7 @@
       uploadComplete() {
         setTimeout(() => {
           this.progress = 0
-        }, 3000)
+        }, 300)
       },
 
       // 监听上传出错

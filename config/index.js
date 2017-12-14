@@ -42,6 +42,7 @@ module.exports = {
       [`/assets/${package.assetsVersion}/images/`]: proxySetting,
       '/sms/': proxySetting,
       '/mail/': proxySetting,
+      '/pano/': proxySetting,
       '/captcha/': proxySetting,
       // '/lib/': proxySetting,
       '/login': Object.assign({

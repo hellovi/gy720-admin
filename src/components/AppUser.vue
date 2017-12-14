@@ -7,7 +7,7 @@
 
       <div class="app-user__info">
         <span>Hi，<em>{{ userInfo.nickname }}</em></span>
-        <span v-if="userInfo.is_certificate" class="app-user__badge">个人认证</span>
+        <span v-if="userInfo.is_certificate" class="app-user__badge">{{ userInfo.certificate_type_name }}</span>
         <router-link
           v-else
           to="/user-client/certificate"
