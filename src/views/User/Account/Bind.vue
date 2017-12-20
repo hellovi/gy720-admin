@@ -48,6 +48,12 @@
       <el-col :span="12">
         <h3 class="user-account-third__title">第三方登录绑定</h3>
         <div class="user-account-third__content">
+          <el-alert
+            v-show="errorInfo.type"
+            :title="alertInfo.title"
+            :description="alertInfo.description"
+            :type="alertInfo.type"
+            show-icon/>
           <el-row>
             <el-col :span="3">
               <label class="third-icon third-icon__weixin"></label>
@@ -58,7 +64,10 @@
                 <a class="ahref" href="/user/auth/weixinweb" target="_blank">立即绑定</a>
               </template>
               <template v-else>
-                <p class="ahref">已绑定账号：{{ bindInfo.chat }}</p>
+                <p class="ahref">
+                  已绑定账号：{{ bindInfo.chat }}
+                  <el-button size="small" @click.native="unbind('weixin')">解绑</el-button>
+                  </p>
               </template>
             </el-col>
           </el-row>
@@ -73,6 +82,7 @@
               </template>
               <template v-else>
                 <p class="ahref">已绑定账号：{{ bindInfo.qq }}</p>
+                <el-button type="text" @click.native="unbind('qq')">解绑</el-button>
               </template>
             </el-col>
           </el-row>
@@ -87,6 +97,7 @@
               </template>
               <template v-else>
                 <p class="ahref">已绑定账号：{{ bindInfo.blog }}</p>
+                <el-button type="text" @click.native="unbind('weibo')">解绑</el-button>
               </template>
             </el-col>
           </el-row>
@@ -161,7 +172,36 @@
             { type: 'string', len: 4, message: '验证码长度为4个字符', trigger: 'blur' },
           ],
         },
+        errorInfo: {},
       }
+    },
+
+    computed: {
+      alertInfo() {
+        let type
+        const closeInfo = () => {
+          this.errorInfo = {}
+          return {}
+        }
+
+        if (this.errorInfo.type === 'weixin') {
+          type = '微信'
+          if (this.bindInfo.chat) closeInfo()
+        } else if (this.errorInfo.type === 'qq') {
+          type = 'QQ'
+          if (this.bindInfo.qq) closeInfo()
+        } else {
+          type = '微博'
+          if (this.bindInfo.blog) closeInfo()
+        }
+
+        // errorInfo.code => 0: 绑定失败, 1: 绑定成功， 2: 已经绑定跳转, 3: 已绑定到其他帐号
+        return {
+          title: `${type}账号绑定提示`,
+          type: `${+this.errorInfo.code === 3 || !+this.errorInfo.code ? 'error' : 'success'}`,
+          description: `${+this.errorInfo.code === 3 || !+this.errorInfo.code ? this.errorInfo.account || `${type}绑定失败` : `${type}绑定成功`}`,
+        }
+      },
     },
 
     methods: {
@@ -176,10 +216,50 @@
         this.bindInfo = { ...data }
       },
 
+      // 解绑第三方账号
+      unbind(type) {
+        this.$confirm('此操作将解除该账号的绑定, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }).then(() => {
+          this.$http.get(`/user/unbinding/${type}`)
+            .then(({ status }) => {
+              if (status.code) {
+                this.$message({
+                  type: 'success',
+                  message: '解除绑定成功!',
+                  onClose: () => {
+                    this.getBindInfo()
+                  },
+                })
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '解除绑定失败!',
+                })
+              }
+            })
+        })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消解除操作',
+            })
+          })
+      },
+
     },
 
     created() {
       this.getBindInfo()
+    },
+
+    beforeRouteEnter(to, from, next) {
+      next((vm) => {
+        // eslint-disable-next-line
+        vm.errorInfo = { ...to.query }
+      })
     },
 
   }
