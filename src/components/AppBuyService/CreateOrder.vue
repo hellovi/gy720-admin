@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    :title="'我要购买' + (isYearVip ? '（2299元/年）' : '（99元/作品）')"
+    :title="'我要购买(' + isYearVip ? '（' + buyPrice[0] + '元/年）' : '（'+ buyPrice[1] + '元/作品）'"
     size="small"
     :visible="visible"
     @update:visible="val => $emit('update:visible',val)"
@@ -13,7 +13,7 @@
         <div class="text-center">
           <el-row v-if="discount">
             <el-col :span="12">
-              总金额：￥{{`${numberPadEnd(2299)}`}}元
+              总金额：￥{{`${numberPadEnd(buyPrice[0])}`}}元
             </el-col>
             <el-col :span="12">
               优惠金额：￥{{`${numberPadEnd(discount)}`}}元
@@ -22,13 +22,13 @@
           <h2 class="create-dialog__amount-gross">
             <template v-if="discount">还需支付：</template>
             <template v-else>总金额：</template>
-            <span>￥{{`${numberPadEnd(2299 - discount)}`}}元</span></h2>
+            <span>￥{{`${numberPadEnd(buyPrice[0] - discount)}`}}元</span></h2>
           （支付完成后，商业版有效期至{{ expireTime }}）
         </div>
       </template>
       <template v-else>
         <div class="text-center">
-          <h2 class="create-dialog__amount-gross">总金额：<span>￥{{`${numberPadEnd(99)}`}}元</span></h2>
+          <h2 class="create-dialog__amount-gross">总金额：<span>￥{{`${numberPadEnd(buyPrice[1])}`}}元</span></h2>
           （作品名称：{{ panoInfo.name }}）
         </div>
       </template>
@@ -187,6 +187,16 @@ export default {
       panoInfo: state => state.service.buyPanoInfo,
       userInfo: state => state.userInfo,
     }),
+
+    buyPrice() {
+      if (this.userInfo.price) {
+        if (this.userInfo.price.is_discount) {
+          return Object.values(this.userInfo.price.discount)
+        }
+        return Object.values(this.userInfo.price.origin)
+      }
+      return []
+    },
 
     // 计算开通|续费后过期时间
     expireTime() {

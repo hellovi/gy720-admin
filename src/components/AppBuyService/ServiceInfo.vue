@@ -14,7 +14,11 @@
       </el-col>
       <el-col :span="isRenew ? 12 : 8">
         <div class="app-buy-service__type is-vip" :class="{active: isRenew || (!isServePage && !service.remain)}">
-          <h3 class="app-buy-service__title">2299元/年<span class="gold-color">（商业版）</span></h3>
+          <h3 class="app-buy-service__title">
+            <span class="gold-color">{{buyPrice.isDiscount ? buyPrice.discount[0] : buyPrice.origin[0]}}</span> 元/年
+            <span class="gold-color">（商业版）</span></h3>
+          <div v-if="buyPrice.isDiscount">
+            <s class="strikeout">{{buyPrice.origin[0]}} 元/年（商业版）</s></div>
           <p class="app-buy-service__intro">
             购买此服务，您所有的作品即可使用以下的商业版功能：
           </p>
@@ -37,7 +41,11 @@
       </el-col>
       <el-col :span="8" v-if="!isRenew">
         <div class="app-buy-service__type is-vip" :class="{active: !isServePage && service.remain}">
-          <h3 class="app-buy-service__title">99元/作品<span class="gold-color">（商业版）</span></h3>
+          <h3 class="app-buy-service__title">
+            <span class="gold-color">{{buyPrice.isDiscount ? buyPrice.discount[1] : buyPrice.origin[1]}}</span> 元/年
+            <span class="gold-color">（商业版）</span></h3>
+          <div v-if="buyPrice.isDiscount">
+            <s class="strikeout">{{buyPrice.origin[1]}} 元/年（商业版）</s></div>
           <p class="app-buy-service__intro">
             购买此服务，您对应的作品即可使用以下的商业版功能：
           </p>
@@ -67,7 +75,7 @@
                   您还可购买 <span class="gold-color">{{ service.remain }}</span> 次此项服务
                 </template>
                 <template v-else>
-                  <strong>此项服务购买次数已用完<br/>建议您购买2299元/年这项服务</strong>
+                  <strong>此项服务购买次数已用完<br/>建议您购买{{buyPrice[0]}}元/年这项服务</strong>
                 </template>
               </p>
               <h5>本次购买对应作品：</h5>
@@ -145,7 +153,19 @@
       ...mapState({
         service: state => state.service,
         panoInfo: state => state.service.buyPanoInfo,
+        userInfo: state => state.userInfo,
       }),
+
+      buyPrice() {
+        return {
+          // 优惠价格
+          discount: this.userInfo.price ? Object.values(this.userInfo.price.discount) : [],
+          // 原本价格
+          origin: this.userInfo.price ? Object.values(this.userInfo.price.origin) : [],
+          // 是否优惠状态
+          isDiscount: this.userInfo.price ? this.userInfo.price.is_discount : false,
+        }
+      },
     },
 
     methods: {
@@ -204,6 +224,7 @@
 
     &__title {
       font-size: 16px;
+      margin-bottom: 5px;
     }
 
     &__intro {
@@ -268,7 +289,7 @@
         padding: 0;
 
         & > li {
-          padding: 0 0 15px 0;
+          padding: 0 0 12px 0;
           list-style-type: none;
 
           &::before {

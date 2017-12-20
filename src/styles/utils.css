@@ -180,3 +180,9 @@
     transform: translate(-50%, -50%);
   }
 }
+
+/* 删除线 */
+.strikeout {
+  color: var(--gray);
+  font-weight: normal;
+}
