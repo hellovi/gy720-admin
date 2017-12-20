@@ -139,6 +139,7 @@ export default {
       this.form = {
         ...this.form,
         ...others,
+        privacy: others.password ? 20 : 10,
       }
     },
   },
