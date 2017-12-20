@@ -87,6 +87,8 @@
 
   export default {
     components: {
+      /* global System */
+      /* eslint no-undef: "error" */
       AppUeditor: () => System.import('@/components/AppUeditor'),
     },
     props: {
