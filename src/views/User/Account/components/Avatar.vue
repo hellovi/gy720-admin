@@ -14,7 +14,6 @@
       @error="uploadError"
       class="user-avatar__file"
     >
-    {{progress}}
       <img v-qiniu-src="src" data-type="avatar" data-query="/thumbnail/200x200" v-show="!progress">
       <app-upload-progress
         slot="progress"
