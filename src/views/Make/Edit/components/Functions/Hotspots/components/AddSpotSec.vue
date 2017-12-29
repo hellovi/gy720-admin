@@ -338,7 +338,7 @@ export default {
         icon_id: this.activeIcon.icon_id,
         type_id: this.type, // 热点类型
         data_id: this.form.data_id,
-        diy_src: this.activeIcon.diy_src || '', // 自定义热点图标url
+        diy_src: this.activeIcon.diy_src || this.activeIcon.thumb || '', // 自定义热点图标url
       }
       return postSpotsData
     },
