@@ -27,7 +27,7 @@ export default {
       const info = this.editInfo
       // 热点图标赋值 ???? // 这里还是得区分有无c-
       const activeIcon = { icon_id: info.icon_id,
-        thumb: info.icon_thumb || info.diy_src,
+        thumb: info.icon_id === '0' ? info.diy_src : info.icon_thumb,
         y: info.y,
         data_thumb: info.type_id === 1 ? this.sceneList.find(list => list.id === +info.data_id).thumb : '',
       }
