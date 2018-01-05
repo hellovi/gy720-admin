@@ -5,13 +5,11 @@
  */
 
 import { Url, Regex } from '@/utils'
-import DefaultAvatar from '@/assets/default-avatar.jpg'
-import DefaultImg from '@/assets/default-img.gif'
+import DefaultImg from '@/assets/default-avatar.jpg'
 
 const getSrc = (el, binding) => {
   const src = binding.value
   const query = el.dataset ? el.dataset.query : el.getAttribute('data-query')
-  const type = el.dataset ? el.dataset.type : el.getAttribute('data-type')
   const defaultSrc = el.dataset ? el.dataset.src : el.getAttribute('data-src')
   const isNotCDNURL = url => Regex.base64(url) || url.includes('/assets/')
 
@@ -28,15 +26,7 @@ const getSrc = (el, binding) => {
     }
     srcUrl = defaultSrc
   } else {
-    // 默认图片
-    switch (type) {
-      case 'avatar':
-        srcUrl = DefaultAvatar
-        break
-      default :
-        srcUrl = DefaultImg
-        break
-    }
+    srcUrl = DefaultImg
   }
 
   return Url.static(srcUrl)
