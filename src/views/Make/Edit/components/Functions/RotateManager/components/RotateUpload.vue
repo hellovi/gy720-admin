@@ -28,6 +28,7 @@
             <img :src="file.preview" :alt="file.name">
             <el-progress :percentage="file.percent || 0" :status="file.result" :show-text="!!file.result"></el-progress>
             <figcaption class="ellipsis">{{ file.name }}</figcaption>
+            <i class="el-icon-close" @click="deleteFile(file)"></i>
           </figure>
         </li>
       </ul>
@@ -155,6 +156,7 @@ export default {
           Vue.set(target, 'result', 'success')
         })
         .catch(({ status }) => {
+          Vue.set(target, 'result', 'exception')
           this.uploadError.push(`${target.name} - ${status.reason}`)
           this.formAlert = {
             status: {
@@ -180,9 +182,15 @@ export default {
       }
     },
 
-    // 删除文件
+    // 删除阵列文件
     removeFile(file) {
       this.uploader.removeFile(file)
+    },
+
+    // 删除文件
+    deleteFile(file) {
+      this.files = this.files.filter(item => item.id !== file.id)
+      this.removeFile(file)
     },
   },
 }
@@ -245,6 +253,7 @@ export default {
 
 .rotate-upload-fig {
   margin: 0;
+  position: relative;
 
   & > img {
     width: 100px;
@@ -257,6 +266,17 @@ export default {
     font-size: 12px;
     height: 16px;
     text-align: center;
+  }
+
+  i.el-icon-close {
+    position: absolute;
+    top: 0;
+    right: -14px;
+    cursor: pointer;
+
+    &:hover {
+      color: #20a0ff;
+    }
   }
 }
 </style>
