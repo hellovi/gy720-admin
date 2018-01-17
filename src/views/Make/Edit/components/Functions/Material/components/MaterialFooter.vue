@@ -49,6 +49,7 @@ import { mapState } from 'vuex'
 import { EDIT } from '@/store/mutationTypes'
 import upload from '@/views/User/Publish/mixins/upload'
 import modal from '../../../../mixins/modal'
+import fileValid from '../../../../mixins/fileValid'
 import uploadLimits from './uploadLimits'
 
 const AppFileUpload = () => import('@/components/AppFileUpload')
@@ -56,7 +57,7 @@ const AppFileUpload = () => import('@/components/AppFileUpload')
 export default {
   name: 'edit-material-footer',
 
-  mixins: [modal, upload],
+  mixins: [modal, upload, fileValid],
 
   components: {
     AppFileUpload,
@@ -127,23 +128,6 @@ export default {
 
     openImageTextAdd() {
       this.openModal('imageTextEdit')
-    },
-
-    isFileValid({ ratio, dimension, dimensionTip }, image) {
-      const { width, height } = image
-      const currentRatio = width / height
-      if (dimension && !dimension(width, height)) {
-        this.$message.error(`图片必须${dimensionTip}`)
-        return false
-      } else if (ratio) {
-        const [w, h] = ratio
-        if (currentRatio !== w / h) {
-          this.$message.error(`图片比例必须为${w}:${h}`)
-          return false
-        }
-      }
-
-      return true
     },
 
     /**

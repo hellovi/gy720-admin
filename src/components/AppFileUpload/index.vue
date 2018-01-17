@@ -244,13 +244,13 @@ export default {
           /**
            * 队列文件处理完毕后,处理相关的事情
            */
-          UploadComplete: () => {
+          UploadComplete: (up, files) => {
             this.uploadStatus = false
             if (this.multiple) {
               this.$emit('input', this.multiFileSrc)
             }
             this.multiFileSrc = []
-            this.$emit('upload-complete')
+            this.$emit('upload-complete', up, files)
           },
 
           /**

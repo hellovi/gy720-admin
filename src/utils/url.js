@@ -1,8 +1,8 @@
 /*
  * @Author: chenliangshan
  * @Date: 2018-01-05 10:02:51
- * @Last Modified by:   chenliangshan
- * @Last Modified time: 2018-01-05 10:02:51
+ * @Last Modified by: chenliangshan
+ * @Last Modified time: 2018-01-17 09:17:39
  */
 
 import { Regex } from '@/utils'
@@ -57,7 +57,7 @@ export default class Url {
     }
   }
 
-  static static(pathname) {
+  static static(pathname = '') {
     if (Regex.url(pathname) || Regex.base64(pathname)) {
       return pathname
     } else if (pathname.includes('/assets/')) {
@@ -66,11 +66,11 @@ export default class Url {
     return `${configHost.cdn}${pathname}`
   }
 
-  static host(pathname) {
+  static host(pathname = '') {
     return `${configHost.origin}${pathname}`
   }
 
-  static staticHotSpots(pathname) {
+  static staticHotSpots(pathname = '') {
     return `${configHost.origin}assets/${process.env.ASSETS_VERSION}/lib/krpano/hoticon/${pathname}`
   }
 

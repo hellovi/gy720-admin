@@ -7,8 +7,9 @@
     <el-alert
       :title="title"
       :type="type"
+      @close="close"
       show-icon>
-      <div v-for="msg in flatContents" class="app-alert__content" v-html="msg"></div>
+      <div v-for="(msg, index) in flatContents" :key="index" class="app-alert__content" v-html="msg"></div>
     </el-alert>
   </div>
 
@@ -48,6 +49,14 @@
     computed: {
       flatContents() {
         return Object.keys(this.contents).length ? errorHandler(this.contents) : []
+      },
+    },
+
+    methods: {
+      // 关闭alert时触发的事件
+      close() {
+        this.$emit('update:contents', {})
+        this.$emit('close')
       },
     },
   }

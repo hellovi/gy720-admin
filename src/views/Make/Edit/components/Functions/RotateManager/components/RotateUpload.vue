@@ -17,6 +17,10 @@
       </dl>
     </div>
 
+    <app-form-alert
+        :contents.sync="formAlert"
+      ></app-form-alert>
+
     <div class="rotate-upload__files">
       <ul class="list clearfix" v-show="files.length">
         <li class="float-left" v-for="(file, i) in files" :key="i">
@@ -32,6 +36,8 @@
         multiple
         static-url="data/source/rotate/"
         :auto-start="false"
+        accept="jpg,jpe,png"
+        size="3mb"
         @init="init"
         @file-preview="filePreview"
         @upload-progress="uploadProgress"
@@ -79,6 +85,8 @@ export default {
       uploadInputId: null,
       files: [],
       loading: false,
+      formAlert: {},
+      uploadError: [],
     }
   },
 
@@ -102,6 +110,14 @@ export default {
     },
   },
 
+  watch: {
+    formAlert(val) {
+      if (!Object.values(val).length) {
+        this.uploadError = []
+      }
+    },
+  },
+
   methods: {
     init(uploader) {
       this.uploader = uploader
@@ -109,7 +125,7 @@ export default {
 
     filePreview(file) {
       if (!this.uploadInputId) {
-        this.uploadInputId = document.querySelector('input[type="file"]').id
+        this.uploadInputId = document.querySelector('.rotate-upload').querySelector('input[type="file"]').id
       }
       this.files.push(file)
     },
@@ -127,6 +143,8 @@ export default {
     // 尚未做图片上传失败处理
     fileUploaded(up, { name, id }, info) {
       const { key } = JSON.parse(info.response)
+      const target = this.files.find(file => file.id === id)
+
       this.$http.post('/user/sourcerotateimage', {
         title: name,
         source_rotate_id: this.id,
@@ -134,19 +152,36 @@ export default {
         list_order: 72,
       })
         .then(() => {
-          const target = this.files.find(file => file.id === id)
           Vue.set(target, 'result', 'success')
+        })
+        .catch(({ status }) => {
+          this.uploadError.push(`${target.name} - ${status.reason}`)
+          this.formAlert = {
+            status: {
+              reason: this.uploadError.reduce((acc, cur, i) => {
+                acc[i] = cur
+                return acc
+              }, {}),
+            },
+          }
         })
     },
 
-    uploadComplete() {
+    uploadComplete(up, files) {
       this.loading = false
-      this.$message.success('上传完成，请点击预览查看')
+      if (files.length) {
+        this.$nextTick()
+          .then(() => {
+            this.$message.success('上传完成，请点击预览查看')
+            files.forEach((file) => {
+              this.removeFile(file)
+            })
+          })
+      }
     },
 
     // 删除文件
     removeFile(file) {
-      // TODO 删除文件
       this.uploader.removeFile(file)
     },
   },
