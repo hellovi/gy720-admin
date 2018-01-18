@@ -28,7 +28,7 @@
             <img :src="file.preview" :alt="file.name">
             <el-progress :percentage="file.percent || 0" :status="file.result" :show-text="!!file.result"></el-progress>
             <figcaption class="ellipsis">{{ file.name }}</figcaption>
-            <i class="el-icon-close" @click="deleteFile(file)"></i>
+            <i class="el-icon-close" v-if="file.result !== 'success'" @click="deleteFile(file)"></i>
           </figure>
         </li>
       </ul>
@@ -132,8 +132,11 @@ export default {
     },
 
     upload() {
-      this.loading = true
-      this.uploader.start()
+      const files = this.files.filter(item => item.percent !== 100 && item.result !== 'success' && item.result !== 'exception')
+      if (files.length) {
+        this.loading = true
+        this.uploader.start()
+      }
     },
 
     uploadProgress(up, { id, percent }) {
@@ -157,11 +160,11 @@ export default {
         })
         .catch(({ status }) => {
           Vue.set(target, 'result', 'exception')
-          this.uploadError.push(`${target.name} - ${status.reason}`)
+          this.uploadError.push({ id: target.id, msg: `${target.name} - ${status.reason}` })
           this.formAlert = {
             status: {
-              reason: this.uploadError.reduce((acc, cur, i) => {
-                acc[i] = cur
+              reason: this.uploadError.reduce((acc, cur) => {
+                acc[cur.id] = cur.msg
                 return acc
               }, {}),
             },
@@ -171,15 +174,10 @@ export default {
 
     uploadComplete(up, files) {
       this.loading = false
-      if (files.length) {
-        this.$nextTick()
-          .then(() => {
-            this.$message.success('上传完成，请点击预览查看')
-            files.forEach((file) => {
-              this.removeFile(file)
-            })
-          })
-      }
+      this.$message.success('上传完成，请点击预览查看')
+      files.forEach((file) => {
+        this.removeFile(file)
+      })
     },
 
     // 删除阵列文件
@@ -190,6 +188,15 @@ export default {
     // 删除文件
     deleteFile(file) {
       this.files = this.files.filter(item => item.id !== file.id)
+      this.uploadError = this.uploadError.filter(item => item.id !== file.id)
+      this.formAlert = {
+        status: {
+          reason: this.uploadError.reduce((acc, cur) => {
+            acc[cur.id] = cur.msg
+            return acc
+          }, {}),
+        },
+      }
       this.removeFile(file)
     },
   },
@@ -269,14 +276,12 @@ export default {
   }
 
   i.el-icon-close {
+    color: #f7ba2a;
     position: absolute;
-    top: 0;
-    right: -14px;
+    top: -6px;
+    right: -6px;
     cursor: pointer;
-
-    &:hover {
-      color: #20a0ff;
-    }
+    z-index: 10;
   }
 }
 </style>
