@@ -188,6 +188,9 @@ export default {
             this.saveStatus = true
             this.showScenes = false
             this.addScenesLoading = false
+            // 添加成功移除未分组列表
+            this.notGroupsList = this.notGroupsList.filter(({ id }) =>
+              this.selectSceneIds.find(item => item.id !== id))
           })
       } else {
         this.errorHandler('请选择场景')
