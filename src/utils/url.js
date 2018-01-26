@@ -2,7 +2,7 @@
  * @Author: chenliangshan
  * @Date: 2018-01-05 10:02:51
  * @Last Modified by: chenliangshan
- * @Last Modified time: 2018-01-18 14:18:37
+ * @Last Modified time: 2018-01-26 16:29:04
  */
 
 import { Regex } from '@/utils'
@@ -63,15 +63,15 @@ export default class Url {
     } else if (pathname.includes('/assets/')) {
       return `${window.location.origin}${pathname}`
     }
-    return `${configHost.cdn}${pathname}`
+    return `${pathname && `${configHost.cdn}${pathname}`}`
   }
 
   static host(pathname = '') {
-    return `${configHost.origin}${pathname}`
+    return `${pathname && `${configHost.origin}${pathname}`}`
   }
 
   static staticHotSpots(pathname = '') {
-    return `${configHost.origin}assets/${process.env.ASSETS_VERSION}/lib/krpano/hoticon/${pathname}`
+    return `${pathname && `${configHost.origin}assets/${process.env.ASSETS_VERSION}/lib/krpano/hoticon/${pathname}`}`
   }
 
   static getQuery(url = window.location.href) {

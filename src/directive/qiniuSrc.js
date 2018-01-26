@@ -9,19 +9,13 @@ import DefaultImg from '@/assets/default-avatar.jpg'
 
 const getSrc = (el, binding) => {
   const src = binding.value
-  const query = el.dataset ? el.dataset.query : el.getAttribute('data-query')
-  const defaultSrc = el.dataset ? el.dataset.src : el.getAttribute('data-src')
-  let srcUrl = src
+  const query = el.dataset && el.dataset.query ? el.getAttribute('data-query') : ''
+  const defaultSrc = el.dataset && el.dataset.src ? el.getAttribute('data-src') : ''
 
   if (src) {
-    srcUrl = `${Url.static(src)}${query || ''}`
-  } else if (defaultSrc) {
-    srcUrl = defaultSrc
-  } else {
-    srcUrl = DefaultImg
+    return `${Url.static(src)}${query.includes('imageMogr2/crop') || ''}`
   }
-
-  return Url.static(srcUrl)
+  return Url.static(defaultSrc || DefaultImg)
 }
 
 export default {
