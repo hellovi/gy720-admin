@@ -180,7 +180,8 @@ export default {
       if (!this.isVip) {
         this.$emit('focus-on-vip-field')
       } else {
-        this.form.start_img = null
+        // 删除时后端需空字符串
+        this.form.start_img = ''
       }
     },
 
