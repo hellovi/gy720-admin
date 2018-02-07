@@ -38,6 +38,11 @@ class Http {
           if (!res.status || res.status.code === 1) {
             return res
           }
+          // 登录过期
+          if (res.status.code === 401) {
+            // 跳转登录页面
+            window.location.replace(`/user/login?from=${window.location.href}`)
+          }
           throw res
         })
     }
