@@ -106,6 +106,12 @@
         // 判断是否初始加载省级数据
         if (this.autoLoading) {
           this.getAreaData('region', 0, true)
+          // 遍历地区数据
+          if (this.areaData.length > 1) {
+            this.areaType.forEach((type, i) => {
+              this.getAreaData(type, this.areaData[i])
+            })
+          }
         }
       },
       // 获取地区数据

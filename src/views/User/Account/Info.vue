@@ -72,7 +72,7 @@
     data() {
       return {
         areaKey: ['region_id', 'city_id', 'area_id'],
-        areaValue: null,
+        areaData: {},
         positionData: {
           region: [],
           city: [],
@@ -86,35 +86,36 @@
       }
     },
     computed: {
-      areaData() {
-        const areaData = {}
-        const areaValue = strToArr(this.areaValue)
-        this.areaKey.forEach((val, key) => {
-          areaData[val] = areaValue[key] || null
-        })
-        return areaData
-      },
+      // 获取用户信息
       userInfo() {
         return { ...this.$store.state.userInfo }
       },
-    },
-    watch: {
-      userInfo: {
-        handler() {
-          this.getAreaInfo()
+      // 获取地区信息
+      areaValue: {
+        get() {
+          const areaValue = []
+          this.areaKey.forEach((v) => {
+            if (Object.keys(this.areaData).length) {
+              if (this.areaData[v]) areaValue.push(this.areaData[v])
+            } else {
+              areaValue.push(this.userInfo[v])
+            }
+          })
+          return areaValue.join(',')
         },
-        deep: true,
+
+        set(value) {
+          // 设置居住城市信息
+          const areaData = {}
+          const areaValue = strToArr(value)
+          this.areaKey.forEach((val, key) => {
+            areaData[val] = areaValue[key] || null
+          })
+          this.areaData = { ...areaData }
+        },
       },
     },
     methods: {
-      // 获取地区信息
-      getAreaInfo() {
-        const areaValue = []
-        this.areaKey.forEach((v) => {
-          areaValue.push(this.userInfo[v])
-        })
-        this.areaValue = areaValue.join(',')
-      },
       // 保存修改
       submitForm() {
         const userInfo = {
@@ -132,9 +133,6 @@
             this.errorHandler(errors)
           })
       },
-    },
-    mounted() {
-      this.getAreaInfo()
     },
   }
 </script>
